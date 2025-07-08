@@ -655,6 +655,36 @@
                 "target": "v5",
                 "user_files": [],
                 "version": "0.7.1"
+            },
+            "vexmaps": {
+                "location": "/home/tomass/.config/pros/templates/vexmaps@0.0.1",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "vexmaps",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.2.0",
+                "system_files": [
+                    "include/vexmaps/particle_filter_model.hpp",
+                    "include/vexmaps/localization_model.hpp",
+                    "include/vexmaps/smoother_model.hpp",
+                    "include/vexmaps/mcl/api.hpp",
+                    "include/vexmaps/mcl/sensor.hpp",
+                    "include/vexmaps/odometry/api.hpp",
+                    "include/vexmaps/mcl/distance_model.hpp",
+                    "include/vexmaps/mcl/particle_filter.hpp",
+                    "include/vexmaps/mcl/pf_motion_model.hpp",
+                    "include/vexmaps/odometry/scaled_imu.hpp",
+                    "include/vexmaps/api.hpp",
+                    "include/vexmaps/odometry/tracking_wheel.hpp",
+                    "firmware/vexmaps.a",
+                    "include/vexmaps/odometry/odometry.hpp",
+                    "include/vexmaps/mcl/config.hpp",
+                    "include/vexmaps/mcl/utils.hpp"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.0.1"
             }
         },
         "upload_options": {},
