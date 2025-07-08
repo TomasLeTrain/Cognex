@@ -1,8 +1,19 @@
 #include "main.h"
+#include "systems/drivetrain.h"
 
 void opcontrol(){
-    // normal op control
-    while(true){
-        pros::delay(20);
-    }
+    // initialize tasks for each subsystem
+    
+
+    pros::Task drivebase_task([] {
+        while (true) {
+            base::driveUpdate();
+            pros::delay(10);
+        }
+    });
+
+    // while(true){
+    //     // uncomplicated functions which do not really require their own tasks
+    //     pros::delay(20);
+    // }
 }

@@ -4,6 +4,49 @@
         "project_name": "cognex",
         "target": "v5",
         "templates": {
+            "LemLib": {
+                "location": "/home/tomass/.config/pros/templates/LemLib@0.6.0",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "LemLib",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.2.0",
+                "system_files": [
+                    "include/fmt/args.h",
+                    "include/lemlib/exitcondition.hpp",
+                    "include/fmt/core.h",
+                    "firmware/LemLib.a",
+                    "include/lemlib/asset.hpp",
+                    "include/lemlib/chassis/odom.hpp",
+                    "include/lemlib/driveCurve.hpp",
+                    "include/lemlib/logger/logger.hpp",
+                    "include/fmt/LICENSE",
+                    "include/lemlib/chassis/trackingWheel.hpp",
+                    "include/lemlib/logger/telemetrySink.hpp",
+                    "include/fmt/format-inl.h",
+                    "include/lemlib/logger/baseSink.hpp",
+                    "include/lemlib/VERSION",
+                    "firmware/hot-cold-asset.mk",
+                    "static/example.txt",
+                    "include/lemlib/util.hpp",
+                    "include/lemlib/pose.hpp",
+                    "include/lemlib/logger/stdout.hpp",
+                    "include/lemlib/api.hpp",
+                    "include/lemlib/chassis/chassis.hpp",
+                    "include/fmt/format.h",
+                    "include/lemlib/logger/infoSink.hpp",
+                    "include/lemlib/LICENSE",
+                    "include/lemlib/logger/message.hpp",
+                    "include/lemlib/timer.hpp",
+                    "include/lemlib/pid.hpp",
+                    "include/lemlib/logger/buffer.hpp",
+                    "include/lemlib/README.md"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.6.0"
+            },
             "kernel": {
                 "location": "/home/tomass/.config/pros/templates/kernel@4.2.0",
                 "metadata": {
@@ -589,6 +632,29 @@
                 "target": "v5",
                 "user_files": [],
                 "version": "9.2.0"
+            },
+            "units": {
+                "location": "/home/tomass/.config/pros/templates/units@0.7.1",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "units",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.2.0",
+                "system_files": [
+                    "include/units/Angle.hpp",
+                    "include/units/Vector3D.hpp",
+                    "include/units/Temperature.hpp",
+                    "firmware/units.a",
+                    "include/units/Pose.hpp",
+                    "include/units/all.hpp",
+                    "include/units/units.hpp",
+                    "firmware/hot-cold-asset.mk",
+                    "include/units/Vector2D.hpp"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.7.1"
             }
         },
         "upload_options": {},
