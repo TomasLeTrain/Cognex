@@ -12,6 +12,9 @@ BINDIR=$(ROOT)/bin
 SRCDIR=$(ROOT)/src
 INCDIR=$(ROOT)/include
 
+SRCDIR2=$(ROOT)/robot/src
+EXTRA_INCDIR=$(ROOT)/robot/include
+
 WARNFLAGS+=
 EXTRA_CFLAGS=
 EXTRA_CXXFLAGS=

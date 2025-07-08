@@ -28,6 +28,7 @@ $(shell mkdir -p $(DEPDIR))
 DEPFLAGS = -MT $$@ -MMD -MP -MF $(DEPDIR)/$$*.Td
 MAKEDEPFOLDER = -$(VV)mkdir -p $(DEPDIR)/$$(dir $$(patsubst $(BINDIR)/%, %, $(ROOT)/$$@))
 RENAMEDEPENDENCYFILE = -$(VV)mv -f $(DEPDIR)/$$*.Td $$(patsubst $(SRCDIR)/%, $(DEPDIR)/%.d, $(ROOT)/$$<) && touch $$@
+RENAMEDEPENDENCYFILE2 = -$(VV)mv -f $(DEPDIR)/$$*.Td $$(patsubst $(SRCDIR2)/%, $(DEPDIR)/%.d, $(ROOT)/$$<) && touch $$@
 
 LIBRARIES+=$(wildcard $(FWDIR)/*.a)
 # Cannot include newlib and libc because not all of the req'd stubs are implemented
@@ -153,8 +154,9 @@ ASMSRC=$(foreach asmext,$(ASMEXTS),$(call rwildcard, $(SRCDIR),*.$(asmext), $1))
 ASMOBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call ASMSRC,$1)))
 CSRC=$(foreach cext,$(CEXTS),$(call rwildcard, $(SRCDIR),*.$(cext), $1))
 COBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call CSRC, $1)))
-CXXSRC=$(foreach cxxext,$(CXXEXTS),$(call rwildcard, $(SRCDIR),*.$(cxxext), $1))
-CXXOBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call CXXSRC,$1)))
+
+CXXSRC=$(foreach cxxext,$(CXXEXTS),$(foreach srcdir, $(SRCDIR) $(SRCDIR2),$(call rwildcard, $(srcdir),*.$(cxxext), $1)))
+CXXOBJ=$(addprefix $(BINDIR)/,$(foreach srcdir, $(SRCDIR) $(SRCDIR2),$(patsubst $(srcdir)/%,%.o,$(filter $(srcdir)/%,$(call CXXSRC,$1)) )))
 
 GETALLOBJ=$(sort $(call ASMOBJ,$1) $(call COBJ,$1) $(call CXXOBJ,$1))
 
@@ -272,14 +274,16 @@ endef
 $(foreach cext,$(CEXTS),$(eval $(call c_rule,$(cext))))
 
 define cxx_rule
-$(BINDIR)/%.$1.o: $(SRCDIR)/%.$1
-$(BINDIR)/%.$1.o: $(SRCDIR)/%.$1 $(DEPDIR)/$(basename %).d
+$(BINDIR)/%.$1.o: $2/%.$1
+$(BINDIR)/%.$1.o: $2/%.$1 $(DEPDIR)/$(basename %).d
 	$(VV)mkdir -p $$(dir $$@)
 	$(MAKEDEPFOLDER)
 	$$(call test_output_2,Compiled $$< ,$(CXX) -c $(INCLUDE) -iquote"$(INCDIR)/$$(dir $$*)" $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(DEPFLAGS) -o $$@ $$<,$(OK_STRING))
-	$(RENAMEDEPENDENCYFILE)
+	$3
 endef
-$(foreach cxxext,$(CXXEXTS),$(eval $(call cxx_rule,$(cxxext))))
+$(foreach cxxext,$(CXXEXTS),$(eval $(call cxx_rule,$(cxxext),$(SRCDIR),$(RENAMEDEPENDENCYFILE))))
+$(foreach cxxext,$(CXXEXTS),$(eval $(call cxx_rule,$(cxxext),$(SRCDIR2),$(RENAMEDEPENDENCYFILE2))))
+
 
 define _pros_ld_timestamp
 $(VV)mkdir -p $(dir $(LDTIMEOBJ))
@@ -306,4 +310,4 @@ cxx-sysroot:
 $(DEPDIR)/%.d: ;
 .PRECIOUS: $(DEPDIR)/%.d
 
-include $(wildcard $(patsubst $(SRCDIR)/%,$(DEPDIR)/%.d,$(CSRC) $(CXXSRC)))
+include $(foreach srcdir,$(SRCDIR), $(wildcard $(patsubst $(srcdir)/%,$(DEPDIR)/%.d, $(filter $(srcdir)/%,$(CXXSRC) ))))

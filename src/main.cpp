@@ -1,4 +1,5 @@
 #include "main.h"
+#include "robot.h"
 
 void initialize() {
     pros::lcd::initialize();
@@ -17,6 +18,8 @@ void autonomous() {
 }
 
 void opcontrol() {
+    main_code();
+
     while (true) {
         pros::lcd::print(0,"hello world!");
         pros::delay(10);
