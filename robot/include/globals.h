@@ -2,41 +2,19 @@
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "units/units.hpp"
 #include "vexmaps/api.hpp"
+#include "vexmaps/mcl/pf_motion_model.hpp"
+#include "vexmaps/odometry/odometry.hpp"
 #include "vexmaps/odometry/tracking_wheel.hpp"
 
-/* add any hardware here and define it in globals.cpp as well */
 
-// controller - can probably leave alone forever
-inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
+// only variable which cannot be set on globals.cpp
+constexpr size_t pf_particle_count = 500;
 
-// motor groups
-extern pros::MotorGroup left_motor_group;
-extern pros::MotorGroup right_motor_group;
-
-// inertial sensor
-extern pros::Imu imu;
-
-// intake motor/s?
-extern pros::Motor intake_motor;
-
-// pistons
-extern pros::adi::DigitalOut matchloader_piston;
-
-// odom rotation sensors
-extern pros::Rotation horizontal_odom_rotation;
-extern pros::Rotation vertical_odom_rotation;
-
-// particle filter distance sensors
-extern pros::Distance front_distance;
-extern pros::Distance back_distance;
-extern pros::Distance left_distance;
-extern pros::Distance right_distance;
-
+// some stuff which is required up here
 struct drivetrain_config_t {
         float track_width;
         float wheel_diameter;
         float rpm;
-        float gear_ratio;
         float horizontal_drift;
 };
 
@@ -68,11 +46,128 @@ extern drivetrain_config_t drivetrain_config;
 extern lateral_pid_config_t lateral_pid_config;
 extern angular_pid_config_t angular_pid_config;
 
-/* vexmaps related variables */
-inline vexmaps::MotorGroupTracking left_motor_tracker(&left_motor_group, drivetrain_config.wheel_diameter,
-                                                      drivetrain_config.gear_ratio, drivetrain_config.track_width / 2);
-inline vexmaps::MotorGroupTracking right_motor_tracker(&right_motor_group, drivetrain_config.wheel_diameter,
-                                                       drivetrain_config.gear_ratio, -drivetrain_config.track_width / 2);
+using horizontalTrackers =
+  std::initializer_list<vexmaps::HorizontalOdometryTracker*>;
+using verticalTrackers =
+  std::initializer_list<vexmaps::VerticalOdometryTracker*>;
+
+// different vexmaps configurations
+extern vexmaps::MotionModelConfig motion_model_config;
+extern vexmaps::PFConfiguration Pfconfig;
+extern vexmaps::SmootherConfig smoother_config;
+
+
+
+// likely does not need to change
+struct CustomDistanceSensorConfiguration {
+    // all floats without units are in meters
+    static constexpr double exp_l = 1.5;
+    static constexpr double std_deviation = (2_in).internal();
+
+    // all these should add to one
+    static constexpr double randomCoeff = 0.15;
+    static constexpr double expCoeff = 0.1;
+    static constexpr double normalCoeff = 0.75;
+
+    static constexpr bool logging = false;
+};
+
+
+/*
+ * Hardware configuration
+ * add any hardware here and define it in globals.cpp as well
+ * */
+
+// controller - can probably leave alone forever
+inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
+
+// motor groups
+extern pros::MotorGroup left_motor_group;
+extern pros::MotorGroup right_motor_group;
+
+// inertial sensor
+extern vexmaps::ScaledIMU imu;
+
+// intake motor/s?
+extern pros::Motor intake_motor;
+
+// pistons
+extern pros::adi::DigitalOut matchloader_piston;
+
+// odom rotation sensors
+extern pros::Rotation horizontal_odom_rotation;
+extern pros::Rotation vertical_odom_rotation;
+
+// particle filter distance sensors
+extern pros::Distance front_distance;
+extern pros::Distance back_distance;
+extern pros::Distance left_distance;
+extern pros::Distance right_distance;
+
+
+/*
+ * vexmaps configuration
+ * */
+
+// trackers
+inline vexmaps::MotorGroupTracking left_dt_tracker(&left_motor_group, drivetrain_config.wheel_diameter,
+                                                      drivetrain_config.rpm, drivetrain_config.track_width / 2);
+inline vexmaps::MotorGroupTracking right_dt_tracker(&right_motor_group, drivetrain_config.wheel_diameter,
+                                                       drivetrain_config.rpm, -drivetrain_config.track_width / 2);
+
+extern vexmaps::HorizontalOdometryTracker horizontal_tracker;
+extern vexmaps::VerticalOdometryTracker vertical_tracker;
+
+extern units::V2Position front_distance_offsets;
+extern units::V2Position left_distance_offsets;
+extern units::V2Position back_distance_offsets;
+extern units::V2Position right_distance_offsets;
+
+// lists of intalled trackers
+extern horizontalTrackers horizontal_trackers;
+extern verticalTrackers vertical_trackers;
+
+extern Length horizontal_offset;
+extern Length vertical_offset;
+extern Length odom_wheel_diameter;
+
+inline vexmaps::HorizontalOdometryTracker horizontal_tracker(&horizontal_odom_rotation, odom_wheel_diameter,1,horizontal_offset);
+inline vexmaps::VerticalOdometryTracker vertical_tracker(&vertical_odom_rotation, odom_wheel_diameter, 1, vertical_offset);
+
+inline vexmaps::PfMotionModel<vexmaps::OdometryModel>
+  pf_motion_model(motion_model_config,
+                  &left_dt_tracker,
+                  &right_dt_tracker,
+                  horizontal_trackers,
+                  vertical_trackers,
+                  &imu,
+                  false); // use drivetrain -
+                          // can be left on false since it falls back to drivetrain of no rotations are connected
+
+
+// distance sensors
+inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
+  front_laser_model(&front_distance, units::Pose(front_distance_offsets, 0_stDeg), "front");
+inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
+  left_laser_model(&left_distance, units::Pose(left_distance_offsets, 90_stDeg), "left");
+inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
+  back_laser_model(&back_distance, units::Pose(back_distance_offsets, 180_stDeg), "back");
+inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
+  right_laser_model(&right_distance, units::Pose(right_distance_offsets, 270_stDeg), "right");
+
+inline vexmaps::ParticleFilterModel<pf_particle_count> pf_model(
+                                                      &pf_motion_model,
+                                                      { // distance sensors
+                                                          &front_laser_model,
+                                                          &left_laser_model,
+                                                          &back_laser_model,
+                                                          &right_laser_model
+                                                      },
+                                                      Pfconfig);
+
+inline vexmaps::SmootherModel
+  smoother_model(&pf_motion_model, &pf_model, smoother_config);
+
 
 /*
  * lemlib config stuff - can likely leave alone forever

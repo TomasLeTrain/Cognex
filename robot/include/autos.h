@@ -16,7 +16,6 @@
 // make sure autons are defined in both sections!
 NEW_AUTON(auton1)
 
-
 // std::map<std::string, std::function<void()>> auton_list = {
 //
 //     AUTON(auton1)

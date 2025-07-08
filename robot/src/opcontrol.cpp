@@ -1,19 +1,17 @@
 #include "main.h"
 #include "systems/drivetrain.h"
+#include "systems/intake.h"
 
 void opcontrol(){
     // initialize tasks for each subsystem
+
+    intake::init(true);
     
+    // no need to initialize in auto
+    base::init();
 
-    pros::Task drivebase_task([] {
-        while (true) {
-            base::driveUpdate();
-            pros::delay(10);
-        }
-    });
-
-    // while(true){
-    //     // uncomplicated functions which do not really require their own tasks
-    //     pros::delay(20);
-    // }
+    while(true){
+        // maybe unneeded?
+        pros::delay(10);
+    }
 }
