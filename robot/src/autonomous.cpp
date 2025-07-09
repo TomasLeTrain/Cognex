@@ -7,5 +7,6 @@ void autonomous(){
     intake::init(false);
 
     // no selector for now
-    auton1::run();
+    // auton1::run();
+    skills::run();
 }

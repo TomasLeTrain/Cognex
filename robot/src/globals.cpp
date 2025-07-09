@@ -27,10 +27,10 @@ pros::Rotation horizontal_odom_rotation(-12);
 
 
 // particle filter distance sensors
-pros::Distance front_distance(6);
+pros::Distance front_distance(20);
 pros::Distance back_distance(5);
-pros::Distance left_distance(16);
-pros::Distance right_distance(20);
+pros::Distance left_distance(6);
+pros::Distance right_distance(16);
 
 /* vexmaps configuration */
 
@@ -52,8 +52,9 @@ verticalTrackers vertical_trackers = {
 
 // custom pf configs - probably can leave alone
 vexmaps::MotionModelConfig motion_model_config = {};
-vexmaps::PFConfiguration Pfconfig = {.logging=true,.particle_logging=true};
-vexmaps::SmootherConfig smoother_config = {};
+vexmaps::PFConfiguration Pfconfig = {.logging=false,.particle_logging=false};
+vexmaps::SmootherConfig smoother_config = {
+};
 
 // distance sensor offsets
 units::V2Position front_distance_offsets = { 5.25_in, 5.4375_in };
@@ -61,7 +62,7 @@ units::V2Position left_distance_offsets = { 3_in, 5.25_in };
 units::V2Position back_distance_offsets = { -4_in, -1.84375_in };
 units::V2Position right_distance_offsets = { 4.25_in, -5.375_in };
 
-// vexmaps::LocalizationModel* pose_getter = &smoother_model;
+// vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
 vexmaps::LocalizationModel* pose_getter = &smoother_model;
 vexmaps::LocalizationModel* orientation_getter = nullptr;
 
@@ -95,7 +96,7 @@ angular_pid_config_t angular_pid_config {
     .anti_windup = 3,
     .small_error_range = 1,
     .small_error_range_timeout = 100,
-    .large_error_range = 3,
+    .large_error_range = 4,
     .large_error_range_timeout = 500,
     .maximum_accel = 0,
 };

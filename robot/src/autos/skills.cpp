@@ -5,11 +5,12 @@
 
 #include "autos.h"
 #include <iostream>
+#include "lemlib/chassis/chassis.hpp"
 #include "systems/intake.h"
 
 // do not do anything outside here!
 
-namespace auton1 {
+namespace skills {
 
 // you can add any variables / functions here
 
@@ -49,31 +50,49 @@ void run() {
     }
     }};
 
-    pf_model.setPose({47.489_in, -11.751_in, 205.915_stDeg});
-    RobotSetPose(47.489_in, -11.751_in, 244.085);
+    pf_model.setPose({-63.3_in, -17.5_in, 90_stDeg});
+    RobotSetPose(-63.3_in, -17.5_in, 0);
     pros::delay(12);
 
-    std::cout << RobotGetPose().x << " " << RobotGetPose().y << " " << RobotGetPose().orientation << std::endl;
-    printf("chassis: %f %f %f\n", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
+    // std::cout << RobotGetPose().x << " " << RobotGetPose().y << " " << RobotGetPose().orientation << std::endl;
+    // printf("chassis: %f %f %f\n", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
 
     // chassis.turnToHeading(0,2000,{},false);
     // chassis.turnToHeading(0,9000,{},false);
-    chassis.moveToPoint(22.8, -23.3, 2000, {}, false);
+    chassis.moveToPoint(-63.3, 17.5, 3000, {}, false);
 
+    // chassis.moveToPose(-55.5, 46.5, 270, 3000, {}, false);
+    chassis.moveToPoint(-50, 46.5, 3000, {}, false);
+    chassis.turnToPoint(-55.5, 46.5, 3000, {}, false);
+    chassis.moveToPoint(-55.5, 46.5, 3000, {}, false);
+    // pros::delay(3000);
 
-    chassis.turnToPoint(0, 0, 2000, {}, false);
+    chassis.swingToHeading(180,lemlib::DriveSide::RIGHT, 2000, {
+            .direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
+            .minSpeed=25
+            }, false);
 
-    chassis.moveToPoint(14, -15, 2000, {}, false);
+    chassis.moveToPoint(-22.2, 22.2, 2000, {}, false);
 
-    chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
-    chassis.turnToPoint(67, -47, 2000, {}, false);
-    chassis.moveToPoint(55.5, -47, 2000, {}, false);
-    pros::delay(1000);
+    chassis.turnToPoint(0,28, 2000, {}, false);
+    chassis.moveToPoint(0,28, 2000, {}, false);
+
+    chassis.turnToPoint(0,34, 2000, {}, false);
+    chassis.moveToPoint(0,34, 2000, {}, false);
+
+    // chassis.turnToPoint(0, 0, 2000, {}, false);
+    //
+    // chassis.moveToPoint(14, -15, 2000, {}, false);
+    //
+    // chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
+    // chassis.turnToPoint(67, -47, 2000, {}, false);
+    // chassis.moveToPoint(55.5, -47, 2000, {}, false);
     // pros::delay(1000);
-    chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
-    // chassis.moveToPoint(54, -47, 2000, {}, false);
-    chassis.turnToPoint(0, -47, 2000, {}, false);
-    chassis.moveToPoint(32, -47, 2000, {}, false);
+    // // pros::delay(1000);
+    // chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
+    // // chassis.moveToPoint(54, -47, 2000, {}, false);
+    // chassis.turnToPoint(0, -47, 2000, {}, false);
+    // chassis.moveToPoint(32, -47, 2000, {}, false);
 
     // auto start_time = pros::millis();
     //
