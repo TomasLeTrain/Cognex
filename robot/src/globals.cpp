@@ -61,7 +61,8 @@ units::V2Position left_distance_offsets = { 3_in, 5.25_in };
 units::V2Position back_distance_offsets = { -4_in, -1.84375_in };
 units::V2Position right_distance_offsets = { 4.25_in, -5.375_in };
 
-vexmaps::LocalizationModel* pose_getter = &smoother_model;
+// vexmaps::LocalizationModel* pose_getter = &smoother_model;
+vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
 vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 
@@ -76,25 +77,25 @@ drivetrain_config_t drivetrain_config {
 };
 
 lateral_pid_config_t lateral_pid_config {
-    .P = 1,
-    .I = 1,
-    .D = 1,
-    .anti_windup = 1,
-    .small_error_range = 1,
-    .small_error_range_timeout = 1,
-    .large_error_range = 1,
-    .large_error_range_timeout = 1,
-    .maximum_accel = 1,
+    .P = 2,
+    .I = 0,
+    .D = 10,
+    .anti_windup = 0,
+    .small_error_range = 0,
+    .small_error_range_timeout = 0,
+    .large_error_range = 0,
+    .large_error_range_timeout = 0,
+    .maximum_accel = 0,
 };
 
 angular_pid_config_t angular_pid_config {
     .P = 1,
-    .I = 1,
-    .D = 1,
-    .anti_windup = 1,
-    .small_error_range = 1,
-    .small_error_range_timeout = 1,
-    .large_error_range = 1,
-    .large_error_range_timeout = 1,
-    .maximum_accel = 1,
+    .I = 0,
+    .D = 20,
+    .anti_windup = 0,
+    .small_error_range = 0,
+    .small_error_range_timeout = 0,
+    .large_error_range = 0,
+    .large_error_range_timeout = 0,
+    .maximum_accel = 0,
 };

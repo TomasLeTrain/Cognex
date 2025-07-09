@@ -52,13 +52,6 @@ void initialize() {
         while (true) {
             uint32_t current_time = pros::millis();
             smoother_model.update();
-
-            if (pose_getter == &smoother_model) {
-                // should update lemlib pose
-                auto curr_pose = smoother_model.getPose();
-                chassis.setPose(to_in(curr_pose.x), to_in(curr_pose.y), curr_pose.orientation.internal(), true);
-            }
-
             pros::c::task_delay_until(&current_time, to_msec(smoother_model.getTaskDeltaTime()));
         }
     }};
@@ -85,8 +78,8 @@ void initialize() {
             chassis.setPose(
                     to_in(curr_pose.x),
                     to_in(curr_pose.y),
-                    to_cRad(curr_orientation),
-                    true);
+                    to_cDeg(curr_orientation),
+                    false);
 
             // performed quickly to get the latest information as soon as possible
             pros::c::task_delay_until(&current_time, 5);

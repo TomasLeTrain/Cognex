@@ -30,7 +30,7 @@ NEW_AUTON(auton1)
 
 // set pose of the robot - uses lemlib coordinate system
 inline void RobotSetPose(Length x, Length y, float angle){
-    Angle orientation = from_cRad(angle);
+    Angle orientation = from_cDeg(angle);
 
     units::Pose pose = {x,y,orientation};
 
@@ -38,4 +38,14 @@ inline void RobotSetPose(Length x, Length y, float angle){
         orientation_getter->setPose(pose);
     }
     pose_getter->setPose(pose);
+}
+
+
+inline units::Pose RobotGetPose(){
+    units::Pose pose = pose_getter->getPose();
+
+    if(orientation_getter != nullptr){
+        pose.orientation = orientation_getter->getPose().orientation;
+    }
+    return pose;
 }
