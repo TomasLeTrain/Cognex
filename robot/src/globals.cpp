@@ -9,36 +9,36 @@ auto motor_gearing = pros::MotorGears::blue;
 auto motor_encoding = pros::MotorEncoderUnits::rotations;
 
 // motor groups
-pros::MotorGroup left_motor_group ({1,2,3}, motor_gearing, motor_encoding);
-pros::MotorGroup right_motor_group({4,5,6}, motor_gearing,motor_encoding);
+pros::MotorGroup left_motor_group ({-3,10,-2}, motor_gearing, motor_encoding);
+pros::MotorGroup right_motor_group({1,-9,4}, motor_gearing,motor_encoding);
 
 // inertial sensor
-vexmaps::ScaledIMU imu(3);
+vexmaps::ScaledIMU imu(13, 363.0 / 360.0);
 
 // intake motor/s?
-pros::Motor intake_motor(3);
+pros::Motor intake_motor(15);
 
 // pistons
 pros::adi::DigitalOut matchloader_piston('A',false);
 
 // odom rotation sensors
-pros::Rotation horizontal_odom_rotation(1);
-pros::Rotation vertical_odom_rotation(3);
+pros::Rotation vertical_odom_rotation(-7);
+pros::Rotation horizontal_odom_rotation(-12);
+
 
 // particle filter distance sensors
-pros::Distance front_distance(1);
-pros::Distance back_distance(3);
-pros::Distance left_distance(4);
-pros::Distance right_distance(5);
-
+pros::Distance front_distance(6);
+pros::Distance back_distance(5);
+pros::Distance left_distance(16);
+pros::Distance right_distance(20);
 
 /* vexmaps configuration */
 
 // trackers and their offsets
 // WARNING: The signs are OPPOSITE of lemlib's.
 // you can use lemlib's tuning guide but have OPPOSITE signs!
-Length horizontal_offset = 1_in;
-Length vertical_offset = 1_in;
+Length horizontal_offset = 0.7_in;
+Length vertical_offset = 0.525_in;
 
 Length odom_wheel_diameter = 1.995_in;
 
@@ -65,9 +65,9 @@ units::V2Position right_distance_offsets = { 4.25_in, -5.375_in };
 
 // NOTE: remember to update every time the drivetrain changes!
 drivetrain_config_t drivetrain_config {
-    .track_width = 10,
-    .wheel_diameter = 3.25,
-    .rpm = 450,
+    .track_width = 10.5,
+    .wheel_diameter = 2.75,
+    .rpm = 480,
     .horizontal_drift = 0,
 };
 
