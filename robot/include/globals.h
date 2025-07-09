@@ -72,7 +72,7 @@ struct CustomDistanceSensorConfiguration {
     static constexpr double expCoeff = 0.1;
     static constexpr double normalCoeff = 0.75;
 
-    static constexpr bool logging = false;
+    static constexpr bool logging = true;
 };
 
 

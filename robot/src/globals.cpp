@@ -52,7 +52,7 @@ verticalTrackers vertical_trackers = {
 
 // custom pf configs - probably can leave alone
 vexmaps::MotionModelConfig motion_model_config = {};
-vexmaps::PFConfiguration Pfconfig = {};
+vexmaps::PFConfiguration Pfconfig = {.logging=true,.particle_logging=true};
 vexmaps::SmootherConfig smoother_config = {};
 
 // distance sensor offsets
@@ -62,7 +62,7 @@ units::V2Position back_distance_offsets = { -4_in, -1.84375_in };
 units::V2Position right_distance_offsets = { 4.25_in, -5.375_in };
 
 // vexmaps::LocalizationModel* pose_getter = &smoother_model;
-vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
+vexmaps::LocalizationModel* pose_getter = &smoother_model;
 vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 
@@ -77,25 +77,25 @@ drivetrain_config_t drivetrain_config {
 };
 
 lateral_pid_config_t lateral_pid_config {
-    .P = 2,
+    .P = 8,
     .I = 0,
-    .D = 10,
-    .anti_windup = 0,
-    .small_error_range = 0,
-    .small_error_range_timeout = 0,
-    .large_error_range = 0,
-    .large_error_range_timeout = 0,
-    .maximum_accel = 0,
+    .D = 32,
+    .anti_windup = 3,
+    .small_error_range = 1,
+    .small_error_range_timeout = 100,
+    .large_error_range = 3,
+    .large_error_range_timeout = 500,
+    .maximum_accel = 87,
 };
 
 angular_pid_config_t angular_pid_config {
-    .P = 1,
+    .P = 3.6,
     .I = 0,
-    .D = 20,
-    .anti_windup = 0,
-    .small_error_range = 0,
-    .small_error_range_timeout = 0,
-    .large_error_range = 0,
-    .large_error_range_timeout = 0,
+    .D = 30,
+    .anti_windup = 3,
+    .small_error_range = 1,
+    .small_error_range_timeout = 100,
+    .large_error_range = 3,
+    .large_error_range_timeout = 500,
     .maximum_accel = 0,
 };

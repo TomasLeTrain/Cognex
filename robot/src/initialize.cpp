@@ -14,7 +14,8 @@ void initialize() {
         do pros::delay(10);
         while (sensors.imu->get_status() != pros::ImuStatus::error && sensors.imu->is_calibrating());
         // exit if imu has been calibrated
-        if (std::isfinite(sensors.imu->get_heading())) {
+        if (std::isfinite(sensors.imu->get_rotation())) {
+            printf("calibrated!\n");
             calibrated = true;
             break;
         }
@@ -25,6 +26,8 @@ void initialize() {
     }
     // check if calibration attempts were successful
     if (attempt > 5) { printf("IMU calibration failed, just give up\n"); }
+
+    // pros::delay(200);
 
     // initialize all models
     pf_motion_model.init();
