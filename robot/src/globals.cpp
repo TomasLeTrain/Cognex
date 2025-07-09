@@ -61,6 +61,10 @@ units::V2Position left_distance_offsets = { 3_in, 5.25_in };
 units::V2Position back_distance_offsets = { -4_in, -1.84375_in };
 units::V2Position right_distance_offsets = { 4.25_in, -5.375_in };
 
+vexmaps::LocalizationModel* pose_getter = &smoother_model;
+vexmaps::LocalizationModel* orientation_getter = nullptr;
+
+
 /* drivetrain / pid configuration */
 
 // NOTE: remember to update every time the drivetrain changes!

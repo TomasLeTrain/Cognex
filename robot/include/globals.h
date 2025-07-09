@@ -2,6 +2,7 @@
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "units/units.hpp"
 #include "vexmaps/api.hpp"
+#include "vexmaps/localization_model.hpp"
 #include "vexmaps/mcl/pf_motion_model.hpp"
 #include "vexmaps/odometry/odometry.hpp"
 #include "vexmaps/odometry/tracking_wheel.hpp"
@@ -57,6 +58,8 @@ extern vexmaps::PFConfiguration Pfconfig;
 extern vexmaps::SmootherConfig smoother_config;
 
 
+extern vexmaps::LocalizationModel* pose_getter;
+extern vexmaps::LocalizationModel* orientation_getter;
 
 // likely does not need to change
 struct CustomDistanceSensorConfiguration {
