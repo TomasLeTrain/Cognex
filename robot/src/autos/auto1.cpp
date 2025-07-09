@@ -13,6 +13,11 @@ namespace auton1 {
 
     void run() {
         // do whatever you want here
+        RobotSetPose(48_in, -24_in, 0);
+        chassis.turnToPoint(47,-47,2000);
+        chassis.moveToPoint(47,-47,2000);
+        chassis.turnToPoint(70,-47,2000);
+        chassis.moveToPoint(54,-47,2000);
     }
 
 } // namespace auton1

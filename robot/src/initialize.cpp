@@ -82,7 +82,11 @@ void initialize() {
 
             // its likely fine to set infinity values since that likely make the program stop its movement as compared
             // to not updating the pose
-            chassis.setPose(to_in(curr_pose.x), to_in(curr_pose.y), curr_orientation.internal(), true);
+            chassis.setPose(
+                    to_in(curr_pose.x),
+                    to_in(curr_pose.y),
+                    to_cRad(curr_orientation),
+                    true);
 
             // performed quickly to get the latest information as soon as possible
             pros::c::task_delay_until(&current_time, 5);

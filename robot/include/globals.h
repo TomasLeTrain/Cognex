@@ -214,4 +214,3 @@ enum corner_t { red_left = 0, red_right = 1, blue_left = 2, blue_right = 3 };
 inline alliance_t alliance = red;
 inline field_side_t auto_side = left;
 inline corner_t auto_corner = red_left;
-

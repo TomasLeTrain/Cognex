@@ -5,9 +5,12 @@
 #include <utility>
 #include <vector>
 
-// good includes for autons
+// helpful includes for autons
 #include "api.h"
-
+#include "globals.h"
+#include "lemlib/api.hpp"
+#include "vexmaps/api.hpp"
+#include "units/all.hpp"
 
 #define NEW_AUTON(auton) namespace auton{ void run(); }
 #define NEW_AUTONS(args...) NEW_AUTON(args)()
@@ -22,3 +25,17 @@ NEW_AUTON(auton1)
 //     // AUTON(auton2)
 //
 // };
+
+// some auton utils also defined here
+
+// set pose of the robot - uses lemlib coordinate system
+inline void RobotSetPose(Length x, Length y, float angle){
+    Angle orientation = from_cRad(angle);
+
+    units::Pose pose = {x,y,orientation};
+
+    if(orientation_getter != nullptr){
+        orientation_getter->setPose(pose);
+    }
+    pose_getter->setPose(pose);
+}
