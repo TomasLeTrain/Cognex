@@ -8,5 +8,6 @@ void autonomous(){
 
     // no selector for now
     // auton1::run();
-    skills::run();
+    // skills::run();
+    skills2::run();
 }
