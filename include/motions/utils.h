@@ -135,8 +135,6 @@ inline Angle AngleError(Angle current_angle, Angle last_angle) {
     return difference;
 }
 
-
-
     inline double getGearingTicks(pros::MotorGears gearing) {
         double gearing_multiplier = 1;
         switch (gearing) {
@@ -210,7 +208,5 @@ inline Angle AngleError(Angle current_angle, Angle last_angle) {
         if (used_motor_count != 0.0) distance /= used_motor_count;
         return distance;
     }
-
-
 
 } // namespace motions
