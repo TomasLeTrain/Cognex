@@ -1,3 +1,5 @@
+#pragma once
+
 // defines all the autons
 #include <functional>
 #include <map>

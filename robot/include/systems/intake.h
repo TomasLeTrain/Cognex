@@ -1,3 +1,5 @@
+#pragma once
+
 namespace intake {
 enum intake_state_t { disabled = 0, forwards = 1, backwards = -1 };
 
