@@ -1,6 +1,7 @@
 #pragma once
 
 #include "globals.h"
+#include "pros/motor_group.hpp"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include "units/units.hpp"
@@ -8,6 +9,7 @@
 namespace motions {
 static const Length track_width = drivetrain.trackWidth * in;
 static const Length wheel_diameter = drivetrain.wheelDiameter * in;
+
 // angular in / angular out
 static const float gear_ratio = 600 / drivetrain.rpm;
 static const float dt_rpm = drivetrain.rpm;
@@ -19,7 +21,7 @@ static const float dt_rpm = drivetrain.rpm;
  * @param vel target velocity of the robot
  * @return rpm of the motors to reach that target velocity
  */
-static AngularVelocity linearToMotorRPM(LinearVelocity vel) {
+inline AngularVelocity linearToMotorRPM(LinearVelocity vel) {
     // w = v / r
     // angular vel = vel / (wheel diameter / 2)
     // angular vel = (2 * vel) / wheel diameter
@@ -39,7 +41,7 @@ static AngularVelocity linearToMotorRPM(LinearVelocity vel) {
  * @param ang_vel RPM of the motors
  * @return linear velocity of the robot
  */
-static LinearVelocity motorRPMToLinearVel(AngularVelocity ang_vel) {
+inline LinearVelocity motorRPMToLinearVel(AngularVelocity ang_vel) {
     // v = w * r
     // vel = angular vel * (wheel diameter / 2)
     return ((ang_vel * wheel_diameter / 2)
@@ -57,7 +59,7 @@ static LinearVelocity motorRPMToLinearVel(AngularVelocity ang_vel) {
  * @param ang_vel angular velocity of the wheels
  * @return linear velocity of the robot
  */
-static LinearVelocity angularToLinearVel(AngularVelocity ang_vel) {
+inline LinearVelocity angularToLinearVel(AngularVelocity ang_vel) {
     // v = w * r
     return (ang_vel * wheel_diameter / 2) / rad;
 }
@@ -69,7 +71,7 @@ static LinearVelocity angularToLinearVel(AngularVelocity ang_vel) {
  * @param lin_vel linear velocity of the robot
  * @return angular velocity of the wheels
  */
-static AngularVelocity linearToAngularVel(LinearVelocity lin_vel) {
+inline AngularVelocity linearToAngularVel(LinearVelocity lin_vel) {
     // v = w * r
     return ((2 * lin_vel) / wheel_diameter) * rad;
 }
@@ -90,7 +92,7 @@ normalizeRPM(units::Vector2D<AngularVelocity> vector) {
     return vector;
 }
 
-static Angle smallestAbsoluteAngleDifference(Angle a1, Angle a2) {
+inline Angle smallestAbsoluteAngleDifference(Angle a1, Angle a2) {
     // here we assume angle and last_angle are both postive and below 360
 
     // makes sure differences in angles are kept counter-clockwise
@@ -110,7 +112,7 @@ static Angle smallestAbsoluteAngleDifference(Angle a1, Angle a2) {
     return difference;
 }
 
-static Angle AngleError(Angle current_angle, Angle last_angle) {
+inline Angle AngleError(Angle current_angle, Angle last_angle) {
     // here we assume angle and last_angle are both postive and below 360
 
     // makes sure differences in angles are kept counter-clockwise
@@ -132,4 +134,83 @@ static Angle AngleError(Angle current_angle, Angle last_angle) {
                        units::constrainAngle180(last_angle);
     return difference;
 }
+
+
+
+    inline double getGearingTicks(pros::MotorGears gearing) {
+        double gearing_multiplier = 1;
+        switch (gearing) {
+            case pros::MotorGears::blue: gearing_multiplier = 300.0; break;
+            case pros::MotorGears::green: gearing_multiplier = 900.0; break;
+            case pros::MotorGears::red: gearing_multiplier = 1800.0; break;
+            default: gearing_multiplier = 1; break;
+        }
+        return gearing_multiplier;
+    }
+
+    inline double getGearingRPM(pros::MotorGears gearing) {
+        double gearing_multiplier = 1;
+        switch (gearing) {
+            case pros::MotorGears::blue: gearing_multiplier = 600.0; break;
+            case pros::MotorGears::green: gearing_multiplier = 200.0; break;
+            case pros::MotorGears::red: gearing_multiplier = 100.0; break;
+            default: gearing_multiplier = 200.0; break;
+        }
+        return gearing_multiplier;
+    }
+
+    inline Length getDistanceTraveled(pros::MotorGroup* motors) {
+        Length distance = 0.0_m;
+
+        if (motors == nullptr) {
+            printf("odometry: motor group is a nullptr!\n");
+            return 0.0_m;
+        }
+
+        double used_motor_count = 0;
+
+        for (int i = 0; i < motors->size(); i++) {
+            int port = abs(motors->get_port(i));
+            // check if is installed
+            auto plugged_device_type =
+              (pros::DeviceType)pros::c::registry_get_plugged_type(port - 1);
+
+            // only include if plugged in
+            if (plugged_device_type == pros::DeviceType::motor) {
+                used_motor_count += 1.0;
+
+                pros::MotorGears gearing = motors->get_gearing(i);
+                pros::MotorUnits encoder = motors->get_encoder_units(i);
+
+                double rotation_multiplier =
+                  1; // should convert position to # of rotations
+
+                switch (encoder) {
+                    case pros::MotorUnits::degrees:
+                        rotation_multiplier = 1 / 360.0;
+                        break;
+                    case pros::MotorUnits::counts:
+                        rotation_multiplier = 1 / getGearingTicks(gearing);
+                        break;
+                    case pros::MotorUnits::rotations:
+                        rotation_multiplier = 1;
+                        break;
+                    default: rotation_multiplier = 1; break;
+                }
+
+                double position = motors->get_position(i);
+
+                double gear_ratio = getGearingRPM(gearing) / dt_rpm;
+
+                distance += (position * rotation_multiplier) *
+                            (wheel_diameter * M_PI) / gear_ratio;
+            }
+        }
+
+        if (used_motor_count != 0.0) distance /= used_motor_count;
+        return distance;
+    }
+
+
+
 } // namespace motions
