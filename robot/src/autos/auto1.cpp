@@ -60,7 +60,6 @@ void run() {
     // chassis.turnToHeading(0,9000,{},false);
     chassis.moveToPoint(22.8, -23.3, 2000, {}, false);
 
-
     chassis.turnToPoint(0, 0, 2000, {}, false);
 
     chassis.moveToPoint(14, -15, 2000, {}, false);
@@ -69,9 +68,7 @@ void run() {
     chassis.turnToPoint(67, -47, 2000, {}, false);
     chassis.moveToPoint(55.5, -47, 2000, {}, false);
     pros::delay(1000);
-    // pros::delay(1000);
     chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
-    // chassis.moveToPoint(54, -47, 2000, {}, false);
     chassis.turnToPoint(0, -47, 2000, {}, false);
     chassis.moveToPoint(32, -47, 2000, {}, false);
 

@@ -9,7 +9,7 @@
 
 
 // only variable which cannot be set on globals.cpp
-constexpr size_t pf_particle_count = 500;
+constexpr size_t pf_particle_count = 10000;
 
 // some stuff which is required up here
 struct drivetrain_config_t {

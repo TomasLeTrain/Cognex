@@ -11,9 +11,9 @@ struct SmootherConfig {
     // 1 = all measurement
 
     // // determines how much a pose measurement influences the pose estimate
-    double alpha_x = 0.013;
-    double alpha_y = 0.013;
-    double alpha_theta = 0.013;
+    double alpha_x = 0.015;
+    double alpha_y = 0.015;
+    double alpha_theta = 0.015;
 
     // used by pose_delta_measurement to estimate the pose
     double beta_x = 1;

@@ -62,14 +62,18 @@ void run() {
     chassis.moveToPoint(-63.3, 17.5, 3000, {}, false);
 
     // chassis.moveToPose(-55.5, 46.5, 270, 3000, {}, false);
-    chassis.moveToPoint(-50, 46.5, 3000, {}, false);
-    chassis.turnToPoint(-55.5, 46.5, 3000, {}, false);
-    chassis.moveToPoint(-55.5, 46.5, 3000, {}, false);
+    // chassis.moveToPoint(-48, 42, 2000, {}, false);
+    // chassis.turnToPoint(-70, 46.5, 2000, {}, false);
+    // chassis.moveToPoint(-55.5, 46.5, 2000, {}, false);
+
+    chassis.moveToPose(-55.5,46.5,270,3000,{.lead=0.5},false);
+
     // pros::delay(3000);
 
-    chassis.swingToHeading(180,lemlib::DriveSide::RIGHT, 2000, {
+    chassis.swingToHeading(150,lemlib::DriveSide::RIGHT, 2000, {
             .direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
-            .minSpeed=25
+            .minSpeed=25,
+            .earlyExitRange=10
             }, false);
 
     chassis.moveToPoint(-22.2, 22.2, 2000, {}, false);
@@ -78,7 +82,29 @@ void run() {
     chassis.moveToPoint(0,28, 2000, {}, false);
 
     chassis.turnToPoint(0,34, 2000, {}, false);
-    chassis.moveToPoint(0,34, 2000, {}, false);
+
+    chassis.swingToHeading(70,lemlib::DriveSide::LEFT, 2000, {
+            .direction=lemlib::AngularDirection::CW_CLOCKWISE }, false);
+
+    chassis.moveToPoint(54, 45, 2000, {}, false);
+
+    chassis.moveToPoint(45, 45, 2000, {}, false);
+
+    chassis.turnToPoint(35, 45, 2000, {}, false);
+    chassis.moveToPoint(35, 45, 2000, {}, false);
+
+    chassis.swingToHeading(210,lemlib::DriveSide::RIGHT, 2000, {
+            .direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE }, false);
+
+    chassis.moveToPoint(22.5, 22.5, 2000, {}, false);
+    chassis.moveToPoint(14, 14, 2000, {}, false);
+
+    chassis.swingToHeading(90,lemlib::DriveSide::RIGHT, 2000, {
+            .direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE }, false);
+
+    chassis.moveToPoint(60, 20, 2000, {}, false);
+    chassis.turnToPoint(60, -8, 2000, {}, false);
+    chassis.moveToPoint(60, -8, 2000, {}, false);
 
     // chassis.turnToPoint(0, 0, 2000, {}, false);
     //

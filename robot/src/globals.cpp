@@ -74,7 +74,7 @@ drivetrain_config_t drivetrain_config {
     .track_width = 10.5,
     .wheel_diameter = 2.75,
     .rpm = 480,
-    .horizontal_drift = 0,
+    .horizontal_drift = 4,
 };
 
 lateral_pid_config_t lateral_pid_config {
