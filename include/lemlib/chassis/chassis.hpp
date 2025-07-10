@@ -362,8 +362,8 @@ class Chassis {
                 OdomSensors sensors, DriveCurve* throttleCurve = &defaultDriveCurve,
                 DriveCurve* steerCurve = &defaultDriveCurve);
         /**
-        * @brief calibrate the IMU
-        */
+         * @brief calibrate the IMU
+         */
         void calibrateIMU();
         /**
          * @brief Calibrate the chassis sensors. THis should be called in the initialize function
@@ -423,7 +423,6 @@ class Chassis {
          * @endcode
          */
         void setPose(Pose pose, bool radians = false);
-
         /**
          * @brief Update the pose of the chassis along with global and local speeds
          *
@@ -736,6 +735,7 @@ class Chassis {
          * @endcode
          */
         void moveToPoint(float x, float y, int timeout, MoveToPointParams params = {}, bool async = true);
+
         /**
          * @brief Allows the definition of arbitrary motions
          *
@@ -759,6 +759,7 @@ class Chassis {
          * @endcode
          */
         void customMotion(std::function<CustomMotionUpdate(Pose)> update, int timeout, bool async = true);
+
         /**
          * @brief Move the chassis along a path
          *
