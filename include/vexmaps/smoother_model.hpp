@@ -3,6 +3,7 @@
 #include "units/Pose.hpp"
 #include "units/Vector2D.hpp"
 #include "vexmaps/localization_model.hpp"
+#include <mutex>
 
 namespace vexmaps {
 struct SmootherConfig {
@@ -56,6 +57,9 @@ class SmootherModel : public LocalizationModel {
 
     SmootherConfig config;
 
+  protected:
+  mutable pros::Mutex m_mutex;
+
   public:
     SmootherModel(LocalizationModel* local_delta_model,
                   LocalizationModel* global_pose_model,
@@ -65,11 +69,13 @@ class SmootherModel : public LocalizationModel {
           config(config) {}
 
     void init() override {
+        std::lock_guard lock(m_mutex);
         latest_timestamp = from_msec(pros::millis());
     }
 
     // TODO: switch to using doubles for this as computations are cheap
     void update() override {
+        std::lock_guard lock(m_mutex);
         Time current_timestamp = from_msec(pros::millis());
 
         latest_delta_time = current_timestamp - latest_timestamp;
@@ -193,6 +199,7 @@ class SmootherModel : public LocalizationModel {
     }
 
     void setPose(units::Pose new_pose) override {
+        std::lock_guard lock(m_mutex);
         pose_estimate = new_pose;
         last_pose_estimate = new_pose;
         last_local_estimate = new_pose;
