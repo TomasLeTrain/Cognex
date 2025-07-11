@@ -79,7 +79,7 @@ drivetrain_config_t drivetrain_config {
 };
 
 lateral_pid_config_t lateral_pid_config {
-    .P = 8,
+    .P = 9,
     .I = 0,
     .D = 32,
     .anti_windup = 3,
