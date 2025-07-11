@@ -8,6 +8,11 @@ auto motor_gearing = pros::MotorGears::blue;
 // use motor encodings 
 auto motor_encoding = pros::MotorEncoderUnits::rotations;
 
+vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
+// vexmaps::LocalizationModel* pose_getter = &smoother_model;
+vexmaps::LocalizationModel* orientation_getter = nullptr;
+
+
 // motor groups
 pros::MotorGroup left_motor_group ({-3,10,-2}, motor_gearing, motor_encoding);
 pros::MotorGroup right_motor_group({1,-9,4}, motor_gearing,motor_encoding);
@@ -61,11 +66,6 @@ units::V2Position front_distance_offsets = { 5.25_in, 5.4375_in };
 units::V2Position left_distance_offsets = { 3_in, 5.25_in };
 units::V2Position back_distance_offsets = { -4_in, -1.84375_in };
 units::V2Position right_distance_offsets = { 4.25_in, -5.375_in };
-
-// vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
-vexmaps::LocalizationModel* pose_getter = &smoother_model;
-vexmaps::LocalizationModel* orientation_getter = nullptr;
-
 
 /* drivetrain / pid configuration */
 

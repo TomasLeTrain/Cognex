@@ -5,8 +5,11 @@
 
 #include "autos.h"
 #include <iostream>
+#include "globals.h"
 #include "lemlib/chassis/chassis.hpp"
+#include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
+#include "motions/arc.h"
 
 // do not do anything outside here!
 
@@ -56,13 +59,24 @@ void run() {
     pros::delay(12);
 
     // clear park
-    chassis.moveToPoint(-63.3, 17.5, 3000, {}, false);
+    // chassis.moveToPoint(-63.3, 17.5, 3000, {}, false);
+
+    // pros::delay(1000);
+    left_motor_group.move(0);
+    right_motor_group.move(0);
+
+    // chassis.turnToHeading(24,2000,{.minSpeed=20,.earlyExitRange=2},false);
+
+    // motions::moveArc(20.5_in, 140, 28_in / sec, lemlib::AngularDirection::CW_CLOCKWISE, 5000, {},false);
+    motions::moveArc(13.5_in, 130, 22_in / sec, lemlib::AngularDirection::CW_CLOCKWISE, 2000, {.maxAccel=10_rpm}, false);
+    // left_motor_group.set_brake_mode_all(pros::MotorBrake::hold);
+    // right_motor_group.set_brake_mode_all(pros::MotorBrake::hold);
 
     // move towards first corner
-    chassis.moveToPose(-29,31,145,2000,{.lead=0.5},false);
+    // chassis.moveToPose(-29,31,145,2000,{.lead=0.5},false);
 
     // move towards center goal to score
-    chassis.moveToPoint(-13.3, 13, 2000, {}, false);
+    chassis.moveToPoint(-14.3, 14, 2000, {.maxSpeed=40}, false);
 
     // score on center top goal
     pros::delay(3000);
@@ -92,18 +106,18 @@ void run() {
     pros::delay(5500);
 
     // turn away from goal and turn without touching it
-    chassis.swingToHeading(43,lemlib::DriveSide::RIGHT, 800, {
-            .direction=lemlib::AngularDirection::CW_CLOCKWISE,
+    chassis.swingToHeading(90,lemlib::DriveSide::RIGHT, 800, {
+            .direction=lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
             .minSpeed=20,
-            .earlyExitRange=10
+            .earlyExitRange=10,
             },false);
-    chassis.turnToHeading(180+43, 1000, {
-            .minSpeed=10,
-            .earlyExitRange=10
-            },false);
+    // chassis.turnToHeading(43, 1000, {
+    //         .minSpeed=10,
+    //         .earlyExitRange=10,
+    //         },false);
 
     // move towards blue park
-    chassis.moveToPose(62.3,-17.5,0 ,2000,{.lead=0.5},false);
+    chassis.moveToPose(62.3,-17.5,0 ,2000,{.lead=0.9},false);
 
     // clear park
     chassis.moveToPoint(63, 17.5, 2000, {}, false);
