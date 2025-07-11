@@ -8,8 +8,8 @@ auto motor_gearing = pros::MotorGears::blue;
 // use motor encodings 
 auto motor_encoding = pros::MotorEncoderUnits::rotations;
 
-vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
-// vexmaps::LocalizationModel* pose_getter = &smoother_model;
+// vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
+vexmaps::LocalizationModel* pose_getter = &smoother_model;
 vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 
@@ -57,15 +57,16 @@ verticalTrackers vertical_trackers = {
 
 // custom pf configs - probably can leave alone
 vexmaps::MotionModelConfig motion_model_config = {};
+// vexmaps::PFConfiguration Pfconfig = {.logging=true,.particle_logging=false};
 vexmaps::PFConfiguration Pfconfig = {.logging=false,.particle_logging=false};
 vexmaps::SmootherConfig smoother_config = {
 };
 
 // distance sensor offsets
-units::V2Position front_distance_offsets = { 5.25_in, 5.4375_in };
-units::V2Position left_distance_offsets = { 3_in, 5.25_in };
-units::V2Position back_distance_offsets = { -4_in, -1.84375_in };
-units::V2Position right_distance_offsets = { 4.25_in, -5.375_in };
+units::V2Position front_distance_offsets = { 5_in, 5.4375_in };
+units::V2Position left_distance_offsets = { 2_in, 5.25_in };
+units::V2Position back_distance_offsets = { -4.5_in, -1.84375_in };
+units::V2Position right_distance_offsets = { 3.75_in, -5.375_in };
 
 /* drivetrain / pid configuration */
 
@@ -74,7 +75,7 @@ drivetrain_config_t drivetrain_config {
     .track_width = 10.5,
     .wheel_diameter = 2.75,
     .rpm = 480,
-    .horizontal_drift = 4,
+    .horizontal_drift = 2,
 };
 
 lateral_pid_config_t lateral_pid_config {
@@ -82,11 +83,11 @@ lateral_pid_config_t lateral_pid_config {
     .I = 0,
     .D = 32,
     .anti_windup = 3,
-    .small_error_range = 1,
+    .small_error_range = 1.5,
     .small_error_range_timeout = 100,
     .large_error_range = 3,
     .large_error_range_timeout = 500,
-    .maximum_accel = 87,
+    .maximum_accel = 85,
 };
 
 angular_pid_config_t angular_pid_config {
@@ -94,9 +95,9 @@ angular_pid_config_t angular_pid_config {
     .I = 0,
     .D = 30,
     .anti_windup = 3,
-    .small_error_range = 1,
+    .small_error_range = 3,
     .small_error_range_timeout = 100,
-    .large_error_range = 4,
+    .large_error_range = 5,
     .large_error_range_timeout = 500,
     .maximum_accel = 0,
 };

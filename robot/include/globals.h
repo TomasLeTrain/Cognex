@@ -11,7 +11,8 @@
 
 
 // only variable which cannot be set on globals.cpp
-constexpr size_t pf_particle_count = 10000;
+// constexpr size_t pf_particle_count = 10000;
+constexpr size_t pf_particle_count = 500;
 
 // some stuff which is required up here
 struct drivetrain_config_t {
@@ -74,7 +75,7 @@ struct CustomDistanceSensorConfiguration {
     static constexpr double expCoeff = 0.1;
     static constexpr double normalCoeff = 0.75;
 
-    static constexpr bool logging = true;
+    static constexpr bool logging = false;
 };
 
 

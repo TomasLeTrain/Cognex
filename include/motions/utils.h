@@ -84,7 +84,7 @@ inline AngularVelocity linearToAngularVel(LinearVelocity lin_vel) {
  */
 inline units::Vector2D<AngularVelocity>
 normalizeRPM(units::Vector2D<AngularVelocity> vector,AngularVelocity max = dt_rpm * rpm) {
-    float larger_magnitude = units::max(vector.x, vector.y) / max;
+    float larger_magnitude = units::max(units::abs(vector.x), units::abs(vector.y)) / max;
 
     if (larger_magnitude > 1.0) {
         return { vector.x / larger_magnitude, vector.y / larger_magnitude };

@@ -72,14 +72,15 @@ inline void moveArc(Length radius,
       );
 
     units::Vector2D<AngularVelocity> target_vels =
-      normalizeRPM(unormalized_vels,600_rpm);
+      normalizeRPM(unormalized_vels, 600_rpm);
 
     std::optional<float> prevRawDeltaTheta = std::nullopt;
     std::optional<float> prevDeltaTheta = std::nullopt;
 
     std::optional<units::Vector2D<AngularVelocity>> lastVels = std::nullopt;
 
-    AngularVelocity max_accel = 40_rpm;
+    std::cout << "target vels: " << to_rpm(target_vels.x) << " "
+              << to_rpm(target_vels.y) << '\n';
 
     chassis.customMotion(
       [&](lemlib::Pose pose) mutable -> lemlib::CustomMotionUpdate {
@@ -108,17 +109,43 @@ inline void moveArc(Length radius,
           if (lastVels == std::nullopt) {
               // we should likelly cap velocity
               final_vels = normalizeRPM(target_vels, params.maxAccel);
+          lastVels = final_vels;
+              return { 20,
+                       20,
+                       false,
+                       settled,
+                       distTraveled };
           } else {
-
               final_vels = normalizeRPM(
                 target_vels,
-                units::max(lastVels.value().x, lastVels.value().y) + params.maxAccel);
+                units::max(lastVels.value().x, lastVels.value().y) +
+                  params.maxAccel);
+          lastVels = final_vels;
+              if(final_vels.x != target_vels.x && final_vels.y != target_vels.y){
+              return { 20,
+                       20,
+                       false,
+                       settled,
+                       distTraveled };
+              }
           }
           lastVels = final_vels;
 
-          return {
-              static_cast<int>(final_vels.x.convert(rpm)),
-                   static_cast<int>(final_vels.y.convert(rpm)),
+          std::cout << "final vels: "
+                    << static_cast<int32_t>(to_rpm(final_vels.x)) << " "
+                    << static_cast<int32_t>(to_rpm(final_vels.y)) << " "
+
+                    << left_motor_group.get_target_velocity(0) << " "
+                    << left_motor_group.get_target_velocity(1) << " "
+
+                    << left_motor_group.get_actual_velocity(0) << " "
+                    << left_motor_group.get_actual_velocity(1) << " "
+
+                    << left_motor_group.get_voltage(0) << " "
+                    << left_motor_group.get_voltage(1) << '\n';
+
+          return { static_cast<int32_t>(to_rpm(final_vels.x)),
+                   static_cast<int32_t>(to_rpm(final_vels.y)),
                    true, // using velocities
                    settled,
                    distTraveled };

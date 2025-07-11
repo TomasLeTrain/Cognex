@@ -116,6 +116,15 @@ class ParticleFilterModel : public LocalizationModel {
         return local_delta;
     }
 
+    void setDisabled(bool new_state){
+        std::lock_guard lock(m_mutex);
+        particle_filter.setDisabled(new_state);
+    }
+
+    bool getDisabled(){
+        return particle_filter.getDisabled();
+    }
+
     ~ParticleFilterModel() override = default;
 };
 }; // namespace vexmaps

@@ -79,6 +79,10 @@ class ParticleFilter {
     // set to 1 when we have a global measurement, otherwise nullopt
     std::optional<float> confidence = std::nullopt;
 
+    // disables most of the particle filters actions (still applies noise and
+    // motion model to prediction)
+    bool disabled = false;
+
     // -- functions called in update -- //
 
     void applyMotionModel() {
@@ -369,7 +373,7 @@ class ParticleFilter {
             }
         }
 
-        if (no_active_sensors) {
+        if (no_active_sensors || disabled) {
             // there is nothing we can do in this iteration
             // instead we just update the prediction using the deltas from the
             // base motion model
@@ -530,6 +534,14 @@ class ParticleFilter {
     // uses the motion model distance traveled since its less noisy
     Length getDistanceTraveled() {
         return motion_model->getDistanceTraveled();
+    }
+
+    void setDisabled(bool new_state){
+        disabled = new_state;
+    }
+
+    bool getDisabled(){
+        return disabled;
     }
 };
 
