@@ -4,6 +4,7 @@
 #include "units/Vector2D.hpp"
 #include "vexmaps/localization_model.hpp"
 #include <mutex>
+#include <optional>
 
 namespace vexmaps {
 struct SmootherConfig {
@@ -58,7 +59,7 @@ class SmootherModel : public LocalizationModel {
     SmootherConfig config;
 
   protected:
-  mutable pros::Mutex m_mutex;
+    mutable pros::Mutex m_mutex;
 
   public:
     SmootherModel(LocalizationModel* local_delta_model,
@@ -93,12 +94,11 @@ class SmootherModel : public LocalizationModel {
 
         units::Pose previous_pose_estimate = pose_estimate;
 
-
         // calculate the predictions first using the transition equations:
-        units::Pose pose_prediction = units::Pose(
-          (pose_estimate + velocity_estimate * delta_time),
-          pose_estimate.orientation + velocity_estimate.orientation * delta_time
-          );
+        units::Pose pose_prediction =
+          units::Pose((pose_estimate + velocity_estimate * delta_time),
+                      pose_estimate.orientation +
+                        velocity_estimate.orientation * delta_time);
 
         units::VelocityPose velocity_prediction = velocity_estimate;
 
@@ -119,7 +119,6 @@ class SmootherModel : public LocalizationModel {
 
             units::Pose pose_delta_measurement =
               local_delta_model->getGlobalPoseDelta();
-            
 
             velocity_estimate.x =
               velocity_estimate.x +
@@ -161,7 +160,8 @@ class SmootherModel : public LocalizationModel {
         }
 
         // only correct pose if we have a new pose measurement
-        if (current_pose_timestamp != last_pose_timestamp) {
+        if (current_pose_timestamp != last_pose_timestamp &&
+            pose_model->getConfidence() != std::nullopt) {
             units::Pose pose_measurement = pose_model->getPose();
 
             pose_estimate.x =
@@ -172,10 +172,11 @@ class SmootherModel : public LocalizationModel {
               pose_estimate.y +
               config.alpha_y * (pose_measurement.y - pose_estimate.y);
 
-            pose_estimate.orientation =
-              pose_estimate.orientation +
-              config.alpha_theta *
-                (pose_measurement.orientation - pose_estimate.orientation);
+            // only good if pose has an orientation measurement
+            // pose_estimate.orientation =
+            //   pose_estimate.orientation +
+            //   config.alpha_theta *
+            //     (pose_measurement.orientation - pose_estimate.orientation);
 
             last_pose_timestamp = current_pose_timestamp;
             applied_global = true;
@@ -191,7 +192,7 @@ class SmootherModel : public LocalizationModel {
         Angle avg_angle =
           last_pose_estimate.orientation + global_pose_delta.orientation / 2.0;
 
-        if(applied_local){
+        if (applied_local) {
             last_local_estimate = pose_estimate;
         }
 

@@ -41,7 +41,7 @@ class ParticleFilterModel : public LocalizationModel {
         std::lock_guard lock(m_mutex);
         particle_filter.update();
 
-        units::Pose curr_pose = getPose();
+        units::Pose curr_pose = particle_filter.getPose();
 
         global_delta =
           units::Pose(curr_pose - last_pose,
@@ -53,7 +53,7 @@ class ParticleFilterModel : public LocalizationModel {
 
         latest_update_time = from_msec(pros::millis());
 
-        last_pose = getPose();
+        last_pose = curr_pose;
     }
 
     void setPose(units::Pose new_pose) override {
@@ -84,7 +84,7 @@ class ParticleFilterModel : public LocalizationModel {
     }
 
     std::optional<float> getConfidence() override {
-        return std::nullopt;
+        return particle_filter.getConfidence();
     }
 
     Length getDistanceTraveled() override {
