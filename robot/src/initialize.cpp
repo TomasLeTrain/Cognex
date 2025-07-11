@@ -41,7 +41,8 @@ void initialize() {
             pf_motion_model.update();
             pros::c::task_delay_until(&current_time, to_msec(pf_motion_model.getTaskDeltaTime()));
         }
-    }};
+    },"odom task"};
+    pros::delay(100);
 
     pros::Task pf_task {[&] {
         while (true) {
@@ -49,7 +50,8 @@ void initialize() {
             pf_model.update();
             pros::c::task_delay_until(&current_time, to_msec(pf_model.getTaskDeltaTime()));
         }
-    }};
+    },"pf task"};
+    pros::delay(100);
 
     pros::Task smoother_task {[&] {
         while (true) {
@@ -57,7 +59,8 @@ void initialize() {
             smoother_model.update();
             pros::c::task_delay_until(&current_time, to_msec(smoother_model.getTaskDeltaTime()));
         }
-    }};
+    },"smoother task"};
+    pros::delay(100);
 
     // constantly updates lemlib's pose
     pros::Task lemlib_pose_task {[&] {
@@ -85,7 +88,7 @@ void initialize() {
                     false);
 
             // performed quickly to get the latest information as soon as possible
-            pros::c::task_delay_until(&current_time, 5);
+            pros::c::task_delay_until(&current_time, 6);
         }
     }};
 
