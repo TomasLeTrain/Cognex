@@ -1,5 +1,6 @@
 #include "main.h"
 #include "globals.h"
+#include "screen/screen.h"
 
 void initialize() {
     // need to start localization tasks and lemlib related things
@@ -94,4 +95,7 @@ void initialize() {
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
+
+    // initialize screens
+    screen::init();
 }
