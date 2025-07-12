@@ -22,6 +22,8 @@ vexmaps::ScaledIMU imu(13, 363.0 / 360.0);
 
 // intake motor/s?
 pros::Motor intake_motor(15);
+pros::Motor score_motor(15);
+pros::Motor bin_motor(15);
 
 // pistons
 pros::adi::DigitalOut matchloader_piston('A',false);
