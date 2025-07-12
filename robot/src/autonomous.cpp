@@ -45,8 +45,17 @@ void autonomous(){
     }
 
     screen::setScreen(&screen::dvd_screen);
-    // no selector for now
-    // auton1::run();
-    // skills::run();
-    // skills2::run();
+
+    // put the routine being worked on here - COMMENT OUT IN ACTUAL COMPETITION!!!
+    skills2::run();
+    
+    // COMMENT THIS IF NOT TESTING A SPECIFIC AUTON !!!!
+    return;
+    
+    // dont run anything if no auton was selected
+    if(selected_auton != ""){
+        // the selected auton gets run
+        auto selected_auton_function = auton_list[selected_auton];
+        selected_auton_function();
+    }
 }
