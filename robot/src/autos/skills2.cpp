@@ -56,11 +56,7 @@ void run() {
     }
     }};
 
-    pf_model.setPose({-63_in, -16_in, 90_stDeg});
     RobotSetPose(-63_in, -16_in, 0);
-
-    pros::delay(12);
-
 
     // clear park
     chassis.moveToPoint(-63.3, 17.5, 3000, {}, false);

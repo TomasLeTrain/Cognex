@@ -38,6 +38,9 @@ inline void RobotSetPose(Length x, Length y, float angle){
         orientation_getter->setPose(pose);
     }
     pose_getter->setPose(pose);
+    
+    // update lemlib pose immediately to be able to run motions immediately
+    chassis.setPose(to_in(x),to_in(y),angle);
 }
 
 

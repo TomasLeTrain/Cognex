@@ -49,9 +49,7 @@ void run() {
     }
     }};
 
-    pf_model.setPose({47.489_in, -11.751_in, 205.915_stDeg});
     RobotSetPose(47.489_in, -11.751_in, 244.085);
-    pros::delay(12);
 
     std::cout << RobotGetPose().x << " " << RobotGetPose().y << " " << RobotGetPose().orientation << std::endl;
     printf("chassis: %f %f %f\n", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
