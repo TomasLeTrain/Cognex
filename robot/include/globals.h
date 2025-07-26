@@ -95,8 +95,10 @@ extern pros::MotorGroup right_motor_group;
 // inertial sensor
 extern vexmaps::ScaledIMU imu;
 
-// intake motor/s?
+// intake motors
 extern pros::Motor intake_motor;
+extern pros::Motor score_motor;
+extern pros::Motor bin_motor;
 
 // pistons
 extern pros::adi::DigitalOut matchloader_piston;

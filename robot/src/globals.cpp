@@ -21,7 +21,9 @@ pros::MotorGroup right_motor_group({-15,-16,-21}, motor_gearing,motor_encoding);
 vexmaps::ScaledIMU imu(1, 363.0 / 360.0);
 
 // intake motor/s?
-pros::Motor intake_motor(19);
+pros::Motor intake_motor(15);
+pros::Motor score_motor(15);
+pros::Motor bin_motor(15);
 
 // pistons
 pros::adi::DigitalOut matchloader_piston('A',false);

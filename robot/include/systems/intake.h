@@ -1,15 +1,49 @@
 #pragma once
 
 namespace intake {
-enum intake_state_t { disabled = 0, forwards = 1, backwards = -1 };
+enum score_state_t {
+    score_disabled = 0,
+    scoring_top = 1,
+    scoring_bottom = 2,
+    scoring_long = 3
+};
+
+enum intake_state_t {
+    intake_disabled = 0,
+    intake = 1,
+    outtake = -1
+};
+
+enum bin_state_t {
+    bin_disabled = 0,
+    fill = 1,
+    take_out = -1
+};
 
 /**
- * @brief set the direction of the intake, with an optional speed parameter to change the speed of the intake
+ * @brief updates scoring state, with optional speed parameter
  *
- * @param new_state new state of the intake
- * @param new_speed if specified, new speed of the intake
+ * @param new_score_state new scoring state
+ * @param new_score_speed speed at which to run the scoring. Defaults to max
+ * speed
  */
-void set(intake_state_t new_state, int new_speed = 127);
+void setScore(score_state_t new_score_state, int new_score_speed);
+
+/**
+ * @brief updates intake state, with optional speed parameter
+ *
+ * @param new_intake_state new intake state
+ * @param new_intake_speed speed at which to run the intake. Defaults to max
+ * speed
+ */
+void setIntake(intake_state_t new_intake_state, int new_intake_speed);
+/**
+ * @brief updates bin state, with optional speed parameter
+ *
+ * @param new_bin_state new bin state
+ * @param new_bin_speed speed at which to run the bin. Defaults to max speed
+ */
+void setBin(bin_state_t new_bin_state, int new_bin_speed);
 
 void init(bool gdriver);
 } // namespace intake
