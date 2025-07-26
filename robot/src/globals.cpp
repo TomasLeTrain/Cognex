@@ -14,11 +14,11 @@ vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 
 // motor groups
-pros::MotorGroup left_motor_group ({-3,10,-2}, motor_gearing, motor_encoding);
-pros::MotorGroup right_motor_group({1,-9,4}, motor_gearing,motor_encoding);
+pros::MotorGroup left_motor_group ({11,13,14}, motor_gearing, motor_encoding);
+pros::MotorGroup right_motor_group({-15,-16,-21}, motor_gearing,motor_encoding);
 
 // inertial sensor
-vexmaps::ScaledIMU imu(13, 363.0 / 360.0);
+vexmaps::ScaledIMU imu(1, 363.0 / 360.0);
 
 // intake motor/s?
 pros::Motor intake_motor(15);
@@ -37,7 +37,7 @@ pros::Rotation horizontal_odom_rotation(-12);
 pros::Distance front_distance(20);
 pros::Distance back_distance(5);
 pros::Distance left_distance(6);
-pros::Distance right_distance(16);
+pros::Distance right_distance(3);
 
 /* vexmaps configuration */
 

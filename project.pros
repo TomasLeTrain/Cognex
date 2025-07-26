@@ -657,7 +657,7 @@
                 "version": "0.7.1"
             },
             "vexmaps": {
-                "location": "/home/tomass/.config/pros/templates/vexmaps@0.0.3",
+                "location": "/home/tomass/.config/pros/templates/vexmaps@0.0.4",
                 "metadata": {
                     "origin": "local"
                 },
@@ -665,26 +665,26 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.2.0",
                 "system_files": [
-                    "include/vexmaps/odometry/tracking_wheel.hpp",
-                    "include/vexmaps/mcl/utils.hpp",
-                    "include/vexmaps/mcl/sensor.hpp",
-                    "include/vexmaps/mcl/pf_motion_model.hpp",
-                    "include/vexmaps/smoother_model.hpp",
-                    "include/vexmaps/mcl/config.hpp",
-                    "include/vexmaps/odometry/scaled_imu.hpp",
-                    "include/vexmaps/particle_filter_model.hpp",
-                    "include/vexmaps/api.hpp",
-                    "include/vexmaps/mcl/particle_filter.hpp",
-                    "include/vexmaps/localization_model.hpp",
-                    "include/vexmaps/mcl/api.hpp",
-                    "include/vexmaps/odometry/api.hpp",
-                    "include/vexmaps/odometry/odometry.hpp",
                     "include/vexmaps/mcl/distance_model.hpp",
-                    "firmware/vexmaps.a"
+                    "include/vexmaps/mcl/api.hpp",
+                    "include/vexmaps/odometry/scaled_imu.hpp",
+                    "include/vexmaps/mcl/utils.hpp",
+                    "include/vexmaps/mcl/pf_motion_model.hpp",
+                    "include/vexmaps/api.hpp",
+                    "include/vexmaps/localization_model.hpp",
+                    "include/vexmaps/odometry/api.hpp",
+                    "include/vexmaps/mcl/config.hpp",
+                    "include/vexmaps/odometry/tracking_wheel.hpp",
+                    "include/vexmaps/odometry/odometry.hpp",
+                    "firmware/vexmaps.a",
+                    "include/vexmaps/mcl/particle_filter.hpp",
+                    "include/vexmaps/smoother_model.hpp",
+                    "include/vexmaps/particle_filter_model.hpp",
+                    "include/vexmaps/mcl/sensor.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.3"
+                "version": "0.0.4"
             },
             "vexmath": {
                 "location": "/home/tomass/.config/pros/templates/vexmath@0.0.5",
