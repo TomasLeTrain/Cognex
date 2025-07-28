@@ -14,30 +14,34 @@ vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 
 // motor groups
-pros::MotorGroup left_motor_group ({11,13,14}, motor_gearing, motor_encoding);
-pros::MotorGroup right_motor_group({-15,-16,-21}, motor_gearing,motor_encoding);
+pros::MotorGroup left_motor_group ({-11, -14, 13}, motor_gearing, motor_encoding);
+pros::MotorGroup right_motor_group({15,   16, -21}, motor_gearing,motor_encoding);
 
 // inertial sensor
-vexmaps::ScaledIMU imu(1, 363.0 / 360.0);
+vexmaps::ScaledIMU imu(10, 363.0 / 360.0);
 
-// intake motor/s?
-pros::Motor intake_motor(15);
-pros::Motor score_motor(15);
-pros::Motor bin_motor(15);
+// intake motors
+pros::Motor intake_motor(-19);
+pros::Motor score_motor(-9);
+pros::Motor bin_motor(-2);
+
+pros::Optical intake_color_sensor(21);
+
 
 // pistons
+pros::adi::DigitalOut intake_recycle_piston('A',false);
 pros::adi::DigitalOut matchloader_piston('A',false);
 
 // odom rotation sensors
-pros::Rotation vertical_odom_rotation(-7);
-pros::Rotation horizontal_odom_rotation(-12);
+pros::Rotation vertical_odom_rotation(21);
+pros::Rotation horizontal_odom_rotation(21);
 
 
 // particle filter distance sensors
-pros::Distance front_distance(20);
-pros::Distance back_distance(5);
-pros::Distance left_distance(6);
-pros::Distance right_distance(3);
+pros::Distance front_distance(21);
+pros::Distance back_distance(21);
+pros::Distance left_distance(21);
+pros::Distance right_distance(21);
 
 /* vexmaps configuration */
 
@@ -51,10 +55,10 @@ Length odom_wheel_diameter = 1.995_in;
 
 // if the tracker is not installed the list can be left empty -> tracker = {};
 horizontalTrackers horizontal_trackers = {
-    &horizontal_tracker
+    // &horizontal_tracker
 };
 verticalTrackers vertical_trackers = {
-    &vertical_tracker
+    // &vertical_tracker
 };
 
 // custom pf configs - probably can leave alone

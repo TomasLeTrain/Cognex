@@ -2,6 +2,7 @@
 
 #include "api.h" // IWYU pragma: keep
 #include "lemlib/api.hpp" // IWYU pragma: keep
+#include "pros/optical.hpp"
 #include "units/units.hpp"
 #include "vexmaps/api.hpp"
 #include "vexmaps/localization_model.hpp"
@@ -100,7 +101,10 @@ extern pros::Motor intake_motor;
 extern pros::Motor score_motor;
 extern pros::Motor bin_motor;
 
+extern pros::Optical intake_color_sensor;
+
 // pistons
+extern pros::adi::DigitalOut intake_recycle_piston;
 extern pros::adi::DigitalOut matchloader_piston;
 
 // odom rotation sensors

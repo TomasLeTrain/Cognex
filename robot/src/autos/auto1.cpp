@@ -50,9 +50,10 @@ void run() {
     }};
 
     RobotSetPose(47.489_in, -11.751_in, 244.085);
+    intake::set(intake::intake);
 
-    std::cout << RobotGetPose().x << " " << RobotGetPose().y << " " << RobotGetPose().orientation << std::endl;
-    printf("chassis: %f %f %f\n", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
+    // std::cout << RobotGetPose().x << " " << RobotGetPose().y << " " << RobotGetPose().orientation << std::endl;
+    // printf("chassis: %f %f %f\n", chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
 
     // chassis.turnToHeading(0,2000,{},false);
     // chassis.turnToHeading(0,9000,{},false);
@@ -61,14 +62,19 @@ void run() {
     chassis.turnToPoint(0, 0, 2000, {}, false);
 
     chassis.moveToPoint(14, -15, 2000, {}, false);
+    intake::set(intake::scoring_middle);
+    pros::delay(3000);
+    intake::set(intake::intake);
 
     chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
     chassis.turnToPoint(67, -47, 2000, {}, false);
     chassis.moveToPoint(55.5, -47, 2000, {}, false);
+    // matchload
     pros::delay(1000);
     chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
     chassis.turnToPoint(0, -47, 2000, {}, false);
     chassis.moveToPoint(32, -47, 2000, {}, false);
+    intake::set(intake::scoring_long);
 
     // auto start_time = pros::millis();
     //
