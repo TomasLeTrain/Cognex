@@ -8,9 +8,10 @@
 
 // list of routines displayed in the auton selector - ALSO DEFINE IT IN autos.h!!
 std::map<std::string, std::function<void()>> auton_list = {
-    AUTON(auton1,"auton1")
+    AUTON(simple_auton,"simple")
     AUTON(skills,"old skills")
     AUTON(skills2,"new sklls")
+    AUTON(simple_other_goal_auton,"simple other goal")
 };
 
 
@@ -48,7 +49,7 @@ void autonomous(){
 
     // put the routine being worked on here - COMMENT OUT IN ACTUAL COMPETITION!!!
     // skills2::run();
-    auton1::run();
+    simple_auton::run();
     
     // COMMENT THIS IF NOT TESTING A SPECIFIC AUTON !!!!
     return;

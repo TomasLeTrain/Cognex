@@ -9,7 +9,7 @@
 
 // do not do anything outside here!
 
-namespace auton1 {
+namespace simple_other_goal_auton {
 
 // you can add any variables / functions here
 
@@ -49,7 +49,14 @@ void run() {
     }
     }};
 
-    RobotSetPose(47.489_in, -11.751_in, 244.085);
+    bool bl =
+      (auto_side == field_side_t::left || auto_side == field_side_t::unset);
+
+    int l = bl ? 1 : -1;
+
+    double start_angle = bl ? 244.085 : 2 * 270 - 244.085;
+
+    RobotSetPose(47.489_in, -11.751_in * l, start_angle);
     intake::set(intake::intake);
 
     // std::cout << RobotGetPose().x << " " << RobotGetPose().y << " " << RobotGetPose().orientation << std::endl;
@@ -57,23 +64,27 @@ void run() {
 
     // chassis.turnToHeading(0,2000,{},false);
     // chassis.turnToHeading(0,9000,{},false);
-    chassis.moveToPoint(22.8, -23.3, 2000, {}, false);
+    chassis.moveToPoint(22.8, -23.3 * l, 2000, {}, false);
 
     chassis.turnToPoint(0, 0, 2000, {}, false);
 
-    chassis.moveToPoint(14, -15, 2000, {}, false);
+    chassis.moveToPoint(14, -15 * l, 2000, {}, false);
     intake::set(intake::scoring_middle);
     pros::delay(3000);
     intake::set(intake::intake);
 
-    chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
-    chassis.turnToPoint(67, -47, 2000, {}, false);
-    chassis.moveToPoint(55.5, -47, 2000, {}, false);
+    chassis.moveToPoint(45, -47 * l, 2000, {.forwards=false}, false);
+    chassis.turnToPoint(67, -47 * l, 2000, {}, false);
+    chassis.moveToPoint(55.5, -47 * l, 2000, {}, false);
     // matchload
-    pros::delay(1000);
-    chassis.moveToPoint(45, -47, 2000, {.forwards=false}, false);
-    chassis.turnToPoint(0, -47, 2000, {}, false);
-    chassis.moveToPoint(32, -47, 2000, {}, false);
+    pros::delay(3000);
+    chassis.moveToPoint(45, -47 * l, 2000, {.forwards=false}, false);
+
+    chassis.turnToPoint(45, 47 * l, 2000, {}, false);
+    chassis.moveToPoint(45, 47 * l, 2000, {}, false);
+    chassis.turnToPoint(0, 47 * l, 2000, {}, false);
+
+    chassis.moveToPoint(32, 47 * l, 2000, {}, false);
     intake::set(intake::scoring_long);
 
     // auto start_time = pros::millis();
@@ -97,3 +108,4 @@ void run() {
 }
 
 } // namespace auton1
+

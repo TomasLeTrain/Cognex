@@ -19,9 +19,10 @@
 // #define AUTON(auton) {#auton, auton::run },
 
 // make sure autons are defined in here AND in autonomous.cpp!!
-NEW_AUTON(auton1)
+NEW_AUTON(simple_auton)
 NEW_AUTON(skills)
 NEW_AUTON(skills2)
+NEW_AUTON(simple_other_goal_auton)
 
 extern std::map<std::string, std::function<void()>> auton_list;
 

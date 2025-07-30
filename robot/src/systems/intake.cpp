@@ -23,29 +23,29 @@ std::map<intake_state_t, int> intake_motor_speeds = {
     { slow_scoring_middle, 127 },
     { scoring_middle,      127 },
 
-    { scoring_long,        127 },
+    { scoring_long,        110 },
 
     { intake,              127 },
 };
 
 std::map<intake_state_t, int> bin_motor_speeds = {
-    { slow_scoring_bottom, -50 },
-    { scoring_bottom,      -90 },
+    { slow_scoring_bottom, -10  },
+    { scoring_bottom,      -90  },
 
-    { slow_scoring_middle, -50 },
-    { scoring_middle,      -70 },
+    { slow_scoring_middle, -30  },
+    { scoring_middle,      -70  },
 
-    { scoring_long,        -100 },
+    { scoring_long,        -127 },
 
-    { intake,              0   },
+    { intake,              0    },
 };
 
 std::map<intake_state_t, int> score_motor_speeds = {
     { scoring_bottom,      0   },
     { slow_scoring_bottom, 0   },
 
-    { slow_scoring_middle, -10 },
-    { scoring_middle,      -10 },
+    { slow_scoring_middle, -20 },
+    { scoring_middle,      -20 },
 
     { scoring_long,        127 },
     { intake,              127 },
@@ -56,11 +56,13 @@ int intake_speed;
 int score_speed;
 int bin_speed;
 
-std::optional<alliance_t> current_detected_color;
-
-bool recycling_enabled = false;
+std::optional<alliance_t> middle_detected_color;
+std::optional<alliance_t> top_detected_color;
 
 pros::Mutex intake_mutex;
+
+bool colorSortEnabled = true;
+bool driverColorSortEnabled = true;
 
 /*
  * setters and getters - meant to be used by autons/subsystems outside this file
@@ -77,61 +79,68 @@ void set(intake_state_t new_intake_state) {
     intake_state = new_intake_state;
 }
 
+void setColorSortEnabled(bool enabled) {
+    colorSortEnabled = enabled;
+}
+
 // code that should run during driver
 void driverUpdate() {
     // update states based on driver input
     bool intakeToBackpack =
       controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
     bool scoreBottomHeight =
-        controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+      controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
     bool scoreMiddleHeight =
       controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-    bool scoreLong =
-      controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+    bool scoreLong = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
 
-    bool slowScoring =
-      controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+    bool slowScoring = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+
+    bool toggleColorSort =
+      controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT);
+
+    if (toggleColorSort) driverColorSortEnabled = !driverColorSortEnabled;
 
     if (intakeToBackpack) {
         set(intake_state_t::intake);
-    }else if (scoreMiddleHeight) {
+    } else if (scoreMiddleHeight) {
         // change the intake state based on the speed
         if (slowScoring) {
             set(intake_state_t::slow_scoring_middle);
         } else {
             set(intake_state_t::scoring_middle);
         }
-    }else if (scoreBottomHeight) {
+    } else if (scoreBottomHeight) {
         if (slowScoring) {
             set(intake_state_t::slow_scoring_bottom);
         } else {
             set(intake_state_t::scoring_bottom);
         }
-    }else if (scoreLong) {
+    } else if (scoreLong) {
         set(intake_state_t::scoring_long);
-    }else{
+    } else {
         set(intake_state_t::intake_disabled);
     }
 }
 
-std::optional<alliance_t> colorDetected() {
+std::optional<alliance_t> colorDetected(pros::Optical* sensor) {
     // detect color from color sensor
-    current_detected_color = std::nullopt;
+    std::optional<alliance_t> result = std::nullopt;
 
     // just say no balls are being detected
-    if (!intake_color_sensor.is_installed()) return current_detected_color;
+    if (!sensor->is_installed()) return result;
 
-    int color_sensor_hue = intake_color_sensor.get_hue();
+    double color_sensor_hue = sensor->get_hue();
 
     // intake senses something
-    if (intake_color_sensor.get_proximity() > 240) {
+    if (sensor->get_proximity() > 240) {
         if (color_sensor_hue > 340 || color_sensor_hue < 20)
-            current_detected_color = alliance_t::red;
+            result = alliance_t::red;
         else if (color_sensor_hue > 160 && color_sensor_hue < 270)
-            current_detected_color = alliance_t::blue;
+            result = alliance_t::blue;
     }
 
-    return current_detected_color;
+    return result;
 }
 
 // code that should run during autonomous - should be based on extra state
@@ -142,6 +151,10 @@ bool motorJammed(pros::Motor* motor) {
     return (std::abs(motor->get_voltage()) > 10 && motor->get_torque() > 0.1 &&
             std::fabs(motor->get_actual_velocity()) < 1);
 }
+bool motorSlowed(pros::Motor* motor) {
+    return (std::abs(motor->get_voltage()) > 10 && motor->get_torque() > 0.1 &&
+            std::fabs(motor->get_actual_velocity()) < 100);
+}
 
 // should be run in a task
 void antiJam() {
@@ -149,17 +162,33 @@ void antiJam() {
         // wait for stuff to be available
         intake_mutex.take();
 
-        if (motorJammed(&intake_motor) || motorJammed(&score_motor)) {
-            intake_motor.move(-intake_speed);
-            score_motor.move(-score_speed);
+        if (motorSlowed(&score_motor)) {
+            intake_motor.move(0);
+            // make sure bin would not continue running which would jam
+            bin_motor.move(0);
+
             pros::delay(200);
             intake_motor.move(intake_speed);
             score_motor.move(score_speed);
+            bin_motor.move(bin_speed);
         }
+        // if (motorJammed(&intake_motor) || motorJammed(&score_motor)) {
+        //     intake_motor.move(-intake_speed);
+        //     score_motor.move(-score_speed);
+        //     intake_recycle_piston.set_value(true);
+        //     // make sure bin would not continue running which would jam
+        //     bin_motor.move(0);
+        //
+        //     pros::delay(200);
+        //     intake_recycle_piston.set_value(false);
+        //     intake_motor.move(intake_speed);
+        //     score_motor.move(score_speed);
+        //     bin_motor.move(bin_speed);
+        // }
 
         if (motorJammed(&bin_motor)) {
             // make it not stuck
-            bin_motor.move(-bin_speed);
+            bin_motor.move(-127);
             pros::delay(200);
             bin_motor.move(bin_speed);
         }
@@ -170,51 +199,92 @@ void antiJam() {
     }
 }
 
+void waitUntilTopColor(alliance_t color, uint32_t timeout) {
+    uint32_t start_time = pros::millis();
+    // either timeout triggers
+    while (pros::millis() - start_time < timeout &&
+           // or we get the color we want
+           color != top_detected_color) {
+        pros::delay(10);
+    }
+}
+
+void waitUntilMiddleColor(alliance_t color, uint32_t timeout) {
+    uint32_t start_time = pros::millis();
+    // either timeout triggers
+    while (pros::millis() - start_time < timeout &&
+           // or we get the color we want
+           color != middle_detected_color) {
+        pros::delay(10);
+    }
+}
+
 // should be run in a task
 void colorSort() {
     while (true) {
         // wait for stuff to be available
         // does not change intake, should not depend on mutex
 
-        bool changed_recycling = false;
-
-        if (current_detected_color != std::nullopt) {
-            if (current_detected_color.value() != auto_alliance &&
-                auto_alliance != alliance_t::unset) {
-                // we have the wrong color, prcoess based on current state
-                if (intake_state == intake || intake_state == scoring_middle) {
-                    // need to take mutex
-                    intake_mutex.take();
-
-                    // std::cout << "color sorting 1" << std::endl;
-
-                    score_motor.move(-127);
-                    intake_motor.move(0);
-                    pros::delay(200);
-                    score_motor.move(score_speed);
-                    intake_motor.move(intake_speed);
-
-                    intake_mutex.give();
-                }else if (intake_state == scoring_long){
-                    // std::cout << "color sorting 2" << std::endl;
-                    intake_mutex.take();
-
-                    // no need to get intake
-                    recycling_enabled = true;
-                    changed_recycling = true;
-
-                    pros::delay(100);
-                    intake_recycle_piston.set_value(true);
-                    intake_mutex.give();
-                }
-            }
+        if ((!is_driver && !colorSortEnabled) ||
+            (is_driver && !driverColorSortEnabled) ||
+            // we don't know our alliance so we cannot color sort
+            auto_alliance == alliance_t::unset) {
+            pros::delay(10);
+            return;
         }
-        if(!changed_recycling && recycling_enabled){
-            // should change recycling state back to normal
-            intake_mutex.take();
-            pros::delay(100);
-            intake_recycle_piston.set_value(false);
-            intake_mutex.give();
+
+        bool middle_wrong_color_detected =
+          // a ball is being measured
+          middle_detected_color != std::nullopt &&
+          // the detected ball is not the our alliance
+          middle_detected_color.value() != auto_alliance &&
+          // we selected an autonomous alliance
+          auto_alliance != alliance_t::unset;
+
+        // bool top_wrong_color_detected =
+        //   // a ball is being measured
+        //   top_detected_color != std::nullopt &&
+        //   // the detected ball is not the our alliance
+        //   top_detected_color.value() != auto_alliance &&
+        //   // we selected an autonomous alliance
+        //    auto_alliance != alliance_t::unset;
+
+        // we have the wrong color, prcoess based on current state
+        if (middle_wrong_color_detected) {
+            // try to outake through the middle of the intake
+            if (intake_state == intake || intake_state == scoring_middle) {
+                // need to take mutex
+                intake_mutex.take();
+
+                score_motor.move(-127);
+                intake_motor.move(0);
+                pros::delay(200);
+
+                score_motor.move(score_speed);
+                intake_motor.move(intake_speed);
+
+                intake_mutex.give();
+            } else if (intake_state == scoring_long) {
+                // recycle ball into bin
+                intake_mutex.take();
+
+                // pros::delay(100);
+
+                // wait for opposite color to appear at the top of the intake
+                waitUntilTopColor(
+                  // waits for the opposite alliance ball
+                  middle_detected_color.value(),
+                  // timeout after 200 milliseconds
+                  200);
+
+                // set to recycle
+                intake_recycle_piston.set_value(true);
+
+                // wait for ball to go into bin
+                pros::delay(100);
+
+                intake_mutex.give();
+            }
         }
 
         pros::delay(10);
@@ -230,10 +300,13 @@ void hardwareUpdate() {
     int bin_speed = bin_motor_speeds[intake_state];
     int score_speed = score_motor_speeds[intake_state];
 
-    // only update motors if they are not being used elsewhere
+    // only update motors if they are not being used elsewhere - waits for 2
+    // millisecends to be able to use
     if (intake_mutex.take(2)) {
-        if(intake_state == intake) intake_recycle_piston.set_value(true);
-        else intake_recycle_piston.set_value(false);
+        if (intake_state == intake)
+            intake_recycle_piston.set_value(true);
+        else
+            intake_recycle_piston.set_value(false);
 
         intake_motor.move(intake_speed);
         bin_motor.move(bin_speed);
@@ -248,7 +321,8 @@ void update() {
     // any code that needs to run regardless of driver mode can also run here
 
     // update current detected color
-    auto color = colorDetected();
+    middle_detected_color = colorDetected(&middle_intake_color_sensor);
+    top_detected_color = colorDetected(&top_intake_color_sensor);
 
     if (is_driver) {
         driverUpdate();
@@ -262,9 +336,14 @@ void init(bool gdriver) {
     is_driver = gdriver;
 
     // set some hardware related options
-    if(intake_color_sensor.is_installed()){
-        intake_color_sensor.disable_gesture();
-        intake_color_sensor.set_integration_time(30);
+    if (middle_intake_color_sensor.is_installed()) {
+        middle_intake_color_sensor.disable_gesture();
+        middle_intake_color_sensor.set_integration_time(30);
+    }
+
+    if (top_intake_color_sensor.is_installed()) {
+        top_intake_color_sensor.disable_gesture();
+        top_intake_color_sensor.set_integration_time(30);
     }
 
     // don't make another task
@@ -272,20 +351,19 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-
     pros::Task antijam_task([] {
         while (true) {
             antiJam();
             pros::delay(10);
         }
     });
-    //
-    // pros::Task colorsort_task([] {
-    //     while (true) {
-    //         colorSort();
-    //         pros::delay(10);
-    //     }
-    // });
+
+    pros::Task colorsort_task([] {
+        while (true) {
+            colorSort();
+            pros::delay(10);
+        }
+    });
 
     pros::Task main_intake_task([] {
         while (true) {

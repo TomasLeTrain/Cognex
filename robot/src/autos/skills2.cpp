@@ -9,6 +9,7 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
+#include "systems/matchloader.h"
 #include "motions/arc.h"
 
 // do not do anything outside here!
@@ -58,9 +59,13 @@ void run() {
 
     RobotSetPose(-63_in, -16_in, 0);
 
+    // don't color sort
+    intake::setColorSortEnabled(false);
+    intake::set(intake::intake);
+
     // clear park
     chassis.moveToPoint(-63.3, 17.5, 3000, {}, false);
-    //
+    
     // pros::delay(1000);
     // left_motor_group.move(0);
     // right_motor_group.move(0);
@@ -83,8 +88,19 @@ void run() {
 
     // score on center top goal
     pf_model.setDisabled(true);
+
+
+    // color sort balls so we only score blue balls
+    intake::setColorSortEnabled(true);
+    auto_alliance = alliance_t::blue;
+
+    intake::set(intake::scoring_middle);
     pros::delay(3000);
+
     pf_model.setDisabled(false);
+
+    intake::setColorSortEnabled(false);
+    intake::set(intake::intake);
 
     // swing to face second corner
     chassis.swingToPoint(-23.3,-22.5,lemlib::DriveSide::LEFT, 2000, {
@@ -105,7 +121,9 @@ void run() {
     // go to matchloader
     chassis.moveToPose(56.5,-44,90,2000,{ .lead=0.6 },false);
     // pf_model.setDisabled(true);
+    matchloader::set(true);
     pros::delay(3000);
+    matchloader::set(false);
     // pf_model.setDisabled(false);
 
     // back up to go to goal
@@ -114,10 +132,19 @@ void run() {
     // turn to and score on long goal
     chassis.turnToPoint(0, -47.5, 2000, {}, false);
     chassis.moveToPoint(32, -46.5, 2000, {}, false);
+
+    // score all balls
+    intake::setColorSortEnabled(false);
+    // auto_alliance = alliance_t::blue;
+    intake::set(intake::scoring_long);
+
     // pf_model.setDisabled(true);
     pros::delay(5500);
     // pf_model.setDisabled(false);
 
+    intake::setColorSortEnabled(false);
+    // auto_alliance = alliance_t::blue;
+    intake::set(intake::intake);
 
     // turn away from goal and turn without touching it
     chassis.swingToHeading(180+30,lemlib::DriveSide::RIGHT, 800, {
@@ -140,7 +167,9 @@ void run() {
     // get to matchloader
     chassis.moveToPose(57.3,45.7,90 ,2000,{.lead=0.6},false);
     // pf_model.setDisabled(true);
+    matchloader::set(true);
     pros::delay(3000);
+    matchloader::set(false);
     // pf_model.setDisabled(false);
 
     chassis.moveToPoint(46.8, 46.7, 2000, {.forwards=false}, false);
@@ -152,8 +181,17 @@ void run() {
     // score on center goal
     chassis.moveToPoint(13.7, 13.6, 2000, {}, false);
     pf_model.setDisabled(true);
+
+    intake::setColorSortEnabled(true);
+    auto_alliance = alliance_t::red;
+    intake::set(intake::scoring_bottom);
+
     pros::delay(3000);
     pf_model.setDisabled(false);
+
+    intake::setColorSortEnabled(false);
+    // auto_alliance = alliance_t::blue;
+    intake::set(intake::intake);
 
     // back up and go to third matchloader
     chassis.moveToPoint(18, 19.5, 2000, {.forwards=false}, false);
@@ -164,7 +202,9 @@ void run() {
     chassis.turnToPoint(-71, 46.7, 2000, {.minSpeed=20,.earlyExitRange=10}, false);
     chassis.moveToPoint(-55, 46.7, 2000, {}, false);
     // pf_model.setDisabled(true);
+    matchloader::set(true);
     pros::delay(3000);
+    matchloader::set(false);
     // pf_model.setDisabled(false);
 
     // back up, turn to and go to long goal
@@ -172,8 +212,16 @@ void run() {
     chassis.turnToPoint(0,46.7,2000,{},false);
     chassis.moveToPoint(-32, 46.7,2000,{},false);
     // pf_model.setDisabled(true);
+
+    intake::setColorSortEnabled(false);
+    // auto_alliance = alliance_t::red;
+    intake::set(intake::scoring_long);
+
     pros::delay(5500);
     // pf_model.setDisabled(false);
+    intake::setColorSortEnabled(false);
+    // auto_alliance = alliance_t::red;
+    intake::set(intake::intake_disabled);
 
     // swing and run for the park
     chassis.swingToPoint(-63,0,lemlib::DriveSide::LEFT, 800, {

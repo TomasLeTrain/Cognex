@@ -14,18 +14,19 @@ vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 
 // motor groups
-pros::MotorGroup left_motor_group ({-11, -14, 13}, motor_gearing, motor_encoding);
-pros::MotorGroup right_motor_group({15,   16, -21}, motor_gearing,motor_encoding);
+pros::MotorGroup left_motor_group ({-11, -14,  13}, motor_gearing, motor_encoding);
+pros::MotorGroup right_motor_group({15,   16, -10}, motor_gearing,motor_encoding);
 
 // inertial sensor
-vexmaps::ScaledIMU imu(10, 363.0 / 360.0);
+vexmaps::ScaledIMU imu(1, 363.0 / 360.0);
 
 // intake motors
-pros::Motor intake_motor(-19);
-pros::Motor score_motor(-9);
-pros::Motor bin_motor(-2);
+pros::Motor intake_motor(17);
+pros::Motor score_motor(-7);
+pros::Motor bin_motor(2);
 
-pros::Optical intake_color_sensor(21);
+pros::Optical middle_intake_color_sensor(3);
+pros::Optical top_intake_color_sensor(8);
 
 
 // pistons
@@ -33,32 +34,33 @@ pros::adi::DigitalOut intake_recycle_piston('A',false);
 pros::adi::DigitalOut matchloader_piston('A',false);
 
 // odom rotation sensors
-pros::Rotation vertical_odom_rotation(21);
-pros::Rotation horizontal_odom_rotation(21);
+pros::Rotation vertical_odom_rotation(20);
+pros::Rotation horizontal_odom_rotation(5);
 
 
 // particle filter distance sensors
-pros::Distance front_distance(21);
-pros::Distance back_distance(21);
-pros::Distance left_distance(21);
-pros::Distance right_distance(21);
+pros::Distance front_distance(9);
+pros::Distance back_distance(12);
+pros::Distance left_distance(4);
+pros::Distance right_distance(19);
 
 /* vexmaps configuration */
 
 // trackers and their offsets
 // WARNING: The signs are OPPOSITE of lemlib's.
 // you can use lemlib's tuning guide but have OPPOSITE signs!
-Length horizontal_offset = 0.7_in;
-Length vertical_offset = 0.525_in;
+Length horizontal_offset = 0.51_in;
+Length vertical_offset = -0.31_in;
 
-Length odom_wheel_diameter = 1.995_in;
+Length hor_odom_wheel_diameter = 1.995_in;
+Length ver_odom_wheel_diameter = 2.0_in;
 
 // if the tracker is not installed the list can be left empty -> tracker = {};
 horizontalTrackers horizontal_trackers = {
-    // &horizontal_tracker
+    &horizontal_tracker
 };
 verticalTrackers vertical_trackers = {
-    // &vertical_tracker
+    &vertical_tracker
 };
 
 // custom pf configs - probably can leave alone
@@ -69,18 +71,18 @@ vexmaps::SmootherConfig smoother_config = {
 };
 
 // distance sensor offsets
-units::V2Position front_distance_offsets = { 5_in, 5.4375_in };
-units::V2Position left_distance_offsets = { 2_in, 5.25_in };
-units::V2Position back_distance_offsets = { -4.5_in, -1.84375_in };
-units::V2Position right_distance_offsets = { 3.75_in, -5.375_in };
+units::V2Position front_distance_offsets = { 7_in, -3.59375_in };
+units::V2Position left_distance_offsets = { 1_in, 4.75_in };
+units::V2Position back_distance_offsets = { -7.125_in, 3.5_in };
+units::V2Position right_distance_offsets = { 1_in, -4.75_in };
 
 /* drivetrain / pid configuration */
 
 // NOTE: remember to update every time the drivetrain changes!
 drivetrain_config_t drivetrain_config {
     .track_width = 10.5,
-    .wheel_diameter = 2.75,
-    .rpm = 480,
+    .wheel_diameter = 3.25,
+    .rpm = 450,
     .horizontal_drift = 2,
 };
 

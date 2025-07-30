@@ -24,5 +24,8 @@ enum intake_state_t {
  */
 void set(intake_state_t new_intake_state);
 
+// sets if color sort is enabled
+void setColorSortEnabled(bool enabled);
+
 void init(bool gdriver);
 } // namespace intake

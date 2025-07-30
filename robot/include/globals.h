@@ -101,7 +101,8 @@ extern pros::Motor intake_motor;
 extern pros::Motor score_motor;
 extern pros::Motor bin_motor;
 
-extern pros::Optical intake_color_sensor;
+extern pros::Optical middle_intake_color_sensor;
+extern pros::Optical top_intake_color_sensor;
 
 // pistons
 extern pros::adi::DigitalOut intake_recycle_piston;
@@ -116,7 +117,6 @@ extern pros::Distance front_distance;
 extern pros::Distance back_distance;
 extern pros::Distance left_distance;
 extern pros::Distance right_distance;
-
 
 /*
  * vexmaps configuration
@@ -142,10 +142,13 @@ extern verticalTrackers vertical_trackers;
 
 extern Length horizontal_offset;
 extern Length vertical_offset;
-extern Length odom_wheel_diameter;
 
-inline vexmaps::HorizontalOdometryTracker horizontal_tracker(&horizontal_odom_rotation, odom_wheel_diameter,1,horizontal_offset);
-inline vexmaps::VerticalOdometryTracker vertical_tracker(&vertical_odom_rotation, odom_wheel_diameter, 1, vertical_offset);
+
+extern Length hor_odom_wheel_diameter;
+extern Length ver_odom_wheel_diameter;
+
+inline vexmaps::HorizontalOdometryTracker horizontal_tracker(&horizontal_odom_rotation, hor_odom_wheel_diameter,1,horizontal_offset);
+inline vexmaps::VerticalOdometryTracker vertical_tracker(&vertical_odom_rotation, ver_odom_wheel_diameter, 1, vertical_offset);
 
 inline vexmaps::PfMotionModel<vexmaps::OdometryModel>
   pf_motion_model(motion_model_config,
@@ -162,11 +165,11 @@ inline vexmaps::PfMotionModel<vexmaps::OdometryModel>
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
   front_laser_model(&front_distance, units::Pose(front_distance_offsets, 0_stDeg), "front");
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  left_laser_model(&left_distance, units::Pose(left_distance_offsets, 90_stDeg), "left");
+  left_laser_model(&left_distance, units::Pose(left_distance_offsets, 83_stDeg), "left");
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
   back_laser_model(&back_distance, units::Pose(back_distance_offsets, 180_stDeg), "back");
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  right_laser_model(&right_distance, units::Pose(right_distance_offsets, 270_stDeg), "right");
+  right_laser_model(&right_distance, units::Pose(right_distance_offsets, 263_stDeg), "right");
 
 inline vexmaps::ParticleFilterModel<pf_particle_count> pf_model(
                                                       &pf_motion_model,
@@ -219,9 +222,9 @@ enum class alliance_t { unset = -1, red = 0, blue = 1 };
 
 enum class field_side_t { unset = -1, left = 0, right = 1 };
 
-enum class corner_t { unset = -1,  red_left = 0, red_right = 1, blue_left = 2, blue_right = 3 };
+// enum class corner_t { unset = -1,  red_left = 0, red_right = 1, blue_left = 2, blue_right = 3 };
 
 inline alliance_t auto_alliance = alliance_t::unset;
 inline field_side_t auto_side = field_side_t::unset;
-inline corner_t auto_corner = corner_t::unset;
+// inline corner_t auto_corner = corner_t::unset;
 inline std::string selected_auton = "";
