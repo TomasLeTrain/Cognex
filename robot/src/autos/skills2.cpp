@@ -21,7 +21,8 @@ namespace skills2 {
 void run() {
     // do whatever you want here
 
-    bool print_info = true;
+    bool print_info = false;
+
     pros::Task smoother_task {[&] {
     while (print_info) {
         int start_time = pros::millis();
@@ -64,7 +65,7 @@ void run() {
     intake::set(intake::intake);
 
     // clear park
-    chassis.moveToPoint(-63.3, 17.5, 3000, {}, false);
+    chassis.moveToPoint(-63.3, 16.5, 3000, {}, false);
     
     // pros::delay(1000);
     // left_motor_group.move(0);
@@ -74,9 +75,8 @@ void run() {
 
     // motions::moveArc(20.5_in, 140, 28_in / sec, lemlib::AngularDirection::CW_CLOCKWISE, 5000, {},false);
     // motions::moveArc(13.5_in, 130, 22_in / sec, lemlib::AngularDirection::CW_CLOCKWISE, 2000, {.maxAccel=200_rpm}, false);
-    chassis.moveToPose(-30,31,135,2000,{.lead=0.6},false);
+    chassis.moveToPose(-35,31,135,1800,{.lead=0.6},false);
 
-    
     // left_motor_group.set_brake_mode_all(pros::MotorBrake::hold);
     // right_motor_group.set_brake_mode_all(pros::MotorBrake::hold);
 
@@ -84,54 +84,73 @@ void run() {
     // chassis.moveToPose(-29,31,145,2000,{.lead=0.5},false);
 
     // move towards center goal to score
-    chassis.moveToPoint(-14.3, 14, 2000, {.maxSpeed=40}, false);
+    chassis.moveToPoint(-13.5, 12.5, 2300, {.maxSpeed=40}, true);
+
+    pros::delay(1700);
+    matchloader::set(true);
+    chassis.waitUntilDone();
 
     // score on center top goal
     pf_model.setDisabled(true);
 
-
     // color sort balls so we only score blue balls
-    intake::setColorSortEnabled(true);
+    // intake::setColorSortEnabled(true);
+    intake::setColorSortEnabled(false);
     auto_alliance = alliance_t::blue;
 
+    // attempt to intake any balls still there
+    pros::delay(400);
+
     intake::set(intake::scoring_middle);
-    pros::delay(3000);
+    pros::delay(2300);
 
     pf_model.setDisabled(false);
 
     intake::setColorSortEnabled(false);
     intake::set(intake::intake);
+    matchloader::set(false);
 
     // swing to face second corner
-    chassis.swingToPoint(-23.3,-22.5,lemlib::DriveSide::LEFT, 2000, {
+    chassis.swingToPoint(-23.3,-22.5,lemlib::DriveSide::LEFT, 1000, {
             .direction=lemlib::AngularDirection::CW_CLOCKWISE,
             .minSpeed=30,
             .earlyExitRange=10
             },false);
 
     // move to second corner
-    chassis.moveToPoint(-30,-8, 2000, {.minSpeed=40,.earlyExitRange=5}, false);
-    chassis.turnToPoint(-17.5,-30, 2000, {.minSpeed=40,.earlyExitRange=5}, false);
-    chassis.moveToPoint(-17.5,-30, 2000, {.maxSpeed=50}, false);
+    // chassis.moveToPoint(-30,-8, 2000, {.minSpeed=40,.earlyExitRange=5}, false);
+    chassis.turnToPoint(-40,-22, 2000, {.minSpeed=40,.earlyExitRange=5}, false);
+    chassis.moveToPoint(-40,-20, 2000, {.minSpeed=1,.earlyExitRange=10}, false);
+
+    chassis.turnToPoint(-23,-22, 2000, {.minSpeed=40,.earlyExitRange=5}, false);
+    chassis.moveToPoint(-23,-22, 2000, {.maxSpeed=100}, false);
 
     // turn to and go the third corner
     chassis.turnToPoint(23.5,-23.5, 2000, {}, false);
     chassis.moveToPoint(23.5,-23.5, 2000, {.maxSpeed=80,.minSpeed=20,.earlyExitRange=4}, false);
 
-    // go to matchloader
-    chassis.moveToPose(56.5,-44,90,2000,{ .lead=0.6 },false);
-    // pf_model.setDisabled(true);
     matchloader::set(true);
-    pros::delay(3000);
+
+    // go to matchloader
+    // chassis.moveToPose(56.5,-44,90,3200,{ .lead=0.6 },false);
+    chassis.moveToPoint(44, -46.5, 2000, {}, false);
+    chassis.moveToPoint(57, -47.5, 2000, {}, false);
+
+    // pf_model.setDisabled(true);
+    pros::delay(2300);
     matchloader::set(false);
     // pf_model.setDisabled(false);
 
     // back up to go to goal
-    chassis.moveToPoint(50, -47.5, 2000, { .forwards=false }, false);
+    chassis.moveToPoint(50, -47.5, 2000, { .forwards=false,.minSpeed=14,.earlyExitRange=5 }, false);
 
     // turn to and score on long goal
-    chassis.turnToPoint(0, -47.5, 2000, {}, false);
-    chassis.moveToPoint(32, -46.5, 2000, {}, false);
+    chassis.turnToPoint(0, -48.5, 2000, {}, false);
+
+    // start priming intake
+    intake::set(intake::priming);
+
+    chassis.moveToPoint(33, -48.5, 2000, {}, false);
 
     // score all balls
     intake::setColorSortEnabled(false);
@@ -139,7 +158,7 @@ void run() {
     intake::set(intake::scoring_long);
 
     // pf_model.setDisabled(true);
-    pros::delay(5500);
+    pros::delay(4000);
     // pf_model.setDisabled(false);
 
     intake::setColorSortEnabled(false);
@@ -159,16 +178,24 @@ void run() {
             },false);
 
     // move towards blue park
-    chassis.moveToPose(62.3,-17.5,0 ,1500,{.lead=0.3,.minSpeed=40,.earlyExitRange=13},false);
+    chassis.moveToPose(61.3,-17.5,0 ,1500,{.lead=0.3,.minSpeed=60,.earlyExitRange=13},false);
 
-    // clear park
-    chassis.moveToPoint(63, 17.5, 3000, {.minSpeed=10,.earlyExitRange=5}, false);
+    // clear blue park
+    chassis.moveToPoint(62, 15.5, 3000, {.minSpeed=70,.earlyExitRange=5}, false);
+
+    // wait for mcl to work?
+    pros::delay(1000);
 
     // get to matchloader
-    chassis.moveToPose(57.3,45.7,90 ,2000,{.lead=0.6},false);
-    // pf_model.setDisabled(true);
+    chassis.turnToPoint(42,44, 2000,{},false);
+    chassis.moveToPoint(42,44, 2000,{},false);
+    chassis.turnToPoint(67,47, 2000,{},false);
+
     matchloader::set(true);
-    pros::delay(3000);
+    chassis.moveToPoint(57,47, 2000,{},false);
+
+    // pf_model.setDisabled(true);
+    pros::delay(2300);
     matchloader::set(false);
     // pf_model.setDisabled(false);
 
@@ -179,10 +206,11 @@ void run() {
     chassis.moveToPoint(32.3, 31.5, 2000, {}, false);
 
     // score on center goal
-    chassis.moveToPoint(13.7, 13.6, 2000, {}, false);
+    chassis.moveToPoint(13.7, 13.6, 3000, {.maxSpeed=80}, false);
     pf_model.setDisabled(true);
 
-    intake::setColorSortEnabled(true);
+    // intake::setColorSortEnabled(true);
+    intake::setColorSortEnabled(false);
     auto_alliance = alliance_t::red;
     intake::set(intake::scoring_bottom);
 
@@ -200,9 +228,9 @@ void run() {
     // move to matchloader
     chassis.moveToPoint(-50, 44, 2000, {}, false);
     chassis.turnToPoint(-71, 46.7, 2000, {.minSpeed=20,.earlyExitRange=10}, false);
+    matchloader::set(true);
     chassis.moveToPoint(-55, 46.7, 2000, {}, false);
     // pf_model.setDisabled(true);
-    matchloader::set(true);
     pros::delay(3000);
     matchloader::set(false);
     // pf_model.setDisabled(false);
@@ -229,7 +257,7 @@ void run() {
             .minSpeed=30,
             .earlyExitRange=15
             },false);
-    chassis.moveToPoint(-63,0,2000,{},false);
+    chassis.moveToPoint(-63,0,2000,{.minSpeed=40},false);
     }
 
 } // namespace auton1

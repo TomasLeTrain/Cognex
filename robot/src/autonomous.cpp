@@ -3,6 +3,7 @@
 #include "autos.h"
 #include "screen/screen.h"
 #include "systems/intake.h"
+#include "systems/matchloader.h"
 
 #define AUTON(auton,name) {name, auton::run },
 
@@ -18,6 +19,7 @@ std::map<std::string, std::function<void()>> auton_list = {
 void autonomous(){
     // initialize subsystems
     intake::init(false);
+    matchloader::init(false);
 
     // if(auto_alliance == alliance_t::red){
     //     printf("selected red alliance\n");
@@ -48,8 +50,8 @@ void autonomous(){
     screen::setScreen(&screen::dvd_screen);
 
     // put the routine being worked on here - COMMENT OUT IN ACTUAL COMPETITION!!!
-    // skills2::run();
-    simple_auton::run();
+    skills2::run();
+    // simple_auton::run();
     
     // COMMENT THIS IF NOT TESTING A SPECIFIC AUTON !!!!
     return;

@@ -6,6 +6,7 @@ enum intake_state_t {
 
     intake,
     outtake,
+    priming,
 
     slow_scoring_middle,
     slow_scoring_bottom,

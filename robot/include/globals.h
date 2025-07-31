@@ -73,11 +73,11 @@ struct CustomDistanceSensorConfiguration {
     static constexpr double std_deviation = (2_in).internal();
 
     // all these should add to one
-    static constexpr double randomCoeff = 0.15;
-    static constexpr double expCoeff = 0.1;
-    static constexpr double normalCoeff = 0.75;
+    static constexpr double randomCoeff = 0.15 - 0.025;
+    static constexpr double expCoeff = 0.1 - 0.025;
+    static constexpr double normalCoeff = 0.75 + 0.025 + 0.025;
 
-    static constexpr bool logging = false;
+    static constexpr bool logging = true;
 };
 
 
@@ -102,10 +102,11 @@ extern pros::Motor score_motor;
 extern pros::Motor bin_motor;
 
 extern pros::Optical middle_intake_color_sensor;
-extern pros::Optical top_intake_color_sensor;
+extern pros::Optical bottom_intake_color_sensor;
 
 // pistons
 extern pros::adi::DigitalOut intake_recycle_piston;
+extern pros::adi::DigitalOut intake_raise_piston;
 extern pros::adi::DigitalOut matchloader_piston;
 
 // odom rotation sensors
@@ -165,11 +166,11 @@ inline vexmaps::PfMotionModel<vexmaps::OdometryModel>
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
   front_laser_model(&front_distance, units::Pose(front_distance_offsets, 0_stDeg), "front");
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  left_laser_model(&left_distance, units::Pose(left_distance_offsets, 83_stDeg), "left");
+  left_laser_model(&left_distance, units::Pose(left_distance_offsets, 87.5_stDeg), "left");
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
   back_laser_model(&back_distance, units::Pose(back_distance_offsets, 180_stDeg), "back");
 inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  right_laser_model(&right_distance, units::Pose(right_distance_offsets, 263_stDeg), "right");
+  right_laser_model(&right_distance, units::Pose(right_distance_offsets, 271_stDeg), "right");
 
 inline vexmaps::ParticleFilterModel<pf_particle_count> pf_model(
                                                       &pf_motion_model,
@@ -224,7 +225,8 @@ enum class field_side_t { unset = -1, left = 0, right = 1 };
 
 // enum class corner_t { unset = -1,  red_left = 0, red_right = 1, blue_left = 2, blue_right = 3 };
 
-inline alliance_t auto_alliance = alliance_t::unset;
+// inline alliance_t auto_alliance = alliance_t::unset;
+inline alliance_t auto_alliance = alliance_t::red;
 inline field_side_t auto_side = field_side_t::unset;
 // inline corner_t auto_corner = corner_t::unset;
 inline std::string selected_auton = "";

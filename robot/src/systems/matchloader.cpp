@@ -20,11 +20,10 @@ void set(bool new_matchloader_state) {
 void driverUpdate() {
     // update states based on driver input
     bool toggleMatchloader =
-      controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+      (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) &&
+      controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT);
 
-    if (toggleMatchloader) {
-        set(!matchloader_state);
-    }
+    set(toggleMatchloader);
 }
 
 // code that should run during autonomous - should be based on extra state
@@ -36,9 +35,9 @@ void autoUpdate() {}
 void hardwareUpdate() {
     // intake update
     if (matchloader_state) {
-        intake_recycle_piston.set_value(true);
+        matchloader_piston.set_value(true);
     } else {
-        intake_recycle_piston.set_value(false);
+        matchloader_piston.set_value(false);
     }
 }
 
@@ -69,4 +68,4 @@ void init(bool gdriver) {
 
     tasks_active = true;
 }
-}; // namespace intake
+}; // namespace matchloader

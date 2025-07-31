@@ -18,23 +18,23 @@ pros::MotorGroup left_motor_group ({-11, -14,  13}, motor_gearing, motor_encodin
 pros::MotorGroup right_motor_group({15,   16, -10}, motor_gearing,motor_encoding);
 
 // inertial sensor
-vexmaps::ScaledIMU imu(1, 363.0 / 360.0);
+vexmaps::ScaledIMU imu(1, (360.0 + 3.8) / 360.0);
 
 // intake motors
 pros::Motor intake_motor(17);
 pros::Motor score_motor(-7);
 pros::Motor bin_motor(2);
 
-pros::Optical middle_intake_color_sensor(3);
-pros::Optical top_intake_color_sensor(8);
-
+pros::Optical middle_intake_color_sensor(8);
+pros::Optical bottom_intake_color_sensor(3);
 
 // pistons
 pros::adi::DigitalOut intake_recycle_piston('A',false);
-pros::adi::DigitalOut matchloader_piston('A',false);
+pros::adi::DigitalOut intake_raise_piston('B',false);
+pros::adi::DigitalOut matchloader_piston('C',false);
 
 // odom rotation sensors
-pros::Rotation vertical_odom_rotation(20);
+pros::Rotation vertical_odom_rotation(-20);
 pros::Rotation horizontal_odom_rotation(5);
 
 
@@ -66,7 +66,11 @@ verticalTrackers vertical_trackers = {
 // custom pf configs - probably can leave alone
 vexmaps::MotionModelConfig motion_model_config = {};
 // vexmaps::PFConfiguration Pfconfig = {.logging=true,.particle_logging=false};
-vexmaps::PFConfiguration Pfconfig = {.logging=false,.particle_logging=false};
+vexmaps::PFConfiguration Pfconfig = {
+    .logging=true,
+    .particle_logging=false,
+    // .custom_particle_logging=true,
+};
 vexmaps::SmootherConfig smoother_config = {
 };
 

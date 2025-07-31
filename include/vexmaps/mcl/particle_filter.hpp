@@ -26,6 +26,8 @@ class ParticleFilter {
 
     std::vector<Sensor*> sensors;
 
+    std::vector<units::Pose> custom_particles;
+
     BasePfMotionModel* motion_model;
     PFConfiguration PFConfig;
 
@@ -333,7 +335,8 @@ class ParticleFilter {
                    PFConfiguration config)
         : motion_model(motionModel),
           PFConfig(config),
-          sensors(std::move(sensors)) {
+          sensors(std::move(sensors)),
+        custom_particles(2,{0_in,0_in,0_stDeg}) {
         bordered_wall_length = wall_length - (PFConfig.wall_border_width);
     }
 
@@ -423,7 +426,20 @@ class ParticleFilter {
 
         if (PFConfig.logging) {
             printf("start particles\n");
-            if (PFConfig.particle_logging) {
+            if(PFConfig.custom_particle_logging){
+                // also add mcl pose
+                printf("%.1f %.1f %.1f\n",
+                       prediction.x.convert(in),
+                       prediction.y.convert(in),
+                       0);
+
+                for (size_t i = 0; i < custom_particles.size(); i++) {
+                    printf("%.1f %.1f %.1f\n",
+                           custom_particles[i].x.convert(in),
+                           custom_particles[i].y.convert(in),
+                           to_stDeg(custom_particles[i].orientation) * 100);
+                }
+            }else if (PFConfig.particle_logging) {
                 for (size_t i = 0; i < N; i++) {
                     printf("%.1f %.1f %.1f\n",
                            x[i].convert(in),
@@ -542,6 +558,10 @@ class ParticleFilter {
 
     bool getDisabled(){
         return disabled;
+    }
+
+    void changeCustomParticle(units::Pose new_particle, int index){
+        custom_particles[index] = new_particle;
     }
 };
 
