@@ -74,7 +74,7 @@ class ParticleFilterModel : public LocalizationModel {
         set_pose_normal_deviation = new_stdev;
     }
 
-    // getters
+    // getters 
     Time getTaskDeltaTime() override {
         return taskDeltaTime;
     }
@@ -116,17 +116,13 @@ class ParticleFilterModel : public LocalizationModel {
         return local_delta;
     }
 
-    void setDisabled(bool new_state) {
+    void setDisabled(bool new_state){
         std::lock_guard lock(m_mutex);
         particle_filter.setDisabled(new_state);
     }
 
-    bool getDisabled() {
+    bool getDisabled(){
         return particle_filter.getDisabled();
-    }
-
-    void changeCustomParticle(units::Pose new_particle, int index) {
-        changeCustomParticle(new_particle, index);
     }
 
     ~ParticleFilterModel() override = default;

@@ -27,10 +27,6 @@ struct PFConfiguration {
     bool logging = false;
     bool particle_logging = false;
 
-    // logs custom particles (could be other motion models)
-    // overrides and is not affected by particle_logging
-    bool custom_particle_logging = false;
-
     // threshold for sum of weights before normalization which determines if the
     // iteration is lost this should be tuned so iterations which are clearly
     // lost can be determined and counted so the algorithm can recover

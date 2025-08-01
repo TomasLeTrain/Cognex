@@ -7,6 +7,7 @@
 #include "autos.h"
 #include "globals.h"
 #include "systems/intake.h"
+#include "systems/matchloader.h"
 #include <iostream>
 
 // do not do anything outside here!
@@ -59,11 +60,11 @@ void run() {
 
     int l = bl ? 1 : -1;
 
-    double start_angle = bl ? 244.085 : 2 * 270 - 244.085;
+    double start_angle = bl ? 250 : 2 * 270 - 250.0;
 
-    RobotSetPose(47.489_in, -11.751_in * l, start_angle);
+    RobotSetPose(47_in, -13_in * l, start_angle);
 
-    intake::setColorSortEnabled(true);
+    // intake::setColorSortEnabled(true);
     intake::set(intake::intake);
 
     // std::cout << RobotGetPose().x << " " << RobotGetPose().y << " " <<
@@ -72,24 +73,31 @@ void run() {
 
     // chassis.turnToHeading(0,2000,{},false);
     // chassis.turnToHeading(0,9000,{},false);
-    chassis.moveToPoint(22.8, -23.3 * l, 2000, {}, false);
+    chassis.moveToPoint(22, -23 * l, 2000, {.maxSpeed=70}, false);
 
-    chassis.turnToPoint(0, 0, 2000, {}, false);
+    chassis.turnToPoint(0, 0 * l, 2000, {}, false);
 
-    chassis.moveToPoint(14, -15 * l, 2000, {}, false);
+    chassis.moveToPoint(13.5, -12.5 * l, 2000, {}, false);
 
     intake::set(intake::scoring_middle);
-    pros::delay(3000);
+    pros::delay(1400);
     intake::set(intake::intake);
 
-    chassis.moveToPoint(45, -47 * l, 2000, { .forwards = false }, false);
-    chassis.turnToPoint(67, -47 * l, 2000, {}, false);
-    chassis.moveToPoint(55.5, -47 * l, 2000, {}, false);
+    chassis.moveToPoint(41, -45 * l, 2000, { .forwards = false }, false);
+    matchloader::set(true);
+
+    chassis.turnToPoint(67, -46 * l, 2000, {}, false);
+
+    chassis.moveToPoint(56, -46 * l, 2000, {}, false);
+
     // matchload
-    pros::delay(1000);
-    chassis.moveToPoint(45, -47 * l, 2000, { .forwards = false }, false);
-    chassis.turnToPoint(0, -47 * l, 2000, {}, false);
-    chassis.moveToPoint(32, -47 * l, 2000, {}, false);
+    pros::delay(1200);
+
+    matchloader::set(false);
+
+    chassis.moveToPoint(45, -46 * l, 2000, { .forwards = false }, false);
+    chassis.turnToPoint(0, -45 * l, 2000, {}, false);
+    chassis.moveToPoint(28, -45 * l, 2000, {}, false);
     intake::set(intake::scoring_long);
 
     // auto start_time = pros::millis();

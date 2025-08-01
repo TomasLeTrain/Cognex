@@ -50,8 +50,8 @@ void autonomous(){
     screen::setScreen(&screen::dvd_screen);
 
     // put the routine being worked on here - COMMENT OUT IN ACTUAL COMPETITION!!!
-    skills2::run();
-    // simple_auton::run();
+    // skills2::run();
+    simple_auton::run();
     
     // COMMENT THIS IF NOT TESTING A SPECIFIC AUTON !!!!
     return;
