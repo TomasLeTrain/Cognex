@@ -51,6 +51,9 @@ void autonomous(){
 
     // put the routine being worked on here - COMMENT OUT IN ACTUAL COMPETITION!!!
     // skills2::run();
+
+    auto_alliance= alliance_t::blue;
+    auto_side = field_side_t::right;
     simple_auton::run();
     
     // COMMENT THIS IF NOT TESTING A SPECIFIC AUTON !!!!

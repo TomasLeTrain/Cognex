@@ -77,7 +77,7 @@ struct CustomDistanceSensorConfiguration {
     static constexpr double expCoeff = 0.1 - 0.025;
     static constexpr double normalCoeff = 0.75 + 0.025 + 0.025;
 
-    static constexpr bool logging = true;
+    static constexpr bool logging = false;
 };
 
 
@@ -228,6 +228,6 @@ enum class field_side_t { unset = -1, left = 0, right = 1 };
 inline alliance_t auto_alliance = alliance_t::unset;
 // inline alliance_t auto_alliance = alliance_t::red;
 inline field_side_t auto_side = field_side_t::unset;
-// inline field_side_t auto_side = field_side_t::left;
+// inline field_side_t auto_side = field_side_t::right;
 // inline corner_t auto_corner = corner_t::unset;
 inline std::string selected_auton = "";

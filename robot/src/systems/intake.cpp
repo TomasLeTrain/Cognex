@@ -64,6 +64,7 @@ int score_speed;
 int bin_speed;
 
 bool tmp_activated = false;
+bool last_tmp_activated = true;
 
 std::optional<alliance_t> last_middle_detected_color;
 
@@ -148,12 +149,17 @@ void driverUpdate() {
             set(intake_state_t::scoring_bottom);
         }
     } else if (scoreLong) {
-        tmp_activated = true;
+        // not active and last was not active either
+        if(last_tmp_activated){
+            tmp_activated = true;
+            last_tmp_activated = false;
+        }
 
         set(intake_state_t::scoring_long);
         // only disable if prime was not active
     } else if (!prime_active) {
         set(intake_state_t::intake_disabled);
+        last_tmp_activated = true;
     }
 }
 
@@ -200,8 +206,8 @@ void antiJam() {
         bool score_motor_slowed = motorSlowed(&score_motor);
 
         if (score_motor_slowed && intake_state == scoring_long
-            // && !tmp_activated) {
-            ) {
+            && !tmp_activated) {
+            // ) {
             intake_motor.move(0);
             // make sure bin would not continue running which would jam
             bin_motor.move(0);

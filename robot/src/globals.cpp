@@ -8,8 +8,8 @@ auto motor_gearing = pros::MotorGears::blue;
 // use motor encodings 
 auto motor_encoding = pros::MotorEncoderUnits::rotations;
 
-// vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
-vexmaps::LocalizationModel* pose_getter = &smoother_model;
+vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
+// vexmaps::LocalizationModel* pose_getter = &smoother_model;
 vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 
@@ -49,8 +49,8 @@ pros::Distance right_distance(19);
 // trackers and their offsets
 // WARNING: The signs are OPPOSITE of lemlib's.
 // you can use lemlib's tuning guide but have OPPOSITE signs!
-Length horizontal_offset = 0.51_in;
-Length vertical_offset = -0.31_in;
+Length horizontal_offset = 0.2_in;
+Length vertical_offset = 0.5_in;
 
 Length hor_odom_wheel_diameter = 1.995_in;
 Length ver_odom_wheel_diameter = 2.0_in;
@@ -67,7 +67,7 @@ verticalTrackers vertical_trackers = {
 vexmaps::MotionModelConfig motion_model_config = {};
 // vexmaps::PFConfiguration Pfconfig = {.logging=true,.particle_logging=false};
 vexmaps::PFConfiguration Pfconfig = {
-    .logging=true,
+    .logging=false,
     .particle_logging=false,
     // .custom_particle_logging=true,
 };

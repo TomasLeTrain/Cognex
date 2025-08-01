@@ -9,8 +9,8 @@
 void opcontrol(){
     // initialize tasks for each subsystem
 
-    autonomous();
-    return;
+    // autonomous();
+    // return;
 
     intake::init(true);
     matchloader::init(true);
