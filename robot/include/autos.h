@@ -53,3 +53,8 @@ inline units::Pose RobotGetPose(){
     }
     return pose;
 }
+
+inline void changePoseGetter(vexmaps::LocalizationModel* new_getter){
+    std::lock_guard lock(pose_mutex);
+    pose_getter = new_getter;
+}

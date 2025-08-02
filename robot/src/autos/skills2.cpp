@@ -21,44 +21,48 @@ namespace skills2 {
 void run() {
     // do whatever you want here
 
-    bool print_info = false;
+    // bool print_info = false;
+    //
+    // pros::Task smoother_task {[&] {
+    // while (print_info) {
+    //     int start_time = pros::millis();
+    //     printf(
+    //       "start generation\nstart distances\nend distances\nstart " "parti" "cles" "\n");
+    //
+    //     printf("%.1f %.1f %.1f\n",
+    //            pf_motion_model.getPose().x.convert(in),
+    //            pf_motion_model.getPose().y.convert(in),
+    //            0.0);
+    //     if(pf_model.getConfidence() != std::nullopt){
+    //         printf("%.1f %.1f %.1f\n",
+    //                 pf_model.getPose().x.convert(in),
+    //                 pf_model.getPose().y.convert(in),
+    //                 5.0);
+    //     }
+    //     printf("%.1f %.1f %.1f\n",
+    //            smoother_model.getPose().x.convert(in),
+    //            smoother_model.getPose().y.convert(in),
+    //            10.0);
+    //
+    //     printf(
+    //       "end particles\ntotal weight: 0, time taken: 30000, " "timestamp:" " %d\n",
+    //       start_time);
+    //     printf("things done:1,1,0,%d\n",16384);
+    //     printf("prediction:%.1f,%.1f,%.1f\n",
+    //            smoother_model.getPose().x.convert(in),
+    //            smoother_model.getPose().y.convert(in),
+    //            smoother_model.getPose().orientation.convert(deg));
+    //     printf("end generation\n");
+    //
+    //     pros::delay(10);
+    // }
+    // }};
 
-    pros::Task smoother_task {[&] {
-    while (print_info) {
-        int start_time = pros::millis();
-        printf(
-          "start generation\nstart distances\nend distances\nstart " "parti" "cles" "\n");
+    // pose_getter = &smoother_model;
 
-        printf("%.1f %.1f %.1f\n",
-               pf_motion_model.getPose().x.convert(in),
-               pf_motion_model.getPose().y.convert(in),
-               0.0);
-        if(pf_model.getConfidence() != std::nullopt){
-            printf("%.1f %.1f %.1f\n",
-                    pf_model.getPose().x.convert(in),
-                    pf_model.getPose().y.convert(in),
-                    5.0);
-        }
-        printf("%.1f %.1f %.1f\n",
-               smoother_model.getPose().x.convert(in),
-               smoother_model.getPose().y.convert(in),
-               10.0);
-
-        printf(
-          "end particles\ntotal weight: 0, time taken: 30000, " "timestamp:" " %d\n",
-          start_time);
-        printf("things done:1,1,0,%d\n",16384);
-        printf("prediction:%.1f,%.1f,%.1f\n",
-               smoother_model.getPose().x.convert(in),
-               smoother_model.getPose().y.convert(in),
-               smoother_model.getPose().orientation.convert(deg));
-        printf("end generation\n");
-
-        pros::delay(10);
-    }
-    }};
-
+    // pros::delay(40);
     RobotSetPose(-63_in, -16_in, 0);
+    pros::delay(40);
 
     // don't color sort
     intake::setColorSortEnabled(false);
@@ -84,9 +88,10 @@ void run() {
     // chassis.moveToPose(-29,31,145,2000,{.lead=0.5},false);
 
     // move towards center goal to score
-    chassis.moveToPoint(-13.5, 12.5, 2300, {.maxSpeed=40}, true);
+    // chassis.moveToPoint(-13.5, 12.5, 2300, {.maxSpeed=40}, true);
+    chassis.moveToPoint(-10, 11, 2300, {.maxSpeed=40}, true);
 
-    pros::delay(1700);
+    pros::delay(2300);
     matchloader::set(true);
     chassis.waitUntilDone();
 
@@ -137,7 +142,7 @@ void run() {
     chassis.moveToPoint(57, -47.5, 2000, {}, false);
 
     // pf_model.setDisabled(true);
-    pros::delay(2300);
+    pros::delay(1300);
     matchloader::set(false);
     // pf_model.setDisabled(false);
 
@@ -148,10 +153,13 @@ void run() {
     chassis.turnToPoint(0, -48.5, 2000, {}, false);
 
     // start priming intake
-    intake::set(intake::priming);
+    // intake::set(intake::priming);
 
-    chassis.moveToPoint(33, -48.5, 2000, {}, false);
+    chassis.moveToPoint(28, -48.5, 2000, {}, false);
 
+    intake::set(intake::unjam);
+    pros::delay(400);
+    
     // score all balls
     intake::setColorSortEnabled(false);
     // auto_alliance = alliance_t::blue;
@@ -184,6 +192,9 @@ void run() {
     chassis.moveToPoint(62, 15.5, 3000, {.minSpeed=70,.earlyExitRange=5}, false);
 
     // wait for mcl to work?
+    RobotSetPose(63_in, 16_in, 0);
+
+    // set pose to not be cooked
     pros::delay(1000);
 
     // get to matchloader
@@ -195,7 +206,7 @@ void run() {
     chassis.moveToPoint(57,47, 2000,{},false);
 
     // pf_model.setDisabled(true);
-    pros::delay(2300);
+    pros::delay(1300);
     matchloader::set(false);
     // pf_model.setDisabled(false);
 
@@ -206,7 +217,8 @@ void run() {
     chassis.moveToPoint(32.3, 31.5, 2000, {}, false);
 
     // score on center goal
-    chassis.moveToPoint(13.7, 13.6, 3000, {.maxSpeed=80}, false);
+    chassis.moveToPoint(11.3, 11.7, 3000, {.maxSpeed=80}, false);
+    // chassis.moveToPoint(11, -11.5, 2500, {.maxSpeed=80}, false);
     pf_model.setDisabled(true);
 
     // intake::setColorSortEnabled(true);
@@ -214,7 +226,7 @@ void run() {
     auto_alliance = alliance_t::red;
     intake::set(intake::scoring_bottom);
 
-    pros::delay(3000);
+    pros::delay(2300);
     pf_model.setDisabled(false);
 
     intake::setColorSortEnabled(false);
@@ -231,7 +243,7 @@ void run() {
     matchloader::set(true);
     chassis.moveToPoint(-55, 46.7, 2000, {}, false);
     // pf_model.setDisabled(true);
-    pros::delay(3000);
+    pros::delay(1800);
     matchloader::set(false);
     // pf_model.setDisabled(false);
 
@@ -245,7 +257,7 @@ void run() {
     // auto_alliance = alliance_t::red;
     intake::set(intake::scoring_long);
 
-    pros::delay(5500);
+    pros::delay(3600);
     // pf_model.setDisabled(false);
     intake::setColorSortEnabled(false);
     // auto_alliance = alliance_t::red;
@@ -254,10 +266,10 @@ void run() {
     // swing and run for the park
     chassis.swingToPoint(-63,0,lemlib::DriveSide::LEFT, 800, {
             .direction=lemlib::AngularDirection::CW_CLOCKWISE,
-            .minSpeed=30,
+            .minSpeed=40,
             .earlyExitRange=15
             },false);
-    chassis.moveToPoint(-63,0,2000,{.minSpeed=40},false);
+    chassis.moveToPoint(-63,0,2000,{.minSpeed=60},false);
     }
 
 } // namespace auton1

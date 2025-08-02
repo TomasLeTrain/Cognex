@@ -4,6 +4,8 @@ namespace intake {
 enum intake_state_t {
     intake_disabled,
 
+    intake_slow_bottom,
+
     intake,
     outtake,
     priming,

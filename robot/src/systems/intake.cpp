@@ -26,6 +26,8 @@ std::map<intake_state_t, int> intake_motor_speeds = {
     { scoring_long,        110  },
 
     { intake,              127  },
+    { intake_slow_bottom,  60   },
+
     { priming,             0    },
     { unjam,               -127 },
 };
@@ -40,22 +42,26 @@ std::map<intake_state_t, int> bin_motor_speeds = {
     { scoring_long,        -127 },
 
     { intake,              0    },
+    { intake_slow_bottom,  0    },
+
     { priming,             0    },
     { unjam,               127  },
 };
 
 std::map<intake_state_t, int> score_motor_speeds = {
-    { scoring_bottom,      0   },
-    { slow_scoring_bottom, 0   },
+    { scoring_bottom,      0    },
+    { slow_scoring_bottom, 0    },
 
-    { slow_scoring_middle, -20 },
-    { scoring_middle,      -20 },
+    { slow_scoring_middle, -20  },
+    { scoring_middle,      -20  },
 
-    { scoring_long,        127 },
+    { scoring_long,        127  },
 
-    { intake,              127 },
-    { priming,             0   },
-    { unjam,               127 },
+    { intake,              127  },
+    { intake_slow_bottom,  1227 },
+
+    { priming,             0    },
+    { unjam,               127  },
 };
 
 // speeds of the motors - can be positive or negative
@@ -150,7 +156,7 @@ void driverUpdate() {
         }
     } else if (scoreLong) {
         // not active and last was not active either
-        if(last_tmp_activated){
+        if (last_tmp_activated) {
             tmp_activated = true;
             last_tmp_activated = false;
         }
@@ -205,8 +211,8 @@ void antiJam() {
 
         bool score_motor_slowed = motorSlowed(&score_motor);
 
-        if (score_motor_slowed && intake_state == scoring_long
-            && !tmp_activated) {
+        if (score_motor_slowed && intake_state == scoring_long &&
+            !tmp_activated) {
             // ) {
             intake_motor.move(0);
             // make sure bin would not continue running which would jam
@@ -316,11 +322,12 @@ void colorSort() {
             return;
         }
 
-          // a ball is being measured
+        // a ball is being measured
         bool middle_wrong_color_detected = false;
 
         if (middle_detected_color.has_value()) {
-            middle_wrong_color_detected = middle_detected_color.value() != auto_alliance;
+            middle_wrong_color_detected =
+              middle_detected_color.value() != auto_alliance;
         }
         // the detected ball is not the our alliance
         // we selected an autonomous alliance
@@ -404,7 +411,9 @@ void hardwareUpdate() {
     // millisecends to be able to use
     if (intake_mutex.take(2)) {
         if (intake_state == intake || intake_state == scoring_middle ||
-            intake_state == slow_scoring_middle)
+            intake_state == slow_scoring_middle ||
+            intake_state == intake_slow_bottom ||
+            intake_state == intake_disabled)
             intake_recycle_piston.set_value(true);
         else
             intake_recycle_piston.set_value(false);

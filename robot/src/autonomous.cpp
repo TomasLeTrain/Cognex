@@ -53,8 +53,10 @@ void autonomous(){
     // skills2::run();
 
     auto_alliance= alliance_t::blue;
+    // auto_side = field_side_t::left;
     auto_side = field_side_t::right;
     simple_auton::run();
+    // skills::run();
     
     // COMMENT THIS IF NOT TESTING A SPECIFIC AUTON !!!!
     return;

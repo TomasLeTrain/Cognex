@@ -1,5 +1,7 @@
 #include "globals.h"
 #include "pros/abstract_motor.hpp"
+#include "pros/apix.h"
+#include "pros/rtos.hpp"
 #include "vexmaps/odometry/tracking_wheel.hpp"
 #include "vexmaps/smoother_model.hpp"
 
@@ -8,8 +10,11 @@ auto motor_gearing = pros::MotorGears::blue;
 // use motor encodings 
 auto motor_encoding = pros::MotorEncoderUnits::rotations;
 
+
 vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
 // vexmaps::LocalizationModel* pose_getter = &smoother_model;
+pros::Mutex pose_mutex;
+
 vexmaps::LocalizationModel* orientation_getter = nullptr;
 
 

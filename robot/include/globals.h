@@ -65,6 +65,7 @@ extern vexmaps::SmootherConfig smoother_config;
 
 extern vexmaps::LocalizationModel* pose_getter;
 extern vexmaps::LocalizationModel* orientation_getter;
+extern pros::Mutex pose_mutex;
 
 // likely does not need to change
 struct CustomDistanceSensorConfiguration {

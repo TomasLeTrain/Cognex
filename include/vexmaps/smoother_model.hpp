@@ -15,8 +15,8 @@ struct SmootherConfig {
     // // determines how much a pose measurement influences the pose estimate
     // double alpha_x = 0.025;
     // double alpha_y = 0.025;
-    double alpha_x = 0.03;
-    double alpha_y = 0.03;
+    double alpha_x = 0.05;
+    double alpha_y = 0.05;
     double alpha_theta = 0.00;
 
     // used by pose_delta_measurement to estimate the pose
@@ -250,6 +250,12 @@ class SmootherModel : public LocalizationModel {
     // TODO: make this part of LocalizationModel class
     Time getLatestDeltaTime() {
         return latest_delta_time;
+    }
+    
+    // TODO: make this part of LocalizationModel class
+    void changeConfiguration(SmootherConfig new_config) {
+        std::lock_guard lock(m_mutex);
+        config = new_config;
     }
 
     ~SmootherModel() override = default;

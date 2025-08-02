@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "main.h"
 #include "screen/screen.h"
+#include <mutex>
 
 void initialize() {
     // need to start localization tasks and lemlib related things
@@ -32,7 +33,7 @@ void initialize() {
         printf("IMU calibration failed, just give up\n");
     }
 
-    // pros::delay(200);
+    pros::delay(100);
 
     // initialize all models
     pf_motion_model.init();
@@ -92,6 +93,7 @@ void initialize() {
     // constantly updates lemlib's pose
     pros::Task lemlib_pose_task { [&] {
         while (true) {
+            std::lock_guard lock(pose_mutex);
             uint32_t current_time = pros::millis();
 
             // should update lemlib pose

@@ -77,39 +77,49 @@ void run() {
     // chassis.turnToHeading(0,2000,{},false);
     // chassis.turnToHeading(0,9000,{},false);
     pf_model.setDisabled(true);
-    chassis.moveToPoint(22, -19 * l, 2000, {.maxSpeed=40}, false);
+    chassis.moveToPoint(22, -22 * l, 2000, {.maxSpeed=40}, false);
 
     chassis.turnToPoint(0, 0 * l, 2000, {}, false);
 
-    chassis.moveToPoint(13.75, -11.5 * l, 2000, {.maxSpeed=60}, false);
+    if(bl){
+        matchloader::set(true);
+    }
 
-    pros::delay(200);
+    // pros::delay(100);
 
     if(bl){
+        chassis.moveToPoint(12, -12.5 * l, 2500, {.maxSpeed=80}, false);
         intake::set(intake::scoring_middle);
     }else{
+        chassis.moveToPoint(12, -12.5 * l, 2500, {.maxSpeed=80}, false);
         intake::set(intake::scoring_bottom);
     }
 
-    pros::delay(3000);
+    // make sure its down
+    // matchloader::set(false);
+
+    pros::delay(2000);
     intake::set(intake::intake);
 
     pf_model.setDisabled(false);
-    chassis.moveToPoint(40, -47 * l, 2000, { .forwards = false }, false);
+
+    chassis.moveToPoint(40, -47.5 * l, 2000, { .forwards = false,.maxSpeed=65 }, false);
     matchloader::set(true);
 
-    chassis.turnToPoint(67, -47 * l, 2000, {}, false);
+    chassis.turnToPoint(67, -47 * l, 2000, {.maxSpeed=65}, false);
+    intake::set(intake::intake_slow_bottom);
 
-    chassis.moveToPoint(56, -47 * l, 2000, {.maxSpeed=60}, false);
+    chassis.moveToPoint(56.5, -47 * l, 2000, {.maxSpeed=40}, false);
 
     // matchload
-    pros::delay(600);
+    pros::delay(400);
 
     matchloader::set(false);
 
-    chassis.moveToPoint(45, -46 * l, 2000, { .forwards = false }, false);
-    chassis.turnToPoint(0, -46 * l, 2000, {}, false);
-    chassis.moveToPoint(28.5, -46 * l, 2000, {.maxSpeed=60,.minSpeed=1,.earlyExitRange=4}, false);
+    chassis.moveToPoint(45, -47 * l, 2000, { .forwards = false,.maxSpeed=65 }, false);
+    chassis.turnToPoint(0, -47 * l, 2000, {.maxSpeed=65}, false);
+    // intake::set(intake::priming);
+    chassis.moveToPoint(28, -47 * l, 1800, {.maxSpeed=75}, false);
     intake::set(intake::scoring_long);
 
     // auto start_time = pros::millis();
