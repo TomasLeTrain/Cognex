@@ -88,17 +88,19 @@ void run() {
     // pros::delay(100);
 
     if(bl){
-        chassis.moveToPoint(12, -12.5 * l, 2500, {.maxSpeed=80}, false);
+        chassis.moveToPoint(11.5, -12 * l, 2500, {.maxSpeed=80}, false);
+        chassis.turnToPoint(0, 0 * l, 2000, {}, false);
         intake::set(intake::scoring_middle);
     }else{
-        chassis.moveToPoint(12, -12.5 * l, 2500, {.maxSpeed=80}, false);
+        chassis.moveToPoint(11.8, -12.8 * l, 2500, {.maxSpeed=60}, false);
+        chassis.turnToPoint(0, 0 * l, 800, {}, false);
         intake::set(intake::scoring_bottom);
     }
 
     // make sure its down
     // matchloader::set(false);
 
-    pros::delay(2000);
+    pros::delay(1200);
     intake::set(intake::intake);
 
     pf_model.setDisabled(false);
@@ -109,15 +111,14 @@ void run() {
     chassis.turnToPoint(67, -47 * l, 2000, {.maxSpeed=65}, false);
     intake::set(intake::intake_slow_bottom);
 
-    chassis.moveToPoint(56.5, -47 * l, 2000, {.maxSpeed=40}, false);
+    chassis.moveToPoint(56.5, -47 * l, 2000, {.maxSpeed=80}, false);
 
     // matchload
-    pros::delay(400);
-
-    matchloader::set(false);
+    pros::delay(300);
 
     chassis.moveToPoint(45, -47 * l, 2000, { .forwards = false,.maxSpeed=65 }, false);
     chassis.turnToPoint(0, -47 * l, 2000, {.maxSpeed=65}, false);
+    matchloader::set(false);
     // intake::set(intake::priming);
     chassis.moveToPoint(28, -47 * l, 1800, {.maxSpeed=75}, false);
     intake::set(intake::scoring_long);

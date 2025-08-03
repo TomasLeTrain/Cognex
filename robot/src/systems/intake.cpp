@@ -412,11 +412,14 @@ void hardwareUpdate() {
     if (intake_mutex.take(2)) {
         if (intake_state == intake || intake_state == scoring_middle ||
             intake_state == slow_scoring_middle ||
-            intake_state == intake_slow_bottom ||
-            intake_state == intake_disabled)
+            intake_state == intake_slow_bottom
+            // || intake_state == intake_disabled)
+            )
             intake_recycle_piston.set_value(true);
         else
+
             intake_recycle_piston.set_value(false);
+
 
         if (intake_state == scoring_bottom ||
             intake_state == slow_scoring_bottom)
