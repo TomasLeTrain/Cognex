@@ -436,8 +436,6 @@ class ParticleFilter {
 
         updatePredictionBasedOnParticles();
 
-        int zero_particles = 0;
-
         bool resampling = false;
 
         // effective_sample_size = sum(w[i]) / sum (w[i]^2) -> 1 / sum (w[i]^2)
