@@ -4,48 +4,28 @@
         "project_name": "cognex",
         "target": "v5",
         "templates": {
-            "LemLib": {
-                "location": "/home/tomass/.config/pros/templates/LemLib@0.5.6-local",
+            "float_units": {
+                "location": "/home/tomas/.config/pros/templates/float_units@0.7.3",
                 "metadata": {
                     "origin": "local"
                 },
-                "name": "LemLib",
+                "name": "float_units",
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.2.1",
                 "system_files": [
-                    "include/lemlib/LICENSE",
-                    "include/lemlib/logger/stdout.hpp",
-                    "include/lemlib/pid.hpp",
-                    "include/fmt/format-inl.h",
-                    "include/fmt/core.h",
-                    "include/lemlib/logger/message.hpp",
-                    "include/lemlib/logger/telemetrySink.hpp",
-                    "include/lemlib/chassis/chassis.hpp",
-                    "include/lemlib/util.hpp",
-                    "include/lemlib/logger/logger.hpp",
-                    "include/lemlib/api.hpp",
-                    "include/lemlib/exitcondition.hpp",
-                    "include/fmt/LICENSE",
-                    "include/lemlib/logger/infoSink.hpp",
-                    "include/lemlib/README.md",
-                    "include/lemlib/pose.hpp",
-                    "firmware/LemLib.a",
-                    "include/fmt/args.h",
                     "firmware/hot-cold-asset.mk",
-                    "static/example.txt",
-                    "include/lemlib/logger/baseSink.hpp",
-                    "include/lemlib/timer.hpp",
-                    "include/lemlib/asset.hpp",
-                    "include/lemlib/chassis/trackingWheel.hpp",
-                    "include/lemlib/chassis/odom.hpp",
-                    "include/lemlib/logger/buffer.hpp",
-                    "include/lemlib/driveCurve.hpp",
-                    "include/fmt/format.h",
-                    "include/lemlib/VERSION"
+                    "include/units/Temperature.hpp",
+                    "include/units/units.hpp",
+                    "firmware/float_units.a",
+                    "include/units/all.hpp",
+                    "include/units/Pose.hpp",
+                    "include/units/Vector3D.hpp",
+                    "include/units/Vector2D.hpp",
+                    "include/units/Angle.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.5.6-local"
+                "version": "0.7.3"
             },
             "kernel": {
                 "location": "/home/tomass/.config/pros/templates/kernel@4.2.1",
@@ -633,86 +613,64 @@
                 "user_files": [],
                 "version": "9.2.0"
             },
-            "units": {
-                "location": "/home/tomass/.config/pros/templates/units@0.7.1",
-                "metadata": {
-                    "origin": "local"
-                },
-                "name": "units",
-                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
-                "supported_kernels": "^4.2.0",
-                "system_files": [
-                    "include/units/Angle.hpp",
-                    "include/units/Vector3D.hpp",
-                    "include/units/Temperature.hpp",
-                    "firmware/units.a",
-                    "include/units/Pose.hpp",
-                    "include/units/all.hpp",
-                    "include/units/units.hpp",
-                    "firmware/hot-cold-asset.mk",
-                    "include/units/Vector2D.hpp"
-                ],
-                "target": "v5",
-                "user_files": [],
-                "version": "0.7.1"
-            },
             "vexmaps": {
-                "location": "/home/tomass/.config/pros/templates/vexmaps@0.0.4",
+                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.5",
                 "metadata": {
                     "origin": "local"
                 },
                 "name": "vexmaps",
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
-                "supported_kernels": "^4.2.0",
+                "supported_kernels": "^4.2.1",
                 "system_files": [
-                    "include/vexmaps/mcl/distance_model.hpp",
-                    "include/vexmaps/mcl/api.hpp",
                     "include/vexmaps/odometry/scaled_imu.hpp",
-                    "include/vexmaps/mcl/utils.hpp",
-                    "include/vexmaps/mcl/pf_motion_model.hpp",
-                    "include/vexmaps/api.hpp",
                     "include/vexmaps/localization_model.hpp",
-                    "include/vexmaps/odometry/api.hpp",
-                    "include/vexmaps/mcl/config.hpp",
-                    "include/vexmaps/odometry/tracking_wheel.hpp",
-                    "include/vexmaps/odometry/odometry.hpp",
-                    "firmware/vexmaps.a",
-                    "include/vexmaps/mcl/particle_filter.hpp",
-                    "include/vexmaps/smoother_model.hpp",
+                    "include/vexmaps/model_manager.hpp",
+                    "include/vexmaps/api.hpp",
                     "include/vexmaps/particle_filter_model.hpp",
-                    "include/vexmaps/mcl/sensor.hpp"
+                    "include/vexmaps/mcl/pf_motion_model.hpp",
+                    "include/vexmaps/mcl/distance_model.hpp",
+                    "include/vexmaps/mcl/utils.hpp",
+                    "include/vexmaps/mcl/sensor.hpp",
+                    "include/vexmaps/odometry/tracking_wheel.hpp",
+                    "include/vexmaps/mcl/api.hpp",
+                    "include/vexmaps/mcl/particle_filter.hpp",
+                    "include/vexmaps/odometry/api.hpp",
+                    "include/vexmaps/smoother_model.hpp",
+                    "include/vexmaps/mcl/config.hpp",
+                    "include/vexmaps/odometry/odometry.hpp",
+                    "firmware/vexmaps.a"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.4"
+                "version": "0.0.5"
             },
             "vexmath": {
-                "location": "/home/tomass/.config/pros/templates/vexmath@0.0.5",
+                "location": "/home/tomas/.config/pros/templates/vexmath@0.0.7",
                 "metadata": {
                     "origin": "local"
                 },
                 "name": "vexmath",
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
-                "supported_kernels": "^4.2.0",
+                "supported_kernels": "^4.2.1",
                 "system_files": [
-                    "include/vexmath/fast_prng/SplitMix64.hpp",
                     "include/vexmath/fast_prng/Xoshiro128plus_vectorized.hpp",
-                    "include/vexmath/ziggurat/normal.hpp",
-                    "include/vexmath/functions/vectorized_trig_taylor.hpp",
-                    "include/vexmath/functions/vectorized_exp_log.hpp",
-                    "include/vexmath/fast_prng/Xoshiro128plus.hpp",
-                    "include/vexmath/ziggurat/exponential.hpp",
-                    "include/vexmath/functions/vectorized_sqrt.hpp",
                     "include/vexmath/functions/vectorized_trig.hpp",
-                    "firmware/vexmath.a",
-                    "include/vexmath/entropy.hpp",
+                    "include/vexmath/ziggurat/shared.hpp",
                     "include/vexmath/functions/trig_taylor.hpp",
+                    "include/vexmath/functions/vectorized_sqrt.hpp",
+                    "firmware/vexmath.a",
+                    "include/vexmath/functions/vectorized_exp_log.hpp",
+                    "include/vexmath/entropy.hpp",
+                    "include/vexmath/ziggurat/exponential.hpp",
+                    "include/vexmath/fast_prng/Xoshiro128plus.hpp",
+                    "include/vexmath/ziggurat/normal.hpp",
                     "include/vexmath/fast_prng/SplitMix32.hpp",
-                    "include/vexmath/ziggurat/shared.hpp"
+                    "include/vexmath/functions/vectorized_trig_taylor.hpp",
+                    "include/vexmath/fast_prng/SplitMix64.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.5"
+                "version": "0.0.7"
             }
         },
         "upload_options": {},

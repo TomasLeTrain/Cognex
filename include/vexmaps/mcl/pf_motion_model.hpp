@@ -36,7 +36,7 @@ class BasePfMotionModel : public LocalizationModel {
     /**
      * @brief Returns a noisy global delta
      */
-    virtual units::V2Position noisyGlobalDelta() = 0;
+    virtual units::V2FPosition noisyGlobalDelta() = 0;
     /**
      * @brief Called by the particle filter to update the lost iteration count
      */
@@ -45,7 +45,7 @@ class BasePfMotionModel : public LocalizationModel {
      * @brief Precomputes values based on a global pose delta. Should be called
      * right before getting noisy global deltas.
      */
-    virtual units::Pose precompute() = 0;
+    virtual units::FPose precompute() = 0;
 };
 
 /**
@@ -57,9 +57,17 @@ template<typename ModelType>
     requires std::derived_from<ModelType, LocalizationModel>
 class PfMotionModel : public BasePfMotionModel {
   private:
+    /**
+     * @brief Used to get an estimate for the Robot's movements. Owned and
+     * managed by this class only.
+     */
+    ModelType base_motion_model;
+
     std::uniform_real_distribution<float> average_distance_distribution;
     std::uniform_real_distribution<float> angle_distribution;
     std::uniform_real_distribution<float> drift_distribution;
+
+    MotionModelConfig motionModelConfig;
 
     Vuniform_float32_t forwards_distribution;
 
@@ -87,13 +95,6 @@ class PfMotionModel : public BasePfMotionModel {
 
     units::Pose accumulated_global_delta = units::Pose(), global_pose_delta;
 
-    MotionModelConfig motionModelConfig;
-
-    /**
-     * @brief Used to get an estimate for the Robot's movements. Owned and
-     * managed by this class only.
-     */
-    ModelType base_motion_model;
   protected:
     mutable pros::Mutex m_mutex;
 
@@ -120,7 +121,7 @@ class PfMotionModel : public BasePfMotionModel {
     void setPose(units::Pose new_pose) override {
         std::lock_guard lock(m_mutex);
         base_motion_model.setPose(new_pose);
-        accumulated_global_delta = units::Pose();
+        accumulated_global_delta = units::FPose();
     }
 
     std::optional<float> getConfidence() override {
@@ -161,21 +162,22 @@ class PfMotionModel : public BasePfMotionModel {
         base_motion_model.update();
 
         accumulated_global_delta += base_motion_model.getGlobalPoseDelta();
-        accumulated_global_delta.orientation += base_motion_model.getGlobalPoseDelta().orientation;
+        accumulated_global_delta.orientation +=
+          base_motion_model.getGlobalPoseDelta().orientation;
 
         // update timestamps
-        update_timestamp = from_msec(pros::millis());
+        update_timestamp = from_msec(static_cast<double>(pros::millis()));
     }
 
-    units::Pose precompute() override {
+    units::FPose precompute() override {
         std::lock_guard lock(m_mutex);
-        units::Pose current_pose = base_motion_model.getPose();
+        units::FPose current_pose = base_motion_model.getPose();
 
         global_pose_delta = accumulated_global_delta;
         accumulated_global_delta = units::Pose();
 
         Time current_precompute_time = from_msec(pros::millis());
-        Time delta_time;
+        Time delta_time = 0_msec;
 
         if (std::isfinite(last_precomputed_time.internal())) {
             delta_time = current_precompute_time - last_precomputed_time;
@@ -188,17 +190,13 @@ class PfMotionModel : public BasePfMotionModel {
         abs_delta_theta = units::abs(global_pose_delta.orientation);
 
         // scales noise according to the amount of time that has passed
-        float delta_times = (delta_time / motionModelConfig.process_time);
+        double delta_times = (delta_time / motionModelConfig.process_time);
 
-        if (delta_times < 1) {
-            delta_times = 0;
-        } else {
-            delta_times -= 1;
-        }
+        // to increase the area of the noise linearly we must scale it based on
+        // the square root of the delta times
+        double time_noise_multiplier = sqrt(delta_times);
 
-        float time_noise_multiplier =
-          1 + delta_times * motionModelConfig.process_time_noise_factor;
-
+        // noise which depends on the time passed since last update
         const Length time_dependent_forwards_noise =
           motionModelConfig.forwards_noise +
           motionModelConfig.angle_to_forwards_noise * abs_delta_theta;
@@ -210,6 +208,7 @@ class PfMotionModel : public BasePfMotionModel {
           motionModelConfig.drift_noise +
           motionModelConfig.angle_to_drift_noise * abs_delta_theta;
 
+        // time and non time dependent noises combined
         const Length distance_noise =
           time_dependent_forwards_noise * time_noise_multiplier +
           motionModelConfig.lost_iter_to_forwards_noise * lost_iteration_count;
@@ -238,13 +237,14 @@ class PfMotionModel : public BasePfMotionModel {
         forwards_distribution = Vuniform_float32_t((-distance_noise).internal(),
                                                    (+distance_noise).internal(),
                                                    robot_rng());
+        // doubles get casted to floats
         angle_a = (-angle_noise).internal();
         angle_b = (+angle_noise).internal();
-        angle_k = (angle_b - angle_a) / static_cast<float>(UINT32_MAX);
+        angle_k = (angle_b - angle_a) / static_cast<double>(UINT32_MAX);
 
         drift_a = (-drift_noise).internal();
         drift_b = (+drift_noise).internal();
-        drift_k = (drift_b - drift_a) / static_cast<float>(UINT32_MAX);
+        drift_k = (drift_b - drift_a) / static_cast<double>(UINT32_MAX);
 
         global_pose_delta_x = global_pose_delta.x.internal();
         global_pose_delta_y = global_pose_delta.y.internal();
@@ -287,9 +287,9 @@ class PfMotionModel : public BasePfMotionModel {
      *
      * @return Noisy global delta
      */
-    units::V2Position noisyGlobalDelta() override {
-        const Length vertical_noise = average_distance_distribution(rng) * m;
-        const Length horizontal_noise = drift_distribution(rng) * m;
+    units::V2FPosition noisyGlobalDelta() override {
+        const FLength vertical_noise = average_distance_distribution(rng) * m;
+        const FLength horizontal_noise = drift_distribution(rng) * m;
         const float angle_noise = angle_distribution(rng);
 
         float new_sina, new_cosa;

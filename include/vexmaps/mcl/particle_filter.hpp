@@ -9,7 +9,6 @@
 #include "vexmaps/mcl/pf_motion_model.hpp"
 #include "vexmaps/mcl/sensor.hpp"
 #include "vexmaps/mcl/utils.hpp"
-#include "vexmath/functions/vectorized_sqrt.hpp"
 #include <arm_neon.h>
 
 namespace vexmaps {
@@ -20,24 +19,24 @@ class ParticleFilter {
     // used for vectorization
     static constexpr size_t remaining_particles = (N - (N % 4));
 
-    alignas(16) Length x[N];
-    alignas(16) Length y[N];
+	// aligned to 16 bytes (4 floats)
+    alignas(16) FLength x[N];
+    alignas(16) FLength y[N];
     alignas(16) float weights[N];
-
-    std::vector<Sensor*> sensors;
 
     BasePfMotionModel* motion_model;
     PFConfiguration PFConfig;
+    std::vector<Sensor*> sensors;
 
     // global pose delta from the base motion model
-    units::Pose globalPoseDelta;
+    units::FPose globalPoseDelta;
 
     std::uniform_real_distribution<float> field_dist { -wall_length.internal(),
                                                        wall_length.internal() };
 
     uint64_t start_time;
 
-    units::Pose prediction;
+    units::FPose prediction;
 
     int lost_iteration_count = 0;
 
@@ -57,7 +56,7 @@ class ParticleFilter {
      */
     const float average_weight = sum_factor / N;
 
-    Length bordered_wall_length;
+    FLength bordered_wall_length;
 
     // the sum of the particles before normalization
     float total_weight = 0;
@@ -74,7 +73,7 @@ class ParticleFilter {
     float ess;
 
     // ensures all updates work off of the same angle even if its not the latest
-    Angle current_angle = 0_stDeg;
+    FAngle current_angle = 0_FstDeg;
 
     // set to 1 when we have a global measurement, otherwise nullopt
     std::optional<float> confidence = std::nullopt;
@@ -86,10 +85,10 @@ class ParticleFilter {
     // -- functions called in update -- //
 
     void applyMotionModel() {
-        globalPoseDelta = units::Pose(0_m, 0_m, 0_stDeg);
+        globalPoseDelta = units::FPose(0_Fm, 0_Fm, 0_FstDeg);
         // applies noise regardless if we have new information or not
         // should be fine since the noise is scaled based on time
-        units::Pose current_global_delta = motion_model->precompute();
+        units::FPose current_global_delta = motion_model->precompute();
 
         globalPoseDelta = current_global_delta;
         current_angle = motion_model->getPose().orientation;
@@ -141,7 +140,6 @@ class ParticleFilter {
     }
 
     void checkOutOfFieldParticles() {
-        // TODO: check/fix performance
         for (size_t i = 0; i < N; i++) {
             // places the particle randomly on the field if its out of the field
             if (outOfField(i)) {
@@ -213,8 +211,8 @@ class ParticleFilter {
         }
 
         // sum of included particles multiplied by their respective weights
-        Length weighted_x_sum = 0.0_m;
-        Length weighted_y_sum = 0.0_m;
+        FLength weighted_x_sum = 0.0_Fm;
+        FLength weighted_y_sum = 0.0_Fm;
 
         // sum of the weights of the particles included in the prediction
         float weight_sum = 0;
@@ -223,7 +221,7 @@ class ParticleFilter {
         const float max_weight_threshold =
           max_weight * PFConfig.weightPredictionFactor;
 
-        for (int i = 0; i < N; i++) {
+        for (size_t i = 0; i < N; i++) {
             if (max_weight_threshold <= weights[i]) {
                 weighted_x_sum += x[i] * weights[i];
                 weighted_y_sum += y[i] * weights[i];
@@ -297,10 +295,10 @@ class ParticleFilter {
 
     void endUpdate() {
         if (PFConfig.logging) {
-            printf("total weight: %f, time taken: %d, timestamp: ",
+            printf("total weight: %f, time taken: %lld, timestamp: ",
                    total_weight,
                    pros::micros() - start_time);
-            printf("%d\n", pros::millis());
+            printf("%ud\n", pros::millis());
             printf("things done:%d,%d,%d,%d\n",
                    this->appliedMotionModel,
                    this->weightedParticles,
@@ -309,14 +307,14 @@ class ParticleFilter {
             printf("prediction:%f,%f,%f\n",
                    this->prediction.x.convert(in),
                    this->prediction.y.convert(in),
-                   this->prediction.orientation.convert(deg));
+                   this->prediction.orientation.convert(Fdeg));
             printf("end generation\n");
         }
     }
 
-    void updatePrediction(Length x,
-                          Length y,
-                          Angle angle,
+    void updatePrediction(FLength x,
+                          FLength y,
+                          FAngle angle,
                           std::optional<float> confidence = std::nullopt) {
         // set to nullopt by default
         this->confidence = confidence;
@@ -341,7 +339,7 @@ class ParticleFilter {
         sensors.emplace_back(sensor);
     }
 
-    units::Pose getPose() {
+    units::FPose getPose() {
         return prediction;
     }
 
@@ -436,6 +434,8 @@ class ParticleFilter {
 
         updatePredictionBasedOnParticles();
 
+        // int zero_particles = 0;
+
         bool resampling = false;
 
         // effective_sample_size = sum(w[i]) / sum (w[i]^2) -> 1 / sum (w[i]^2)
@@ -469,14 +469,14 @@ class ParticleFilter {
      * greater value will cause particles to deviate more from the reference
      * point.
      */
-    void initNormal(const units::Pose pose, const Length std_deviation) {
-        std::normal_distribution x_dist(pose.x.internal(),
+    void initNormal(const units::FPose pose, const FLength std_deviation) {
+        std::normal_distribution<float> x_dist(pose.x.internal(),
                                         std_deviation.internal());
-        std::normal_distribution y_dist(pose.y.internal(),
+        std::normal_distribution<float> y_dist(pose.y.internal(),
                                         std_deviation.internal());
         for (size_t i = 0; i < N; i++) {
-            x[i] = x_dist(rng) * m;
-            y[i] = y_dist(rng) * m;
+            x[i] = x_dist(rng) * Fm;
+            y[i] = y_dist(rng) * Fm;
         }
         for (size_t i = 0; i < N; i++) {
             weights[i] = average_weight;
@@ -486,25 +486,25 @@ class ParticleFilter {
         motion_model->setPose(pose);
     }
 
-    void initUniform(const Length min_x,
-                     const Length min_y,
-                     const Length max_x,
-                     const Length max_y,
-                     const Angle orientation) {
-        std::uniform_real_distribution x_dist(min_x.internal(),
+    void initUniform(const FLength min_x,
+                     const FLength min_y,
+                     const FLength max_x,
+                     const FLength max_y,
+                     const FAngle orientation) {
+        std::uniform_real_distribution<float> x_dist(min_x.internal(),
                                               max_x.internal());
-        std::uniform_real_distribution y_dist(min_y.internal(),
+        std::uniform_real_distribution<float> y_dist(min_y.internal(),
                                               max_y.internal());
 
         for (size_t i = 0; i < N; i++) {
-            x[i] = x_dist(rng) * m;
-            y[i] = y_dist(rng) * m;
+            x[i] = x_dist(rng) * Fm;
+            y[i] = y_dist(rng) * Fm;
         }
         for (size_t i = 0; i < N; i++) {
             weights[i] = average_weight;
         }
-        const Length avg_x = (max_x + min_x) / 2.0;
-        const Length avg_y = (max_y + min_y) / 2.0;
+        const FLength avg_x = (max_x + min_x) / 2.0;
+        const FLength avg_y = (max_y + min_y) / 2.0;
 
         // need to update motion model as well
         updatePrediction(avg_x, avg_y, orientation);
@@ -513,8 +513,8 @@ class ParticleFilter {
 
     void init() {
         for (size_t i = 0; i < N; i++) {
-            x[i] = 0.0_m;
-            y[i] = 0.0_m;
+            x[i] = 0.0_Fm;
+            y[i] = 0.0_Fm;
             weights[i] = average_weight;
         }
 
@@ -522,7 +522,7 @@ class ParticleFilter {
                     -wall_length,
                     wall_length,
                     wall_length,
-                    0_stDeg);
+                    0_FstDeg);
     }
 
     std::optional<float> getConfidence() {
@@ -530,7 +530,7 @@ class ParticleFilter {
     }
 
     // uses the motion model distance traveled since its less noisy
-    Length getDistanceTraveled() {
+    FLength getDistanceTraveled() {
         return motion_model->getDistanceTraveled();
     }
 

@@ -17,14 +17,20 @@ namespace vexmaps {
 template<class DistanceSensorConfig>
     requires ValidDistanceConfig<DistanceSensorConfig>
 class DistanceSensorModel : public Sensor {
-    Length measured_distance = 0_m;
+
     pros::Distance* distance_sensor;
-
-    Angle angle = 0_stDeg;
-
     units::Pose offsets;
+    std::string name;
 
     units::Pose rotated_offsets = { 0_m, 0_m, 0_stDeg };
+    Length measured_distance = 0_m;
+
+    // determines whether or not readings from this sensor are used - false when
+    // there are no measurements
+    bool exit = false;
+
+    // when false, sensor is not used regardless of measurements
+    bool enabled = true;
 
     // 2.5 meters is more than what the distance sensor will ever be able to
     // sense
@@ -35,39 +41,30 @@ class DistanceSensorModel : public Sensor {
 
     // precomputed values
 
-    // doubles since they are not used directly
-    double cosa;
-    double sina;
-    double secant;
-    double cosecant;
-
-    Length horizontal_wall_length = wall_length;
-    Length vertical_wall_length = wall_length;
-
-    // floats since they are used in evaluate
+    // values used per particle evaluation - should all be floats
     float Vhor_wall_coeff;
     float Vver_wall_coeff;
 
+    float fsina, fcosa;
+
+    float f_measured_distance = 0;
+
     float x_coeff;
     float y_coeff;
-    Length hor_wall_coeff;
-    Length ver_wall_coeff;
-
+    FLength hor_wall_coeff;
+    FLength ver_wall_coeff;
     float expFactor;
 
-    std::string name;
-
-    // determines whether or not readings from this sensor are considered
-    bool exit = false;
-
-    bool enabled = true;
+    // used for getExpected
+    FLength horizontal_wall_length;
+    FLength vertical_wall_length;
 
   public:
     DistanceSensorModel(pros::Distance* distance_sensor,
                         const units::Pose offset,
                         std::string name)
-        : offsets(offset),
-          distance_sensor(std::move(distance_sensor)),
+        : distance_sensor(std::move(distance_sensor)),
+          offsets(offset),
           name(name) {}
 
     void update(Angle angle) override {
@@ -76,39 +73,42 @@ class DistanceSensorModel : public Sensor {
         if (distance_sensor == nullptr || !distance_sensor->is_installed()) {
             // not available, just set exit to true
             exit = true;
-            printf("ONE OF THE DISTANCE SENSORS ARE NOT CONNECTED CORRECTLY!!");
+            printf(
+              "ONE OF THE DISTANCE SENSORS ARE NOT CONNECTED CORRECTLY!!\n");
             return;
         }
 
-        const auto measured_mm = distance_sensor->get();
+        const int32_t measured_mm = distance_sensor->get();
 
-        this->measured_distance = from_mm(measured_mm);
+        measured_distance = from_mm(measured_mm);
+        f_measured_distance = measured_distance.internal();
 
         // distance sensor doesn't measure anything
         exit = measured_mm == 9999 || (!enabled);
 
-        this->angle = angle;
-        const Angle offset_angle = this->angle + offsets.orientation;
-        // keeps the angle the same
-        rotated_offsets = rotatePose(offsets, this->angle);
+        // rotates offset and angle
+        rotated_offsets = rotatePose(offsets, angle);
 
         // precomputed values
-        cosa = units::cos(offset_angle).internal();
-        sina = units::sin(offset_angle).internal();
+        double cosa = units::cos(rotated_offsets.orientation);
+        double sina = units::sin(rotated_offsets.orientation);
+
+        fcosa = cosa;
+        fsina = sina;
 
         double cos_sign = cosa >= 0.0 ? 1.0 : -1.0;
         double sin_sign = sina >= 0.0 ? 1.0 : -1.0;
 
-        // make sure they dont equal inf
-        secant = cos_sign / (std::max(std::abs(cosa), 0.0001));
-        cosecant = sin_sign / (std::max(std::abs(sina), 0.0001));
+        // avoid division by zero
+        double secant = cos_sign / (std::max(std::abs(cosa), 0.0001));
+        double cosecant = sin_sign / (std::max(std::abs(sina), 0.0001));
 
         // we will always compare all particles to two walls
         // one vertical and one horizontal
         // since the walls we check are always the same for both we can cache
         // the x/y value of the wall for each axis
-        horizontal_wall_length = wall_length * cos_sign;
-        vertical_wall_length = wall_length * sin_sign;
+        Length horizontal_wall_length = wall_length * cos_sign;
+        Length vertical_wall_length = wall_length * sin_sign;
 
         horizontal_wall_length -= rotated_offsets.x;
         vertical_wall_length -= rotated_offsets.y;
@@ -154,15 +154,15 @@ class DistanceSensorModel : public Sensor {
         return true;
     }
 
-    inline float evaluate(const units::V2Position& point) override {
+    inline float evaluate(const units::V2FPosition& point) override {
         return evaluate(point.x, point.y);
     }
 
     // assumes that its only getting called if exit is false
     // this assumption saves some conditionals improving performance
-    inline float evaluate(Length x, Length y) override {
-        const Length difference = units::min(hor_wall_coeff + x * x_coeff,
-                                             ver_wall_coeff + y * y_coeff);
+    inline float evaluate(FLength x, FLength y) override {
+        const FLength difference = units::min(hor_wall_coeff + x * x_coeff,
+                                              ver_wall_coeff + y * y_coeff);
 
         float normal_dist =
           NormalDistributionApproximation<DistanceSensorConfig::std_deviation,
@@ -215,8 +215,10 @@ class DistanceSensorModel : public Sensor {
         // difference = min(HC,VC)
         float32x4_t difference = vminq_f32(HC, VC);
 
+        // each number is all UINT_MAX if (expected - measured) is >= 0, else
+        // its 0
         uint32x4_t modMask = vcgeq_f32(difference, vdupq_n_f32(0.0));
-        
+
         // constantFactor = measured <= expected ? expFactor : randomFactor
         float32x4_t VMaskedConstantFactor =
           vbslq_f32(modMask, vdupq_n_f32(expFactor), vdupq_n_f32(randomFactor));
@@ -229,10 +231,18 @@ class DistanceSensorModel : public Sensor {
         return vaddq_f32(normal_dist, VMaskedConstantFactor);
     }
 
-    ~DistanceSensorModel() override = default;
+    // returns x and y coordinates for which the distance sensor would match
+    // measurements.
+    // can be used to easily do distance sensor resets
+    std::optional<units::V2FPosition> getExpected() override {
+        if (exit) {
+            return std::nullopt;
+        }
 
-    std::optional<units::V2Position> getExpected() override {
-        return std::nullopt;
+        return units::V2Position {
+            horizontal_wall_length - measured_distance * fcosa,
+            vertical_wall_length - measured_distance * fsina
+        };
     }
 
     void disable() override {
