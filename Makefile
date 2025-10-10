@@ -17,7 +17,7 @@ EXTRA_INCDIR=$(ROOT)/robot/include
 
 WARNFLAGS+=
 EXTRA_CFLAGS=
-EXTRA_CXXFLAGS=
+EXTRA_CXXFLAGS=-Wunused-variable
 
 # enables multicore compilation
 MAKEFLAGS=-j
