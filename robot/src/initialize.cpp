@@ -41,22 +41,22 @@ void initialize() {
     smoother_model.init();
 
     // initialize tasks
-    pros::Task odom_task {
-        [&] {
-            while (true) {
-                uint32_t current_time = pros::millis();
-                pf_motion_model.update();
-                // pf_model.changeCustomParticle({ pf_motion_model.getPose().x,
-                //                                 pf_motion_model.getPose().y,
-                //                                 5_stDeg },
-                //                               0);
-                pros::c::task_delay_until(
-                  &current_time,
-                  to_msec(pf_motion_model.getTaskDeltaTime()));
-            }
-        },
-        "odom task"
-    };
+    pros::Task odom_task { [&] {
+                              while (true) {
+                                  uint32_t current_time = pros::millis();
+                                  pf_motion_model.update();
+                                  // pf_model.changeCustomParticle({
+                                  // pf_motion_model.getPose().x,
+                                  //                                 pf_motion_model.getPose().y,
+                                  //                                 5_stDeg },
+                                  //                               0);
+                                  pros::c::task_delay_until(
+                                    &current_time,
+                                    to_msec(
+                                      pf_motion_model.getTaskDeltaTime()));
+                              }
+                          },
+                           "odom task" };
     pros::delay(100);
 
     pros::Task pf_task { [&] {
@@ -71,23 +71,24 @@ void initialize() {
                          "pf task" };
     pros::delay(100);
 
-    pros::Task smoother_task {
-        [&] {
-            while (true) {
-                uint32_t current_time = pros::millis();
-                smoother_model.update();
+    pros::Task smoother_task { [&] {
+                                  while (true) {
+                                      uint32_t current_time = pros::millis();
+                                      smoother_model.update();
 
-                // pf_model.changeCustomParticle({ smoother_model.getPose().x,
-                //                                 smoother_model.getPose().y,
-                //                                 10_stDeg },
-                //                               0);
-                pros::c::task_delay_until(
-                  &current_time,
-                  to_msec(smoother_model.getTaskDeltaTime()));
-            }
-        },
-        "smoother task"
-    };
+                                      // pf_model.changeCustomParticle({
+                                      // smoother_model.getPose().x,
+                                      //                                 smoother_model.getPose().y,
+                                      //                                 10_stDeg
+                                      //                                 },
+                                      //                               0);
+                                      pros::c::task_delay_until(
+                                        &current_time,
+                                        to_msec(
+                                          smoother_model.getTaskDeltaTime()));
+                                  }
+                              },
+                               "smoother task" };
     pros::delay(100);
 
     // constantly updates lemlib's pose

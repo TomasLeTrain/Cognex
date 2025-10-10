@@ -126,9 +126,9 @@ extern pros::Distance right_distance;
 
 // trackers
 inline vexmaps::MotorGroupTracking left_dt_tracker(&left_motor_group, drivetrain_config.wheel_diameter,
-                                                      drivetrain_config.rpm, drivetrain_config.track_width / 2);
+                                                      drivetrain_config.rpm, -drivetrain_config.track_width / 2);
 inline vexmaps::MotorGroupTracking right_dt_tracker(&right_motor_group, drivetrain_config.wheel_diameter,
-                                                       drivetrain_config.rpm, -drivetrain_config.track_width / 2);
+                                                       drivetrain_config.rpm, drivetrain_config.track_width / 2);
 
 extern vexmaps::HorizontalOdometryTracker horizontal_tracker;
 extern vexmaps::VerticalOdometryTracker vertical_tracker;
