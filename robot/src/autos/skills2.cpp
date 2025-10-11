@@ -6,8 +6,6 @@
 
 #include "autos.h"
 #include "globals.h"
-#include "lemlib/chassis/chassis.hpp"
-#include "motions/arc.h"
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
 #include "systems/matchloader.h"

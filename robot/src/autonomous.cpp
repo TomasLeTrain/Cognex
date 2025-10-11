@@ -1,70 +1,45 @@
-#include "globals.h"
-#include "main.h"
 #include "autos.h"
+#include "globals.h"
+#include "liblvgl/core/lv_obj_pos.h"
+#include "main.h"
 #include "screen/screen.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 
-#define AUTON(auton,name) {name, auton::run },
+#define AUTON(auton, name) { name, auton::run },
 
-// list of routines displayed in the auton selector - ALSO DEFINE IT IN autos.h!!
+// clang-format off
+
+// list of routines displayed in the auton selector - ALSO DEFINE IT IN
+// autos.h!!
 std::map<std::string, std::function<void()>> auton_list = {
-    AUTON(simple_auton,"simple")
-    AUTON(skills,"old skills")
-    AUTON(skills2,"new sklls")
-    AUTON(simple_other_goal_auton,"simple other goal")
+    AUTON(disabled_auton, "disabled")
+
+    AUTON(simple_auton, "simple")
+	AUTON(skills, "old skills")
+    AUTON(skills2, "new sklls")
+    AUTON(simple_other_goal_auton, "simple other goal")
 };
 
+// clang-format on
 
-void autonomous(){
+void autonomous() {
     // initialize subsystems
     intake::init(false);
     matchloader::init(false);
 
-    // if(auto_alliance == alliance_t::red){
-    //     printf("selected red alliance\n");
-    // }
-    // if(auto_alliance == alliance_t::blue){
-    //     printf("selected blue alliance\n");
-    // }
-    // if(auto_alliance == alliance_t::unset){
-    //     printf("didn't set alliance!\n");
-    // }
-    //
-    // if(auto_side == field_side_t::left){
-    //     printf("selected left side\n");
-    // }
-    // if(auto_side == field_side_t::right){
-    //     printf("selected right side\n");
-    // }
-    // if(auto_side == field_side_t::unset){
-    //     printf("didn't set field side!\n");
-    // }
-    //
-    // if(selected_auton != ""){
-    //     printf("selected auton: %s\n",selected_auton.c_str());
-    // }else{
-    //     printf("didn't select auton \n");
-    // }
-
+    // change to W screen
     screen::setScreen(&screen::dvd_screen);
 
-    // put the routine being worked on here - COMMENT OUT IN ACTUAL COMPETITION!!!
-    // skills2::run();
-
-    auto_alliance= alliance_t::blue;
-    // auto_side = field_side_t::left;
-    auto_side = field_side_t::right;
-    simple_auton::run();
-    // skills::run();
-    
-    // COMMENT THIS IF NOT TESTING A SPECIFIC AUTON !!!!
-    return;
-    
-    // dont run anything if no auton was selected
-    if(selected_auton != ""){
+    if (selected_auton != "") {
         // the selected auton gets run
         auto selected_auton_function = auton_list[selected_auton];
         selected_auton_function();
+    } else {
+        // run some default auton - useful for testing
+        // NOTE: select the disabled auton if you don't want anything to run!!!
+        auto_side = field_side_t::right;
+        auto_alliance = alliance_t::blue;
+        simple_auton::run();
     }
 }

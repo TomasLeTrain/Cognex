@@ -1,5 +1,5 @@
 #include "autos.h"
-#include "globals.h"
+#include "auton_globals.h"
 #include "liblvgl/core/lv_obj_pos.h"
 #include "liblvgl/core/lv_obj_style.h"
 #include "liblvgl/display/lv_display.h"
@@ -8,8 +8,8 @@
 #include "liblvgl/font/lv_symbol_def.h"
 #include "liblvgl/lv_conf_internal.h"
 #include "liblvgl/misc/lv_palette.h"
-#include "map"
 #include "screen.h"
+#include <map>
 
 namespace screen {
 namespace auton_select {
@@ -102,8 +102,8 @@ lv_obj_t* make_button(lv_obj_t* holder,
     lv_obj_center(label); /*Align the label to the center*/
 
     lv_color_t red_col = lv_palette_darken(LV_PALETTE_RED, 1);
-    lv_color_t blue_col = lv_palette_darken(LV_PALETTE_BLUE,1);
-    lv_color_t side_col = lv_palette_darken(LV_PALETTE_ORANGE,2);
+    lv_color_t blue_col = lv_palette_darken(LV_PALETTE_BLUE, 1);
+    lv_color_t side_col = lv_palette_darken(LV_PALETTE_ORANGE, 2);
     lv_color_t side_text_col = lv_color_black();
 
     static lv_style_t red_style, blue_style, side_style;
@@ -167,33 +167,31 @@ void init() {
     lv_obj_set_style_bg_opa(auton_select_screen, LV_OPA_COVER, 0);
 
     // background color of the screen
-    lv_obj_set_style_bg_color(auton_select_screen,
-                              lv_color_black(),
-                              0);
+    lv_obj_set_style_bg_color(auton_select_screen, lv_color_black(), 0);
 
     // hidden by default
     lv_obj_add_flag(auton_select_screen, LV_OBJ_FLAG_HIDDEN);
 
     // offset from top left of screen at which the buttons start
-    int startX = 5;
-    int startY = 5;
+    int btn_border_x = 5;
+    int btn_border_y = 5;
+
+    const int curr_screen_width = lv_display_get_horizontal_resolution(NULL);
+    const int curr_screen_height = lv_display_get_vertical_resolution(NULL);
 
     // both buttons + padding should take 50% of the screen
-    int corner_btn_width =
-      // (lv_display_get_horizontal_resolution(NULL) * 0.5 - startX * 2) * 0.5;
-      // (lv_display_get_horizontal_resolution(NULL) / 2 - startX * 2) / 2;
-      (lv_display_get_horizontal_resolution(NULL) / 2) / 2 - startX;
+    int corner_btn_width = (curr_screen_width / 2) / 2 - btn_border_x * 2;
 
-    int corner_btn_height =
-      // (lv_display_get_vertical_resolution(NULL) - startY * 2) / 2;
-      lv_display_get_vertical_resolution(NULL) / 2 - startY;
+    int corner_btn_height = curr_screen_height / 2 - btn_border_y * 2;
 
-    // [ blue, red, left, right ]
+    // button layout:
+    // blue, red
+    // left, right
 
     // blue
     field_btns[0] = make_button(auton_select_screen,
-                                startX,
-                                startY,
+                                btn_border_x,
+                                btn_border_y,
                                 corner_btn_width,
                                 corner_btn_height,
                                 "",
@@ -202,8 +200,8 @@ void init() {
                                 blue_cb);
     // red
     field_btns[1] = make_button(auton_select_screen,
-                                startX + corner_btn_width,
-                                startY,
+                                btn_border_x + corner_btn_width,
+                                btn_border_y,
                                 corner_btn_width,
                                 corner_btn_height,
                                 "",
@@ -212,8 +210,8 @@ void init() {
                                 red_cb);
     // left
     field_btns[2] = make_button(auton_select_screen,
-                                startX,
-                                startY + corner_btn_height,
+                                btn_border_x,
+                                btn_border_y + corner_btn_height,
                                 corner_btn_width,
                                 corner_btn_height,
                                 LV_SYMBOL_LEFT,
@@ -222,8 +220,8 @@ void init() {
                                 left_cb);
     // right
     field_btns[3] = make_button(auton_select_screen,
-                                startX + corner_btn_width,
-                                startY + corner_btn_height,
+                                btn_border_x + corner_btn_width,
+                                btn_border_y + corner_btn_height,
                                 corner_btn_width,
                                 corner_btn_height,
                                 LV_SYMBOL_RIGHT,

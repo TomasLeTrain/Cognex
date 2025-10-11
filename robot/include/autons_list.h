@@ -1,8 +1,8 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <string>
-#include <functional>
 
 #define NEW_AUTON(auton) \
     namespace auton {    \
@@ -14,6 +14,11 @@ NEW_AUTON(simple_auton)
 NEW_AUTON(skills)
 NEW_AUTON(skills2)
 NEW_AUTON(simple_other_goal_auton)
+
+// special disabled auton that does nothing
+namespace disabled_auton {
+inline void run() {}
+} // namespace disabled
 
 // maps the auton name to the corresponding function
 extern std::map<std::string, std::function<void()>> auton_list;

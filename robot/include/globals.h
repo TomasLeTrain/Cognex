@@ -1,68 +1,75 @@
 #pragma once
 
-#include "api.h" // IWYU pragma: keep
-#include "lemlib/api.hpp" // IWYU pragma: keep
-#include "pros/optical.hpp"
-#include "units/units.hpp"
-#include "vexmaps/api.hpp"
-#include "vexmaps/localization_model.hpp"
-#include "vexmaps/mcl/pf_motion_model.hpp"
-#include "vexmaps/odometry/odometry.hpp"
-#include "vexmaps/odometry/tracking_wheel.hpp"
-#include <string>
+#include "apis.h"
+#include "auton_globals.h"
 
+// easier use of libs
+using namespace blazing;
+using namespace vexmaps;
 
 // only variable which cannot be set on globals.cpp
 // constexpr size_t pf_particle_count = 10000;
 constexpr size_t pf_particle_count = 500;
 
-// some stuff which is required up here
+// structs for helping specify configs
 struct drivetrain_config_t {
-        float track_width;
-        float wheel_diameter;
-        float rpm;
-        float horizontal_drift;
+    Length track_width;
+    Length wheel_diameter;
+    AngularVelocity rpm;
 };
 
-struct lateral_pid_config_t {
-        float P;
-        float I;
-        float D;
-        float anti_windup;
-        float small_error_range;
-        float small_error_range_timeout;
-        float large_error_range;
-        float large_error_range_timeout;
-        float maximum_accel;
+struct linear_pid_config_t {
+    double kp;
+    double ki;
+    double kd;
+    std::optional<double> windupRange = std::nullopt;
+    std::optional<double> maxVoltage = 127;
+    Time timeUnits = 50_msec;
+    Length inputUnits = 1_in;
+    Voltage outputUnits = Voltage(1.0 / 127.0);
 };
 
 struct angular_pid_config_t {
-        float P;
-        float I;
-        float D;
-        float anti_windup;
-        float small_error_range;
-        float small_error_range_timeout;
-        float large_error_range;
-        float large_error_range_timeout;
-        float maximum_accel;
+    double kp;
+    double ki;
+    double kd;
+    std::optional<double> windupRange = std::nullopt;
+    std::optional<double> maxVoltage = 127;
+    Time timeUnits = 50_msec;
+    Angle inputUnits = 1_stDeg;
+    Voltage outputUnits = Voltage(1.0 / 127.0);
+};
+
+// default exits are made to never trigger unless error is set
+template<typename T>
+struct tolerances_config_t {
+    Time duration = 1000_sec;
+    ErrorTolerance<T> error = T(0);
+    VelocityTolerance<T> velocity = T(100000) / sec;
+
+    Time large_duration = 1000_sec;
+    ErrorTolerance<T> large_error = T(0);
+    VelocityTolerance<T> large_velocity = T(100000) / sec;
+
+    Time chain_duration = 1000_sec;
+    ErrorTolerance<T> chain_error = T(0);
+    VelocityTolerance<T> chain_velocity = T(100000) / sec;
 };
 
 extern drivetrain_config_t drivetrain_config;
-extern lateral_pid_config_t lateral_pid_config;
+extern linear_pid_config_t linear_pid_config;
 extern angular_pid_config_t angular_pid_config;
 
-using horizontalTrackers =
-  std::initializer_list<vexmaps::HorizontalOdometryTracker*>;
-using verticalTrackers =
-  std::initializer_list<vexmaps::VerticalOdometryTracker*>;
+extern tolerances_config_t<Length> linear_tolerances_config;
+extern tolerances_config_t<Angle> angular_tolerances_config;
 
 // different vexmaps configurations
 extern vexmaps::MotionModelConfig motion_model_config;
 extern vexmaps::PFConfiguration Pfconfig;
 extern vexmaps::SmootherConfig smoother_config;
 
-
+// pointers to be able to change the pose getter
+// TODO: replace all that with model manager
 extern vexmaps::LocalizationModel* pose_getter;
 extern vexmaps::LocalizationModel* orientation_getter;
 extern pros::Mutex pose_mutex;
@@ -73,14 +80,13 @@ struct CustomDistanceSensorConfiguration {
     static constexpr double exp_l = 1.5;
     static constexpr double std_deviation = (2_in).internal();
 
-    // all these should add to one
-    static constexpr double randomCoeff = 0.15 - 0.025;
-    static constexpr double expCoeff = 0.1 - 0.025;
-    static constexpr double normalCoeff = 0.75 + 0.025 + 0.025;
+    // sum of coefficients 1
+    static constexpr double randomCoeff = 0.125;
+    static constexpr double expCoeff = 0.075;
+    static constexpr double normalCoeff = 0.8;
 
     static constexpr bool logging = false;
 };
-
 
 /*
  * Hardware configuration
@@ -91,8 +97,8 @@ struct CustomDistanceSensorConfiguration {
 inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-extern pros::MotorGroup left_motor_group;
-extern pros::MotorGroup right_motor_group;
+extern pros::MotorGroup left_motors;
+extern pros::MotorGroup right_motors;
 
 // inertial sensor
 extern vexmaps::ScaledIMU imu;
@@ -111,8 +117,8 @@ extern pros::adi::DigitalOut intake_raise_piston;
 extern pros::adi::DigitalOut matchloader_piston;
 
 // odom rotation sensors
-extern pros::Rotation horizontal_odom_rotation;
-extern pros::Rotation vertical_odom_rotation;
+extern pros::Rotation sideways_odom_rotation;
+extern pros::Rotation forwards_odom_rotation;
 
 // particle filter distance sensors
 extern pros::Distance front_distance;
@@ -125,32 +131,43 @@ extern pros::Distance right_distance;
  * */
 
 // trackers
-inline vexmaps::MotorGroupTracking left_dt_tracker(&left_motor_group, drivetrain_config.wheel_diameter,
-                                                      drivetrain_config.rpm, drivetrain_config.track_width / 2);
-inline vexmaps::MotorGroupTracking right_dt_tracker(&right_motor_group, drivetrain_config.wheel_diameter,
-                                                       drivetrain_config.rpm, -drivetrain_config.track_width / 2);
+inline vexmaps::MotorGroupTracking
+  left_dt_tracker(&left_motors,
+                  drivetrain_config.wheel_diameter,
+                  drivetrain_config.rpm,
+                  -drivetrain_config.track_width / 2);
+
+inline vexmaps::MotorGroupTracking
+  right_dt_tracker(&right_motors,
+                   drivetrain_config.wheel_diameter,
+                   drivetrain_config.rpm,
+                   drivetrain_config.track_width / 2);
 
 extern vexmaps::HorizontalOdometryTracker horizontal_tracker;
 extern vexmaps::VerticalOdometryTracker vertical_tracker;
 
-extern units::V2Position front_distance_offsets;
-extern units::V2Position left_distance_offsets;
-extern units::V2Position back_distance_offsets;
-extern units::V2Position right_distance_offsets;
+struct tracker_config_t {
+    Length diameter;
+    Length offset;
+};
+
+extern tracker_config_t sideways_tracker_config;
+extern tracker_config_t forwards_tracker_config;
+
+inline vexmaps::HorizontalOdometryTracker
+  horizontal_tracker(&sideways_odom_rotation,
+                     sideways_tracker_config.diameter,
+                     1,
+                     sideways_tracker_config.offset);
+inline vexmaps::VerticalOdometryTracker
+  vertical_tracker(&forwards_odom_rotation,
+                   forwards_tracker_config.diameter,
+                   1,
+                   forwards_tracker_config.offset);
 
 // lists of intalled trackers
-extern horizontalTrackers horizontal_trackers;
-extern verticalTrackers vertical_trackers;
-
-extern Length horizontal_offset;
-extern Length vertical_offset;
-
-
-extern Length hor_odom_wheel_diameter;
-extern Length ver_odom_wheel_diameter;
-
-inline vexmaps::HorizontalOdometryTracker horizontal_tracker(&horizontal_odom_rotation, hor_odom_wheel_diameter,1,horizontal_offset);
-inline vexmaps::VerticalOdometryTracker vertical_tracker(&vertical_odom_rotation, ver_odom_wheel_diameter, 1, vertical_offset);
+extern std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers;
+extern std::initializer_list<VerticalOdometryTracker*> vertical_trackers;
 
 inline vexmaps::PfMotionModel<vexmaps::OdometryModel>
   pf_motion_model(motion_model_config,
@@ -160,75 +177,142 @@ inline vexmaps::PfMotionModel<vexmaps::OdometryModel>
                   vertical_trackers,
                   &imu,
                   false); // use drivetrain -
-                          // can be left on false since it falls back to drivetrain of no rotations are connected
-
+                          // can be left on false since it falls back to
+                          // drivetrain of no rotations are connected
 
 // distance sensors
-inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  front_laser_model(&front_distance, units::Pose(front_distance_offsets, 0_stDeg), "front");
-inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  left_laser_model(&left_distance, units::Pose(left_distance_offsets, 87.5_stDeg), "left");
-inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  back_laser_model(&back_distance, units::Pose(back_distance_offsets, 180_stDeg), "back");
-inline vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>
-  right_laser_model(&right_distance, units::Pose(right_distance_offsets, 271_stDeg), "right");
+extern units::Pose front_distance_offsets;
+extern units::Pose left_distance_offsets;
+extern units::Pose back_distance_offsets;
+extern units::Pose right_distance_offsets;
 
-inline vexmaps::ParticleFilterModel<pf_particle_count> pf_model(
-                                                      &pf_motion_model,
-                                                      { // distance sensors
-                                                          &front_laser_model,
-                                                          &left_laser_model,
-                                                          &back_laser_model,
-                                                          &right_laser_model
-                                                      },
-                                                      Pfconfig);
+using laser_model_type =
+  vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>;
+
+// clang-format off
+inline laser_model_type front_laser_model(&front_distance, front_distance_offsets, "front");
+inline laser_model_type left_laser_model(&left_distance,   left_distance_offsets,  "left");
+inline laser_model_type back_laser_model(&back_distance,   back_distance_offsets,  "back");
+inline laser_model_type right_laser_model(&right_distance, right_distance_offsets, "right");
+// clang-format on
+
+inline vexmaps::ParticleFilterModel<pf_particle_count>
+  pf_model(&pf_motion_model,
+           { // distance sensors
+             &front_laser_model,
+             &left_laser_model,
+             &back_laser_model,
+             &right_laser_model },
+           Pfconfig);
 
 inline vexmaps::SmootherModel
   smoother_model(&pf_motion_model, &pf_model, smoother_config);
 
-
 /*
- * lemlib config stuff - can likely leave alone forever
+ * blazing configs stuff
  *
  */
-inline lemlib::Drivetrain drivetrain(&left_motor_group, &right_motor_group, drivetrain_config.track_width,
-                                     drivetrain_config.wheel_diameter, drivetrain_config.rpm,
-                                     drivetrain_config.horizontal_drift);
 
-inline lemlib::ControllerSettings
-    lateral_controller(lateral_pid_config.P, lateral_pid_config.I, lateral_pid_config.D, lateral_pid_config.anti_windup,
-                       lateral_pid_config.small_error_range, lateral_pid_config.small_error_range_timeout,
-                       lateral_pid_config.large_error_range, lateral_pid_config.large_error_range_timeout,
-                       lateral_pid_config.maximum_accel);
+inline DifferentialDrivetrain drivetrain(&left_motors, &right_motors);
 
-inline lemlib::ControllerSettings
-    angular_controller(angular_pid_config.P, angular_pid_config.I, angular_pid_config.D, angular_pid_config.anti_windup,
-                       angular_pid_config.small_error_range, angular_pid_config.small_error_range_timeout,
-                       angular_pid_config.large_error_range, angular_pid_config.large_error_range_timeout,
-                       angular_pid_config.maximum_accel);
+inline ForwardsTracker left_motor_tracker(&left_motors,
+                                          -drivetrain_config.track_width / 2,
+                                          drivetrain_config.wheel_diameter,
+                                          drivetrain_config.rpm);
+inline ForwardsTracker right_motor_tracker(&right_motors,
+                                           drivetrain_config.track_width / 2,
+                                           drivetrain_config.wheel_diameter,
+                                           drivetrain_config.rpm);
 
-// odometry settings
-inline lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, &imu);
+inline ForwardsTracker forwards_tracker(&sideways_odom_rotation,
+                                        forwards_tracker_config.offset,
+                                        forwards_tracker_config.diameter);
 
-// create the chassis
-inline lemlib::Chassis chassis(drivetrain, // drivetrain settings
-                               lateral_controller, // lateral PID settings
-                               angular_controller, // angular PID settings
-                               sensors // odometry sensors
-                               // &throttle_curve,
-                               // &steer_curve
-);
+inline SidewaysTracker sideways_tracker(&forwards_odom_rotation,
+                                        sideways_tracker_config.offset,
+                                        sideways_tracker_config.diameter);
 
-/* auton related stuff - can be left alone */
-enum class alliance_t { unset = -1, red = 0, blue = 1 };
+extern ArcOdomTracker tracker;
 
-enum class field_side_t { unset = -1, left = 0, right = 1 };
+// controller stuff
+extern PID<Length, Voltage> linear_pid;
+extern PID<Angle, Voltage> angular_pid;
 
-// enum class corner_t { unset = -1,  red_left = 0, red_right = 1, blue_left = 2, blue_right = 3 };
+extern LinearSlewController linear_slew;
+extern AngularSlewController angular_slew;
 
-inline alliance_t auto_alliance = alliance_t::unset;
-// inline alliance_t auto_alliance = alliance_t::red;
-inline field_side_t auto_side = field_side_t::unset;
-// inline field_side_t auto_side = field_side_t::right;
-// inline corner_t auto_corner = corner_t::unset;
-inline std::string selected_auton = "";
+extern LinearVoltageClampController linear_voltage_constraints;
+extern AngularVoltageClampController angular_voltage_constraints;
+
+inline PIDLinearController linear_pid_controller(linear_pid);
+inline PIDAngularController angular_pid_controller(angular_pid);
+
+inline Controllers controllers(
+  // pid controllers
+  linear_pid_controller,
+  angular_pid_controller,
+
+  // slew controllers
+  linear_slew,
+  angular_slew,
+
+  // voltage constraints controllers
+  // (included just so they can be set per motion)
+  linear_voltage_constraints,
+  angular_voltage_constraints);
+
+// normal tolerances
+inline Tolerances linearTolerances(linear_tolerances_config.duration,
+                                   linear_tolerances_config.error,
+                                   linear_tolerances_config.velocity);
+
+inline Tolerances angularTolerances(angular_tolerances_config.duration,
+                                    angular_tolerances_config.error,
+                                    angular_tolerances_config.velocity);
+
+// large tolerances
+inline Tolerances
+  largeLinearTolerances(linear_tolerances_config.large_duration,
+                        linear_tolerances_config.large_error,
+                        linear_tolerances_config.large_velocity);
+
+inline Tolerances
+  largeAngularTolerances(angular_tolerances_config.large_duration,
+                         angular_tolerances_config.large_error,
+                         angular_tolerances_config.large_velocity);
+
+// chain tolerances
+inline Tolerances
+  chainLinearTolerances(linear_tolerances_config.chain_duration,
+                        linear_tolerances_config.chain_error
+                        // linear_tolerances_config.chain_velocity
+  );
+
+inline Tolerances
+  chainAngularTolerances(angular_tolerances_config.chain_duration,
+                         angular_tolerances_config.chain_error
+                         // angular_tolerances_config.chain_velocity
+  );
+
+inline normalLargeChainTolerances tolerances(linearTolerances,
+                                             angularTolerances,
+                                             largeLinearTolerances,
+                                             largeAngularTolerances,
+
+                                             chainLinearTolerances,
+                                             chainAngularTolerances);
+
+inline Chassis chassis(drivetrain, tracker, tolerances);
+
+// executors
+inline RunExecutor run;
+inline AsyncExecutor async;
+
+inline MotionBuilder mb(chassis, controllers);
+
+extern ChainedExecutor chain;
+
+// motion things
+
+// custom cos-like func
+double angular_linear_func(Angle angle);
