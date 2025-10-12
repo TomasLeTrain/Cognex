@@ -5,6 +5,7 @@
  */
 
 #include "autos.h"
+#include "blazing/utils.hpp"
 #include "globals.h"
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
@@ -17,7 +18,7 @@ namespace skills2 {
 
 // you can add any variables / functions here
 
-void run() {
+void run_auton() {
     // do whatever you want here
 
     // bool print_info = false;
@@ -61,7 +62,7 @@ void run() {
     // pose_getter = &smoother_model;
 
     // pros::delay(40);
-    RobotSetPose(-63_in, -16_in, 0);
+    RobotSetPose(-63, -16, 0);
     pros::delay(40);
 
     // don't color sort
@@ -69,34 +70,33 @@ void run() {
     intake::set(intake::intake);
 
     // clear park
-    chassis.moveToPoint(-63.3, 16.5, 3000, {}, false);
+    mb.moveTo(-63.3, 16.5) | run;
 
     // pros::delay(1000);
     // left_motor_group.move(0);
     // right_motor_group.move(0);
 
-    // chassis.turnToHeading(24,2000,{.minSpeed=20,.earlyExitRange=2},false);
+    // chassis.turnToHeading(24,2000,{.minSpeed=20,.earlyExitRange=2});
 
     // motions::moveArc(20.5_in, 140, 28_in / sec,
-    // lemlib::AngularDirection::CW_CLOCKWISE, 5000, {},false);
+    // lemlib::AngularDirection::CW_CLOCKWISE, 5000, {});
     // motions::moveArc(13.5_in, 130, 22_in / sec,
     // lemlib::AngularDirection::CW_CLOCKWISE, 2000, {.maxAccel=200_rpm},
     // false);
-    chassis.moveToPose(-35, 31, 135, 1800, { .lead = 0.6 }, false);
+    mb.boomerang(-35, 31, 135).lead(0.6) | run;
 
     // left_motor_group.set_brake_mode_all(pros::MotorBrake::hold);
     // right_motor_group.set_brake_mode_all(pros::MotorBrake::hold);
 
     // move towards first corner
-    // chassis.moveToPose(-29,31,145,2000,{.lead=0.5},false);
+    // chassis.moveToPose(-29,31,145,2000,{.lead=0.5});
 
     // move towards center goal to score
-    // chassis.moveToPoint(-13.5, 12.5, 2300, {.maxSpeed=40}, true);
-    chassis.moveToPoint(-10, 11, 2300, { .maxSpeed = 40 }, true);
+    mb.moveTo(-10, 11).linear_clampMaxVoltage(0.3_volt) | async;
 
     pros::delay(2300);
     matchloader::set(true);
-    chassis.waitUntilDone();
+    async.wait();
 
     // score on center top goal
     pf_model.setDisabled(true);
@@ -112,6 +112,7 @@ void run() {
     intake::set(intake::scoring_middle);
     pros::delay(2300);
 
+    // enable the particle filter now
     pf_model.setDisabled(false);
 
     intake::setColorSortEnabled(false);
@@ -119,50 +120,34 @@ void run() {
     matchloader::set(false);
 
     // swing to face second corner
-    chassis.swingToPoint(-23.3,
-                         -22.5,
-                         lemlib::DriveSide::LEFT,
-                         1000,
-                         { .direction = lemlib::AngularDirection::CW_CLOCKWISE,
-                           .minSpeed = 30,
-                           .earlyExitRange = 10 },
-                         false);
+    mb.turnTo(-23.3, -22.5)
+        .direction(AngularDirection::LEFT)
+        .radius(1.0)
+        .angular_clampMinVoltage(0.3_volt) |
+      run;
 
     // move to second corner
-    // chassis.moveToPoint(-30,-8, 2000, {.minSpeed=40,.earlyExitRange=5},
+    // mb.moveTo(-30,-8, 2000, {.minSpeed=40,.earlyExitRange=5},
     // false);
-    chassis.turnToPoint(-40,
-                        -22,
-                        2000,
-                        { .minSpeed = 40, .earlyExitRange = 5 },
-                        false);
-    chassis.moveToPoint(-40,
-                        -20,
-                        2000,
-                        { .minSpeed = 1, .earlyExitRange = 10 },
-                        false);
+    mb.turnTo(-40, -22).angular_clampMinVoltage(0.4_volt) | run;
+    mb.moveTo(-40, -20) | run;
 
-    chassis.turnToPoint(-23,
-                        -22,
-                        2000,
-                        { .minSpeed = 40, .earlyExitRange = 5 },
-                        false);
-    chassis.moveToPoint(-23, -22, 2000, { .maxSpeed = 100 }, false);
+    mb.turnTo(-23, -22).angular_clampMinVoltage(0.4_volt) | run;
+    mb.moveTo(-23, -22).linear_clampMaxVoltage(0.9_volt) | run;
 
     // turn to and go the third corner
-    chassis.turnToPoint(23.5, -23.5, 2000, {}, false);
-    chassis.moveToPoint(23.5,
-                        -23.5,
-                        2000,
-                        { .maxSpeed = 80, .minSpeed = 20, .earlyExitRange = 4 },
-                        false);
+    mb.turnTo(23.5, -23.5) | run;
+    mb.moveTo(23.5, -23.5)
+        .linear_clampMaxVoltage(0.7_volt)
+        .linear_clampMinVoltage(0.2_volt) |
+      run;
 
     matchloader::set(true);
 
     // go to matchloader
-    // chassis.moveToPose(56.5,-44,90,3200,{ .lead=0.6 },false);
-    chassis.moveToPoint(44, -46.5, 2000, {}, false);
-    chassis.moveToPoint(57, -47.5, 2000, {}, false);
+    // chassis.moveToPose(56.5,-44,90,3200,{ .lead=0.6 });
+    mb.moveTo(44, -46.5) | run;
+    mb.moveTo(57, -47.5) | run;
 
     // pf_model.setDisabled(true);
     pros::delay(1300);
@@ -170,27 +155,24 @@ void run() {
     // pf_model.setDisabled(false);
 
     // back up to go to goal
-    chassis.moveToPoint(
-      50,
-      -47.5,
-      2000,
-      { .forwards = false, .minSpeed = 14, .earlyExitRange = 5 },
-      false);
+    mb.moveTo(50, -47.5).reverse().linear_clampMinVoltage(0.1_volt) | run;
 
-    // turn to and score on long goal
-    chassis.turnToPoint(0, -48.5, 2000, {}, false);
+    // turn to and score on
+    // long goal
+    mb.turnTo(0, -48.5) | run;
 
     // start priming intake
     // intake::set(intake::priming);
 
-    chassis.moveToPoint(28, -48.5, 2000, {}, false);
+    mb.moveTo(28, -48.5) | run;
 
     intake::set(intake::unjam);
     pros::delay(400);
 
     // score all balls
     intake::setColorSortEnabled(false);
-    // auto_alliance = alliance_t::blue;
+    // auto_alliance =
+    // alliance_t::blue;
     intake::set(intake::scoring_long);
 
     // pf_model.setDisabled(true);
@@ -198,73 +180,55 @@ void run() {
     // pf_model.setDisabled(false);
 
     intake::setColorSortEnabled(false);
-    // auto_alliance = alliance_t::blue;
+    // auto_alliance =
+    // alliance_t::blue;
     intake::set(intake::intake);
 
-    // turn away from goal and turn without touching it
-    chassis.swingToHeading(
-      180 + 30,
-      lemlib::DriveSide::RIGHT,
-      800,
-      {
-        .direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
-        .minSpeed = 80,
-        .earlyExitRange = 20,
-      },
-      false);
-    chassis.turnToHeading(
-      40,
-      1000,
-      {
-        .direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE,
-        .minSpeed = 20,
-        .earlyExitRange = 10,
-      },
-      false);
+    // turn away from goal
+    // and turn without
+    // touching it
+    mb.turnTo(180 + 30).direction(AngularDirection::RIGHT) | run;
+
+    mb.turnTo(40)
+        .direction(AngularDirection::LEFT)
+        .angular_clampMinVoltage(20_volt) |
+      run;
 
     // move towards blue park
-    chassis.moveToPose(61.3,
-                       -17.5,
-                       0,
-                       1500,
-                       { .lead = 0.3, .minSpeed = 60, .earlyExitRange = 13 },
-                       false);
+    mb.boomerang(61.3, -17.5, 0).lead(0.3).linear_clampMinVoltage(0.5_volt) |
+      run;
 
     // clear blue park
-    chassis.moveToPoint(62,
-                        15.5,
-                        3000,
-                        { .minSpeed = 70, .earlyExitRange = 5 },
-                        false);
+    mb.moveTo(62, 15.5).linear_clampMinVoltage(0.5_volt) | run;
 
     // wait for mcl to work?
-    RobotSetPose(63_in, 16_in, 0);
+    RobotSetPose(63, 16, 0);
 
     // set pose to not be cooked
     pros::delay(1000);
 
     // get to matchloader
-    chassis.turnToPoint(42, 44, 2000, {}, false);
-    chassis.moveToPoint(42, 44, 2000, {}, false);
-    chassis.turnToPoint(67, 47, 2000, {}, false);
+    mb.turnTo(42, 44) | run;
+    mb.moveTo(42, 44) | run;
+    mb.turnTo(67, 47) | run;
 
     matchloader::set(true);
-    chassis.moveToPoint(57, 47, 2000, {}, false);
+    mb.moveTo(57, 47) | run;
 
     // pf_model.setDisabled(true);
     pros::delay(1300);
     matchloader::set(false);
     // pf_model.setDisabled(false);
 
-    chassis.moveToPoint(46.8, 46.7, 2000, { .forwards = false }, false);
+    mb.moveTo(46.8, 46.7).reverse() | run;
 
     // turn to and go to fourth corner
-    chassis.turnToPoint(32.3, 31.5, 2000, {}, false);
-    chassis.moveToPoint(32.3, 31.5, 2000, {}, false);
+    mb.turnTo(32.3, 31.5) | run;
+    mb.moveTo(32.3, 31.5) | run;
 
     // score on center goal
-    chassis.moveToPoint(11.3, 11.7, 3000, { .maxSpeed = 80 }, false);
-    // chassis.moveToPoint(11, -11.5, 2500, {.maxSpeed=80}, false);
+    mb.moveTo(11.3, 11.7).linear_clampMaxVoltage(0.5_volt) | run;
+    // mb.moveTo(11, -11.5, 2500, {.maxSpeed=80});
     pf_model.setDisabled(true);
 
     // intake::setColorSortEnabled(true);
@@ -280,27 +244,25 @@ void run() {
     intake::set(intake::intake);
 
     // back up and go to third matchloader
-    chassis.moveToPoint(18, 19.5, 2000, { .forwards = false }, false);
-    chassis.turnToPoint(-51, 40, 2000, {}, false);
+    mb.moveTo(18, 19.5).reverse() | run;
+
+    mb.turnTo(-51, 40) | run;
 
     // move to matchloader
-    chassis.moveToPoint(-50, 44, 2000, {}, false);
-    chassis.turnToPoint(-71,
-                        46.7,
-                        2000,
-                        { .minSpeed = 20, .earlyExitRange = 10 },
-                        false);
+    mb.moveTo(-50, 44) | run;
+    mb.turnTo(-71, 46.7).angular_clampMaxVoltage(0.2_volt) | run;
     matchloader::set(true);
-    chassis.moveToPoint(-55, 46.7, 2000, {}, false);
+    mb.moveTo(-55, 46.7) | run;
     // pf_model.setDisabled(true);
     pros::delay(1800);
     matchloader::set(false);
     // pf_model.setDisabled(false);
 
     // back up, turn to and go to long goal
-    chassis.moveToPoint(-50, 46.7, 2000, { .forwards = false }, false);
-    chassis.turnToPoint(0, 46.7, 2000, {}, false);
-    chassis.moveToPoint(-32, 46.7, 2000, {}, false);
+    mb.moveTo(-50, 46.7).reverse() | run;
+
+    mb.turnTo(0, 46.7) | run;
+    mb.moveTo(-32, 46.7) | run;
     // pf_model.setDisabled(true);
 
     intake::setColorSortEnabled(false);
@@ -314,15 +276,13 @@ void run() {
     intake::set(intake::intake_disabled);
 
     // swing and run for the park
-    chassis.swingToPoint(-63,
-                         0,
-                         lemlib::DriveSide::LEFT,
-                         800,
-                         { .direction = lemlib::AngularDirection::CW_CLOCKWISE,
-                           .minSpeed = 40,
-                           .earlyExitRange = 15 },
-                         false);
-    chassis.moveToPoint(-63, 0, 2000, { .minSpeed = 60 }, false);
+    mb.turnTo(-63, 0)
+        .direction(AngularDirection::LEFT)
+        .radius(1.0)
+        .linear_clampMinVoltage(0.4_volt) |
+      run;
+
+    mb.moveTo(-63, 0).linear_clampMinVoltage(0.5_volt) | run;
 }
 
 } // namespace skills2

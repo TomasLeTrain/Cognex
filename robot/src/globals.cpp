@@ -95,7 +95,7 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
                                         .rpm = 450_rpm };
 
 // units are in inches
-linear_pid_config_t lateral_pid_config { .kp = 4.7,
+linear_pid_config_t linear_pid_config { .kp = 4.7,
                                          .ki = 0,
                                          .kd = 1,
                                          .windupRange = 7 };
@@ -105,6 +105,12 @@ angular_pid_config_t angular_pid_config { .kp = 2.8,
                                           .ki = 0,
                                           .kd = 5,
                                           .windupRange = 14 };
+
+LinearSlewController linear_slew(0.2_volt, 0.08_volt);
+AngularSlewController angular_slew(0.3_volt);
+
+LinearVoltageClampController linear_voltage_constraints;
+AngularVoltageClampController angular_voltage_constraints;
 
 // tolerances
 tolerances_config_t<Length> linear_tolerances_config {

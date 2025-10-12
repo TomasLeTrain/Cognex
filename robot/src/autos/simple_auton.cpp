@@ -16,7 +16,7 @@ namespace simple_auton {
 
 // you can add any variables / functions here
 
-void run() {
+void run_auton() {
     // do whatever you want here
 
     // bool printing = false;
@@ -25,9 +25,14 @@ void run() {
     //     [&] {
     //         while (printing) {
     //             int start_time = pros::millis();
-    //             printf("start generation\nstart distances\nend " "distances\nst"
-    //                                                              "ar" "t " "par"
-    //                                                                        "ti" "cl" "es" "\n");
+    //             printf("start generation\nstart distances\nend "
+    //             "distances\nst"
+    //                                                              "ar" "t "
+    //                                                              "par"
+    //                                                                        "ti"
+    //                                                                        "cl"
+    //                                                                        "es"
+    //                                                                        "\n");
     //
     //             printf("%.1f %.1f %.1f\n",
     //                    pf_motion_model.getPose().x.convert(in),
@@ -43,8 +48,8 @@ void run() {
     //                    10.0);
     //
     //             printf(
-    //               "end particles\ntotal weight: 0, time taken: 30000, " "timest" "amp:" " %d\n",
-    //               start_time);
+    //               "end particles\ntotal weight: 0, time taken: 30000, "
+    //               "timest" "amp:" " %d\n", start_time);
     //             printf("things done:1,1,0,%d\n", 16384);
     //             printf("prediction:%.1f,%.1f,%.1f\n",
     //                    smoother_model.getPose().x.convert(in),
@@ -64,7 +69,7 @@ void run() {
 
     double start_angle = bl ? 245 : 2 * 270 - 245;
 
-    RobotSetPose(47.15_in, -11.7_in * l, start_angle);
+    RobotSetPose(47.15, -11.7 * l, start_angle);
     pros::delay(200);
 
     // intake::setColorSortEnabled(true);
@@ -74,26 +79,24 @@ void run() {
     // RobotGetPose().orientation << std::endl; printf("chassis: %f %f %f\n",
     // chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
 
-    // chassis.turnToHeading(0,2000,{},false);
-    // chassis.turnToHeading(0,9000,{},false);
     pf_model.setDisabled(true);
-    chassis.moveToPoint(22, -22 * l, 2000, {.maxSpeed=40}, false);
+    mb.moveTo(22, -22 * l).linear_clampMaxVoltage(0.45_volt) | run;
 
-    chassis.turnToPoint(0, 0 * l, 2000, {}, false);
+    mb.turnTo(0, 0) | run;
 
-    if(bl){
+    if (bl) {
         matchloader::set(true);
     }
 
     // pros::delay(100);
 
-    if(bl){
-        chassis.moveToPoint(11.5, -12 * l, 2500, {.maxSpeed=80}, false);
-        chassis.turnToPoint(0, 0 * l, 2000, {}, false);
+    if (bl) {
+        mb.moveTo(11.5, -12 * l).linear_clampMaxVoltage(0.7_volt) | run;
+        mb.turnTo(0, 0 * l) | run;
         intake::set(intake::scoring_middle);
-    }else{
-        chassis.moveToPoint(11.8, -12.8 * l, 2500, {.maxSpeed=60}, false);
-        chassis.turnToPoint(0, 0 * l, 800, {}, false);
+    } else {
+        mb.moveTo(11.8, -12.8 * l).linear_clampMaxVoltage(0.5_volt) | run;
+        mb.turnTo(0, 0 * l) | run;
         intake::set(intake::scoring_bottom);
     }
 
@@ -105,22 +108,26 @@ void run() {
 
     pf_model.setDisabled(false);
 
-    chassis.moveToPoint(40, -47.5 * l, 2000, { .forwards = false,.maxSpeed=65 }, false);
+    mb.moveTo(40, -47.5 * l).reverse().linear_clampMaxVoltage(0.5_volt) | run;
+
     matchloader::set(true);
 
-    chassis.turnToPoint(67, -47 * l, 2000, {.maxSpeed=65}, false);
+    mb.turnTo(67, -47 * l).linear_clampMaxVoltage(0.5_volt) | run;
     intake::set(intake::intake_slow_bottom);
 
-    chassis.moveToPoint(56.5, -47 * l, 2000, {.maxSpeed=80}, false);
+    mb.moveTo(56.5, -47 * l).linear_clampMaxVoltage(0.8_volt) | run;
 
     // matchload
     pros::delay(300);
 
-    chassis.moveToPoint(45, -47 * l, 2000, { .forwards = false,.maxSpeed=65 }, false);
-    chassis.turnToPoint(0, -47 * l, 2000, {.maxSpeed=65}, false);
+    mb.moveTo(45, -47 * l).reverse().linear_clampMaxVoltage(0.5_volt) | run;
+
+    mb.turnTo(0, -47 * l).linear_clampMaxVoltage(0.5_volt) | run;
     matchloader::set(false);
-    // intake::set(intake::priming);
-    chassis.moveToPoint(28, -47 * l, 1800, {.maxSpeed=75}, false);
+    intake::set(intake::priming);
+
+    mb.moveTo(28, -47 * l).linear_clampMaxVoltage(0.6_volt) | run;
+
     intake::set(intake::scoring_long);
 
     // auto start_time = pros::millis();
@@ -140,10 +147,10 @@ void run() {
     // printf("cha: %f %f %f\n", chassis.getPose().x, chassis.getPose().y,
     // chassis.getPose().theta);
 
-    // chassis.turnToPoint(47,-47,2000);
-    // chassis.moveToPoint(47,-47,2000);
-    // chassis.turnToPoint(70,-47,2000);
-    // chassis.moveToPoint(54,-47,2000);
+    // mb.turnTo(47,-47,2000);
+    // mb.moveTo(47,-47,2000);
+    // mb.turnTo(70,-47,2000);
+    // mb.moveTo(54,-47,2000);
 }
 
 } // namespace simple_auton

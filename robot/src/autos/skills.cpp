@@ -1,6 +1,7 @@
 /**
  * @file
- * @brief auto file template. copy paste this file, change the name and then add it to "autos.h"
+ * @brief auto file template. copy paste this file, change the name and then add
+ * it to "autos.h"
  */
 
 #include "autos.h"
@@ -16,51 +17,51 @@ namespace skills {
 
 // you can add any variables / functions here
 
-void run() {
+void run_auton() {
     // do whatever you want here
     // changePoseGetter(&smoother_model);
     // pros::delay(30);
 
-    RobotSetPose(-63_in, -16_in, 0);
+    RobotSetPose(-63, -16, 0);
     pros::delay(50);
 
     intake::set(intake::intake);
 
     // clear park
-    chassis.moveToPoint(-63.3, 15.5, 3000, {.minSpeed=127,.earlyExitRange=3}, false);
+    mb.moveTo(-63.3, 15.5).angular_clampMinVoltage(1_volt) | run;
     pros::delay(2000);
-    
-    chassis.turnToPoint(-42,46,2000,{},false);
-    chassis.moveToPoint(-42,46,2000,{},false);
+
+    mb.turnTo(-42, 46) | run;
+    mb.moveTo(-42, 46) | run;
     pros::delay(500);
 
     // matchloading!
-    chassis.turnToPoint(-59,46.5,2000,{},false);
+    mb.turnTo(-59, 46.5) | run;
     matchloader::set(true);
-    chassis.moveToPoint(-59,46.5,2000,{.maxSpeed=90}, false);
+    mb.moveTo(-59, 46.5).linear_clampMaxVoltage(0.8_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
-    chassis.moveToPoint(-47, 47, 2300, {.forwards=false}, false);
+    mb.moveTo(-47, 47).reverse() | run;
 
-    chassis.turnToPoint(-33.5, 59, 2300, {}, false);
-    chassis.moveToPoint(-33.5, 59, 2300, {}, false);
+    mb.turnTo(-33.5, 59) | run;
+    mb.moveTo(-33.5, 59) | run;
 
-    chassis.turnToPoint(33.5, 59, 2300, {}, false);
-    chassis.moveToPoint(30, 59, 2300, {}, false);
+    mb.turnTo(33.5, 59) | run;
+    mb.moveTo(30, 59) | run;
 
     pros::delay(1200);
 
-    chassis.moveToPoint(43, 47, 2300, {}, false);
+    mb.moveTo(43, 47) | run;
 
     // matchloading!
-    chassis.turnToPoint(59,46.5,2000,{},false);
+    mb.turnTo(59, 46.5) | run;
     matchloader::set(true);
-    chassis.moveToPoint(59, 46.5, 2000, {.maxSpeed=90}, false);
+    mb.moveTo(59, 46.5).linear_clampMaxVoltage(0.8_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
-    chassis.moveToPoint(44,47,2000,{.forwards=false},false);
+    mb.moveTo(44, 47).reverse() | run;
 
     // turn away from goal and turn without touching it
 
@@ -68,56 +69,57 @@ void run() {
     //         .direction=lemlib::AngularDirection::CW_CLOCKWISE,
     //         .minSpeed=20,
     //         .earlyExitRange=10,
-    //         },false);
+    //         });
     //
     // // move towards blue park
-    // chassis.moveToPose(61.3,17.5,180 ,1500,{.lead=0.3,.minSpeed=70,.earlyExitRange=13},false);
-    // 
+    // chassis.moveToPose(61.3,17.5,180
+    // ,1500,{.lead=0.3,.minSpeed=70,.earlyExitRange=13});
+    //
     // // clear blue park
-    // chassis.moveToPoint(62, 15.5, 3000, {.minSpeed=85,.earlyExitRange=5}, false);
+    // mb.moveTo(62, 15.5, 3000, {.minSpeed=85,.earlyExitRange=5});
     // pros::delay(2000);
 
-    chassis.turnToPoint(44,-47, 2000,{},false);
-    chassis.moveToPoint(40,-47, 2000,{},false);
+    mb.turnTo(44, -47) | run;
+    mb.moveTo(40, -47) | run;
 
     pros::delay(1200);
 
     // matchloading!
-    chassis.turnToPoint(47,-47, 2000,{},false);
-    chassis.moveToPoint(47,-47, 2000,{},false);
-    chassis.turnToPoint(59,-46.5,2000,{},false);
+    mb.turnTo(47, -47) | run;
+    mb.moveTo(47, -47) | run;
+    mb.turnTo(59, -46.5) | run;
     matchloader::set(true);
-    chassis.moveToPoint(58,-46.5,2000,{.maxSpeed=90},false);
+    mb.moveTo(58, -46.5).linear_clampMaxVoltage(0.9_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
     // go back and go to other corner
-    chassis.moveToPoint(47, -47, 2300, {.forwards=false}, false);
+    mb.moveTo(47, -47).reverse() | run;
 
-    chassis.turnToPoint(33.5, -59, 2300, {}, false);
-    chassis.moveToPoint(33.5, -59, 2300, {}, false);
+    mb.turnTo(33.5, -59) | run;
+    mb.moveTo(33.5, -59) | run;
 
-    chassis.turnToPoint(-33.5, -59, 2300, {}, false);
-    chassis.moveToPoint(-30, -59, 2300, {}, false);
+    mb.turnTo(-33.5, -59) | run;
+    mb.moveTo(-30, -59) | run;
 
     pros::delay(2000);
 
-    chassis.turnToPoint(-43, -47, 2300, {}, false);
-    chassis.moveToPoint(-43, -47, 2300, {}, false);
+    mb.turnTo(-43, -47) | run;
+    mb.moveTo(-43, -47) | run;
 
     pros::delay(2000);
 
     // matchloading!
-    chassis.turnToPoint(-59,-46.5,2000,{},false);
+    mb.turnTo(-59, -46.5) | run;
     matchloader::set(true);
-    chassis.moveToPoint(-59,-46.5,2000,{.maxSpeed=90},false);
+    mb.moveTo(-59, -46.5).linear_clampMaxVoltage(0.8_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
-    chassis.moveToPoint(-50, -47, 2300, {.forwards = false}, false);
+    mb.moveTo(-50, -47).reverse() | run;
 
-    chassis.turnToPoint(-70, 0, 3000, {}, false);
-    chassis.moveToPoint(-70, 0, 3000, {.minSpeed=80,.earlyExitRange=8}, false);
-    }
+    mb.turnTo(-70, 0) | run;
+    mb.moveTo(-70, 0).angular_clampMinVoltage(0.7_volt) | run;
+}
 
-} // namespace auton1
+} // namespace skills

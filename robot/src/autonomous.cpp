@@ -6,7 +6,7 @@
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 
-#define AUTON(auton, name) { name, auton::run },
+#define AUTON(auton, name) { name, auton::run_auton },
 
 // clang-format off
 
@@ -40,6 +40,6 @@ void autonomous() {
         // NOTE: select the disabled auton if you don't want anything to run!!!
         auto_side = field_side_t::right;
         auto_alliance = alliance_t::blue;
-        simple_auton::run();
+        simple_auton::run_auton();
     }
 }

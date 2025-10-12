@@ -6,7 +6,7 @@
 
 #define NEW_AUTON(auton) \
     namespace auton {    \
-    void run();          \
+    void run_auton();    \
     }
 
 // make sure autons are defined in here AND in autonomous.cpp!!
@@ -17,8 +17,8 @@ NEW_AUTON(simple_other_goal_auton)
 
 // special disabled auton that does nothing
 namespace disabled_auton {
-inline void run() {}
-} // namespace disabled
+inline void run_auton() {}
+} // namespace disabled_auton
 
 // maps the auton name to the corresponding function
 extern std::map<std::string, std::function<void()>> auton_list;

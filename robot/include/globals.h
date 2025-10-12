@@ -57,6 +57,7 @@ struct tolerances_config_t {
 };
 
 extern drivetrain_config_t drivetrain_config;
+
 extern linear_pid_config_t linear_pid_config;
 extern angular_pid_config_t angular_pid_config;
 
@@ -235,8 +236,23 @@ inline SidewaysTracker sideways_tracker(&forwards_odom_rotation,
 extern ArcOdomTracker tracker;
 
 // controller stuff
-extern PID<Length, Voltage> linear_pid;
-extern PID<Angle, Voltage> angular_pid;
+inline PID<Length, Voltage> linear_pid(linear_pid_config.kp,
+                                       linear_pid_config.ki,
+                                       linear_pid_config.kd,
+                                       linear_pid_config.windupRange,
+                                       linear_pid_config.maxVoltage,
+                                       linear_pid_config.timeUnits,
+                                       linear_pid_config.inputUnits,
+                                       linear_pid_config.outputUnits);
+
+inline PID<Angle, Voltage> angular_pid(angular_pid_config.kp,
+                                       angular_pid_config.ki,
+                                       angular_pid_config.kd,
+                                       angular_pid_config.windupRange,
+                                       angular_pid_config.maxVoltage,
+                                       angular_pid_config.timeUnits,
+                                       angular_pid_config.inputUnits,
+                                       angular_pid_config.outputUnits);
 
 extern LinearSlewController linear_slew;
 extern AngularSlewController angular_slew;

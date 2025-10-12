@@ -11,8 +11,8 @@ void driveUpdate() {
     int leftPower = throttle + turn;
     int rightPower = throttle - turn;
 
-    drivetrain.leftMotors->move(leftPower);
-    drivetrain.rightMotors->move(rightPower);
+    left_motors.move(leftPower);
+    right_motors.move(rightPower);
 }
 
 void init() {
