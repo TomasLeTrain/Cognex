@@ -83,7 +83,6 @@ class PfMotionModel : public BasePfMotionModel {
 
     Angle abs_delta_theta = 0_stDeg;
 
-    float32x4_t Vsina, Vcosa;
     float sina, cosa;
 
     float global_pose_delta_x, global_pose_delta_y;

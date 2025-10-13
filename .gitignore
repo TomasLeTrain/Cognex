@@ -17,3 +17,5 @@ temp.errors
 .d/
 
 logs/
+*.gch
+

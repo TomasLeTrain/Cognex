@@ -1,7 +1,9 @@
-#include "systems/intake.h"
+#include "apis.h"
+//
 #include "globals.h"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
+#include "systems/intake.h"
 #include <map>
 #include <mutex>
 
@@ -402,10 +404,9 @@ void colorSort() {
 // runs regardless of driver mode
 void hardwareUpdate() {
     // intake update
-
-    int intake_speed = intake_motor_speeds[intake_state];
-    int bin_speed = bin_motor_speeds[intake_state];
-    int score_speed = score_motor_speeds[intake_state];
+    intake_speed = intake_motor_speeds[intake_state];
+    bin_speed = bin_motor_speeds[intake_state];
+    score_speed = score_motor_speeds[intake_state];
 
     // only update motors if they are not being used elsewhere - waits for 2
     // millisecends to be able to use
@@ -414,12 +415,11 @@ void hardwareUpdate() {
             intake_state == slow_scoring_middle ||
             intake_state == intake_slow_bottom
             // || intake_state == intake_disabled)
-            )
+        )
             intake_recycle_piston.set_value(true);
         else
 
             intake_recycle_piston.set_value(false);
-
 
         if (intake_state == scoring_bottom ||
             intake_state == slow_scoring_bottom)

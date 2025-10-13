@@ -107,8 +107,8 @@ class DistanceSensorModel : public Sensor {
         // one vertical and one horizontal
         // since the walls we check are always the same for both we can cache
         // the x/y value of the wall for each axis
-        Length horizontal_wall_length = wall_length * cos_sign;
-        Length vertical_wall_length = wall_length * sin_sign;
+        horizontal_wall_length = wall_length * cos_sign;
+        vertical_wall_length = wall_length * sin_sign;
 
         horizontal_wall_length -= rotated_offsets.x;
         vertical_wall_length -= rotated_offsets.y;
