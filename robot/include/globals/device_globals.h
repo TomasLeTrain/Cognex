@@ -20,24 +20,16 @@ extern pros::MotorGroup right_motors;
 extern vexmaps::ScaledIMU imu;
 
 // intake motors
-extern pros::Motor intake_motor;
-extern pros::Motor score_motor;
-extern pros::Motor bin_motor;
+extern pros::Motor bottom_motor;
+extern pros::Motor top_motor;
 
 extern pros::Optical middle_intake_color_sensor;
 extern pros::Optical bottom_intake_color_sensor;
 
 // pistons
-extern pros::adi::DigitalOut intake_recycle_piston;
 extern pros::adi::DigitalOut intake_raise_piston;
 extern pros::adi::DigitalOut matchloader_piston;
 
 // odom rotation sensors
 extern pros::Rotation sideways_odom_rotation;
 extern pros::Rotation forwards_odom_rotation;
-
-// particle filter distance sensors
-extern pros::Distance front_distance;
-extern pros::Distance back_distance;
-extern pros::Distance left_distance;
-extern pros::Distance right_distance;

@@ -3,10 +3,6 @@
 #include "apis.h"
 //
 
-// easier use of libs
-using namespace blazing;
-using namespace vexmaps;
-
 // structs for helping specify configs
 struct drivetrain_config_t {
     Length track_width;
@@ -45,16 +41,16 @@ struct tracker_config_t {
 template<typename T>
 struct tolerances_config_t {
     Time duration = 1000_sec;
-    ErrorTolerance<T> error = T(0);
-    VelocityTolerance<T> velocity = T(100000) / sec;
+	blazing::ErrorTolerance<T> error = T(0);
+    blazing::VelocityTolerance<T> velocity = T(100000) / sec;
 
     Time large_duration = 1000_sec;
-    ErrorTolerance<T> large_error = T(0);
-    VelocityTolerance<T> large_velocity = T(100000) / sec;
+	blazing::ErrorTolerance<T> large_error = T(0);
+    blazing::VelocityTolerance<T> large_velocity = T(100000) / sec;
 
     Time chain_duration = 1000_sec;
-    ErrorTolerance<T> chain_error = T(0);
-    VelocityTolerance<T> chain_velocity = T(100000) / sec;
+	blazing::ErrorTolerance<T> chain_error = T(0);
+    blazing::VelocityTolerance<T> chain_velocity = T(100000) / sec;
 };
 
 extern drivetrain_config_t drivetrain_config;
@@ -68,6 +64,12 @@ extern tolerances_config_t<Angle> angular_tolerances_config;
 // tracker configs
 extern tracker_config_t sideways_tracker_config;
 extern tracker_config_t forwards_tracker_config;
+
+// particle filter distance sensors
+extern pros::Distance front_distance;
+extern pros::Distance back_distance;
+extern pros::Distance left_distance;
+extern pros::Distance right_distance;
 
 // different vexmaps configurations
 extern vexmaps::MotionModelConfig motion_model_config;

@@ -1,5 +1,8 @@
 #include "globals.h"
 
+using namespace blazing;
+using namespace vexmaps;
+
 // pointer to pose tracker
 vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
 // vexmaps::LocalizationModel* pose_getter = &smoother_model;
@@ -14,15 +17,13 @@ pros::MotorGroup right_motors({ 15, 16, -10 }, pros::MotorGears::blue, pros::Mot
 vexmaps::ScaledIMU imu(1, (360.0 + 3.8) / 360.0);
 
 // intake motors
-pros::Motor intake_motor(17);
-pros::Motor score_motor(-7);
-pros::Motor bin_motor(2);
+pros::Motor bottom_motor(17);
+pros::Motor top_motor(2);
 
 pros::Optical middle_intake_color_sensor(8);
 pros::Optical bottom_intake_color_sensor(3);
 
 // pistons
-pros::adi::DigitalOut intake_recycle_piston('A', false);
 pros::adi::DigitalOut intake_raise_piston('B', false);
 pros::adi::DigitalOut matchloader_piston('C', false);
 
@@ -118,3 +119,4 @@ vexmaps::PFConfiguration Pfconfig = {
 };
 vexmaps::SmootherConfig smoother_config = {};
 
+pros::Controller controller(pros::E_CONTROLLER_MASTER);

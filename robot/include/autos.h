@@ -13,6 +13,7 @@
 /* auton utils - leave alone */
 
 // updates poses of vexmaps and blazing trackers
+void RobotSetPose(units::Pose pose);
 void RobotSetPose(double x, double y, double angle);
 
 // gets pose from vexmaps tracker
@@ -26,4 +27,4 @@ void DistanceSensorReset(int timeout = 150, double new_alpha = 0.8);
 
 // resets using passed in lasers
 // orientation should be as close to an axis as possible
-void DistanceSensorReset2(std::vector<laser_model_type*> enabled_lasers);
+void LaserResets(std::vector<laser_model_type*> enabled_lasers);
