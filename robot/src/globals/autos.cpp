@@ -3,6 +3,12 @@
 #include "units/Vector2D.hpp"
 #include <cmath>
 
+// defaults
+alliance_t auto_alliance = alliance_t::unset;
+field_side_t auto_side = field_side_t::unset;
+
+std::string selected_auton = "";
+
 void RobotSetPose(double x, double y, double angle) {
     units::Pose pose = { x * in, y * in, angle * deg };
 

@@ -7,17 +7,19 @@
 #include <map>
 #include <string>
 
-#define NEW_AUTON(auton) \
-    namespace auton {    \
-    void run_auton();    \
+#define H_AUTON(auton) \
+    namespace auton {  \
+    void run_auton();  \
     }
 
+#define L_AUTON(auton, name) { name, auton::run_auton },
+
 // make sure autons are defined in here AND in autonomous.cpp!!
-NEW_AUTON(simple_auton)
-NEW_AUTON(skills)
-NEW_AUTON(skills2)
-NEW_AUTON(simple_other_goal_auton)
-NEW_AUTON(roboticon_skills)
+H_AUTON(simple_auton)
+H_AUTON(skills)
+H_AUTON(skills2)
+H_AUTON(simple_other_goal_auton)
+H_AUTON(roboticon_skills)
 
 // special disabled auton that does nothing
 namespace disabled_auton {

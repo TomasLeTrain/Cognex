@@ -17,7 +17,7 @@ enum class field_side_t {
     right
 };
 
-inline alliance_t auto_alliance = alliance_t::unset;
-inline field_side_t auto_side = field_side_t::unset;
+extern alliance_t auto_alliance;
+extern field_side_t auto_side;
 
-inline std::string selected_auton = "";
+extern std::string selected_auton;

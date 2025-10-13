@@ -40,8 +40,6 @@ class ErrorTolerance : virtual ToleranceBase {
                                            return units::abs(error) < tolerance;
                                        })
                                        .value_or(false);
-        // std::cout << "[tol]err: " << error << " " << curr_tolerance_active
-        //           << std::endl;
         update_in_tolerance(curr_tolerance_active);
     }
 };
@@ -66,8 +64,6 @@ class VelocityTolerance : virtual ToleranceBase {
                 return units::abs(velocity) < tolerance;
             })
             .value_or(false);
-        // std::cout << "[tol]vel: " << velocity << " "
-        //           << curr_tolerance_active << std::endl;
 
         update_in_tolerance(curr_tolerance_active);
     }
@@ -121,6 +117,8 @@ class Tolerances : virtual ToleranceBase,
 
   public:
     template<typename... U>
+        requires(sizeof...(U) == sizeof...(ToleranceTypes) &&
+                 (std::is_constructible_v<ToleranceTypes, U> && ...))
     Tolerances(Time duration, U&&... bases)
         : duration(duration),
           ToleranceTypes(std::forward<U>(bases))... {}

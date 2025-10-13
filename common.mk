@@ -211,7 +211,7 @@ clean-template:
 	-$Drm -rf $(TEMPLATE_DIR)
 
 $(LIBAR): $(filter-out $(call GETALLOBJ,$(INCLUDE_SRC_IN_LIB)), $(call GETALLOBJ,$(EXCLUDE_SRCDIRS))) $(EXTRA_LIB_DEPS)
-	-$Dmkdir $(BINDIR)
+	-$Dmkdir -p $(BINDIR)
 	-$Drm -f $@
 	$(call test_output_2,Creating $@ ,$(AR) rcs $@ $^, $(DONE_STRING))
 

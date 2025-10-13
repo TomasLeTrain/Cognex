@@ -1,28 +1,18 @@
+#include "apis.h"
+//
+
 #include "autos.h"
 #include "globals.h"
-#include "liblvgl/core/lv_obj_pos.h"
 #include "main.h"
 #include "screen/screen.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 
-#define AUTON(auton, name) { name, auton::run_auton },
-
-// clang-format off
-
-// list of routines displayed in the auton selector - ALSO DEFINE IT IN
-// autos.h!!
-std::map<std::string, std::function<void()>> auton_list = {
-    AUTON(disabled_auton, "disabled")
-
-    AUTON(simple_auton, "simple")
-	AUTON(skills, "old skills")
-    AUTON(skills2, "new sklls")
-    AUTON(simple_other_goal_auton, "simple other goal")
-    AUTON(roboticon_skills, "current skills")
-};
-
-// clang-format on
+void testing_auton_func(){
+	auto_side = field_side_t::right;
+	auto_alliance = alliance_t::blue;
+	simple_auton::run_auton();
+}
 
 void autonomous() {
     // initialize subsystems
@@ -39,8 +29,6 @@ void autonomous() {
     } else {
         // run some default auton - useful for testing
         // NOTE: select the disabled auton if you don't want anything to run!!!
-        auto_side = field_side_t::right;
-        auto_alliance = alliance_t::blue;
-        simple_auton::run_auton();
+		testing_auton_func();
     }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "blazing/motions/motion.hpp"
+#include "pros/misc.hpp"
 #include "pros/rtos.hpp"
 #include "units/units.hpp"
 #include <cstddef>
@@ -28,7 +29,6 @@ template<typename M>
 constexpr void operator|(M&& motion, Executor& executor) {
     // creates a copy of the temporary motion object and creates one owned by
     // the executor
-    std::cout << "operator called!" << std::endl;
     executor.addMotion(
       std::move(std::make_unique<std::decay_t<M>>(std::forward<M>(motion))));
 }
@@ -46,6 +46,8 @@ class AsyncExecutorBase : public Executor {
   protected:
     size_t finished_index = 0;
     size_t latest_motion_index = 0;
+    pros::RecursiveMutex m_mutex;
+    std::uint8_t m_currentCompStatus;
 
   public:
     // main update logic
@@ -91,9 +93,6 @@ class AsyncExecutor : public AsyncExecutorBase {
   private:
     std::queue<std::unique_ptr<MotionBase>> motions;
 
-  protected:
-    pros::Mutex mutex;
-
   public:
     AsyncExecutor() {}
 
@@ -127,9 +126,6 @@ class ChainedExecutor : public AsyncExecutorBase {
       [](Voltage a, Voltage b, double t) {
           return (1 - t) * a + t * b;
       };
-
-  protected:
-    pros::Mutex mutex;
 
   public:
     ChainedExecutor(Time fusing_time);
