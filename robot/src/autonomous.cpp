@@ -19,6 +19,7 @@ std::map<std::string, std::function<void()>> auton_list = {
 	AUTON(skills, "old skills")
     AUTON(skills2, "new sklls")
     AUTON(simple_other_goal_auton, "simple other goal")
+    AUTON(roboticon_skills, "current skills")
 };
 
 // clang-format on

@@ -1,9 +1,3 @@
-/**
- * @file
- * @brief auto file template. copy paste this file, change the name and then add
- * it to "autos.h"
- */
-
 #include "apis.h"
 //
 #include "autos.h"
@@ -13,7 +7,7 @@
 
 // do not do anything outside here!
 
-namespace skills {
+namespace roboticon_skills {
 
 // you can add any variables / functions here
 

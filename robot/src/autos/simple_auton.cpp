@@ -10,6 +10,7 @@
 #include "globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "units/Angle.hpp"
 #include <iostream>
 
 // do not do anything outside here!
@@ -69,7 +70,7 @@ void run_auton() {
 
     int l = bl ? 1 : -1;
 
-    double start_angle = bl ? 245 : 2 * 270 - 245;
+    double start_angle = bl ? 205 : 360 - 205;
 
     RobotSetPose(47.15, -11.7 * l, start_angle);
     pros::delay(200);

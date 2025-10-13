@@ -17,6 +17,7 @@ NEW_AUTON(simple_auton)
 NEW_AUTON(skills)
 NEW_AUTON(skills2)
 NEW_AUTON(simple_other_goal_auton)
+NEW_AUTON(roboticon_skills)
 
 // special disabled auton that does nothing
 namespace disabled_auton {

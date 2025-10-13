@@ -58,7 +58,7 @@ void opcontrol(){
     }
     }};
 
-    RobotSetPose(-63, -16, 0);
+    RobotSetPose(-63, -16, 90);
     
     while(true){
         // maybe unneeded?

@@ -12,43 +12,18 @@
 
 /* auton utils - leave alone */
 
-// set pose of the robot - uses lemlib coordinate system
-inline void RobotSetPose(double x, double y, double angle) {
-    units::Pose pose = { x * in, y * in, angle * deg };
+// updates poses of vexmaps and blazing trackers
+void RobotSetPose(double x, double y, double angle);
 
-    if (orientation_getter != nullptr) {
-        orientation_getter->setPose(pose);
-    }
-    pose_getter->setPose(pose);
+// gets pose from vexmaps tracker
+units::Pose RobotGetPose();
 
-    // update lemlib pose immediately to be able to run motions immediately
-    tracker.setPose(pose);
-}
-
-inline units::Pose RobotGetPose() {
-    units::Pose pose = pose_getter->getPose();
-
-    if (orientation_getter != nullptr) {
-        pose.orientation = orientation_getter->getPose().orientation;
-    }
-    return pose;
-}
-
-inline void changePoseGetter(vexmaps::LocalizationModel* new_getter) {
-    std::lock_guard lock(pose_mutex);
-    pose_getter = new_getter;
-}
+// changes vexmaps tracker whose pose is used
+void changePoseGetter(vexmaps::LocalizationModel* new_getter);
 
 // effectively resets to whatever mcl measures
-inline void DistanceSensorReset(int timeout = 150, double new_alpha = 0.8) {
-    // uses default config for all other values
-    vexmaps::SmootherConfig new_config = smoother_config;
+void DistanceSensorReset(int timeout = 150, double new_alpha = 0.8);
 
-    // change alpha values to quickly reset to mcl pose
-    new_config.pose_x = new_alpha;
-    new_config.pose_y = new_alpha;
-
-    smoother_model.changeConfiguration(new_config);
-    pros::delay(timeout);
-    smoother_model.changeConfiguration(smoother_config);
-}
+// resets using passed in lasers
+// orientation should be as close to an axis as possible
+void DistanceSensorReset2(std::vector<laser_model_type*> enabled_lasers);

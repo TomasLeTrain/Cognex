@@ -4,11 +4,6 @@
 vexmaps::LocalizationModel* pose_getter = &pf_motion_model;
 // vexmaps::LocalizationModel* pose_getter = &smoother_model;
 
-pros::Mutex pose_mutex;
-
-// ???
-vexmaps::LocalizationModel* orientation_getter = nullptr;
-
 // clang-format off
 // motor groups
 pros::MotorGroup left_motors({ -11, -14, 13 }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -41,6 +36,12 @@ pros::Distance back_distance(12);
 pros::Distance left_distance(4);
 pros::Distance right_distance(19);
 
+// distance sensor offsets
+units::Pose front_distance_offsets = { 7_in, -3.59375_in, 0_stDeg };
+units::Pose left_distance_offsets = { 1_in, 4.75_in, 90_stDeg };
+units::Pose back_distance_offsets = { -7.125_in, 3.5_in, 180_stDeg };
+units::Pose right_distance_offsets = { 1_in, -4.75_in, 270_stDeg };
+
 /* vexmaps configuration */
 
 // tracker configs - same signs as lemlib
@@ -54,38 +55,6 @@ tracker_config_t sideways_tracker_config = {
     .offset = -0.15_in,
 };
 
-// if the tracker is not installed the list can be left empty -> tracker = {};
-std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers = {
-    &horizontal_tracker
-};
-std::initializer_list<VerticalOdometryTracker*> vertical_trackers = {
-    &vertical_tracker
-};
-
-// blazing tracker
-ArcOdomTracker tracker(
-  // forward trackers
-  { forwards_tracker, left_motor_tracker, right_motor_tracker },
-  // sideways trackers
-  { sideways_tracker },
-  // imus
-  { TrackingImu(&imu) });
-
-// custom pf configs - probably can leave alone
-vexmaps::MotionModelConfig motion_model_config = {};
-// vexmaps::PFConfiguration Pfconfig = {.logging=true,.particle_logging=false};
-vexmaps::PFConfiguration Pfconfig = {
-    .logging = false,
-    .particle_logging = false,
-    // .custom_particle_logging=true,
-};
-vexmaps::SmootherConfig smoother_config = {};
-
-// distance sensor offsets
-units::Pose front_distance_offsets = { 7_in, -3.59375_in, 0_stDeg };
-units::Pose left_distance_offsets = { 1_in, 4.75_in, 90_stDeg };
-units::Pose back_distance_offsets = { -7.125_in, 3.5_in, 180_stDeg };
-units::Pose right_distance_offsets = { 1_in, -4.75_in, 270_stDeg };
 
 /* drivetrain / pid configuration */
 
@@ -139,40 +108,13 @@ tolerances_config_t<Angle> angular_tolerances_config {
     .chain_error = { 15_stDeg },
 };
 
-RunExecutor run;
-AsyncExecutor async;
-
-MotionBuilder<decltype(chassis), decltype(controllers)> mb(chassis,
-                                                           controllers);
-
-// same as default chain lerp
-auto chain_lerp = [](Voltage a, Voltage b, double t) -> Voltage {
-    return (1 - t) * a + t * b;
+// custom pf configs - probably can leave alone
+vexmaps::MotionModelConfig motion_model_config = {};
+// vexmaps::PFConfiguration Pfconfig = {.logging=true,.particle_logging=false};
+vexmaps::PFConfiguration Pfconfig = {
+    .logging = false,
+    .particle_logging = false,
+    // .custom_particle_logging=true,
 };
+vexmaps::SmootherConfig smoother_config = {};
 
-ChainedExecutor chain(100_msec, chain_lerp);
-
-// custom cos-like func
-double angular_linear_func(Angle angle) {
-    // reduces the domain to [0,pi]
-    angle = units::abs(units::constrainAngle180(angle));
-
-    // defined on the range [0,pi/2]
-    auto func = [](double x) -> double {
-        double poly = 0.0001;
-        if (x < 1.224747) {
-            // simple polynomial that delays linear output until angle error is
-            // small
-            poly = 1.0 - 2.0 * (x * x) + 1.08866 * (x * x * x);
-        }
-        // return 0.00001;
-        return 0.7 * poly + std::cos(x) * 0.3;
-    };
-
-    // makes this function apply on the range [0,pi]
-    if (angle <= rot / 2.0) {
-        return func(angle.internal());
-    } else {
-        return -func(M_PI - angle.internal());
-    }
-};

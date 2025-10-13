@@ -36,60 +36,41 @@ void initialize() {
     pros::delay(100);
 
     // initialize all models
-    pf_motion_model.init();
-    pf_model.init();
-    smoother_model.init();
+    model_manager.init();
 
-    // initialize tasks
-    pros::Task odom_task { [&] {
-                              while (true) {
-                                  uint32_t current_time = pros::millis();
-                                  pf_motion_model.update();
-                                  // pf_model.changeCustomParticle({
-                                  // pf_motion_model.getPose().x,
-                                  //                                 pf_motion_model.getPose().y,
-                                  //                                 5_stDeg },
-                                  //                               0);
-                                  pros::c::task_delay_until(
-                                    &current_time,
-                                    to_msec(
-                                      pf_motion_model.getTaskDeltaTime()));
-                              }
-                          },
-                           "odom task" };
-    pros::delay(100);
+    // needed for async/chain motions to run
+    async.init();
+    chain.init();
 
-    pros::Task pf_task { [&] {
-                            while (true) {
-                                uint32_t current_time = pros::millis();
-                                pf_model.update();
-                                pros::c::task_delay_until(
-                                  &current_time,
-                                  to_msec(pf_model.getTaskDeltaTime()));
-                            }
-                        },
-                         "pf task" };
-    pros::delay(100);
+	// blazing tracker task
+    pros::Task([&]() {
+        while (true) {
+            tracker.update();
+            pros::delay(10);
+        }
+    });
 
-    pros::Task smoother_task { [&] {
-                                  while (true) {
-                                      uint32_t current_time = pros::millis();
-                                      smoother_model.update();
+    // motion defaults
 
-                                      // pf_model.changeCustomParticle({
-                                      // smoother_model.getPose().x,
-                                      //                                 smoother_model.getPose().y,
-                                      //                                 10_stDeg
-                                      //                                 },
-                                      //                               0);
-                                      pros::c::task_delay_until(
-                                        &current_time,
-                                        to_msec(
-                                          smoother_model.getTaskDeltaTime()));
-                                  }
-                              },
-                               "smoother task" };
-    pros::delay(100);
+    // default a timeout
+    mb.setTurnToModifier([](auto turnTo) {
+        return turnTo.timeout(5_sec);
+    });
+
+    mb.setDistanceAtHeadingModifier([](auto distanceAtHeading) {
+        return distanceAtHeading.timeout(5_sec);
+    });
+
+    mb.setMoveToModifier([](auto moveTo) {
+        // return moveTo.customAngularLinearFunc(angular_linear_func);
+        return moveTo.k_lat(0.3 * rad / m).timeout(5_sec);
+    });
+
+    mb.setBoomerangModifier([](auto boomerang) {
+        // return boomerang.customAngularLinearFunc(angular_linear_func);
+        // return boomerang.k_lat();
+        return boomerang.k_lat(0.2 * rad / m, true).timeout(7_sec);
+    });
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");

@@ -60,7 +60,7 @@ void run_auton() {
 
     int l = bl ? 1 : -1;
 
-    double start_angle = bl ? 244.085 : 2 * 270 - 244.085;
+    double start_angle = bl ? 205.915 : 360 - 205.915;
 
     RobotSetPose(47.489, -11.751 * l, start_angle);
     intake::set(intake::intake);

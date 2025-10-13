@@ -64,7 +64,7 @@ void run_auton() {
     // pose_getter = &smoother_model;
 
     // pros::delay(40);
-    RobotSetPose(-63, -16, 0);
+    RobotSetPose(-63, -16, 90);
     pros::delay(40);
 
     // don't color sort
@@ -204,7 +204,7 @@ void run_auton() {
     mb.moveTo(62, 15.5).linear_clampMinVoltage(0.5_volt) | run;
 
     // wait for mcl to work?
-    RobotSetPose(63, 16, 0);
+    RobotSetPose(63, 16, 90);
 
     // set pose to not be cooked
     pros::delay(1000);
