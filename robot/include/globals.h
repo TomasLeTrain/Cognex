@@ -321,10 +321,10 @@ inline normalLargeChainTolerances tolerances(linearTolerances,
 inline Chassis chassis(drivetrain, tracker, tolerances);
 
 // executors
-inline RunExecutor run;
-inline AsyncExecutor async;
+extern RunExecutor run;
+extern AsyncExecutor async;
 
-inline MotionBuilder mb(chassis, controllers);
+extern MotionBuilder<decltype(chassis), decltype(controllers)> mb;
 
 extern ChainedExecutor chain;
 

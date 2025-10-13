@@ -4,7 +4,6 @@ DEVICE=VEX EDR V5
 MFLAGS=-mcpu=cortex-a9 -mfpu=neon-fp16 -mfloat-abi=hard -O3 -ftree-vectorize -mfp16-format=ieee -g -mthumb
 CPPFLAGS=-D_POSIX_THREADS -D_UNIX98_THREAD_MUTEX_ATTRIBUTES -D_POSIX_TIMERS -D_POSIX_MONOTONIC_CLOCK
 GCCFLAGS=-ffunction-sections -fdata-sections -fdiagnostics-color -funwind-tables -fno-strict-aliasing -flto=auto
-
 HEADEREXTS:=h hpp
 
 # Check if the llemu files in libvgl exist. If they do, define macros that the
@@ -210,7 +209,7 @@ clean-template:
 	@echo Cleaning $(TEMPLATE_DIR)
 	-$Drm -rf $(TEMPLATE_DIR)
 
-$(LIBAR): $(call GETALLOBJ,$(EXCLUDE_SRC_FROM_LIB)) $(EXTRA_LIB_DEPS)
+$(LIBAR): $(filter-out $(call GETALLOBJ,$(INCLUDE_SRC_IN_LIB)), $(call GETALLOBJ,$(EXCLUDE_SRCDIRS))) $(EXTRA_LIB_DEPS)
 	-$Dmkdir $(BINDIR)
 	-$Drm -f $@
 	$(call test_output_2,Creating $@ ,$(AR) rcs $@ $^, $(DONE_STRING))
@@ -225,7 +224,7 @@ endif
 
 # if project is a library source, compile the archive and link output.elf against the archive rather than source objects
 ifeq ($(IS_LIBRARY),1)
-ELF_DEPS+=$(filter-out $(call GETALLOBJ,$(EXCLUDE_SRC_FROM_LIB)), $(call GETALLOBJ,$(EXCLUDE_SRCDIRS)))
+ELF_DEPS+=$(call GETALLOBJ,$(INCLUDE_SRC_IN_LIB))
 LIBRARIES+=$(LIBAR)
 else
 ELF_DEPS+=$(call GETALLOBJ,$(EXCLUDE_SRCDIRS))

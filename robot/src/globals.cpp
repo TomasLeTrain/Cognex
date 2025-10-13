@@ -96,9 +96,9 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
 
 // units are in inches
 linear_pid_config_t linear_pid_config { .kp = 4.7,
-                                         .ki = 0,
-                                         .kd = 1,
-                                         .windupRange = 7 };
+                                        .ki = 0,
+                                        .kd = 1,
+                                        .windupRange = 7 };
 
 // units are in degrees
 angular_pid_config_t angular_pid_config { .kp = 2.8,
@@ -138,6 +138,12 @@ tolerances_config_t<Angle> angular_tolerances_config {
     .chain_duration = 1_sec,
     .chain_error = { 15_stDeg },
 };
+
+RunExecutor run;
+AsyncExecutor async;
+
+MotionBuilder<decltype(chassis), decltype(controllers)> mb(chassis,
+                                                           controllers);
 
 // same as default chain lerp
 auto chain_lerp = [](Voltage a, Voltage b, double t) -> Voltage {

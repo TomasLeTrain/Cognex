@@ -6,8 +6,6 @@
 
 #include "autos.h"
 
-//
-
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 
