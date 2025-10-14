@@ -6,6 +6,8 @@
 #include "globals/config.h"
 #include "globals/device_globals.h"
 
+using namespace blazing;
+
 /*
  * blazing configs stuff
  *
@@ -17,7 +19,6 @@ extern ForwardsTracker left_motor_tracker;
 extern ForwardsTracker right_motor_tracker;
 
 extern ForwardsTracker forwards_tracker;
-
 extern SidewaysTracker sideways_tracker;
 
 extern ArcOdomTracker tracker;

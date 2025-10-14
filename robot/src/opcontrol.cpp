@@ -9,8 +9,8 @@
 void opcontrol() {
     // initialize tasks for each subsystem
 
-    // autonomous();
-    // return;
+    autonomous();
+    return;
 
 	// cancel any auton motions that could be currently running
 
