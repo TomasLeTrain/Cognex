@@ -1,3 +1,6 @@
+#include "apis.h"
+//
+
 #include "globals.h"
 
 using namespace blazing;
@@ -77,7 +80,7 @@ angular_pid_config_t angular_pid_config {
     .maxVoltage = 127,
 };
 
-LinearSlewController linear_slew(std::nullopt, 0.06_volt);
+LinearSlewController linear_slew(std::nullopt, 0.03_volt);
 AngularSlewController angular_slew(0.5_volt);
 
 LinearVoltageClampController linear_voltage_constraints;

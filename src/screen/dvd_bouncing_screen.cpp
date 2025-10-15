@@ -5,6 +5,8 @@
 
 namespace screen {
 namespace bouncing_dvd_screen {
+lv_obj_t* dvd_screen;
+
 lv_obj_t* bouncing_object;
 lv_obj_t* dvd_image;
 
@@ -71,9 +73,9 @@ void rectangle_update(void* obj, int t) {
     lv_obj_set_y((lv_obj_t*)obj, y);
 }
 
-void init() {
+void init(lv_obj_t * parent_screen) {
     // main screen object
-    dvd_screen = lv_obj_create(lv_screen_active());
+    dvd_screen = lv_obj_create(parent_screen);
 
     // makes object take up the full screen and have no styling
     lv_obj_remove_style_all(dvd_screen);
@@ -91,8 +93,6 @@ void init() {
     cy = lv_display_get_vertical_resolution(NULL);
 
     // width and height of image
-    // w = 130.0;
-    // h = 103.0;
     w = 194.0;
     h = 152.0;
 
@@ -109,8 +109,6 @@ void init() {
                               0);
 
     dvd_image = lv_image_create(bouncing_object);
-    // lv_image_set_src(dvd_image, &dvd_img);
-    // lv_image_set_src(dvd_image, &monkey_4x_img);
     lv_image_set_src(dvd_image, &monkey_75x_img);
 
     lv_obj_align(dvd_image, LV_ALIGN_TOP_LEFT, 0, 0);

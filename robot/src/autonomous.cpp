@@ -15,14 +15,16 @@ void testing_auton_func() {
     // auto_side = field_side_t::right;
     // auto_alliance = alliance_t::blue;
     // simple_auton::run_auton();
+
+    selected_auton = "current skills";
+    auto selected_auton_function = auton_list[selected_auton];
+    selected_auton_function();
 }
 
 void autonomous() {
     // initialize subsystems
     intake::init(false);
     matchloader::init(false);
-
-    selected_auton = "current skills";
 
     // change to W screen
     screen::setScreen(&screen::dvd_screen);

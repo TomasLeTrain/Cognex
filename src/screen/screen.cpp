@@ -5,11 +5,8 @@
 
 namespace screen {
 // screens
-lv_obj_t* auton_select_screen;
-lv_obj_t* debug_screen;
-lv_obj_t* dvd_screen;
 
-lv_obj_t ** curr_screen = &auton_select_screen;
+lv_obj_t** curr_screen = &tabs_screen;
 
 void change_screen(lv_event_t* e) {
     lv_obj_t* next_screen = (lv_obj_t*)lv_event_get_user_data(e);
@@ -34,8 +31,11 @@ void makeCurrentActive() {
 
 // initializes all the screens
 void init() {
-    bouncing_dvd_screen::init();
-    auton_select::init();
+    tabs::init(lv_screen_active());
+    bouncing_dvd_screen::init(lv_screen_active());
+
+    health::init(tabs::tabs[0], tabs::tabs[1], tabs::tabs[2]);
+    auton_select::init(tabs::tabs[3]);
 
     makeCurrentActive();
 }

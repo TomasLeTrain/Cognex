@@ -270,12 +270,12 @@ void waitUntilMiddleColor(alliance_t color, uint32_t timeout) {
 // should be run in a task
 void colorSort() {
     while (true) {
-        bool autoColorSortEnabled = !is_driver && !colorSortEnabled;
-        bool driverColorSortEnabled = is_driver && !driverColorSortEnabled;
+        bool autoColorSortDisabled = !is_driver && !colorSortEnabled;
+        bool driverColorSortDisabled = is_driver && !driverColorSortEnabled;
 
         // wait for stuff to be available
         // does not change intake, should not depend on mutex
-        if (autoColorSortEnabled || driverColorSortEnabled ||
+        if (autoColorSortDisabled || driverColorSortDisabled ||
             // we don't know our alliance so we cannot color sort
             auto_alliance == alliance_t::unset) {
             pros::delay(10);

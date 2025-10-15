@@ -1,10 +1,16 @@
+#include "apis.h"
+//
+
 #include "globals.h"
 #include "main.h"
 #include "screen/screen.h"
 #include <mutex>
 
 void initialize() {
-    // need to start localization tasks and lemlib related things
+    // initialize screens
+    screen::init();
+
+    int imu_notif = screen::health::add_init_notif("calibrating imu");
 
     // imu calibration
     int attempt = 1;
@@ -31,27 +37,46 @@ void initialize() {
     // check if calibration attempts were successful
     if (attempt > 5) {
         printf("IMU calibration failed, just give up\n");
+        screen::health::update_init_notif_severity(imu_notif,
+                                                   screen::health::critical);
+    } else {
+        screen::health::update_init_notif_severity(imu_notif,
+                                                   screen::health::succeed);
     }
 
     pros::delay(100);
 
+    int init_models_notif =
+      screen::health::add_init_notif("initializing models");
     // initialize all models
     model_manager.init();
+    screen::health::update_init_notif_severity(init_models_notif,
+                                               screen::health::succeed);
 
+    int init_executors_notif =
+      screen::health::add_init_notif("initializing executors");
     // needed for async/chain motions to run
     async.init();
     chain.init();
+    screen::health::update_init_notif_severity(init_executors_notif,
+                                               screen::health::succeed);
 
-	// blazing tracker task
+    int init_tracker_notif =
+      screen::health::add_init_notif("initializing tracker");
+    // blazing tracker task
     pros::Task([&]() {
         while (true) {
             tracker.update();
             pros::delay(10);
         }
     });
+    screen::health::update_init_notif_severity(init_tracker_notif,
+                                               screen::health::succeed);
 
     // motion defaults
 
+    int init_motion_defaults_notif =
+      screen::health::add_init_notif("initializing motion defaults");
     // default a timeout
     mb.setTurnToModifier([](auto turnTo) {
         return turnTo.timeout(5_sec);
@@ -71,10 +96,12 @@ void initialize() {
         // return boomerang.k_lat();
         return boomerang.k_lat(0.2 * rad / m, true).timeout(7_sec);
     });
+    screen::health::update_init_notif_severity(init_motion_defaults_notif,
+                                               screen::health::succeed);
+
+    screen::health::add_init_notif("finished initialize!",
+                                   screen::health::succeed);
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
-
-    // initialize screens
-    screen::init();
 }

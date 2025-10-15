@@ -1,8 +1,8 @@
 #include "apis.h"
 //
 
-#include "autos.h"
 #include "auton_globals.h"
+#include "autos.h"
 #include "liblvgl/core/lv_obj_pos.h"
 #include "liblvgl/core/lv_obj_style.h"
 #include "liblvgl/display/lv_display.h"
@@ -17,6 +17,8 @@
 namespace screen {
 namespace auton_select {
 // this is the screen that becomes active after this one is done
+lv_obj_t* auton_select_screen;
+
 lv_obj_t* next_screen = nullptr;
 
 std::map<lv_obj_t*, std::string> radio_to_auton_mode;
@@ -28,37 +30,125 @@ uint32_t last_selected_checkbox = -1;
 
 void setAuton(std::string new_auton) {
     selected_auton = new_auton;
+    std::cout << "changed auton to " << new_auton << std::endl;
 }
 
 void setFieldSide(field_side_t new_side) {
     auto_side = new_side;
+    std::cout << "changed auton to "
+              << (new_side == field_side_t::right ? "right" : "left")
+              << std::endl;
 }
 
 void setAlliance(alliance_t new_alliance) {
     auto_alliance = new_alliance;
+    std::cout << "changed auton to "
+              << (new_alliance == alliance_t::red ? "red" : "blue")
+              << std::endl;
+}
+
+static lv_style_t selected_style, not_selected_style;
+static lv_style_t red_style, blue_style, side_style;
+static lv_style_t style_radio, style_radio_chk;
+static lv_style_t button_container_style;
+static lv_style_t no_round;
+
+static lv_style_t corner_style_default;
+
+void initStyles() {
+    lv_color_t red_col = lv_palette_darken(LV_PALETTE_RED, 1);
+    lv_color_t blue_col = lv_palette_darken(LV_PALETTE_BLUE, 1);
+    lv_color_t side_col = lv_palette_darken(LV_PALETTE_ORANGE, 2);
+    lv_color_t side_text_col = lv_color_black();
+
+    lv_style_init(&red_style);
+    lv_style_init(&blue_style);
+    lv_style_init(&side_style);
+    lv_style_set_bg_color(&red_style, red_col);
+    lv_style_set_bg_color(&blue_style, blue_col);
+
+    lv_style_set_bg_color(&side_style, side_col);
+    lv_style_set_text_color(&side_style, side_text_col);
+
+    lv_style_init(&style_radio);
+    lv_style_init(&style_radio_chk);
+
+    lv_style_set_radius(&style_radio, LV_RADIUS_CIRCLE);
+    lv_style_set_bg_image_src(&style_radio_chk, NULL);
+
+    lv_style_init(&no_round);
+    lv_style_set_radius(&no_round, 0);
+
+    lv_style_init(&button_container_style);
+
+    lv_style_set_radius(&button_container_style, 0);
+    lv_style_set_pad_gap(&button_container_style, 0);
+    lv_style_set_pad_all(&button_container_style, 0);
+
+    /*Properties to transition*/
+    static lv_style_prop_t props[] = { LV_STYLE_TRANSFORM_WIDTH,
+                                       LV_STYLE_TRANSFORM_HEIGHT,
+                                       0 };
+
+    /*Transition descriptor when going back to the default state.
+     *Add some delay to be sure the press transition is visible even if the
+     * press was very short*/
+    static lv_style_transition_dsc_t transition_dsc_default;
+    lv_style_transition_dsc_init(&transition_dsc_default,
+                                 props,
+                                 lv_anim_path_ease_in_out,
+                                 250,
+                                 50,
+                                 NULL);
+
+    /*Transition descriptor when going to pressed state.
+     *No delay, go to presses state immediately*/
+    static lv_style_transition_dsc_t transition_dsc_focus;
+    lv_style_transition_dsc_init(&transition_dsc_focus,
+                                 props,
+                                 lv_anim_path_ease_in_out,
+                                 250,
+                                 0,
+                                 NULL);
+
+    /*Add only the new transition to he default state*/
+    lv_style_init(&corner_style_default);
+    lv_style_set_transition(&corner_style_default, &transition_dsc_default);
+
+    /*Add the transition and some transformation to the presses state.*/
+
+    lv_style_init(&selected_style);
+    lv_style_set_bg_opa(&selected_style, LV_OPA_100);
+    lv_style_set_transform_width(&selected_style, 1);
+    lv_style_set_transform_height(&selected_style, 1);
+    lv_style_set_transition(&selected_style, &transition_dsc_focus);
+
+    lv_style_init(&not_selected_style);
+    lv_style_set_bg_opa(&not_selected_style, LV_OPA_40);
+    lv_style_set_transform_width(&not_selected_style, -1);
+    lv_style_set_transform_height(&not_selected_style, -1);
+    lv_style_set_transition(&not_selected_style, &transition_dsc_focus);
 }
 
 void update_fields() {
-    static lv_style_t selected_style, not_selected_style;
-    lv_style_init(&selected_style);
-    lv_style_init(&not_selected_style);
-    lv_style_set_bg_opa(&selected_style, LV_OPA_100);
-    lv_style_set_bg_opa(&not_selected_style, LV_OPA_40);
-
     for (int i = 0; i < 4; i++) {
-        lv_obj_add_style(field_btns[i], &not_selected_style, 0);
+        lv_obj_add_state(field_btns[i], LV_STATE_USER_2);
     }
+    auto activate_field = [](lv_obj_t* obj) {
+        lv_obj_remove_state(obj, LV_STATE_USER_2);
+        lv_obj_add_state(obj, LV_STATE_USER_1);
+    };
 
     if (auto_alliance == alliance_t::blue) {
-        lv_obj_add_style(field_btns[0], &selected_style, 0);
+        activate_field(field_btns[0]);
     } else if (auto_alliance == alliance_t::red) {
-        lv_obj_add_style(field_btns[1], &selected_style, 0);
+        activate_field(field_btns[1]);
     }
 
     if (auto_side == field_side_t::left) {
-        lv_obj_add_style(field_btns[2], &selected_style, 0);
+        activate_field(field_btns[2]);
     } else if (auto_side == field_side_t::right) {
-        lv_obj_add_style(field_btns[3], &selected_style, 0);
+        activate_field(field_btns[3]);
     }
 }
 
@@ -82,42 +172,24 @@ void blue_cb(lv_event_t* e) {
     update_fields();
 }
 
-lv_obj_t* make_button(lv_obj_t* holder,
-                      int posX,
-                      int posY,
-                      int width,
-                      int height,
-                      std::string s,
-                      alliance_t alliance,
-                      field_side_t side,
-                      void (*callback)(lv_event_t*)) {
+lv_obj_t* make_btn(lv_obj_t* holder,
+                   std::string s,
+                   alliance_t alliance,
+                   field_side_t side,
+                   void (*callback)(lv_event_t*)) {
+
     lv_obj_t* btn = lv_button_create(holder);
+    lv_obj_set_size(btn, lv_pct(45), lv_pct(45));
+    lv_obj_add_event_cb(btn, callback, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_style(btn, &no_round, 0);
 
-    lv_obj_set_pos(btn, posX, posY); /*Set its position*/
-    lv_obj_set_size(btn, width, height); /*Set its size*/
-    lv_obj_add_event_cb(btn,
-                        callback,
-                        LV_EVENT_CLICKED,
-                        NULL); /*Assign a callback to the button*/
+    lv_obj_add_style(btn, &selected_style, LV_STATE_USER_1);
+    lv_obj_add_style(btn, &not_selected_style, LV_STATE_USER_2);
+    lv_obj_add_style(btn, &corner_style_default, 0);
 
-    lv_obj_t* label = lv_label_create(btn); /*Add a label to the button*/
-    lv_label_set_text(label, s.c_str()); /*Set the labels text*/
-    lv_obj_center(label); /*Align the label to the center*/
-
-    lv_color_t red_col = lv_palette_darken(LV_PALETTE_RED, 1);
-    lv_color_t blue_col = lv_palette_darken(LV_PALETTE_BLUE, 1);
-    lv_color_t side_col = lv_palette_darken(LV_PALETTE_ORANGE, 2);
-    lv_color_t side_text_col = lv_color_black();
-
-    static lv_style_t red_style, blue_style, side_style;
-    lv_style_init(&red_style);
-    lv_style_init(&blue_style);
-    lv_style_init(&side_style);
-    lv_style_set_bg_color(&red_style, red_col);
-    lv_style_set_bg_color(&blue_style, blue_col);
-
-    lv_style_set_bg_color(&side_style, side_col);
-    lv_style_set_text_color(&side_style, side_text_col);
+    lv_obj_t* label = lv_label_create(btn);
+    lv_label_set_text(label, s.c_str());
+    lv_obj_center(label);
 
     if (side != field_side_t::unset) {
         lv_obj_add_style(btn, &side_style, 0);
@@ -130,7 +202,11 @@ lv_obj_t* make_button(lv_obj_t* holder,
     }
 
     // sets the font to be visible
-    lv_obj_set_style_text_font(btn, &lv_font_montserrat_36, 0);
+    if (side != field_side_t::unset) {
+        lv_obj_set_style_text_font(btn, &lv_font_montserrat_48, 0);
+    } else {
+        lv_obj_set_style_text_font(btn, &lv_font_montserrat_30, 0);
+    }
     return btn;
 }
 
@@ -157,95 +233,71 @@ static void auton_radio_event_handler(lv_event_t* e) {
 }
 
 // sets up the screen
-void init() {
+void init(lv_obj_t* parent_screen) {
+    initStyles();
+
     // main screen
-    auton_select_screen = lv_obj_create(lv_screen_active());
+    auton_select_screen = lv_obj_create(parent_screen);
 
     // makes object take up the full screen and have no styling
     lv_obj_remove_style_all(auton_select_screen);
-    lv_obj_set_size(auton_select_screen,
-                    lv_display_get_horizontal_resolution(NULL),
-                    lv_display_get_vertical_resolution(NULL));
+    lv_obj_set_size(auton_select_screen, lv_pct(100), lv_pct(100));
+
     lv_obj_center(auton_select_screen);
     lv_obj_set_style_bg_opa(auton_select_screen, LV_OPA_COVER, 0);
 
     // background color of the screen
     lv_obj_set_style_bg_color(auton_select_screen, lv_color_black(), 0);
 
+    // don't use elastic scroll
+    lv_obj_remove_flag(auton_select_screen, LV_OBJ_FLAG_SCROLL_ELASTIC);
+
     // hidden by default
     lv_obj_add_flag(auton_select_screen, LV_OBJ_FLAG_HIDDEN);
 
-    // offset from top left of screen at which the buttons start
-    int btn_border_x = 5;
-    int btn_border_y = 5;
+    lv_obj_t* button_container = lv_obj_create(auton_select_screen);
+    lv_obj_set_size(button_container, lv_pct(45), lv_pct(100));
+    lv_obj_set_pos(button_container, lv_pct(0), lv_pct(0));
 
-    const int curr_screen_width = lv_display_get_horizontal_resolution(NULL);
-    const int curr_screen_height = lv_display_get_vertical_resolution(NULL);
-
-    // both buttons + padding should take 50% of the screen
-    int corner_btn_width = (curr_screen_width / 2) / 2 - btn_border_x * 2;
-
-    int corner_btn_height = curr_screen_height / 2 - btn_border_y * 2;
+    lv_obj_set_flex_flow(button_container, LV_FLEX_FLOW_ROW_WRAP);
+    lv_obj_set_flex_align(button_container,
+                          LV_FLEX_ALIGN_SPACE_EVENLY,
+                          LV_FLEX_ALIGN_SPACE_EVENLY,
+                          LV_FLEX_ALIGN_SPACE_EVENLY);
+    lv_obj_add_style(button_container, &button_container_style, 0);
 
     // button layout:
     // blue, red
     // left, right
 
     // blue
-    field_btns[0] = make_button(auton_select_screen,
-                                btn_border_x,
-                                btn_border_y,
-                                corner_btn_width,
-                                corner_btn_height,
-                                "",
-                                alliance_t::blue,
-                                field_side_t::unset,
-                                blue_cb);
-    // red
-    field_btns[1] = make_button(auton_select_screen,
-                                btn_border_x + corner_btn_width,
-                                btn_border_y,
-                                corner_btn_width,
-                                corner_btn_height,
-                                "",
-                                alliance_t::red,
-                                field_side_t::unset,
-                                red_cb);
-    // left
-    field_btns[2] = make_button(auton_select_screen,
-                                btn_border_x,
-                                btn_border_y + corner_btn_height,
-                                corner_btn_width,
-                                corner_btn_height,
-                                LV_SYMBOL_LEFT,
-                                alliance_t::unset,
-                                field_side_t::left,
-                                left_cb);
-    // right
-    field_btns[3] = make_button(auton_select_screen,
-                                btn_border_x + corner_btn_width,
-                                btn_border_y + corner_btn_height,
-                                corner_btn_width,
-                                corner_btn_height,
-                                LV_SYMBOL_RIGHT,
-                                alliance_t::unset,
-                                field_side_t::right,
-                                right_cb);
-
-    static lv_style_t style_radio, style_radio_chk;
-
-    lv_style_init(&style_radio);
-    lv_style_init(&style_radio_chk);
-
-    lv_style_set_radius(&style_radio, LV_RADIUS_CIRCLE);
-    lv_style_set_bg_image_src(&style_radio_chk, NULL);
+    field_btns[0] = make_btn(button_container,
+                             "blue",
+                             alliance_t::blue,
+                             field_side_t::unset,
+                             blue_cb);
+    field_btns[1] = make_btn(button_container,
+                             "red",
+                             alliance_t::red,
+                             field_side_t::unset,
+                             red_cb);
+    field_btns[2] = make_btn(button_container,
+                             LV_SYMBOL_LEFT,
+                             alliance_t::unset,
+                             field_side_t::left,
+                             left_cb);
+    field_btns[3] = make_btn(button_container,
+                             LV_SYMBOL_RIGHT,
+                             alliance_t::unset,
+                             field_side_t::right,
+                             right_cb);
 
     // auton checkboxes
     lv_obj_t* checkbox_container = lv_obj_create(auton_select_screen);
     lv_obj_set_flex_flow(checkbox_container, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_size(checkbox_container, lv_pct(48), lv_pct(100));
-    lv_obj_set_x(checkbox_container, lv_pct(51));
-    lv_obj_set_y(checkbox_container, lv_pct(0));
+    lv_obj_set_size(checkbox_container, lv_pct(75), lv_pct(100));
+    lv_obj_set_pos(checkbox_container, lv_pct(45), lv_pct(0));
+    lv_obj_add_style(checkbox_container, &no_round, 0);
 
     lv_obj_add_event_cb(checkbox_container,
                         auton_radio_event_handler,
@@ -264,7 +316,7 @@ void init() {
 
         lv_obj_add_style(checkbox, &style_radio_chk, LV_PART_INDICATOR);
         lv_obj_add_style(checkbox, &style_radio_chk, LV_STATE_CHECKED);
-        lv_obj_set_style_text_font(checkbox, &lv_font_montserrat_24, 0);
+        lv_obj_set_style_text_font(checkbox, &lv_font_montserrat_20, 0);
 
         radio_to_auton_mode[checkbox] = pair.first;
     }
