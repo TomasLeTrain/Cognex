@@ -27,7 +27,7 @@ void autonomous() {
     matchloader::init(false);
 
     // change to W screen
-    screen::setScreen(&screen::dvd_screen);
+    screen::setScreen(&screen::bouncing_dvd_screen::screen);
 
     if (selected_auton != "") {
         // the selected auton gets run

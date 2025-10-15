@@ -2,6 +2,7 @@
 //
 
 #include "globals.h"
+#include "health_daemon.h"
 #include "main.h"
 #include "screen/screen.h"
 #include <mutex>
@@ -97,6 +98,15 @@ void initialize() {
         return boomerang.k_lat(0.2 * rad / m, true).timeout(7_sec);
     });
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
+                                               screen::health::succeed);
+
+    int init_health_daemon_notif =
+      screen::health::add_init_notif("intializing health daemon",
+                                     screen::health::warn);
+
+    health_daemon::init_health_daemon();
+
+    screen::health::update_init_notif_severity(init_health_daemon_notif,
                                                screen::health::succeed);
 
     screen::health::add_init_notif("finished initialize!",

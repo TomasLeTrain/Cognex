@@ -14,17 +14,13 @@
 LV_IMAGE_DECLARE(monkey_75x_img);
 
 namespace screen {
-extern lv_obj_t* auton_select_screen;
-extern lv_obj_t* dvd_screen;
-extern lv_obj_t* health_screen;
-extern lv_obj_t* tabs_screen;
-
 extern lv_obj_t** curr_screen;
 
 void change_screen(lv_event_t* e);
 void setScreen(lv_obj_t** new_screen);
 
 namespace tabs {
+extern lv_obj_t* screen;
 inline const int num_tabs = 4;
 extern lv_obj_t* tabs[num_tabs];
 void init(lv_obj_t* parent_screen);
@@ -32,6 +28,7 @@ void init(lv_obj_t* parent_screen);
 } // namespace tabs
 
 namespace health {
+extern lv_obj_t* screen;
 
 enum notification_severity_t {
     critical,
@@ -62,10 +59,12 @@ void init(lv_obj_t* error_parent_screen,
 } // namespace health
 
 namespace bouncing_dvd_screen {
+extern lv_obj_t* screen;
 void init(lv_obj_t* parent_screen);
 }
 
 namespace auton_select {
+extern lv_obj_t* screen;
 void init(lv_obj_t* parent_screen);
 } // namespace auton_select
 

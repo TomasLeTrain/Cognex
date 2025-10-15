@@ -15,7 +15,7 @@ void opcontrol() {
     // autonomous();
     // return;
 
-	// cancel any auton motions that could be currently running
+    // cancel any auton motions that could be currently running
 
     intake::init(true);
     matchloader::init(true);
@@ -23,10 +23,10 @@ void opcontrol() {
     // no need to initialize in auto
     base::init();
 
-	// set screen in case its different
-    // screen::setScreen(&screen::dvd_screen);
+    // set screen in case its different
+    screen::setScreen(&screen::bouncing_dvd_screen::screen);
 
-    bool print_info = true;
+    // bool print_info = true;
 
     // pros::Task smoother_task { [&] {
     //     while (print_info) {

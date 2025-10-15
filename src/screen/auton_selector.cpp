@@ -16,9 +16,9 @@
 
 namespace screen {
 namespace auton_select {
-// this is the screen that becomes active after this one is done
-lv_obj_t* auton_select_screen;
+lv_obj_t* screen;
 
+// this is the screen that becomes active after this one is done
 lv_obj_t* next_screen = nullptr;
 
 std::map<lv_obj_t*, std::string> radio_to_auton_mode;
@@ -237,25 +237,25 @@ void init(lv_obj_t* parent_screen) {
     initStyles();
 
     // main screen
-    auton_select_screen = lv_obj_create(parent_screen);
+    screen = lv_obj_create(parent_screen);
 
     // makes object take up the full screen and have no styling
-    lv_obj_remove_style_all(auton_select_screen);
-    lv_obj_set_size(auton_select_screen, lv_pct(100), lv_pct(100));
+    lv_obj_remove_style_all(screen);
+    lv_obj_set_size(screen, lv_pct(100), lv_pct(100));
 
-    lv_obj_center(auton_select_screen);
-    lv_obj_set_style_bg_opa(auton_select_screen, LV_OPA_COVER, 0);
+    lv_obj_center(screen);
+    lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, 0);
 
     // background color of the screen
-    lv_obj_set_style_bg_color(auton_select_screen, lv_color_black(), 0);
+    lv_obj_set_style_bg_color(screen, lv_color_black(), 0);
 
     // don't use elastic scroll
-    lv_obj_remove_flag(auton_select_screen, LV_OBJ_FLAG_SCROLL_ELASTIC);
+    lv_obj_remove_flag(screen, LV_OBJ_FLAG_SCROLL_ELASTIC);
 
     // hidden by default
-    lv_obj_add_flag(auton_select_screen, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(screen, LV_OBJ_FLAG_HIDDEN);
 
-    lv_obj_t* button_container = lv_obj_create(auton_select_screen);
+    lv_obj_t* button_container = lv_obj_create(screen);
     lv_obj_set_size(button_container, lv_pct(45), lv_pct(100));
     lv_obj_set_pos(button_container, lv_pct(0), lv_pct(0));
 
@@ -293,7 +293,7 @@ void init(lv_obj_t* parent_screen) {
                              right_cb);
 
     // auton checkboxes
-    lv_obj_t* checkbox_container = lv_obj_create(auton_select_screen);
+    lv_obj_t* checkbox_container = lv_obj_create(screen);
     lv_obj_set_flex_flow(checkbox_container, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_size(checkbox_container, lv_pct(75), lv_pct(100));
     lv_obj_set_pos(checkbox_container, lv_pct(45), lv_pct(0));

@@ -6,7 +6,7 @@
 
 namespace screen {
 namespace health {
-lv_obj_t* health_screen;
+lv_obj_t* screen;
 
 static lv_obj_t* notification_lists[2];
 static lv_obj_t* console_textarea;

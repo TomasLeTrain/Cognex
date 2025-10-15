@@ -6,8 +6,7 @@
 
 namespace screen {
 namespace tabs {
-
-lv_obj_t* tabs_screen;
+lv_obj_t* screen;
 
 lv_obj_t* tabs[num_tabs];
 
@@ -61,22 +60,22 @@ void init(lv_obj_t* parent_screen) {
     initStyles();
 
     // main screen object
-    tabs_screen = lv_obj_create(parent_screen);
+    screen = lv_obj_create(parent_screen);
 
     // makes object take up the full screen and have no styling
-    lv_obj_remove_style_all(tabs_screen);
-    lv_obj_set_size(tabs_screen,
+    lv_obj_remove_style_all(screen);
+    lv_obj_set_size(screen,
                     lv_display_get_horizontal_resolution(NULL),
                     lv_display_get_vertical_resolution(NULL));
-    lv_obj_center(tabs_screen);
+    lv_obj_center(screen);
 
-    lv_obj_set_style_bg_color(tabs_screen, lv_color_black(), 0);
-    lv_obj_set_style_bg_opa(tabs_screen, LV_OPA_100, 0);
+    lv_obj_set_style_bg_color(screen, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(screen, LV_OPA_100, 0);
 
     // hidden by default
-    lv_obj_add_flag(tabs_screen, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(screen, LV_OBJ_FLAG_HIDDEN);
 
-    create_tabs(tabs_screen);
+    create_tabs(screen);
 }
 
 } // namespace tabs

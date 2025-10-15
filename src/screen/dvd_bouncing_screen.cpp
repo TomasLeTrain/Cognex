@@ -5,7 +5,7 @@
 
 namespace screen {
 namespace bouncing_dvd_screen {
-lv_obj_t* dvd_screen;
+lv_obj_t* screen;
 
 lv_obj_t* bouncing_object;
 lv_obj_t* dvd_image;
@@ -73,20 +73,18 @@ void rectangle_update(void* obj, int t) {
     lv_obj_set_y((lv_obj_t*)obj, y);
 }
 
-void init(lv_obj_t * parent_screen) {
+void init(lv_obj_t* parent_screen) {
     // main screen object
-    dvd_screen = lv_obj_create(parent_screen);
+    screen = lv_obj_create(parent_screen);
 
     // makes object take up the full screen and have no styling
-    lv_obj_remove_style_all(dvd_screen);
-    lv_obj_set_size(dvd_screen,
+    lv_obj_remove_style_all(screen);
+    lv_obj_set_size(screen,
                     lv_display_get_horizontal_resolution(NULL),
                     lv_display_get_vertical_resolution(NULL));
-    lv_obj_center(dvd_screen);
-    lv_obj_set_style_bg_color(dvd_screen,
-                              lv_color_black(),
-                              0);
-    lv_obj_set_style_bg_opa(dvd_screen,LV_OPA_100,0);
+    lv_obj_center(screen);
+    lv_obj_set_style_bg_color(screen, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(screen, LV_OPA_100, 0);
 
     // bounds of the screen
     cx = lv_display_get_horizontal_resolution(NULL);
@@ -96,10 +94,10 @@ void init(lv_obj_t * parent_screen) {
     w = 194.0;
     h = 152.0;
 
-    lv_obj_add_flag(dvd_screen, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(screen, LV_OBJ_FLAG_HIDDEN);
 
     // rectangle that gets animated
-    bouncing_object = lv_obj_create(dvd_screen);
+    bouncing_object = lv_obj_create(screen);
     lv_obj_remove_style_all(bouncing_object);
     lv_obj_set_size(bouncing_object, w, h);
 

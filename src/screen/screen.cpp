@@ -6,7 +6,7 @@
 namespace screen {
 // screens
 
-lv_obj_t** curr_screen = &tabs_screen;
+lv_obj_t** curr_screen = &tabs::screen;
 
 void change_screen(lv_event_t* e) {
     lv_obj_t* next_screen = (lv_obj_t*)lv_event_get_user_data(e);

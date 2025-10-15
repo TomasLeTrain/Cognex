@@ -1,10 +1,14 @@
 #include "apis.h"
 //
 
+#include "health_daemon.h"
 #include "globals.h"
+#include "globals/config.h"
 #include "globals/device_globals.h"
+#include "globals/vexmaps_globals.h"
 #include "pros/device.hpp"
 #include "screen/screen.h"
+#include "vexmaps/api.hpp"
 
 namespace health_daemon {
 // avoids spamming notifications
@@ -33,7 +37,7 @@ void health_task() {
                 zero_indexed_port);
             if (!installed && !port_dc[port]) {
                 screen::health::add_notification(
-                  std::format("Port {}: Motor Unplugged!", port),
+                  std::format("Port {}: Motor unplugged!", port),
                   std::format(
                     "Motor on {} motor group. Make sure this is not crucial!",
                     motor_group_name),
@@ -45,15 +49,29 @@ void health_task() {
     check_motor_group(left_motors, "left");
     check_motor_group(right_motors, "right");
 
-    // check imu dc / invalid heading
-    if (!imu.is_installed() && dc_not_processed(imu)) {
-        update_dc(imu);
+    auto process_device_dc =
+      [&](auto& device,
+          std::string device_name,
+          screen::health::notification_severity_t severity =
+            screen::health::warn,
+          std::string custom_mesg = "Make sure its not critical!") {
+          if (!device.is_installed() && dc_not_processed(device)) {
+              update_dc(device);
 
-        screen::health::add_notification(
-          std::format("Port {}: IMU Unplugged!", imu.get_port()),
-          "This is likely very bad!",
-          screen::health::critical);
-    }
+              screen::health::add_notification(
+                std::format("Port {}: {} unplugged!",
+                            device.get_port(),
+                            device_name),
+                custom_mesg,
+                severity);
+          }
+      };
+
+    // check imu dc / invalid heading
+    process_device_dc(imu,
+                      "IMU",
+                      screen::health::critical,
+                      "This is likely very bad!");
 
     if (!imu.is_calibrating() && !std::isfinite(imu.get_rotation()) &&
         !imu_invalid) {
@@ -65,14 +83,45 @@ void health_task() {
     }
 
     // check rotation sensors dc
-    if (!forwards_odom_rotation.is_installed() &&
-        dc_not_processed(forwards_odom_rotation)) {
-        update_dc(forwards_odom_rotation);
+    process_device_dc(forwards_odom_rotation,
+                      "Forwards rotation",
+                      screen::health::critical,
+                      "This is likely very bad!");
+    process_device_dc(sideways_odom_rotation,
+                      "Sideways rotation",
+                      screen::health::critical,
+                      "This is likely very bad!");
 
-        screen::health::add_notification(
-          std::format("Port {}: forwards rotation Unplugged!", imu.get_port()),
-          "This is likely very bad!",
-          screen::health::critical);
+    process_device_dc(front_distance, "Front distance");
+    process_device_dc(back_distance, "Back distance");
+    process_device_dc(left_distance, "Left distance");
+    process_device_dc(right_distance, "Right distance");
+
+    process_device_dc(bottom_motor, "Bottom Intake", screen::health::critical);
+    process_device_dc(top_motor, "Top Intake", screen::health::critical);
+
+    // now check tracking subsystems
+
+    if (auto curr_pose = model_manager.getPose();
+        !isfinite(curr_pose.x.internal()) ||
+        !isfinite(curr_pose.y.internal()) ||
+        !isfinite(curr_pose.orientation.internal())) {
+        screen::health::add_notification("Model model is INF!",
+                                         "Make sure this isn't critical!",
+                                         screen::health::warn);
+    }
+
+    if (auto curr_position = tracker.getPosition();
+        !isfinite(curr_position.x.internal()) ||
+        !isfinite(curr_position.y.internal())) {
+        screen::health::add_notification("Blazing Tracker is INF!",
+                                         "Make sure this isn't critical!",
+                                         screen::health::warn);
+    }
+    if (!isfinite(tracker.getAngle().internal())) {
+        screen::health::add_notification("Blazing Tracker theta is INF!",
+                                         "Make sure this isn't critical!",
+                                         screen::health::warn);
     }
 }
 
