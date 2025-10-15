@@ -36,6 +36,8 @@ void init() {
 
     health::init(tabs::tabs[0], tabs::tabs[1], tabs::tabs[2]);
     auton_select::init(tabs::tabs[3]);
+	// also show auton_select
+    lv_obj_remove_flag(auton_select::screen, LV_OBJ_FLAG_HIDDEN);
 
     makeCurrentActive();
 }

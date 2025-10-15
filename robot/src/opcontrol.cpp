@@ -24,7 +24,7 @@ void opcontrol() {
     base::init();
 
     // set screen in case its different
-    screen::setScreen(&screen::bouncing_dvd_screen::screen);
+    // screen::setScreen(&screen::bouncing_dvd_screen::screen);
 
     // bool print_info = true;
 

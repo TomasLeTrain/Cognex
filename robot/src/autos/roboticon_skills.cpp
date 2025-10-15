@@ -154,12 +154,11 @@ void run_auton() {
     mb.boomerang(62.2, -17, 90) | chain;
 
     chain.wait();
+
+    std::cout << "final pos: " << tracker.getPosition().x.convert(in)
+              << " " << tracker.getPosition().y.convert(in) << " "
+              << tracker.getAngle().convert(deg) << std::endl;
     while (true) {
-        pros::lcd::print(0,
-                         "%f %f %f",
-                         to_in(tracker.getPosition().x),
-                         to_in(tracker.getPosition().y),
-                         to_stDeg(tracker.getAngle()));
         pros::delay(10);
     }
 

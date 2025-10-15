@@ -60,6 +60,8 @@ void add_notification(std::string title_text,
     notif = lv_obj_create(parent);
     lv_obj_set_size(notif, lv_pct(100), lv_pct(40));
     lv_obj_set_flex_flow(notif, LV_FLEX_FLOW_COLUMN);
+    // make it not scrollable - makes it annoying to use on screen
+    lv_obj_remove_flag(notif, LV_OBJ_FLAG_SCROLLABLE);
 
     // add styles
     lv_obj_add_style(notif, &shared_notif_style, 0);
@@ -78,6 +80,8 @@ void add_notification(std::string title_text,
 
     lv_obj_t* detail = lv_label_create(notif);
     lv_label_set_text(detail, detail_text.c_str());
+
+    lv_obj_scroll_to_view(notif, LV_ANIM_ON);
 }
 
 // returns the index of the notification
@@ -102,7 +106,10 @@ int add_init_notif(std::string title_text, notification_severity_t severity) {
 
     lv_obj_t* title = lv_label_create(notif);
     lv_label_set_text(title, title_text.c_str());
-    return lv_obj_get_index(parent);
+
+    lv_obj_scroll_to_view(notif, LV_ANIM_ON);
+
+    return lv_obj_get_index(notif);
 }
 
 void update_init_notif_severity(int index,

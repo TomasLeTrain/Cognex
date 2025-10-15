@@ -78,6 +78,7 @@ void initialize() {
 
     int init_motion_defaults_notif =
       screen::health::add_init_notif("initializing motion defaults");
+
     // default a timeout
     mb.setTurnToModifier([](auto turnTo) {
         return turnTo.timeout(5_sec);

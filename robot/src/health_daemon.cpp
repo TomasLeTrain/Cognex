@@ -1,11 +1,11 @@
 #include "apis.h"
 //
 
-#include "health_daemon.h"
 #include "globals.h"
 #include "globals/config.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
+#include "health_daemon.h"
 #include "pros/device.hpp"
 #include "screen/screen.h"
 #include "vexmaps/api.hpp"
@@ -15,6 +15,10 @@ namespace health_daemon {
 // every error only every produces one notification
 std::vector<bool> port_dc(22, false);
 bool imu_invalid = false;
+
+bool vexmaps_tracker_inf = false;
+bool blazing_tracker_inf = false;
+bool blazing_tracker_heading_inf = false;
 
 void health_task() {
     // here we constantly check for any misconfigurations in devices and
@@ -30,16 +34,18 @@ void health_task() {
     auto check_motor_group = [](pros::MotorGroup& motors,
                                 std::string motor_group_name) {
         for (auto port : motors.get_port_all()) {
-            auto zero_indexed_port = port - 1;
+            auto zero_indexed_port = abs(port) - 1;
             bool installed =
               pros::DeviceType::motor ==
               (pros::DeviceType)pros::c::registry_get_plugged_type(
                 zero_indexed_port);
             if (!installed && !port_dc[port]) {
+                port_dc[port] = true;
+
                 screen::health::add_notification(
                   std::format("Port {}: Motor unplugged!", port),
                   std::format(
-                    "Motor on {} motor group. Make sure this is not crucial!",
+                    "Motor on {} motor group.\nMake sure this is not crucial!",
                     motor_group_name),
                   screen::health::warn);
             }
@@ -103,22 +109,28 @@ void health_task() {
     // now check tracking subsystems
 
     if (auto curr_pose = model_manager.getPose();
-        !isfinite(curr_pose.x.internal()) ||
-        !isfinite(curr_pose.y.internal()) ||
-        !isfinite(curr_pose.orientation.internal())) {
-        screen::health::add_notification("Model model is INF!",
+        (!isfinite(curr_pose.x.internal()) ||
+         !isfinite(curr_pose.y.internal()) ||
+         !isfinite(curr_pose.orientation.internal())) &&
+        !vexmaps_tracker_inf) {
+        vexmaps_tracker_inf = true;
+        screen::health::add_notification("model being used is INF!",
                                          "Make sure this isn't critical!",
                                          screen::health::warn);
     }
 
     if (auto curr_position = tracker.getPosition();
-        !isfinite(curr_position.x.internal()) ||
-        !isfinite(curr_position.y.internal())) {
+        (!isfinite(curr_position.x.internal()) ||
+         !isfinite(curr_position.y.internal())) &&
+        !blazing_tracker_inf) {
+        blazing_tracker_inf = true;
         screen::health::add_notification("Blazing Tracker is INF!",
                                          "Make sure this isn't critical!",
                                          screen::health::warn);
     }
-    if (!isfinite(tracker.getAngle().internal())) {
+    if (!isfinite(tracker.getAngle().internal()) &&
+        !blazing_tracker_heading_inf) {
+        blazing_tracker_heading_inf = true;
         screen::health::add_notification("Blazing Tracker theta is INF!",
                                          "Make sure this isn't critical!",
                                          screen::health::warn);
