@@ -55,6 +55,9 @@ void initStyles() {
 void add_notification(std::string title_text,
                       std::string detail_text,
                       notification_severity_t severity) {
+    // done as a hacky way to get thread safety with liblvgl
+    get_screen_mutex();
+
     lv_obj_t* parent = notification_lists[1];
     lv_obj_t* notif;
     notif = lv_obj_create(parent);
@@ -86,6 +89,9 @@ void add_notification(std::string title_text,
 
 // returns the index of the notification
 int add_init_notif(std::string title_text, notification_severity_t severity) {
+    // done as a hacky way to get thread safety with liblvgl
+    get_screen_mutex();
+
     lv_obj_t* parent = notification_lists[0];
     lv_obj_t* notif;
     notif = lv_obj_create(parent);
@@ -114,7 +120,17 @@ int add_init_notif(std::string title_text, notification_severity_t severity) {
 
 void update_init_notif_severity(int index,
                                 notification_severity_t new_severity) {
+    get_screen_mutex();
+
+    if (index < 0) {
+        printf("invalid notif severity index!\n");
+        return;
+    }
     lv_obj_t* child = lv_obj_get_child(notification_lists[0], index);
+    if (child == NULL) {
+        printf("notif severity: child is null!\n");
+        return;
+    }
     if (new_severity == notification_severity_t::critical) {
         lv_obj_add_style(child, &critical_style, 0);
     } else if (new_severity == notification_severity_t::warn) {
@@ -143,10 +159,14 @@ void console_screen(lv_obj_t* parent_obj) {
 }
 
 void set_console_text(std::string text) {
+    // done as a hacky way to get thread safety with liblvgl
+    get_screen_mutex();
+
     lv_textarea_set_text(console_textarea, text.c_str());
 }
 
 void console_println(std::string text) {
+    get_screen_mutex();
     text += "\n";
     lv_textarea_add_text(console_textarea, text.c_str());
 }
@@ -154,6 +174,7 @@ void console_println(std::string text) {
 void init(lv_obj_t* error_parent_screen,
           lv_obj_t* status_parent_screen,
           lv_obj_t* console_parent_screen) {
+	get_screen_mutex();
     initStyles();
 
     init_notification_list(error_parent_screen, 0);

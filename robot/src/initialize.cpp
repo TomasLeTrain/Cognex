@@ -96,7 +96,7 @@ void initialize() {
     mb.setBoomerangModifier([](auto boomerang) {
         // return boomerang.customAngularLinearFunc(angular_linear_func);
         // return boomerang.k_lat();
-        return boomerang.k_lat(0.2 * rad / m, true).timeout(7_sec);
+        return boomerang.k_lat(0.2 * rad / m, true).timeout(5_sec);
     });
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
                                                screen::health::succeed);
