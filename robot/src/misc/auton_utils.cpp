@@ -44,6 +44,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     // update all lasers
     for (auto laser : enabled_lasers) {
         laser->update(theta);
+        std::cout << "updated laser!\n";
     }
 
     std::optional<Length> new_x = std::nullopt;
@@ -52,6 +53,8 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     auto update_x = [&](laser_model_type* laser) {
         auto expected = laser->getExpected();
         if (expected.has_value()) {
+            std::cout << "x: has expected: " << expected.value().x << " "
+                      << expected.value().y << std::endl;
             // either set equal to or average both
             new_x = new_x ? (*new_x + expected->x) / 2 : Length(expected->x);
         }
@@ -59,6 +62,8 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     auto update_y = [&](laser_model_type* laser) {
         auto expected = laser->getExpected();
         if (expected.has_value()) {
+            std::cout << "y: has expected: " << expected.value().x << " "
+                      << expected.value().y << std::endl;
             // either set equal to or average both
             new_y = new_y ? (*new_y + expected->y) / 2 : Length(expected->y);
         }
@@ -91,7 +96,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
         }
     }
 
-	// set to new coordinates
+    // set to new coordinates
     RobotSetPose({ new_x.value_or(current_pose.x),
                    new_y.value_or(current_pose.y),
                    theta });

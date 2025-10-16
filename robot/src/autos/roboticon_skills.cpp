@@ -2,6 +2,7 @@
 //
 #include "autos.h"
 #include "globals/blazing_globals.h"
+#include "globals/vexmaps_globals.h"
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
@@ -37,6 +38,14 @@ void run_auton() {
     // return;
 
     RobotSetPose(63.118, -15.625, 90);
+    LaserResets({ &right_laser_model, &back_laser_model });
+
+    std::cout << "final pos: " << tracker.getPosition().x.convert(in) << " "
+              << tracker.getPosition().y.convert(in) << " "
+              << tracker.getAngle().convert(deg) << std::endl;
+    while (true) {
+        pros::delay(10);
+    }
 
     if (false) {
         RobotSetPose(-63.118, -15.625, 90);
@@ -214,7 +223,8 @@ void run_auton() {
 
     // back up
     mb.moveTo(42_in, 2_tile).reverse() | chain;
-    mb.boomerang(52.4_in, 2_tile, 0_stDeg).linear_clampMaxVoltage(0.6_volt) | chain;
+    mb.boomerang(52.4_in, 2_tile, 0_stDeg).linear_clampMaxVoltage(0.6_volt) |
+      chain;
     size_t top_right_matchloader = chain.getCurrentIndex();
 
     mb.moveTo(57_in, 2_tile) | chain;
