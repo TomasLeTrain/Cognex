@@ -9,7 +9,7 @@
 #include <mutex>
 
 #define L1 pros::E_CONTROLLER_DIGITAL_L1
-#define R1 pros::E_CONTROLLER_DIGITAL_R2
+#define R1 pros::E_CONTROLLER_DIGITAL_R1
 
 #define L2 pros::E_CONTROLLER_DIGITAL_L2
 #define R2 pros::E_CONTROLLER_DIGITAL_R2
@@ -48,7 +48,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { scoring_long,        127  },
 
     { intake,              127  },
-    { intake_slow_bottom,  60   },
+    { intake_slow_bottom,  127   },
 
     { priming,             0    },
     { unjam,               -127 },
@@ -63,8 +63,8 @@ std::map<intake_state_t, int> top_motor_speeds = {
 
     { scoring_long,        127  },
 
-    { intake,              0    },
-    { intake_slow_bottom,  0    },
+    { intake,              127   },
+    { intake_slow_bottom,  65   },
 
     { priming,             0    },
     { unjam,               -127 },
@@ -220,8 +220,7 @@ void antiJam() {
 
         bool top_slowed = motorSlowed(top_motor);
 
-        if (intake_state == scoring_long && top_slowed &&
-            !tmp_activated) {
+        if (intake_state == scoring_long && top_slowed && !tmp_activated) {
             bottom_motor.move(0);
 
             pros::delay(200);
@@ -305,11 +304,11 @@ void colorSort() {
                 std::lock_guard lock(intake_mutex);
 
                 // move balls up
-                bottom_motor.move(60);
+                bottom_motor.move(30);
                 // move top most ball out
                 top_motor.move(-127);
 
-                pros::delay(300);
+                pros::delay(100);
             }
             // else if (intake_state == scoring_middle ||
             //                     intake_state == slow_scoring_middle) {
@@ -342,8 +341,7 @@ void hardwareUpdate() {
     // only update motors if they are not being used elsewhere - waits for 2
     // millisecends to be able to use
     if (intake_mutex.take(2)) {
-        intake_raise_piston.set_value(intake_state == scoring_bottom ||
-                                      intake_state == slow_scoring_bottom);
+        intake_stop_piston.set_value(intake_state == scoring_long);
 
         // priming is a special mode, don't use normal speeds
         if (intake_state == priming && prime_active) {
@@ -404,19 +402,19 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    pros::Task antijam_task([] {
-        while (true) {
-            antiJam();
-            pros::delay(10);
-        }
-    });
-
-    // pros::Task colorsort_task([] {
+    // pros::Task antijam_task([] {
     //     while (true) {
-    //         colorSort();
+    //         antiJam();
     //         pros::delay(10);
     //     }
     // });
+
+    pros::Task colorsort_task([] {
+        while (true) {
+            colorSort();
+            pros::delay(10);
+        }
+    });
 
     pros::Task main_intake_task([] {
         while (true) {

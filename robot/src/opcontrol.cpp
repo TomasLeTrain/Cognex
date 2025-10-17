@@ -13,8 +13,8 @@
 void opcontrol() {
     // initialize tasks for each subsystem
 
-    autonomous();
-    return;
+    // autonomous();
+    // return;
 
     // cancel any auton motions that could be currently running
 
@@ -67,25 +67,25 @@ void opcontrol() {
     //     }
     // } };
 
-		//   RobotSetPose(0, 0, 0);
-		//
-		//   while (true) {
-		//       auto blazing_position = tracker.getPosition();
-		//       auto blazing_theta = tracker.getAngle();
-		//
-		//       auto vexmaps_pose = model_manager.getPose();
-		//
-		// printf("tf\n");
-		//       screen::health::set_console_text(std::format(
-		//         "blazing: {:.2f} {:.2f} {:.2f}\nvexmaps: {:.2f} {:.2f} {:.2f}",
-		//         blazing_position.x.convert(in),
-		//         blazing_position.y.convert(in),
-		//         blazing_theta.convert(deg),
-		//         vexmaps_pose.x.convert(in),
-		//         vexmaps_pose.y.convert(in),
-		//         vexmaps_pose.orientation.convert(deg)));
-		//
-		//       // maybe unneeded?
-		//       pros::delay(50);
-		//   }
+    RobotSetPose(0, 0, 0);
+
+    while (true) {
+        auto blazing_position = tracker.getPosition();
+        auto blazing_theta = tracker.getAngle();
+
+        auto vexmaps_pose = model_manager.getPose();
+
+        printf("tf\n");
+        screen::health::set_console_text(std::format(
+          "blazing: {:.2f} {:.2f} {:.2f}\nvexmaps: {:.2f} {:.2f} {:.2f}",
+          blazing_position.x.convert(in),
+          blazing_position.y.convert(in),
+          blazing_theta.convert(deg),
+          vexmaps_pose.x.convert(in),
+          vexmaps_pose.y.convert(in),
+          vexmaps_pose.orientation.convert(deg)));
+
+        // maybe unneeded?
+        pros::delay(50);
+    }
 }

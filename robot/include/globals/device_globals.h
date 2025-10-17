@@ -27,8 +27,9 @@ extern pros::Optical middle_intake_color_sensor;
 extern pros::Optical bottom_intake_color_sensor;
 
 // pistons
-extern pros::adi::DigitalOut intake_raise_piston;
+extern pros::adi::DigitalOut intake_stop_piston;
 extern pros::adi::DigitalOut matchloader_piston;
+extern pros::adi::DigitalOut wings_piston;
 
 // odom rotation sensors
 extern pros::Rotation sideways_odom_rotation;

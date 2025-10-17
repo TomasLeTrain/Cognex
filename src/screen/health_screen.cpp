@@ -8,6 +8,9 @@ namespace screen {
 namespace health {
 lv_obj_t* screen;
 
+const int max_error_notifs = 15;
+static int num_error_notifs = 0;
+
 static lv_obj_t* notification_lists[2];
 static lv_obj_t* console_textarea;
 
@@ -55,6 +58,10 @@ void initStyles() {
 void add_notification(std::string title_text,
                       std::string detail_text,
                       notification_severity_t severity) {
+    // don't do anything if already have too many notifications
+    if (num_error_notifs >= max_error_notifs) return;
+    num_error_notifs++;
+
     // done as a hacky way to get thread safety with liblvgl
     get_screen_mutex();
 
@@ -174,7 +181,7 @@ void console_println(std::string text) {
 void init(lv_obj_t* error_parent_screen,
           lv_obj_t* status_parent_screen,
           lv_obj_t* console_parent_screen) {
-	get_screen_mutex();
+    get_screen_mutex();
     initStyles();
 
     init_notification_list(error_parent_screen, 0);

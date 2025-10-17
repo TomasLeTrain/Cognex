@@ -28,6 +28,7 @@ class TrackingWheel {
     Length offset;
     Length wheel_diameter;
     std::optional<AngularVelocity> final_rpm = std::nullopt;
+    bool enabled = true;
 
     Length last_distance = INFINITY * m;
     Length m_delta = INFINITY * m;
@@ -42,12 +43,27 @@ class TrackingWheel {
           wheel_diameter(wheel_diameter),
           final_rpm(final_rpm) {}
 
+    void setEnabled(bool enabled) {
+        this->enabled = enabled;
+    }
+
+    void disable() {
+        setEnabled(false);
+    }
+
+    void enable() {
+        setEnabled(true);
+    }
+
     Length getOffset() {
         return offset;
     }
 
     Length getDelta() {
-        return m_delta;
+        if (enabled)
+            return m_delta;
+        else
+            return INFINITY * m;
     }
 
     void update() {

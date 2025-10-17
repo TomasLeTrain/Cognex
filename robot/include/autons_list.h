@@ -20,6 +20,7 @@ H_AUTON(skills)
 H_AUTON(skills2)
 H_AUTON(simple_other_goal_auton)
 H_AUTON(roboticon_skills)
+H_AUTON(roboticon_quals)
 
 // special disabled auton that does nothing
 namespace disabled_auton {

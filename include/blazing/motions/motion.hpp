@@ -8,6 +8,7 @@
 #include "blazing/tolerances.hpp"
 #include "units/units.hpp"
 #include <concepts>
+#include <functional>
 #include <optional>
 #include <vector>
 
@@ -71,7 +72,11 @@ class Motion : public MotionBase {
 
     std::optional<Time> chain_time = std::nullopt;
 
+
   public:
+	std::function<void()> during_motion_func;
+	std::function<void()> after_motion_func;
+
     Motion(ControllersType controllers,
            Chassis<DrivetrainType, TrackerType, TolerancesType> chassis)
         : controllers(controllers),
@@ -111,6 +116,26 @@ class Motion : public MotionBase {
         self.chain_time = chain_time;
         return self.getReference();
     };
+
+
+	// tracker
+    motionChanger executeBeforeMotion(this Self&& self, std::function<void()> func) {
+		// immediately executes
+		func();
+        return self.getReference();
+    }
+
+	// gets repeatedly executed while a motion is in motion
+    motionChanger executeDuringMotion(this Self&& self, std::function<void()> func) {
+		// immediately executes
+		self.during_motion_func = func;
+        return self.getReference();
+    }
+    motionChanger executeAfterMotion(this Self&& self, std::function<void()> func) {
+		// immediately executes
+		self.after_motion_func = func;
+        return self.getReference();
+    }
 
     // tolerance duration changers
 

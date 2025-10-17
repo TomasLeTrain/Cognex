@@ -47,168 +47,189 @@ void run_auton() {
         pros::delay(10);
     }
 
-    if (false) {
-        RobotSetPose(-63.118, -15.625, 90);
+    RobotSetPose(-63.118, -15.625, 90);
 
-        // drivetrain.setBrakeMode(pros::MotorBrake::hold);
+    // drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
-        pros::delay(50);
+    pros::delay(50);
 
-        intake::set(intake::intake);
+    intake::set(intake::intake);
 
-        // pull matchloader down
-        mb.moveTo(-63, 18) | chain;
+    // pull matchloader down
+    mb.moveTo(-63, 18).executeAfterMotion([&] {
+        // pull matchloader up when it finishes the motion
+        matchloader::set(false);
+    }) |
+      chain;
 
-        // go towards top left ball cluster
-        mb.boomerang(-32, 31.7, 315)
-            .lead(0.35, 0.1)
-            .linear_clampMaxVoltage(0.6_volt) |
-          chain;
+    // go towards top left ball cluster
+    mb.boomerang(-32, 31.7, 315)
+        .lead(0.35, 0.1)
+        .linear_clampMaxVoltage(0.6_volt)
+        .executeAfterMotion([&] {
+            // lower matchloader to get balls
+            matchloader::set(true);
+        }) |
+      chain;
 
-        size_t top_left_cluster = chain.getCurrentIndex();
+    // size_t top_left_cluster = chain.getCurrentIndex();
 
-        // go to top center
-        // mb.boomerang(-13, 12, 315) | chain;
-        mb.moveTo(-13, 13.5)
-            // make large timeout not affect as much
-            .largeLinearToleranceDuration(2_sec)
-            // lower the error tolerance
-            .linearErrorTolerance(2_in) |
-          chain;
+    // go to top center
+    mb.moveTo(-13, 13.5)
+        // make large timeout not affect as much
+        .largeLinearToleranceDuration(2_sec)
+        // lower the error tolerance
+        .linearErrorTolerance(2_in) |
+      chain;
 
-        // pros::delay(1000);
-        // pull matchloader up
+    // wait a bit to lower the matchloader
+    pros::delay(300);
+    matchloader::set(true);
 
-        // wait for boomerang to finish
-        chain.waitUntilIndex(top_left_cluster);
+    // wait for boomerang to finish
+    // chain.waitUntilIndex(top_left_cluster);
+    //
+    // matchloader::set(true);
 
-        // finished the boomerang, pull matchloader down
+    // wait to get to goal
+    chain.wait();
 
-        // wait to get to goal
-        chain.wait();
-        std::cout << "position after move to middle: "
-                  << tracker.getPosition().x.convert(in) << " "
-                  << tracker.getPosition().y.convert(in) << " "
-                  << tracker.getAngle().convert(deg) << std::endl;
+    std::cout << "position after move to middle: "
+              << tracker.getPosition().x.convert(in) << " "
+              << tracker.getPosition().y.convert(in) << " "
+              << tracker.getAngle().convert(deg) << std::endl;
 
-        // while (true) {
-        //     pros::lcd::print(0,
-        //                      "%f %f %f",
-        //                      to_in(arc_pose_tracker.getPosition().x),
-        //                      to_in(arc_pose_tracker.getPosition().y),
-        //                      to_stDeg(arc_pose_tracker.getAngle()));
-        //     pros::delay(10);
-        // }
+    // score in middle goal
+    intake::set(intake::scoring_middle);
 
-        // score top center
+    pros::delay(3000);
 
-        // back up and go to bottom right cluster
-        mb.turnTo(270_stDeg)
-            .direction(AngularDirection::RIGHT)
-            .radius(-1.0) // makes it a swing
-            .chainAngularErrorTolerance(10_stDeg)
-            .linear_decelSlew(0.1_volt)
-            .setChainTime(100_msec) // instant switch
-          | chain;
+    intake::set(intake::intake);
+    matchloader::set(false);
 
-        // bottom-left middle ball cluster
-        mb.boomerang(-22, -22, 260) | chain;
+    // back up and go to bottom right cluster
+    mb.turnTo(270_stDeg)
+        .direction(AngularDirection::RIGHT)
+        .radius(-1.0) // makes it a swing
+        .chainAngularErrorTolerance(10_stDeg)
+        .linear_decelSlew(0.1_volt)
+        .setChainTime(100_msec) // instant switch
+      | chain;
 
-        size_t bottom_left_cluster_index = chain.getCurrentIndex();
+    // bottom-left middle ball cluster
+    mb.boomerang(-22, -22, 260).executeAfterMotion([&] {
+        matchloader::set(true);
+    }) |
+      chain;
 
-        // go to matchloader
-        mb.boomerang(-52.4_in, -2_tile, 180_stDeg)
-            // .lead(0.4, 0.15)
-            .lead(0.4)
-            .linear_clampMaxVoltage(0.5_volt) |
-          chain;
+    // size_t bottom_left_cluster_index = chain.getCurrentIndex();
 
-        // the matchloader is already pulled down at this point,
-        // don't have to worry about it
-        // mb.boomerang(-57_in, -2_tile, 180_stDeg) | chain;
-        mb.moveTo(-57_in, -2_tile) | chain;
+    // go to matchloader
+    mb.boomerang(-52.4_in, -2_tile, 180_stDeg)
+        // .lead(0.4, 0.15)
+        .lead(0.4)
+        .linear_clampMaxVoltage(0.5_volt) |
+      chain;
 
-        // waits until gets to cluster to pull matchloader down
-        chain.waitUntilIndex(bottom_left_cluster_index);
+    // the matchloader is already pulled down at this point,
+    // don't have to worry about it
+    // mb.boomerang(-57_in, -2_tile, 180_stDeg) | chain;
+    mb.moveTo(-57_in, -2_tile) | chain;
 
-        // pull matchloader down
+    // waits until gets to cluster to pull matchloader down
+    // chain.waitUntilIndex(bottom_left_cluster_index);
+    // pull matchloader down
+    // matchloader::set(true);
 
-        // wait until all queued motions stop
-        chain.wait();
-        std::cout << "position at match: "
-                  << tracker.getPosition().x.convert(in) << " "
-                  << tracker.getPosition().y.convert(in) << " "
-                  << tracker.getAngle().convert(deg) << std::endl;
+    // wait until all queued motions stop
+    chain.wait();
+    // get balls from matchloader 1
+    pros::delay(1500);
 
-        // pros::delay(1000);
+    std::cout << "position at match: " << tracker.getPosition().x.convert(in)
+              << " " << tracker.getPosition().y.convert(in) << " "
+              << tracker.getAngle().convert(deg) << std::endl;
 
-        mb.moveTo(-30.8, -47.1).reverse() | run;
-        //
-        // score on long goal
-        //
+    // pros::delay(1000);
 
-        // turn around and go towards matchloader
-        left_motors.set_brake_mode(pros::MotorBrake::brake);
-        mb.turnTo(0_stDeg)
-            .direction(AngularDirection::LEFT)
-            .radius(1.0) // makes it a swing
-            .chainAngularErrorTolerance(10_stDeg)
-            .setChainTime(0_msec) // instant switch
-          | chain;
-        size_t bottom_swing_to_other_side = chain.getCurrentIndex();
+    mb.moveTo(-30.8, -47.1).reverse() | run;
 
-        // go to other side of the field, close to the wall
-        mb.moveTo(22.41, -60) | chain;
+    // score on long goal
+    intake::set(intake::scoring_long);
+    pros::delay(3000);
+    intake::set(intake::intake);
+    matchloader::set(false);
 
-        // go to matchloader
-        mb.boomerang(52.4_in, -2_tile, 0_stDeg).lead(0.5) | chain;
-        size_t bottom_right_matchloader = chain.getCurrentIndex();
-        mb.moveTo(57_in, -2_tile) | chain;
+    // turn around and go towards matchloader
+    left_motors.set_brake_mode(pros::MotorBrake::brake);
+    mb.turnTo(0_stDeg)
+        .direction(AngularDirection::LEFT)
+        .radius(1.0) // makes it a swing
+        .chainAngularErrorTolerance(10_stDeg)
+        .setChainTime(0_msec) // instant switch
+        .executeAfterMotion([&] {
+            drivetrain.setBrakeMode(pros::MotorBrake::coast);
+        }) |
+      chain;
+    // size_t bottom_swing_to_other_side = chain.getCurrentIndex();
 
-        chain.waitUntilIndex(bottom_swing_to_other_side);
-        drivetrain.setBrakeMode(pros::MotorBrake::coast);
+    // go to other side of the field, close to the wall
+    mb.moveTo(22.41, -60) | chain;
 
-        chain.waitUntilIndex(bottom_right_matchloader);
-        // set matchloader down
+    // go to matchloader
+    mb.boomerang(52.4_in, -2_tile, 0_stDeg).lead(0.5).executeBeforeMotion([&] {
+        matchloader::set(true);
+    }) |
+      chain;
+    // size_t bottom_right_matchloader = chain.getCurrentIndex();
+    mb.moveTo(57_in, -2_tile) | chain;
 
-        chain.wait();
+    // chain.waitUntilIndex(bottom_swing_to_other_side);
 
-        // matchload
+    // chain.waitUntilIndex(bottom_right_matchloader);
+    // set matchloader down
 
-        mb.moveTo(30.8, -47.1).reverse() | run;
-        //
-        // score
-        //
+    chain.wait();
+    // get balls from matchloader 2
+    pros::delay(1500);
 
-        chain.wait();
-        std::cout << "final pos: " << tracker.getPosition().x.convert(in) << " "
-                  << tracker.getPosition().y.convert(in) << " "
-                  << tracker.getAngle().convert(deg) << std::endl;
-        while (true) {
-            pros::delay(10);
-        }
+    mb.moveTo(30.8, -47.1).reverse() | run;
 
-        mb.boomerang(62.2, -17, 90) | chain;
+    // score
+    intake::set(intake::scoring_long);
+    pros::delay(3000);
+    intake::set(intake::intake);
+    matchloader::set(false);
 
-        chain.wait();
-    }
+    chain.wait();
 
-    // matchload down?
-    mb.moveTo(63.4, 21) | chain;
+    mb.boomerang(62.2, -17, 90) | chain;
+    size_t before_blue_park = chain.getCurrentIndex();
+
+    mb.moveTo(63.4, 21).executeAfterMotion([&] {
+        matchloader::set(false);
+    }) |
+      chain;
 
     mb.boomerang(30.5, 27, 230)
         .lead(0.35, 0.1)
         .linear_clampMaxVoltage(0.6_volt) |
       chain;
-    std::cout << "added boomerang" << std::endl;
 
     size_t top_right_cluster = chain.getCurrentIndex();
 
     mb.moveTo(14, 15) | chain;
 
-    std::cout << "waiting" << std::endl;
+    chain.waitUntilIndex(before_blue_park);
+    pros::delay(400);
+    matchloader::set(true);
+
     chain.waitUntilIndex(top_right_cluster);
-    std::cout << "waited" << std::endl;
+    matchloader::set(true);
+    pros::delay(1000);
+    // waits a bit to collect balls,
+    // then back up to get score
+    matchloader::set(false);
 
     // matchload down
     //
@@ -217,29 +238,37 @@ void run_auton() {
 
     // wait for all motions to complete
     chain.wait();
-    std::cout << "all finished" << std::endl;
 
     // score bottom
+    intake::set(intake::scoring_bottom);
+    pros::delay(4000);
+    intake::set(intake::intake);
 
     // back up
-    mb.moveTo(42_in, 2_tile).reverse() | chain;
+    mb.moveTo(42_in, 2_tile).reverse().executeAfterMotion([&] {
+        matchloader::set(true);
+    }) |
+      chain;
     mb.boomerang(52.4_in, 2_tile, 0_stDeg).linear_clampMaxVoltage(0.6_volt) |
       chain;
-    size_t top_right_matchloader = chain.getCurrentIndex();
+    // size_t top_right_matchloader = chain.getCurrentIndex();
 
     mb.moveTo(57_in, 2_tile) | chain;
 
-    chain.waitUntilIndex(top_right_matchloader);
+    // chain.waitUntilIndex(top_right_matchloader);
     // pull matchloader down
 
     chain.wait();
     // get matchloader
-    // pros::delay(1000);
+    pros::delay(1500);
 
     mb.moveTo(30.8_in, 2_tile).reverse() | run;
 
-    // go score on long goal, pull matchloader up
-    // pros::delay(1000);
+    // score
+    intake::set(intake::scoring_long);
+    pros::delay(3000);
+    intake::set(intake::intake);
+    matchloader::set(false);
 
     // go to other side of long goal and matchloader
     left_motors.set_brake_mode(pros::MotorBrake::brake);
@@ -248,40 +277,47 @@ void run_auton() {
         .radius(1.0) // makes it a swing
         .chainAngularErrorTolerance(10_stDeg)
         .setChainTime(0_msec) // instant switch
-      | chain;
-    size_t top_swing_to_other_side = chain.getCurrentIndex();
+        .executeAfterMotion([] {
+            drivetrain.setBrakeMode(pros::MotorBrake::coast);
+        }) |
+      chain;
+    // size_t top_swing_to_other_side = chain.getCurrentIndex();
 
     // go to other side of the field, close to the wall
     mb.moveTo(-22.41, 60) | chain;
 
     // go to matchloader
-    mb.boomerang(-52.4, 46.7, 180) | chain;
-    size_t top_left_matchloader = chain.getCurrentIndex();
+    mb.boomerang(-52.4, 46.7, 180).executeBeforeMotion([&] {
+        matchloader::set(true);
+    }) |
+      chain;
+    // size_t top_left_matchloader = chain.getCurrentIndex();
 
     mb.moveTo(-57, 46.7) | chain;
 
-    chain.waitUntilIndex(top_swing_to_other_side);
-    drivetrain.setBrakeMode(pros::MotorBrake::coast);
+    // chain.waitUntilIndex(top_swing_to_other_side);
 
-    chain.waitUntilIndex(top_left_matchloader);
+    // chain.waitUntilIndex(top_left_matchloader);
     // pull matchloader down
 
     chain.wait();
 
-    // matchload
+    // get balls from matchloader 2
+    pros::delay(1500);
 
     mb.moveTo(-30.8, 47.1).reverse() | run;
-    //
+
     // score
-    //
+    intake::set(intake::scoring_long);
+    pros::delay(3000);
+    intake::set(intake::intake);
+    matchloader::set(false);
 
     // finish, go to park :)
     mb.boomerang(-63, 24.5, 270) | chain;
 
+    mb.moveTo(-63, 0) | chain;
     chain.wait();
-    // mb.moveTo(-63, 0) | chain;
-    //
-    // chain.wait();
 
     std::cout << "finished run in time: " << now() - start_time << std::endl;
 

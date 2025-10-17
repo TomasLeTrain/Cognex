@@ -10,52 +10,53 @@ using namespace vexmaps;
 
 // clang-format off
 // motor groups
-pros::MotorGroup left_motors({ -11, -14, 13 }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
-pros::MotorGroup right_motors({ 15, 16, -10 }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+pros::MotorGroup left_motors({ -12, -13, 14 }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+pros::MotorGroup right_motors({ 7, 17, -16 }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 // clang-format on
 
 // inertial sensor
-vexmaps::ScaledIMU imu(1, (360.0 + 3.8) / 360.0);
+vexmaps::ScaledIMU imu(15, (360.0 + 3.8) / 360.0);
 
 // intake motors
-pros::Motor bottom_motor(17);
-pros::Motor top_motor(2);
+pros::Motor bottom_motor(-19);
+pros::Motor top_motor(-1);
 
 pros::Optical middle_intake_color_sensor(8);
-pros::Optical bottom_intake_color_sensor(3);
+pros::Optical bottom_intake_color_sensor(21);
 
 // pistons
-pros::adi::DigitalOut intake_raise_piston('B', false);
-pros::adi::DigitalOut matchloader_piston('C', false);
+pros::adi::DigitalOut intake_stop_piston('H', false);
+pros::adi::DigitalOut matchloader_piston('G', false);
+pros::adi::DigitalOut wings_piston('A', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(-21);
-pros::Rotation sideways_odom_rotation(5);
+pros::Rotation forwards_odom_rotation(21);
+pros::Rotation sideways_odom_rotation(6);
 
 // particle filter distance sensors
-pros::Distance front_distance(9);
-pros::Distance back_distance(12);
-pros::Distance left_distance(4);
-pros::Distance right_distance(19);
+pros::Distance front_distance(3);
+pros::Distance back_distance(11);
+pros::Distance left_distance(2);
+pros::Distance right_distance(10);
 
 // distance sensor offsets
-units::Pose front_distance_offsets = { 7_in, -3.59375_in, 0_stDeg };
-units::Pose left_distance_offsets = { 1_in, 4.75_in, 90_stDeg };
-units::Pose back_distance_offsets = { -7.125_in, 3.5_in, 180_stDeg };
-units::Pose right_distance_offsets = { 1_in, -4.75_in, 270_stDeg };
+units::Pose front_distance_offsets = { 5.67_in, 3_in, 0_stDeg };
+units::Pose left_distance_offsets = { 2.25_in, 5.25_in, 90_stDeg };
+units::Pose back_distance_offsets = { -4.4_in, 4.5_in, 180_stDeg };
+units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
 
 /* vexmaps configuration */
 
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
-    .diameter = 1.995_in,
+    .diameter = 1.96_in,
     .offset = -0.44_in,
 };
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.96_in,
-    .offset = -0.15_in,
+    .offset = 0.75_in,
 };
 
 /* drivetrain / pid configuration */

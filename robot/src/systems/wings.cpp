@@ -1,30 +1,29 @@
 #include "apis.h"
 //
 #include "globals.h"
-#include "systems/matchloader.h"
+#include "systems/wings.h"
 
-namespace matchloader {
+namespace wings {
 bool is_driver = false;
 bool tasks_active = false;
 
-bool matchloader_state = false;
+bool wings_state = false;
 
 /**
  * @brief updates intake state, with optional speed parameter
  *
- * @param new_matchloader_state new intake state
+ * @param new_wings_state new intake state
  */
-void set(bool new_matchloader_state) {
-    matchloader_state = new_matchloader_state;
+void set(bool new_wings_state) {
+    wings_state = new_wings_state;
 }
 
 // code that should run during driver
 void driverUpdate() {
     // update states based on driver input
-    bool toggleMatchloader =
-      controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT);
+    bool toggleWings = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
 
-    set(toggleMatchloader);
+    set(toggleWings);
 }
 
 // code that should run during autonomous - should be based on extra state
@@ -35,10 +34,10 @@ void autoUpdate() {}
 // runs regardless of driver mode
 void hardwareUpdate() {
     // intake update
-    if (matchloader_state) {
-        matchloader_piston.set_value(true);
+    if (wings_state) {
+        wings_piston.set_value(true);
     } else {
-        matchloader_piston.set_value(false);
+        wings_piston.set_value(false);
     }
 }
 
@@ -60,7 +59,7 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    pros::Task main_matchloader_task([] {
+    pros::Task main_wings_task([] {
         while (true) {
             update();
             pros::delay(10);
@@ -69,4 +68,4 @@ void init(bool gdriver) {
 
     tasks_active = true;
 }
-}; // namespace matchloader
+}; // namespace wings
