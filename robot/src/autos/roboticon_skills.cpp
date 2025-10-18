@@ -6,6 +6,7 @@
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/wings.h"
 
 // do not do anything outside here!
 
@@ -37,30 +38,47 @@ void run_auton() {
     //
     // return;
 
-    RobotSetPose(63.118, -15.625, 90);
-    LaserResets({ &right_laser_model, &back_laser_model });
+    // RobotSetPose(0, 0, 90);
+    //
+    // // mb.moveTo(0, 48) | run;
+    // mb.moveTo(0, -48).reverse() | run;
+    // // mb.turnTo(180) | run;
+    //
+    // std::cout << tracker.getPosition().x.convert(in) << " "
+    //           << tracker.getPosition().y.convert(in) << " "
+    //           << tracker.getAngle().convert(deg) << std::endl;
+    // while (true) {
+    //     pros::delay(10);
+    // }
 
-    std::cout << "final pos: " << tracker.getPosition().x.convert(in) << " "
-              << tracker.getPosition().y.convert(in) << " "
-              << tracker.getAngle().convert(deg) << std::endl;
-    while (true) {
-        pros::delay(10);
-    }
+    // RobotSetPose(-63.5, -16, 90);
+    //
+    // pros::delay(50);
+    //
+    // intake::set(intake::intake);
+    // // piston the odom up and disable it
+    // wings::set(true);
+    // sideways_tracker.disable();
+    //
+    // // go through park
+    // // pull matchloader down
+    // mb.moveTo(-63, 18) | run;
+    //
+    // // pull matchloader up when it finishes the motion
+    // // also enable the odom
+    // matchloader::set(false);
+    // wings::set(false);
+    //
+    // // let robot settle
+    // pros::delay(200);
 
-    RobotSetPose(-63.118, -15.625, 90);
+    // laser reset
+    // LaserResets({ &front_laser_model, &left_laser_model });
 
-    // drivetrain.setBrakeMode(pros::MotorBrake::hold);
-
-    pros::delay(50);
-
-    intake::set(intake::intake);
-
-    // pull matchloader down
-    mb.moveTo(-63, 18).executeAfterMotion([&] {
-        // pull matchloader up when it finishes the motion
-        matchloader::set(false);
-    }) |
-      chain;
+    RobotSetPose(-63.5, 18, 90);
+    // pros::delay(100);
+    // enable sideways again, should be on the ground
+    // sideways_tracker.enable();
 
     // go towards top left ball cluster
     mb.boomerang(-32, 31.7, 315)
@@ -75,20 +93,23 @@ void run_auton() {
     // size_t top_left_cluster = chain.getCurrentIndex();
 
     // go to top center
-    mb.moveTo(-13, 13.5)
+    mb.moveTo(-12, 12.5)
         // make large timeout not affect as much
         .largeLinearToleranceDuration(2_sec)
+        .linear_kp(linear_pid.get_kp() * 0.6)
+        .linear_kd(linear_pid.get_kd() * 0.75)
         // lower the error tolerance
-        .linearErrorTolerance(2_in) |
+        .linearErrorTolerance(3_in) |
       chain;
 
     // wait a bit to lower the matchloader
-    pros::delay(300);
-    matchloader::set(true);
+    // only for park
+    // pros::delay(300);
+    // matchloader::set(true);
 
     // wait for boomerang to finish
     // chain.waitUntilIndex(top_left_cluster);
-    //
+
     // matchloader::set(true);
 
     // wait to get to goal
@@ -108,13 +129,14 @@ void run_auton() {
     matchloader::set(false);
 
     // back up and go to bottom right cluster
-    mb.turnTo(270_stDeg)
-        .direction(AngularDirection::RIGHT)
-        .radius(-1.0) // makes it a swing
-        .chainAngularErrorTolerance(10_stDeg)
-        .linear_decelSlew(0.1_volt)
-        .setChainTime(100_msec) // instant switch
-      | chain;
+    mb.distanceAtHeading(-14_in) | chain;
+    // mb.turnTo(270_stDeg)
+    //     .direction(AngularDirection::RIGHT)
+    //     .radius(-1.4) // makes it a swing
+    //     .chainAngularErrorTolerance(10_stDeg)
+    //     .linear_decelSlew(0.1_volt)
+    //     .setChainTime(100_msec) // instant switch
+    //   | chain;
 
     // bottom-left middle ball cluster
     mb.boomerang(-22, -22, 260).executeAfterMotion([&] {
@@ -174,13 +196,13 @@ void run_auton() {
     // size_t bottom_swing_to_other_side = chain.getCurrentIndex();
 
     // go to other side of the field, close to the wall
-    mb.moveTo(22.41, -60) | chain;
-
-    // go to matchloader
-    mb.boomerang(52.4_in, -2_tile, 0_stDeg).lead(0.5).executeBeforeMotion([&] {
+    mb.moveTo(22.41, -60).executeAfterMotion([&] {
         matchloader::set(true);
     }) |
       chain;
+
+    // go to matchloader
+    mb.boomerang(52.4_in, -2_tile, 0_stDeg).lead(0.5) | chain;
     // size_t bottom_right_matchloader = chain.getCurrentIndex();
     mb.moveTo(57_in, -2_tile) | chain;
 
@@ -206,10 +228,29 @@ void run_auton() {
     mb.boomerang(62.2, -17, 90) | chain;
     size_t before_blue_park = chain.getCurrentIndex();
 
-    mb.moveTo(63.4, 21).executeAfterMotion([&] {
-        matchloader::set(false);
-    }) |
-      chain;
+    mb.moveTo(63.4, 21) | chain;
+
+    chain.waitUntilIndex(before_blue_park);
+    // disable sideways tracker
+    sideways_tracker.disable();
+
+    pros::delay(300);
+    matchloader::set(true);
+    chain.wait();
+
+    // pull matchloader up when it finishes the motion
+    // also enable the odom
+    wings::set(false);
+
+    // let robot settle
+    pros::delay(200);
+
+    // laser reset
+    LaserResets({ &front_laser_model, &right_laser_model });
+    pros::delay(100);
+    // enable sideways again, should be on the ground
+    sideways_tracker.enable();
+    matchloader::set(false);
 
     mb.boomerang(30.5, 27, 230)
         .lead(0.35, 0.1)
@@ -219,10 +260,6 @@ void run_auton() {
     size_t top_right_cluster = chain.getCurrentIndex();
 
     mb.moveTo(14, 15) | chain;
-
-    chain.waitUntilIndex(before_blue_park);
-    pros::delay(400);
-    matchloader::set(true);
 
     chain.waitUntilIndex(top_right_cluster);
     matchloader::set(true);
@@ -284,13 +321,13 @@ void run_auton() {
     // size_t top_swing_to_other_side = chain.getCurrentIndex();
 
     // go to other side of the field, close to the wall
-    mb.moveTo(-22.41, 60) | chain;
-
-    // go to matchloader
-    mb.boomerang(-52.4, 46.7, 180).executeBeforeMotion([&] {
+    mb.moveTo(-22.41, 60).executeAfterMotion([&] {
         matchloader::set(true);
     }) |
       chain;
+
+    // go to matchloader
+    mb.boomerang(-52.4, 46.7, 180) | chain;
     // size_t top_left_matchloader = chain.getCurrentIndex();
 
     mb.moveTo(-57, 46.7) | chain;

@@ -2,6 +2,7 @@
 //
 
 #include "globals.h"
+#include <cstddef>
 
 using namespace blazing;
 using namespace vexmaps;
@@ -31,7 +32,7 @@ pros::adi::DigitalOut wings_piston('A', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(21);
+pros::Rotation forwards_odom_rotation(4);
 pros::Rotation sideways_odom_rotation(6);
 
 // particle filter distance sensors
@@ -50,12 +51,12 @@ units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
 
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
-    .diameter = 1.96_in,
-    .offset = -0.44_in,
+    .diameter = 1.97_in,
+    .offset = 0.3_in,
 };
 
 tracker_config_t sideways_tracker_config = {
-    .diameter = 1.96_in,
+    .diameter = 1.97_in,
     .offset = 0.75_in,
 };
 
@@ -67,9 +68,9 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
                                         .rpm = 450_rpm };
 
 // units are in inches
-linear_pid_config_t linear_pid_config { .kp = 5,
+linear_pid_config_t linear_pid_config { .kp = 4.5,
                                         .ki = 0,
-                                        .kd = 1,
+                                        .kd = 3.7,
                                         .windupRange = 7,
                                         .maxVoltage = 127 };
 
@@ -77,13 +78,15 @@ linear_pid_config_t linear_pid_config { .kp = 5,
 angular_pid_config_t angular_pid_config {
     .kp = 2.8,
     .ki = 0,
-    .kd = 6,
+    .kd = 4.2,
     .windupRange = 14,
     .maxVoltage = 127,
 };
 
-LinearSlewController linear_slew(std::nullopt, 0.03_volt);
-AngularSlewController angular_slew(0.5_volt);
+LinearSlewController linear_slew(0.07_volt,0.06_volt);
+AngularSlewController angular_slew(0.8_volt);
+
+LinearSlewController driver_linear_slew(0.1_volt, 0.09_volt);
 
 LinearVoltageClampController linear_voltage_constraints;
 AngularVoltageClampController angular_voltage_constraints;

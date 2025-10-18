@@ -75,7 +75,7 @@ void opcontrol() {
 
         auto vexmaps_pose = model_manager.getPose();
 
-        printf("tf\n");
+        // printf("tf\n");
         screen::health::set_console_text(std::format(
           "blazing: {:.2f} {:.2f} {:.2f}\nvexmaps: {:.2f} {:.2f} {:.2f}",
           blazing_position.x.convert(in),

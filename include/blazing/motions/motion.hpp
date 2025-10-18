@@ -33,6 +33,9 @@ struct motionExecutionResult {
 // untemplated class to allow pointers
 class MotionBase {
   public:
+    std::function<void()> during_motion_func;
+    std::function<void()> after_motion_func;
+
     virtual int getLoopDelayTime() = 0;
     virtual std::optional<motionExecutionResult> execute() = 0;
 
@@ -72,11 +75,7 @@ class Motion : public MotionBase {
 
     std::optional<Time> chain_time = std::nullopt;
 
-
   public:
-	std::function<void()> during_motion_func;
-	std::function<void()> after_motion_func;
-
     Motion(ControllersType controllers,
            Chassis<DrivetrainType, TrackerType, TolerancesType> chassis)
         : controllers(controllers),
@@ -117,23 +116,26 @@ class Motion : public MotionBase {
         return self.getReference();
     };
 
-
-	// tracker
-    motionChanger executeBeforeMotion(this Self&& self, std::function<void()> func) {
-		// immediately executes
-		func();
+    // tracker
+    motionChanger executeBeforeMotion(this Self&& self,
+                                      std::function<void()> func) {
+        // immediately executes
+        func();
         return self.getReference();
     }
 
-	// gets repeatedly executed while a motion is in motion
-    motionChanger executeDuringMotion(this Self&& self, std::function<void()> func) {
-		// immediately executes
-		self.during_motion_func = func;
+    // gets repeatedly executed while a motion is in motion
+    motionChanger executeDuringMotion(this Self&& self,
+                                      std::function<void()> func) {
+        // immediately executes
+        self.during_motion_func = func;
         return self.getReference();
     }
-    motionChanger executeAfterMotion(this Self&& self, std::function<void()> func) {
-		// immediately executes
-		self.after_motion_func = func;
+
+    motionChanger executeAfterMotion(this Self&& self,
+                                     std::function<void()> func) {
+        // immediately executes
+        self.after_motion_func = func;
         return self.getReference();
     }
 

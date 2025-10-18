@@ -30,6 +30,7 @@ extern PID<Angle, Voltage> angular_pid;
 
 extern LinearSlewController linear_slew;
 extern AngularSlewController angular_slew;
+extern LinearSlewController driver_linear_slew;
 
 extern LinearVoltageClampController linear_voltage_constraints;
 extern AngularVoltageClampController angular_voltage_constraints;

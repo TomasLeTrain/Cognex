@@ -8,8 +8,11 @@
 //
 #include "autos.h"
 #include "globals.h"
+#include "globals/blazing_globals.h"
+#include "globals/device_globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/wings.h"
 #include "units/Angle.hpp"
 #include <iostream>
 
@@ -27,21 +30,25 @@ void run_auton() {
 
     int l = bl ? 1 : -1;
 
-    RobotSetPose(47.15, -11.7 * l, 180);
-    // pros::delay(200);
+	printf("before set pose\n");
+    RobotSetPose(62.4, -15.75 * l, 180);
+
+	printf("set pose\n");
 
     // intake::setColorSortEnabled(true);
     intake::set(intake::intake);
 
+	printf("before move\n");
     // pf_model.setDisabled(true);
-    mb.moveTo(22, -22 * l)
-        .linear_clampMaxVoltage(0.45_volt)
+    mb.moveTo(33, -20 * l)
+        .linear_clampMaxVoltage(0.8_volt)
         .executeAfterMotion([&] {
             matchloader::set(true);
         }) |
       run;
+	printf("after move\n");
 
-    mb.turnTo(0, 0) | run;
+    // mb.turnTo(0, 0) | run;
 
     // pros::delay(100);
 
@@ -83,4 +90,4 @@ void run_auton() {
     intake::set(intake::scoring_long);
 }
 
-} // namespace simple_auton
+} // namespace roboticon_quals
