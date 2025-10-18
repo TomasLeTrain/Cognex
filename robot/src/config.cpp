@@ -76,7 +76,7 @@ linear_pid_config_t linear_pid_config { .kp = 4.5,
 
 // units are in degrees
 angular_pid_config_t angular_pid_config {
-    .kp = 2.8,
+    .kp = 2.3,
     .ki = 0,
     .kd = 4.2,
     .windupRange = 14,

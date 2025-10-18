@@ -30,47 +30,50 @@ void run_auton() {
 
     int l = bl ? 1 : -1;
 
-	printf("before set pose\n");
-    RobotSetPose(62.4, -15.75 * l, 180);
+    printf("before set pose\n");
+    RobotSetPose(62.4, -15.5 * l, 180);
 
-	printf("set pose\n");
+    intake::setColorSortEnabled(false);
+
+    printf("set pose\n");
 
     // intake::setColorSortEnabled(true);
     intake::set(intake::intake);
 
-	printf("before move\n");
+    printf("before move\n");
     // pf_model.setDisabled(true);
-    mb.moveTo(33, -20 * l)
-        .linear_clampMaxVoltage(0.8_volt)
-        .executeAfterMotion([&] {
-            matchloader::set(true);
-        }) |
+    mb.moveTo(31, -22.5 * l)
+        .linear_clampMaxVoltage(0.7_volt)
+        .linearErrorTolerance(5_in) |
       run;
-	printf("after move\n");
 
-    // mb.turnTo(0, 0) | run;
+    matchloader::set(true);
+    pros::delay(50);
 
-    // pros::delay(100);
+    mb.moveTo(19, -23.2 * l).linear_clampMaxVoltage(0.3_volt) | async;
+    async.wait();
+    printf("after move\n");
 
     if (bl) {
-        mb.moveTo(11.5, -12 * l).linear_clampMaxVoltage(0.5_volt) | async;
-        pros::delay(500);
+        mb.moveTo(9.7, -10 * l)
+            .linear_clampMaxVoltage(0.5_volt)
+            .largeLinearErrorTolerance(5_in)
+            .timeout(2_sec) |
+          run;
+        intake::set(intake::scoring_middle);
+        pros::delay(2000);
+    } else {
+        mb.moveTo(10, -11 * l).linear_clampMaxVoltage(0.5_volt) | async;
+        pros::delay(200);
         matchloader::set(false);
         async.wait();
-        // mb.turnTo(0, 0 * l) | run;
-        intake::set(intake::scoring_middle);
-    } else {
-        mb.moveTo(11.8, -12.8 * l).linear_clampMaxVoltage(0.5_volt) | run;
-        // pros::delay(500);
-        // matchloader::set(false);
-        // async.wait();
-        // mb.turnTo(0, 0 * l) | run;
         intake::set(intake::scoring_bottom);
+        pros::delay(2000);
     }
-    pros::delay(1200);
+
     intake::set(intake::intake);
     // make sure its down
-    matchloader::set(false);
+    // matchloader::set(false);
 
     // pf_model.setDisabled(false);
 
@@ -80,12 +83,13 @@ void run_auton() {
     matchloader::set(true);
 
     mb.turnTo(67_in, -2_tile * l).linear_clampMaxVoltage(0.5_volt) | run;
-    mb.moveTo(56.5_in, -2_tile * l).linear_clampMaxVoltage(0.8_volt) | run;
+    mb.moveTo(58.5_in, -2_tile * l).linear_clampMaxVoltage(0.8_volt) | run;
+    mb.distanceAtHeading(-2_in) | run;
 
     // matchload
     pros::delay(700);
 
-    mb.moveTo(28_in, -2_tile * l).reverse() | run;
+    mb.moveTo(24.5_in, -2_tile * l).reverse() | run;
 
     intake::set(intake::scoring_long);
 }

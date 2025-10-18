@@ -75,109 +75,157 @@ void run_auton() {
     // laser reset
     // LaserResets({ &front_laser_model, &left_laser_model });
 
-    RobotSetPose(-63.5, 18, 90);
+    RobotSetPose(62.4, -15.5, 180);
+
+    intake::setColorSortEnabled(false);
+
+    // intake::setColorSortEnabled(true);
+    intake::set(intake::intake);
+
+    // pf_model.setDisabled(true);
+    mb.moveTo(31, -22.5).linear_clampMaxVoltage(0.7_volt).linearErrorTolerance(
+      5_in) |
+      run;
+
+    matchloader::set(true);
+    pros::delay(50);
+
+    mb.moveTo(19, -23.2).linear_clampMaxVoltage(0.3_volt) | run;
+
+    mb.moveTo(9.7, -10)
+        .linear_clampMaxVoltage(0.5_volt)
+        .largeLinearErrorTolerance(5_in)
+        .timeout(2_sec) |
+      run;
+    intake::set(intake::scoring_middle);
+    pros::delay(2000);
+
+    intake::set(intake::intake);
+    // make sure its down
+    // matchloader::set(false);
+
+    // pf_model.setDisabled(false);
+
+    mb.moveTo(40_in, -2_tile).reverse().linear_clampMaxVoltage(0.5_volt) | run;
+
+    matchloader::set(true);
+
+    mb.turnTo(67_in, -2_tile).linear_clampMaxVoltage(0.5_volt) | run;
+    mb.moveTo(58.5_in, -2_tile).linear_clampMaxVoltage(0.8_volt) | run;
+    mb.distanceAtHeading(-2_in) | run;
+
+    // matchload
+    pros::delay(700);
+
+    mb.moveTo(24.5_in, -2_tile).reverse() | run;
+
+    intake::set(intake::scoring_long);
+
+    // new stuff
+
+    // RobotSetPose(-63.5, 18, 90);
     // pros::delay(100);
     // enable sideways again, should be on the ground
     // sideways_tracker.enable();
 
     // go towards top left ball cluster
-    mb.boomerang(-32, 31.7, 315)
-        .lead(0.35, 0.1)
-        .linear_clampMaxVoltage(0.6_volt)
-        .executeAfterMotion([&] {
-            // lower matchloader to get balls
-            matchloader::set(true);
-        }) |
-      chain;
-
-    // size_t top_left_cluster = chain.getCurrentIndex();
-
-    // go to top center
-    mb.moveTo(-12, 12.5)
-        // make large timeout not affect as much
-        .largeLinearToleranceDuration(2_sec)
-        .linear_kp(linear_pid.get_kp() * 0.6)
-        .linear_kd(linear_pid.get_kd() * 0.75)
-        // lower the error tolerance
-        .linearErrorTolerance(3_in) |
-      chain;
-
-    // wait a bit to lower the matchloader
-    // only for park
-    // pros::delay(300);
-    // matchloader::set(true);
-
-    // wait for boomerang to finish
-    // chain.waitUntilIndex(top_left_cluster);
-
-    // matchloader::set(true);
-
-    // wait to get to goal
-    chain.wait();
-
-    std::cout << "position after move to middle: "
-              << tracker.getPosition().x.convert(in) << " "
-              << tracker.getPosition().y.convert(in) << " "
-              << tracker.getAngle().convert(deg) << std::endl;
-
-    // score in middle goal
-    intake::set(intake::scoring_middle);
-
-    pros::delay(3000);
-
-    intake::set(intake::intake);
-    matchloader::set(false);
-
-    // back up and go to bottom right cluster
-    mb.distanceAtHeading(-14_in) | chain;
-    // mb.turnTo(270_stDeg)
-    //     .direction(AngularDirection::RIGHT)
-    //     .radius(-1.4) // makes it a swing
-    //     .chainAngularErrorTolerance(10_stDeg)
-    //     .linear_decelSlew(0.1_volt)
-    //     .setChainTime(100_msec) // instant switch
-    //   | chain;
-
-    // bottom-left middle ball cluster
-    mb.boomerang(-22, -22, 260).executeAfterMotion([&] {
-        matchloader::set(true);
-    }) |
-      chain;
-
-    // size_t bottom_left_cluster_index = chain.getCurrentIndex();
-
-    // go to matchloader
-    mb.boomerang(-52.4_in, -2_tile, 180_stDeg)
-        // .lead(0.4, 0.15)
-        .lead(0.4)
-        .linear_clampMaxVoltage(0.5_volt) |
-      chain;
-
-    // the matchloader is already pulled down at this point,
-    // don't have to worry about it
-    // mb.boomerang(-57_in, -2_tile, 180_stDeg) | chain;
-    mb.moveTo(-57_in, -2_tile) | chain;
-
-    // waits until gets to cluster to pull matchloader down
-    // chain.waitUntilIndex(bottom_left_cluster_index);
-    // pull matchloader down
-    // matchloader::set(true);
-
-    // wait until all queued motions stop
-    chain.wait();
-    // get balls from matchloader 1
-    pros::delay(1500);
-
-    std::cout << "position at match: " << tracker.getPosition().x.convert(in)
-              << " " << tracker.getPosition().y.convert(in) << " "
-              << tracker.getAngle().convert(deg) << std::endl;
-
-    // pros::delay(1000);
-
-    mb.moveTo(-30.8, -47.1).reverse() | run;
-
-    // score on long goal
-    intake::set(intake::scoring_long);
+    // mb.boomerang(-32, 31.7, 315)
+    //     .lead(0.35, 0.1)
+    //     .linear_clampMaxVoltage(0.6_volt)
+    //     .executeAfterMotion([&] {
+    //         // lower matchloader to get balls
+    //         matchloader::set(true);
+    //     }) |
+    //   chain;
+    //
+    // // size_t top_left_cluster = chain.getCurrentIndex();
+    //
+    // // go to top center
+    // mb.moveTo(-12, 12.5)
+    //     // make large timeout not affect as much
+    //     .largeLinearToleranceDuration(2_sec)
+    //     .linear_kp(linear_pid.get_kp() * 0.6)
+    //     .linear_kd(linear_pid.get_kd() * 0.75)
+    //     // lower the error tolerance
+    //     .linearErrorTolerance(3_in) |
+    //   chain;
+    //
+    // // wait a bit to lower the matchloader
+    // // only for park
+    // // pros::delay(300);
+    // // matchloader::set(true);
+    //
+    // // wait for boomerang to finish
+    // // chain.waitUntilIndex(top_left_cluster);
+    //
+    // // matchloader::set(true);
+    //
+    // // wait to get to goal
+    // chain.wait();
+    //
+    // std::cout << "position after move to middle: "
+    //           << tracker.getPosition().x.convert(in) << " "
+    //           << tracker.getPosition().y.convert(in) << " "
+    //           << tracker.getAngle().convert(deg) << std::endl;
+    //
+    // // score in middle goal
+    // intake::set(intake::scoring_middle);
+    //
+    // pros::delay(3000);
+    //
+    // intake::set(intake::intake);
+    // matchloader::set(false);
+    //
+    // // back up and go to bottom right cluster
+    // mb.distanceAtHeading(-14_in) | chain;
+    // // mb.turnTo(270_stDeg)
+    // //     .direction(AngularDirection::RIGHT)
+    // //     .radius(-1.4) // makes it a swing
+    // //     .chainAngularErrorTolerance(10_stDeg)
+    // //     .linear_decelSlew(0.1_volt)
+    // //     .setChainTime(100_msec) // instant switch
+    // //   | chain;
+    //
+    // // bottom-left middle ball cluster
+    // mb.boomerang(-22, -22, 260).executeAfterMotion([&] {
+    //     matchloader::set(true);
+    // }) |
+    //   chain;
+    //
+    // // size_t bottom_left_cluster_index = chain.getCurrentIndex();
+    //
+    // // go to matchloader
+    // mb.boomerang(-52.4_in, -2_tile, 180_stDeg)
+    //     // .lead(0.4, 0.15)
+    //     .lead(0.4)
+    //     .linear_clampMaxVoltage(0.5_volt) |
+    //   chain;
+    //
+    // // the matchloader is already pulled down at this point,
+    // // don't have to worry about it
+    // // mb.boomerang(-57_in, -2_tile, 180_stDeg) | chain;
+    // mb.moveTo(-57_in, -2_tile) | chain;
+    //
+    // // waits until gets to cluster to pull matchloader down
+    // // chain.waitUntilIndex(bottom_left_cluster_index);
+    // // pull matchloader down
+    // // matchloader::set(true);
+    //
+    // // wait until all queued motions stop
+    // chain.wait();
+    // // get balls from matchloader 1
+    // pros::delay(1500);
+    //
+    // std::cout << "position at match: " << tracker.getPosition().x.convert(in)
+    //           << " " << tracker.getPosition().y.convert(in) << " "
+    //           << tracker.getAngle().convert(deg) << std::endl;
+    //
+    // // pros::delay(1000);
+    //
+    // mb.moveTo(-30.8, -47.1).reverse() | run;
+    //
+    // // score on long goal
+    // intake::set(intake::scoring_long);
     pros::delay(3000);
     intake::set(intake::intake);
     matchloader::set(false);

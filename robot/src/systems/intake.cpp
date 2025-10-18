@@ -308,7 +308,7 @@ void colorSort() {
                 // move top most ball out
                 top_motor.move(-127);
 
-                pros::delay(100);
+                pros::delay(200);
             }
             // else if (intake_state == scoring_middle ||
             //                     intake_state == slow_scoring_middle) {
