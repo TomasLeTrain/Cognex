@@ -26,7 +26,7 @@ pros::Optical middle_intake_color_sensor(8);
 pros::Optical bottom_intake_color_sensor(21);
 
 // pistons
-pros::adi::DigitalOut intake_stop_piston('H', false);
+pros::adi::DigitalOut intake_stop_piston('H', true);
 pros::adi::DigitalOut matchloader_piston('G', false);
 pros::adi::DigitalOut wings_piston('A', false);
 
@@ -36,7 +36,7 @@ pros::Rotation forwards_odom_rotation(4);
 pros::Rotation sideways_odom_rotation(6);
 
 // particle filter distance sensors
-pros::Distance front_distance(3);
+pros::Distance front_distance(2);
 pros::Distance back_distance(11);
 pros::Distance left_distance(2);
 pros::Distance right_distance(10);
@@ -76,14 +76,14 @@ linear_pid_config_t linear_pid_config { .kp = 4.5,
 
 // units are in degrees
 angular_pid_config_t angular_pid_config {
-    .kp = 2.3,
+    .kp = 2.5,
     .ki = 0,
     .kd = 4.2,
     .windupRange = 14,
     .maxVoltage = 127,
 };
 
-LinearSlewController linear_slew(0.07_volt,0.06_volt);
+LinearSlewController linear_slew(0.07_volt, 0.06_volt);
 AngularSlewController angular_slew(0.8_volt);
 
 LinearSlewController driver_linear_slew(0.1_volt, 0.09_volt);

@@ -30,17 +30,14 @@ void run_auton() {
 
     int l = bl ? 1 : -1;
 
-    printf("before set pose\n");
+    // printf("before set pose\n");
     RobotSetPose(62.4, -15.5 * l, 180);
 
-    intake::setColorSortEnabled(false);
+    intake::setColorSortEnabled(true);
 
-    printf("set pose\n");
-
-    // intake::setColorSortEnabled(true);
     intake::set(intake::intake);
 
-    printf("before move\n");
+    // printf("before move\n");
     // pf_model.setDisabled(true);
     mb.moveTo(31, -22.5 * l)
         .linear_clampMaxVoltage(0.7_volt)
@@ -52,7 +49,7 @@ void run_auton() {
 
     mb.moveTo(19, -23.2 * l).linear_clampMaxVoltage(0.3_volt) | async;
     async.wait();
-    printf("after move\n");
+    // printf("after move\n");
 
     if (bl) {
         mb.moveTo(9.7, -10 * l)
@@ -82,12 +79,15 @@ void run_auton() {
 
     matchloader::set(true);
 
-    mb.turnTo(67_in, -2_tile * l).linear_clampMaxVoltage(0.5_volt) | run;
-    mb.moveTo(58.5_in, -2_tile * l).linear_clampMaxVoltage(0.8_volt) | run;
-    mb.distanceAtHeading(-2_in) | run;
+    mb.turnTo(67_in, -2_tile * l).angular_clampMaxVoltage(0.9_volt) | run;
+    mb.moveTo(60.5_in, -2_tile * l)
+        .linear_clampMaxVoltage(0.75_volt)
+        .timeout(2.5_sec) |
+      run;
+    // mb.distanceAtHeading(-0.5_in) | run;
 
     // matchload
-    pros::delay(700);
+    pros::delay(1000);
 
     mb.moveTo(24.5_in, -2_tile * l).reverse() | run;
 

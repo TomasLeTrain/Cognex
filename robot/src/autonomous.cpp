@@ -12,15 +12,15 @@
 // run if no auton is selected - useful for testing
 // NOTE: select the disabled auton if you don't want anything to run!!!
 void testing_auton_func() {
-    auto_side = field_side_t::right;
-    auto_alliance = alliance_t::blue;
+    auto_side = field_side_t::left;
+    auto_alliance = alliance_t::red;
     // simple_auton::run_auton();
-	printf("got before selected auto\n");
+	// printf("got before selected auto\n");
 
     // selected_auton = "current skills";
     selected_auton = "current quals";
     auto selected_auton_function = auton_list[selected_auton];
-	printf("got after selected auto\n");
+	// printf("got after selected auto\n");
     selected_auton_function();
 }
 
@@ -36,6 +36,9 @@ void autonomous() {
         // the selected auton gets run
         auto selected_auton_function = auton_list[selected_auton];
         selected_auton_function();
+
+		// sets dvd screen only if on match
+		screen::setScreen(&screen::bouncing_dvd_screen::screen);
     } else {
         testing_auton_func();
     }

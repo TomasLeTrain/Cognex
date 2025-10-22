@@ -48,7 +48,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { scoring_long,        127  },
 
     { intake,              127  },
-    { intake_slow_bottom,  127   },
+    { intake_slow_bottom,  127  },
 
     { priming,             0    },
     { unjam,               -127 },
@@ -63,7 +63,7 @@ std::map<intake_state_t, int> top_motor_speeds = {
 
     { scoring_long,        127  },
 
-    { intake,              127   },
+    { intake,              127  },
     { intake_slow_bottom,  65   },
 
     { priming,             0    },
@@ -184,7 +184,7 @@ std::optional<alliance_t> colorDetected(pros::Optical& sensor) {
     double color_sensor_hue = sensor.get_hue();
 
     // intake senses something
-    if (sensor.get_proximity() > 70) {
+    if (sensor.get_proximity() > 80) {
         if (color_sensor_hue > 280 || color_sensor_hue < 100)
             result = alliance_t::red;
         else if (color_sensor_hue > 120 && color_sensor_hue < 280)
@@ -304,11 +304,11 @@ void colorSort() {
                 std::lock_guard lock(intake_mutex);
 
                 // move balls up
-                bottom_motor.move(30);
+                bottom_motor.move(0);
                 // move top most ball out
-                top_motor.move(-127);
+                top_motor.move(-100);
 
-                pros::delay(200);
+                pros::delay(80);
             }
             // else if (intake_state == scoring_middle ||
             //                     intake_state == slow_scoring_middle) {
