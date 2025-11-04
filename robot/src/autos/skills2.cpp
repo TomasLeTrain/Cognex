@@ -97,7 +97,7 @@ void run_auton() {
     mb.moveTo(-10, 11).drive_maxVolt(0.3_volt) | async;
 
     pros::delay(2300);
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     async.wait();
 
     // score on center top goal
@@ -119,7 +119,7 @@ void run_auton() {
 
     intake::setColorSortEnabled(false);
     intake::set(intake::intake);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     // swing to face second corner
     mb.turnTo(-23.3, -22.5)
@@ -144,7 +144,7 @@ void run_auton() {
         .drive_minVolt(0.2_volt) |
       run;
 
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
 
     // go to matchloader
     // chassis.moveToPose(56.5,-44,90,3200,{ .lead=0.6 });
@@ -153,7 +153,7 @@ void run_auton() {
 
     // pf_model.setDisabled(true);
     pros::delay(1300);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
     // pf_model.setDisabled(false);
 
     // back up to go to goal
@@ -214,12 +214,12 @@ void run_auton() {
     mb.moveTo(42, 44) | run;
     mb.turnTo(67, 47) | run;
 
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     mb.moveTo(57, 47) | run;
 
     // pf_model.setDisabled(true);
     pros::delay(1300);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
     // pf_model.setDisabled(false);
 
     mb.moveTo(46.8, 46.7).reverse() | run;
@@ -253,11 +253,11 @@ void run_auton() {
     // move to matchloader
     mb.moveTo(-50, 44) | run;
     mb.turnTo(-71, 46.7).turn_maxVolt(0.2_volt) | run;
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     mb.moveTo(-55, 46.7) | run;
     // pf_model.setDisabled(true);
     pros::delay(1800);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
     // pf_model.setDisabled(false);
 
     // back up, turn to and go to long goal

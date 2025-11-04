@@ -362,11 +362,14 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
                           // can be left on false since it falls back to
                           // drivetrain of no rotations are connected
 
+// init map reader
+MapReader<> map_reader;
+
 // clang-format off
-laser_model_type front_laser_model(&front_distance, front_distance_offsets, "front");
-laser_model_type left_laser_model(&left_distance,   left_distance_offsets,  "left");
-laser_model_type back_laser_model(&back_distance,   back_distance_offsets,  "back");
-laser_model_type right_laser_model(&right_distance, right_distance_offsets, "right");
+laser_model_type front_laser_model(&front_distance, front_distance_offsets, "front",&map_reader);
+laser_model_type left_laser_model(&left_distance,   left_distance_offsets,  "left",&map_reader);
+laser_model_type back_laser_model(&back_distance,   back_distance_offsets,  "back",&map_reader);
+laser_model_type right_laser_model(&right_distance, right_distance_offsets, "right",&map_reader);
 // clang-format on
 
 vexmaps::ParticleFilterModel<pf_particle_count> pf_model(&pf_motion_model,

@@ -37,10 +37,10 @@ void run_auton() {
 
     // matchloading!
     mb.turnTo(-59, 46.5) | run;
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     mb.moveTo(-59, 46.5).drive_maxVolt(0.8_volt) | run;
     pros::delay(2500);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     mb.moveTo(-47, 47).reverse() | run;
 
@@ -56,10 +56,10 @@ void run_auton() {
 
     // matchloading!
     mb.turnTo(59, 46.5) | run;
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     mb.moveTo(59, 46.5).drive_maxVolt(0.8_volt) | run;
     pros::delay(2500);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     mb.moveTo(44, 47).reverse() | run;
 
@@ -88,10 +88,10 @@ void run_auton() {
     mb.turnTo(47, -47) | run;
     mb.moveTo(47, -47) | run;
     mb.turnTo(59, -46.5) | run;
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     mb.moveTo(58, -46.5).drive_maxVolt(0.9_volt) | run;
     pros::delay(2500);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     // go back and go to other corner
     mb.moveTo(47, -47).reverse() | run;
@@ -111,10 +111,10 @@ void run_auton() {
 
     // matchloading!
     mb.turnTo(-59, -46.5) | run;
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     mb.moveTo(-59, -46.5).drive_maxVolt(0.8_volt) | run;
     pros::delay(2500);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     mb.moveTo(-50, -47).reverse() | run;
 

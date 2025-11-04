@@ -20,6 +20,8 @@ bool vexmaps_tracker_inf = false;
 bool blazing_tracker_inf = false;
 bool blazing_tracker_heading_inf = false;
 
+bool map_reader_unavailable = false;
+
 void health_task() {
     // here we constantly check for any misconfigurations in devices and
     // subsystems
@@ -45,7 +47,7 @@ void health_task() {
                 screen::health::add_notification(
                   std::format("Port {}: Motor unplugged!", port),
                   std::format(
-                    "Motor on {} motor group.\nMake sure this is not crucial!",
+                    "Motor on {} motor group.\nMake sure this is not critical!",
                     motor_group_name),
                   screen::health::warn);
             }
@@ -132,6 +134,13 @@ void health_task() {
         !blazing_tracker_heading_inf) {
         blazing_tracker_heading_inf = true;
         screen::health::add_notification("Blazing Tracker theta is INF!",
+                                         "Make sure this isn't critical!",
+                                         screen::health::warn);
+    }
+    if (!map_reader.mapAvailable() &&
+        !map_reader_unavailable) {
+        map_reader_unavailable = true;
+        screen::health::add_notification("Map was not read!",
                                          "Make sure this isn't critical!",
                                          screen::health::warn);
     }

@@ -2,6 +2,7 @@
 //
 
 #include "globals.h"
+#include "globals/vexmaps_globals.h"
 #include "health_daemon.h"
 #include "main.h"
 #include "screen/screen.h"
@@ -43,6 +44,23 @@ void initialize() {
     } else {
         screen::health::update_init_notif_severity(imu_notif,
                                                    screen::health::succeed);
+    }
+
+    int map_reader_notif = screen::health::add_init_notif("Reading map");
+
+    map_reader.read_compressed("/usd/field.map.compressed");
+
+    if (!map_reader.mapAvailable()) {
+        // try to read map
+        map_reader.read("/usd/field.map");
+    }
+
+    if (map_reader.mapAvailable()) {
+        screen::health::update_init_notif_severity(map_reader_notif,
+                                                   screen::health::succeed);
+    } else {
+        screen::health::update_init_notif_severity(map_reader_notif,
+                                                   screen::health::critical);
     }
 
     pros::delay(100);

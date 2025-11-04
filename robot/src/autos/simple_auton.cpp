@@ -88,7 +88,7 @@ void run_auton() {
     mb.turnTo(0, 0) | run;
 
     if (bl) {
-        matchloader::set(true);
+        matchloader::set(matchloader::active);
     }
 
     // pros::delay(100);
@@ -104,7 +104,7 @@ void run_auton() {
     }
 
     // make sure its down
-    // matchloader::set(false);
+    // matchloader::set(matchloader::inactive);
 
     pros::delay(1200);
     intake::set(intake::intake);
@@ -113,7 +113,7 @@ void run_auton() {
 
     mb.moveTo(40, -47.5 * l).reverse().drive_maxVolt(0.5_volt) | run;
 
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
 
     mb.turnTo(67, -47 * l).turn_maxVolt(0.8_volt) | run;
     intake::set(intake::intake_slow_bottom);
@@ -126,7 +126,7 @@ void run_auton() {
     mb.moveTo(45, -47 * l).reverse().drive_maxVolt(0.5_volt) | run;
 
     mb.turnTo(0, -47 * l).turn_maxVolt(0.5_volt) | run;
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
     intake::set(intake::priming);
 
     mb.moveTo(28, -47 * l).drive_maxVolt(0.6_volt) | run;

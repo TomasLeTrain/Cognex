@@ -7,7 +7,7 @@ namespace matchloader {
 bool is_driver = false;
 bool tasks_active = false;
 
-bool matchloader_state = false;
+matchloader_state_t matchloader_state = inactive;
 
 /**
  * @brief updates intake state, with optional speed parameter
@@ -15,6 +15,10 @@ bool matchloader_state = false;
  * @param new_matchloader_state new intake state
  */
 void set(bool new_matchloader_state) {
+    matchloader_state = matchloader_state_t(new_matchloader_state);
+}
+
+void set(matchloader_state_t new_matchloader_state) {
     matchloader_state = new_matchloader_state;
 }
 

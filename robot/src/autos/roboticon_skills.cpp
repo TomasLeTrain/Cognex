@@ -24,7 +24,7 @@ void run_auton() {
     mb.moveTo(-31, 22.5).drive_maxVolt(0.7_volt).drive_ErrorTolerance(5_in) |
       run;
 
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
     pros::delay(50);
 
     mb.moveTo(-19, 23.2).drive_maxVolt(0.3_volt) | run;
@@ -41,7 +41,7 @@ void run_auton() {
 
     mb.moveTo(-40_in, 2_tile).reverse().drive_maxVolt(0.5_volt) | run;
 
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
 
     mb.turnTo(-67_in, 2_tile).turn_maxVolt(0.8_volt) | run;
     intake::set(intake::intake);
@@ -60,7 +60,7 @@ void run_auton() {
     // go back to not scoring
     // intake::set(intake::intake);
     intake::set(intake::scoring_bottom);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     // turn around and go towards matchloader
     right_motors.set_brake_mode(pros::MotorBrake::brake);
@@ -74,7 +74,7 @@ void run_auton() {
 
     // go to other side of the field, close to the wall
     mb.moveTo(22.41, 60).drive_maxVolt(0.5_volt) | run;
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
 
     // go to matchloader
     mb.boomerang(52.4_in, 2_tile, 0_stDeg).lead(0.5).drive_maxVolt(0.5_volt) |
@@ -93,7 +93,7 @@ void run_auton() {
     intake::set(intake::scoring_long);
     pros::delay(3000);
     intake::set(intake::scoring_bottom);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     // ???
 
@@ -114,7 +114,7 @@ void run_auton() {
     intake::set(intake::scoring_long);
     pros::delay(3000);
     intake::set(intake::scoring_bottom);
-    matchloader::set(false);
+    matchloader::set(matchloader::inactive);
 
     // go to other side of long goal and matchloader
     right_motors.set_brake_mode(pros::MotorBrake::brake);
@@ -129,7 +129,7 @@ void run_auton() {
 
     // go to other side of the field, close to the wall
     mb.moveTo(-22.41, -60) | run;
-    matchloader::set(true);
+    matchloader::set(matchloader::active);
 
     // go to matchloader
     mb.boomerang(-52.4_in, -2_tile, 180_stDeg)

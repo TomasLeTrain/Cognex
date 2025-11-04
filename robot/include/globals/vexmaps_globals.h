@@ -19,6 +19,8 @@ using namespace vexmaps;
 
 extern ModelManager model_manager;
 
+extern MapReader<> map_reader;
+
 // trackers
 extern vexmaps::MotorGroupTracking left_dt_tracker;
 extern vexmaps::MotorGroupTracking right_dt_tracker;
