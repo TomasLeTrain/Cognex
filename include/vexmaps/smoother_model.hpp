@@ -13,14 +13,14 @@ struct SmootherConfig {
     // 1 = all measurement
 
     // // determines how much a pose measurement influences the pose estimate
-    double pose_x = 0.03;
-    double pose_y = 0.05;
-    double pose_theta = 0.00;
+    double alpha_x = 0.03;
+    double alpha_y = 0.05;
+    double alpha_theta = 0.00;
 
     // used by pose_delta_measurement to estimate the pose
-    double delta_x = 1;
-    double delta_y = 1;
-    double delta_theta = 1;
+    double beta_x = 1;
+    double beta_y = 1;
+    double beta_theta = 1;
 };
 
 class SmootherModel : public LocalizationModel {
@@ -103,10 +103,10 @@ class SmootherModel : public LocalizationModel {
                                        pose_estimate.orientation };
 
             // update pose estimate as well
-            pose_estimate.x += config.delta_x * difference.x;
-            pose_estimate.y += config.delta_y * difference.y;
+            pose_estimate.x += config.beta_x * difference.x;
+            pose_estimate.y += config.beta_y * difference.y;
             pose_estimate.orientation +=
-              config.delta_theta * difference.orientation;
+              config.beta_theta * difference.orientation;
 
             last_local_delta_timestamp = current_local_delta_timestamp;
             applied_local = true;
@@ -120,8 +120,8 @@ class SmootherModel : public LocalizationModel {
 
             units::V2Position difference = pose_measurement - pose_estimate;
 
-            pose_estimate.x += config.pose_x * difference.x;
-            pose_estimate.y += config.pose_y * difference.y;
+            pose_estimate.x += config.alpha_x * difference.x;
+            pose_estimate.y += config.alpha_y * difference.y;
 
             // only good if pose has an orientation measurement
             // pose_estimate.orientation =

@@ -16,13 +16,22 @@ namespace vexmaps {
 template<size_t N>
 class ParticleFilter {
   private:
-    // used for vectorization
-    static constexpr size_t remaining_particles = (N - (N % 4));
+    // divisible by 4,8,16, and 24
+    static constexpr size_t block_size = 48;
+    static constexpr size_t max_size = block_size * (N / block_size + 1);
 
-	// aligned to 16 bytes (4 floats)
-    alignas(16) FLength x[N];
-    alignas(16) FLength y[N];
-    alignas(16) float weights[N];
+    // aligned to 16 bytes (4 floats)
+    alignas(16) std::array<FLength, max_size> x;
+    alignas(16) std::array<FLength, max_size> y;
+
+    alignas(16) std::array<FLength, max_size> resampling_x;
+    alignas(16) std::array<FLength, max_size> resampling_y;
+
+    alignas(16) std::array<float, max_size> weights;
+
+    // used for sensor operations
+    alignas(16) std::array<float, max_size> tmp_list1;
+    alignas(16) std::array<float, max_size> tmp_list2;
 
     BasePfMotionModel* motion_model;
     PFConfiguration PFConfig;
@@ -96,26 +105,23 @@ class ParticleFilter {
         appliedMotionModel = true;
 
         if (PFConfig.usingVectorizedMotion) {
-
-            for (size_t i = 0; i < remaining_particles; i += 4) {
+            for (size_t i = 0; i < N; i += 4) {
                 float32x4_t motionDataX, motionDataY;
                 motion_model->VnoisyGlobalDelta(&motionDataX, &motionDataY);
 
-                float32x4_t Vx = vld1q_f32((float*)&x[i]);
-                float32x4_t Vy = vld1q_f32((float*)&y[i]);
+                float* const xi_pointer =
+                  reinterpret_cast<float*>(&x.data()[i]);
+                float* const yi_pointer =
+                  reinterpret_cast<float*>(&y.data()[i]);
+
+                float32x4_t Vx = vld1q_f32(xi_pointer);
+                float32x4_t Vy = vld1q_f32(yi_pointer);
 
                 Vx = vaddq_f32(Vx, motionDataX);
                 Vy = vaddq_f32(Vy, motionDataY);
 
-                vst1q_f32((float*)&x[i], Vx);
-                vst1q_f32((float*)&y[i], Vy);
-            }
-            // proccess remaining
-            for (size_t i = remaining_particles; i < N; i++) {
-                units::V2Position noisy_global_delta =
-                  motion_model->noisyGlobalDelta();
-                x[i] += noisy_global_delta.x;
-                y[i] += noisy_global_delta.y;
+                vst1q_f32(xi_pointer, Vx);
+                vst1q_f32(yi_pointer, Vy);
             }
         } else {
             for (size_t i = 0; i < N; i++) {
@@ -129,7 +135,7 @@ class ParticleFilter {
 
     void updateSensors() {
         // perform the one time updates on the sensors
-        for (auto&& sensor : this->sensors) {
+        for (Sensor* sensor : sensors) {
             sensor->update(current_angle);
         }
     }
@@ -162,31 +168,41 @@ class ParticleFilter {
             weights[i] = 1.0;
         }
 
-        for (auto&& sensor : this->sensors) {
+        for (Sensor* sensor : sensors) {
             if (sensor->hasAvailableReading()) {
+                if (sensor->canProcessArray()) {
+                    // sensor can process in a list, use
+                    sensor->evaluate_array(tmp_list1.data(),
+                                           x.data(),
+                                           y.data(),
+                                           tmp_list2.data(),
+                                           N);
+
+                    // multiply with actual weights
+                    for (int i = 0; i < N; i++) {
+                        weights[i] *= tmp_list1[i];
+                    }
+                }
                 // we assume the weights are valid (not infinity)
-                if (sensor->getVectorized()) {
-                    for (size_t i = 0; i < remaining_particles; i += 4) {
-                        float32x4_t Vx = vld1q_f32((float*)&x[i]);
-                        float32x4_t Vy = vld1q_f32((float*)&y[i]);
-                        float32x4_t current_weights = vld1q_f32(&weights[i]);
+                else if (sensor->getVectorized()) {
+                    for (size_t i = 0; i < N; i += 4) {
+                        float* const xi_pointer =
+                          reinterpret_cast<float*>(&x.data()[i]);
+                        float* const yi_pointer =
+                          reinterpret_cast<float*>(&y.data()[i]);
+                        float* const weights_pointer = &weights.data()[i];
+
+                        float32x4_t Vx = vld1q_f32(xi_pointer);
+                        float32x4_t Vy = vld1q_f32(yi_pointer);
+                        float32x4_t current_weights =
+                          vld1q_f32(weights_pointer);
 
                         float32x4_t sensor_weights = sensor->Vevaluate(Vx, Vy);
 
                         current_weights =
                           vmulq_f32(current_weights, sensor_weights);
 
-                        vst1q_f32(&weights[i], current_weights);
-                    }
-
-                    // process remaining particles (if any)
-                    for (size_t i = remaining_particles; i < N; i++) {
-                        const float sensor_weight =
-                          sensor->evaluate(x[i], y[i]);
-
-                        if (std::isfinite(sensor_weight)) {
-                            weights[i] *= sensor_weight;
-                        }
+                        vst1q_f32(weights_pointer, current_weights);
                     }
                 } else {
                     for (size_t i = 0; i < N; i++) {
@@ -217,7 +233,6 @@ class ParticleFilter {
         // sum of the weights of the particles included in the prediction
         float weight_sum = 0;
 
-        // TODO: vectorize
         const float max_weight_threshold =
           max_weight * PFConfig.weightPredictionFactor;
 
@@ -234,7 +249,7 @@ class ParticleFilter {
         updatePrediction(weighted_x_sum / weight_sum,
                          weighted_y_sum / weight_sum,
                          current_angle,
-                         // sets confidence to 1
+                         // sets confidence to 1, actual global update
                          1);
     }
 
@@ -253,17 +268,20 @@ class ParticleFilter {
         for (size_t i = 0; i < N; i++) {
             pointer = pointer + average_weight;
             // weight_sum = sum(weights[0...I])
-            while (weight_sum < pointer && I <= N - 2) {
+            while (weight_sum < pointer && I < N - 1) {
                 I++;
                 weight_sum = weight_sum + weights[I];
             }
 
-            x[i] = x[I];
-            y[i] = y[I];
-
-            // sets weight to average value
-            weights[i] = average_weight;
+            // x[i] = x[I];
+            // y[i] = y[I];
+            resampling_x[i] = x[I];
+            resampling_y[i] = y[I];
         }
+
+        // set x = resampling_x, y = resampling_y
+        std::swap(resampling_x, x);
+        std::swap(resampling_y, y);
     }
 
     void updateLostIterationCount() {
@@ -471,9 +489,9 @@ class ParticleFilter {
      */
     void initNormal(const units::FPose pose, const FLength std_deviation) {
         std::normal_distribution<float> x_dist(pose.x.internal(),
-                                        std_deviation.internal());
+                                               std_deviation.internal());
         std::normal_distribution<float> y_dist(pose.y.internal(),
-                                        std_deviation.internal());
+                                               std_deviation.internal());
         for (size_t i = 0; i < N; i++) {
             x[i] = x_dist(rng) * Fm;
             y[i] = y_dist(rng) * Fm;
@@ -492,9 +510,9 @@ class ParticleFilter {
                      const FLength max_y,
                      const FAngle orientation) {
         std::uniform_real_distribution<float> x_dist(min_x.internal(),
-                                              max_x.internal());
+                                                     max_x.internal());
         std::uniform_real_distribution<float> y_dist(min_y.internal(),
-                                              max_y.internal());
+                                                     max_y.internal());
 
         for (size_t i = 0; i < N; i++) {
             x[i] = x_dist(rng) * Fm;
@@ -534,11 +552,11 @@ class ParticleFilter {
         return motion_model->getDistanceTraveled();
     }
 
-    void setDisabled(bool new_state){
+    void setDisabled(bool new_state) {
         disabled = new_state;
     }
 
-    bool getDisabled(){
+    bool getDisabled() {
         return disabled;
     }
 };

@@ -5,11 +5,14 @@
 #include "units/Pose.hpp"
 #include "units/Vector2D.hpp"
 #include "units/units.hpp"
+#include "vexmaps/mcl/asm_functions.hpp"
 #include "vexmaps/mcl/config.hpp"
+#include "vexmaps/mcl/map_reader.hpp"
 #include "vexmaps/mcl/sensor.hpp"
 #include "vexmaps/mcl/utils.hpp"
 #include <arm_neon.h>
 #include <cmath>
+#include <memory>
 #include <optional>
 
 namespace vexmaps {
@@ -22,7 +25,10 @@ class DistanceSensorModel : public Sensor {
     units::Pose offsets;
     std::string name;
 
-    units::Pose rotated_offsets = { 0_m, 0_m, 0_stDeg };
+    // optional
+    MapReader<>* map_reader;
+
+    units::FPose rotated_offsets = { 0_m, 0_m, 0_stDeg };
     Length measured_distance = 0_m;
 
     // determines whether or not readings from this sensor are used - false when
@@ -47,6 +53,10 @@ class DistanceSensorModel : public Sensor {
 
     float fsina, fcosa;
 
+    // held in degrees specifically for map lookup
+    // defined as theta * 2 , constrained between [0,720]
+    FAngle map_angle;
+
     float f_measured_distance = 0;
 
     float x_coeff;
@@ -62,10 +72,12 @@ class DistanceSensorModel : public Sensor {
   public:
     DistanceSensorModel(pros::Distance* distance_sensor,
                         const units::Pose offset,
-                        std::string name)
+                        std::string name,
+                        MapReader<>* map_reader = nullptr)
         : distance_sensor(std::move(distance_sensor)),
           offsets(offset),
-          name(name) {}
+          name(name),
+          map_reader(map_reader) {}
 
     void update(Angle angle) override {
         // first check if the distance sensor is available, and if its not then
@@ -87,7 +99,9 @@ class DistanceSensorModel : public Sensor {
         exit = measured_mm == 9999 || (!enabled);
 
         // rotates offset and angle
-        rotated_offsets = rotatePose(offsets, angle);
+        rotated_offsets = FrotatePose(offsets, angle);
+
+        map_angle = units::constrainAngle2pi(rotated_offsets.orientation);
 
         // precomputed values
         double cosa = units::cos(rotated_offsets.orientation);
@@ -107,8 +121,8 @@ class DistanceSensorModel : public Sensor {
         // one vertical and one horizontal
         // since the walls we check are always the same for both we can cache
         // the x/y value of the wall for each axis
-        horizontal_wall_length = wall_length * cos_sign;
-        vertical_wall_length = wall_length * sin_sign;
+        Length horizontal_wall_length = wall_length * cos_sign;
+        Length vertical_wall_length = wall_length * sin_sign;
 
         horizontal_wall_length -= rotated_offsets.x;
         vertical_wall_length -= rotated_offsets.y;
@@ -146,21 +160,9 @@ class DistanceSensorModel : public Sensor {
         }
     }
 
-    bool hasAvailableReading() override {
-        return !exit;
-    }
-
-    bool getVectorized() override {
-        return true;
-    }
-
-    inline float evaluate(const units::V2FPosition& point) override {
-        return evaluate(point.x, point.y);
-    }
-
     // assumes that its only getting called if exit is false
     // this assumption saves some conditionals improving performance
-    inline float evaluate(FLength x, FLength y) override {
+    float evaluate(FLength x, FLength y) override {
         const FLength difference = units::min(hor_wall_coeff + x * x_coeff,
                                               ver_wall_coeff + y * y_coeff);
 
@@ -178,7 +180,7 @@ class DistanceSensorModel : public Sensor {
 
     // assumes that its only getting called if exit is false
     // this assumption saves some conditionals improving performance
-    inline float32x4_t Vevaluate(float32x4_t x, float32x4_t y) override {
+    float32x4_t Vevaluate(float32x4_t x, float32x4_t y) override {
         // clang-format off
         //
         // expected_distance =
@@ -231,9 +233,150 @@ class DistanceSensorModel : public Sensor {
         return vaddq_f32(normal_dist, VMaskedConstantFactor);
     }
 
+    void evaluate_wall_array(float* curr_weights,
+                             float* x,
+                             float* y,
+                             float* tmp_array,
+                             int len) {
+        float32x4_t Vhor = vdupq_n_f32(Vhor_wall_coeff);
+        float32x4_t Vver = vdupq_n_f32(Vver_wall_coeff);
+
+        for (int i = 0; i < len; i += 16) {
+            float32x4_t Vx1 = vld1q_f32(&x[i]);
+            float32x4_t Vy1 = vld1q_f32(&y[i]);
+
+            float32x4_t Vx2 = vld1q_f32(&x[i + 4]);
+            float32x4_t Vy2 = vld1q_f32(&y[i + 4]);
+
+            float32x4_t Vx3 = vld1q_f32(&x[i + 8]);
+            float32x4_t Vy3 = vld1q_f32(&y[i + 8]);
+
+            float32x4_t Vx4 = vld1q_f32(&x[i + 12]);
+            float32x4_t Vy4 = vld1q_f32(&y[i + 12]);
+
+            float32x4_t Vxx1 = vmulq_n_f32(Vx1, x_coeff);
+            float32x4_t Vyy1 = vmulq_n_f32(Vy1, y_coeff);
+
+            float32x4_t Vxx2 = vmulq_n_f32(Vx2, x_coeff);
+            float32x4_t Vyy2 = vmulq_n_f32(Vy2, y_coeff);
+
+            float32x4_t Vxx3 = vmulq_n_f32(Vx3, x_coeff);
+            float32x4_t Vyy3 = vmulq_n_f32(Vy3, y_coeff);
+
+            float32x4_t Vxx4 = vmulq_n_f32(Vx4, x_coeff);
+            float32x4_t Vyy4 = vmulq_n_f32(Vy4, y_coeff);
+
+            float32x4_t HC1 = vaddq_f32(Vhor, Vxx1);
+            float32x4_t VC1 = vaddq_f32(Vver, Vyy1);
+
+            float32x4_t HC2 = vaddq_f32(Vhor, Vxx2);
+            float32x4_t VC2 = vaddq_f32(Vver, Vyy2);
+
+            float32x4_t HC3 = vaddq_f32(Vhor, Vxx3);
+            float32x4_t VC3 = vaddq_f32(Vver, Vyy3);
+
+            float32x4_t HC4 = vaddq_f32(Vhor, Vxx4);
+            float32x4_t VC4 = vaddq_f32(Vver, Vyy4);
+
+            // difference = min(HC,VC)
+            float32x4_t difference1 = vminq_f32(HC1, VC1);
+            float32x4_t difference2 = vminq_f32(HC2, VC2);
+            float32x4_t difference3 = vminq_f32(HC3, VC3);
+            float32x4_t difference4 = vminq_f32(HC4, VC4);
+
+            vst1q_f32(&tmp_array[i], difference1);
+            vst1q_f32(&tmp_array[i + 4], difference2);
+            vst1q_f32(&tmp_array[i + 8], difference3);
+            vst1q_f32(&tmp_array[i + 12], difference4);
+        }
+
+        VNormalDistributionPDF(
+          curr_weights,
+          tmp_array,
+          len,
+          0, // difference already applied, mean is just zero
+          DistanceSensorConfig::std_deviation,
+          DistanceSensorConfig::normalCoeff);
+
+        // gets vectorized?
+        for (int i = 0; i < len; i++) {
+            // measured <= expected ? expFactor : randomFactor
+            // 0 <= (expected - measured) ? expFactor : randomFactor
+            // 0 <= tmparray ? expFactor : randomFactor
+            if (0 <= tmp_array[i]) {
+                curr_weights[i] += expFactor;
+            } else {
+                curr_weights[i] += randomFactor;
+            }
+        }
+    }
+
+    void map_lookup_array(float* curr_weights,
+                          FLength* x,
+                          FLength* y,
+                          float* tmp_array,
+                          int len) {
+        if (map_reader == nullptr || !map_reader->mapAvailable()) {
+			// falls back to just adding a constant?
+            // for (int i = 0; i < len; i++) {
+            //     // curr_weights[i] += 0.1;
+            // }
+            return;
+        }
+
+        // std::cout << "doing lookup" << std::endl;
+
+        for (int i = 0; i < len; i++) {
+            // if (i == 0) {
+            //     std::cout << "what " << x[i].convert(in) << " "
+            //               << y[i].convert(in) << " " << angle.convert(deg)
+            //               << std::endl;
+            // }
+            tmp_array[i] = map_reader
+                             ->query(x[i] + rotated_offsets.x,
+                                     y[i] + rotated_offsets.y,
+                                     map_angle)
+                             .internal();
+        }
+
+        VNormalDistributionPDF(curr_weights,
+                               tmp_array,
+                               len,
+                               f_measured_distance,
+							   // TODO: change to have its own settings
+                               DistanceSensorConfig::std_deviation,
+                               DistanceSensorConfig::normalCoeff);
+    }
+
+    void evaluate_array(float* curr_weights,
+                        FLength* x,
+                        FLength* y,
+                        float* tmp_array,
+                        size_t len) override {
+
+		// TODO: maybe multiply by some number <= 1.0 instead?
+        if (exit) {
+			// TODO: this should never get called?
+			//
+			// makes it as if sensor did not get processed
+			std::fill(curr_weights, curr_weights + len, 1.0f);
+            return;
+        }
+
+		// set all curr_weights equal to zero
+		std::fill(curr_weights, curr_weights + len, 0.0f);
+
+        evaluate_wall_array(curr_weights,
+                            reinterpret_cast<float*>(x),
+                            reinterpret_cast<float*>(y),
+                            tmp_array,
+                            len);
+        map_lookup_array(curr_weights, x, y, tmp_array, len);
+    }
+
     // returns x and y coordinates for which the distance sensor would match
     // measurements.
-    // can be used to easily do distance sensor resets
+    // can be used for distance sensor resets
     std::optional<units::V2FPosition> getExpected() override {
         if (exit) {
             return std::nullopt;
@@ -255,6 +398,18 @@ class DistanceSensorModel : public Sensor {
 
     bool getEnabled() override {
         return enabled;
+    }
+
+    bool hasAvailableReading() override {
+        return !exit;
+    }
+
+    bool getVectorized() override {
+        return true;
+    }
+
+    bool canProcessArray() override {
+        return true;
     }
 };
 } // namespace vexmaps

@@ -5,7 +5,7 @@
         "target": "v5",
         "templates": {
             "blazing": {
-                "location": "/home/tomas/.config/pros/templates/blazing@0.0.1",
+                "location": "/home/tomas/.config/pros/templates/blazing@0.0.3",
                 "metadata": {
                     "origin": "local"
                 },
@@ -39,7 +39,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.1"
+                "version": "0.0.3"
             },
             "float_units": {
                 "location": "/home/tomas/.config/pros/templates/float_units@0.7.3",
@@ -651,7 +651,7 @@
                 "version": "9.2.0"
             },
             "vexmaps": {
-                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.5",
+                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.6",
                 "metadata": {
                     "origin": "local"
                 },
@@ -660,26 +660,28 @@
                 "supported_kernels": "^4.2.1",
                 "system_files": [
                     "include/vexmaps/odometry/scaled_imu.hpp",
-                    "include/vexmaps/localization_model.hpp",
+                    "firmware/vexmaps.a",
                     "include/vexmaps/model_manager.hpp",
-                    "include/vexmaps/api.hpp",
                     "include/vexmaps/particle_filter_model.hpp",
-                    "include/vexmaps/mcl/pf_motion_model.hpp",
-                    "include/vexmaps/mcl/distance_model.hpp",
-                    "include/vexmaps/mcl/utils.hpp",
-                    "include/vexmaps/mcl/sensor.hpp",
-                    "include/vexmaps/odometry/tracking_wheel.hpp",
+                    "include/vexmaps/mcl/asm_functions.hpp",
                     "include/vexmaps/mcl/api.hpp",
                     "include/vexmaps/mcl/particle_filter.hpp",
+                    "include/vexmaps/localization_model.hpp",
+                    "include/vexmaps/api.hpp",
+                    "include/vexmaps/mcl/pf_motion_model.hpp",
+                    "include/vexmaps/mcl/sensor.hpp",
                     "include/vexmaps/odometry/api.hpp",
                     "include/vexmaps/smoother_model.hpp",
+                    "include/vexmaps/mcl/map_reader.hpp",
                     "include/vexmaps/mcl/config.hpp",
                     "include/vexmaps/odometry/odometry.hpp",
-                    "firmware/vexmaps.a"
+                    "include/vexmaps/mcl/distance_model.hpp",
+                    "include/vexmaps/mcl/utils.hpp",
+                    "include/vexmaps/odometry/tracking_wheel.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.5"
+                "version": "0.0.6"
             },
             "vexmath": {
                 "location": "/home/tomas/.config/pros/templates/vexmath@0.0.7",

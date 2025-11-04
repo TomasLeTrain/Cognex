@@ -33,13 +33,15 @@ template<typename ControllersType,
          typename TrackerType,
          typename TolerancesType>
     requires poseTracker<TrackerType> && linearVelocityTracker<TrackerType> &&
-             ArcadeDrivetrain<DrivetrainType> &&
-             hasAngularFeedback<ControllersType> &&
-             hasLinearFeedback<ControllersType>
+               ArcadeDrivetrain<DrivetrainType> &&
+               hasAngularFeedback<ControllersType> &&
+               hasLinearFeedback<ControllersType>
 class boomerang : public Motion<ControllersType,
                                 DrivetrainType,
                                 TrackerType,
-                                TolerancesType> {
+                                TolerancesType>,
+                  public LinearMotion,
+                  public AngularMotion {
   private:
     units::Pose target;
 
@@ -304,6 +306,7 @@ class boomerang : public Motion<ControllersType,
         return result;
     }
 
+    [[nodiscard("motion won't be executed unless run or async are used!")]]
     boomerang(ControllersType controllers,
               Chassis<DrivetrainType, TrackerType, TolerancesType> chassis,
               units::Pose pose)
@@ -312,6 +315,7 @@ class boomerang : public Motion<ControllersType,
             chassis),
           target(pose) {}
 
+    [[nodiscard("motion won't be executed unless run or async are used!")]]
     boomerang(ControllersType controllers,
               Chassis<DrivetrainType, TrackerType, TolerancesType> chassis,
               Length x,
@@ -319,6 +323,7 @@ class boomerang : public Motion<ControllersType,
               Angle heading)
         : boomerang(controllers, chassis, { x, y, heading }) {}
 
+    [[nodiscard("motion won't be executed unless run or async are used!")]]
     boomerang(ControllersType controllers,
               Chassis<DrivetrainType, TrackerType, TolerancesType> chassis,
               double x,
@@ -370,10 +375,23 @@ class boomerang : public Motion<ControllersType,
     }
 
     [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto k_lat(std::optional<Divided<Angle, Length>> k_lat = std::nullopt,
+    auto k_lat(std::optional<std::variant<Divided<Angle, Length>, double, int>>
+                 k_lat = std::nullopt,
                bool only_when_settling = true) {
-        this->m_k_lat = k_lat;
         this->k_lat_only_settling = only_when_settling;
+
+        if (!k_lat)
+            this->m_k_lat = std::nullopt;
+        else {
+            const auto& variant = k_lat.value();
+            if (std::holds_alternative<Divided<Angle, Length>>(variant)) {
+                this->m_k_lat = std::get<Divided<Angle, Length>>(variant);
+            } else if (std::holds_alternative<double>(variant)) {
+                this->m_k_lat = std::get<double>(variant) * (rad / m);
+            } else if (std::holds_alternative<int>(variant)) {
+                this->m_k_lat = std::get<int>(variant) * (rad / m);
+            }
+        }
 
         return this->getReference();
     }
