@@ -83,11 +83,13 @@ struct CustomDistanceSensorConfiguration {
     // all floats without units are in meters
     static constexpr double exp_l = 1.5;
     static constexpr double std_deviation = (2_in).internal();
+    static constexpr double map_deviation = (3_in).internal();
 
     // sum of coefficients 1
-    static constexpr double randomCoeff = 0.125;
-    static constexpr double expCoeff = 0.075;
-    static constexpr double normalCoeff = 0.8;
+    static constexpr double randomCoeff = 0.0;
+    static constexpr double expCoeff = 0.15;
+    static constexpr double normalCoeff = 0.6;
+    static constexpr double mapCoeff = 0.25;
 
     static constexpr bool logging = false;
 };

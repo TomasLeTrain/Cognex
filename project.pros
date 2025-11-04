@@ -5,7 +5,7 @@
         "target": "v5",
         "templates": {
             "blazing": {
-                "location": "/home/tomas/.config/pros/templates/blazing@0.0.3",
+                "location": "/home/tomas/.config/pros/templates/blazing@0.0.4",
                 "metadata": {
                     "origin": "local"
                 },
@@ -39,7 +39,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.3"
+                "version": "0.0.4"
             },
             "float_units": {
                 "location": "/home/tomas/.config/pros/templates/float_units@0.7.3",
@@ -651,7 +651,7 @@
                 "version": "9.2.0"
             },
             "vexmaps": {
-                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.6",
+                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.7",
                 "metadata": {
                     "origin": "local"
                 },
@@ -681,7 +681,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.6"
+                "version": "0.0.7"
             },
             "vexmath": {
                 "location": "/home/tomas/.config/pros/templates/vexmath@0.0.7",
