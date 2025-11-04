@@ -104,6 +104,8 @@ bool prime_active = false;
  */
 void set(intake_state_t new_intake_state) {
     intake_state = new_intake_state;
+
+	// update prime state
     prime_active = new_intake_state == priming;
 }
 
@@ -214,35 +216,31 @@ bool motorSlowed(pros::Motor& motor) {
 
 // should be run in a task
 void antiJam() {
-    while (true) {
-        // wait for stuff to be available
-        std::lock_guard lock(intake_mutex);
+    // wait for stuff to be available
+    std::lock_guard lock(intake_mutex);
 
-        bool top_slowed = motorSlowed(top_motor);
+    bool top_slowed = motorSlowed(top_motor);
 
-        if (intake_state == scoring_long && top_slowed && !tmp_activated) {
-            bottom_motor.move(0);
+    if (intake_state == scoring_long && top_slowed && !tmp_activated) {
+        bottom_motor.move(0);
 
-            pros::delay(200);
-        }
-        if (intake_state == intake &&
-            (motorJammed(bottom_motor) || motorJammed(top_motor))) {
-            // ???
-        }
-        if (intake_state == scoring_middle && motorJammed(bottom_motor)) {
-            // ???
-        }
+        pros::delay(200);
+    }
+    if (intake_state == intake &&
+        (motorJammed(bottom_motor) || motorJammed(top_motor))) {
+        // ???
+    }
+    if (intake_state == scoring_middle && motorJammed(bottom_motor)) {
+        // ???
+    }
 
-        if (intake_state == scoring_bottom && motorJammed(bottom_motor)) {
-            // ???
-        }
+    if (intake_state == scoring_bottom && motorJammed(bottom_motor)) {
+        // ???
+    }
 
-        // not slowed, can disable the temporary
-        if (!top_slowed && tmp_activated) {
-            tmp_activated = false;
-        }
-
-        pros::delay(10);
+    // not slowed, can disable the temporary
+    if (!top_slowed && tmp_activated) {
+        tmp_activated = false;
     }
 }
 
@@ -268,66 +266,61 @@ void waitUntilMiddleColor(alliance_t color, uint32_t timeout) {
 
 // should be run in a task
 void colorSort() {
-    while (true) {
-        bool autoColorSortDisabled = !is_driver && !colorSortEnabled;
-        bool driverColorSortDisabled = is_driver && !driverColorSortEnabled;
+    bool autoColorSortDisabled = !is_driver && !colorSortEnabled;
+    bool driverColorSortDisabled = is_driver && !driverColorSortEnabled;
 
-        // wait for stuff to be available
-        // does not change intake, should not depend on mutex
-        if (autoColorSortDisabled || driverColorSortDisabled ||
-            // we don't know our alliance so we cannot color sort
-            auto_alliance == alliance_t::unset) {
-            pros::delay(10);
-            return;
-        }
-
-        // a ball is being measured
-        bool middle_wrong_color_detected =
-          middle_detected_color
-            .transform([](alliance_t detected) {
-                return detected != auto_alliance;
-            })
-            .value_or(false);
-
-        // bool bottom_wrong_color_detected =
-        //   bottom_detected_color
-        //     .transform([](alliance_t detected) {
-        //         return detected != auto_alliance;
-        //     })
-        //     .value_or(false);
-
-        // we have the wrong color, prcoess based on current state
-        if (middle_wrong_color_detected) {
-            // try to outake through the middle of the intake
-            if (intake_state == intake || intake_state == scoring_long) {
-                // need to take mutex
-                std::lock_guard lock(intake_mutex);
-
-                // move balls up
-                bottom_motor.move(0);
-                // move top most ball out
-                top_motor.move(-100);
-
-                pros::delay(80);
-            }
-            // else if (intake_state == scoring_middle ||
-            //                     intake_state == slow_scoring_middle) {
-            //              // need to take mutex
-            //              std::lock_guard lock(intake_mutex);
-            //
-            // 	// assuming the balls come from the bottom,
-            //
-            //              // move balls up
-            //              bottom_motor.move(-60);
-            //              // move top most ball out
-            //              top_motor.move(127);
-            //
-            // 	// wait for ball to go outwards
-            //              pros::delay(200);
-            //          }
-        }
-
+    // wait for stuff to be available
+    // does not change intake, should not depend on mutex
+    if (autoColorSortDisabled || driverColorSortDisabled ||
+        // we don't know our alliance so we cannot color sort
+        auto_alliance == alliance_t::unset) {
         pros::delay(10);
+        return;
+    }
+
+    // a ball is being measured
+    bool middle_wrong_color_detected = middle_detected_color
+                                         .transform([](alliance_t detected) {
+                                             return detected != auto_alliance;
+                                         })
+                                         .value_or(false);
+
+    // bool bottom_wrong_color_detected =
+    //   bottom_detected_color
+    //     .transform([](alliance_t detected) {
+    //         return detected != auto_alliance;
+    //     })
+    //     .value_or(false);
+
+    // we have the wrong color, prcoess based on current state
+    if (middle_wrong_color_detected) {
+        // try to outake through the middle of the intake
+        if (intake_state == intake || intake_state == scoring_long) {
+            // need to take mutex
+            std::lock_guard lock(intake_mutex);
+
+            // move balls up
+            bottom_motor.move(0);
+            // move top most ball out
+            top_motor.move(-100);
+
+            pros::delay(80);
+        }
+        // else if (intake_state == scoring_middle ||
+        //                     intake_state == slow_scoring_middle) {
+        //              // need to take mutex
+        //              std::lock_guard lock(intake_mutex);
+        //
+        // 	// assuming the balls come from the bottom,
+        //
+        //              // move balls up
+        //              bottom_motor.move(-60);
+        //              // move top most ball out
+        //              top_motor.move(127);
+        //
+        // 	// wait for ball to go outwards
+        //              pros::delay(200);
+        //          }
     }
 }
 
