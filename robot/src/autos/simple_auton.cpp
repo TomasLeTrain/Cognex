@@ -83,7 +83,7 @@ void run_auton() {
     // chassis.getPose().x, chassis.getPose().y, chassis.getPose().theta);
 
     pf_model.setDisabled(true);
-    mb.moveTo(22, -22 * l).linear_clampMaxVoltage(0.45_volt) | run;
+    mb.moveTo(22, -22 * l).drive_maxVolt(0.45_volt) | run;
 
     mb.turnTo(0, 0) | run;
 
@@ -94,11 +94,11 @@ void run_auton() {
     // pros::delay(100);
 
     if (bl) {
-        mb.moveTo(11.5, -12 * l).linear_clampMaxVoltage(0.7_volt) | run;
+        mb.moveTo(11.5, -12 * l).drive_maxVolt(0.7_volt) | run;
         mb.turnTo(0, 0 * l) | run;
         intake::set(intake::scoring_middle);
     } else {
-        mb.moveTo(11.8, -12.8 * l).linear_clampMaxVoltage(0.5_volt) | run;
+        mb.moveTo(11.8, -12.8 * l).drive_maxVolt(0.5_volt) | run;
         mb.turnTo(0, 0 * l) | run;
         intake::set(intake::scoring_bottom);
     }
@@ -111,25 +111,25 @@ void run_auton() {
 
     pf_model.setDisabled(false);
 
-    mb.moveTo(40, -47.5 * l).reverse().linear_clampMaxVoltage(0.5_volt) | run;
+    mb.moveTo(40, -47.5 * l).reverse().drive_maxVolt(0.5_volt) | run;
 
     matchloader::set(true);
 
-    mb.turnTo(67, -47 * l).linear_clampMaxVoltage(0.5_volt) | run;
+    mb.turnTo(67, -47 * l).turn_maxVolt(0.8_volt) | run;
     intake::set(intake::intake_slow_bottom);
 
-    mb.moveTo(56.5, -47 * l).linear_clampMaxVoltage(0.8_volt) | run;
+    mb.moveTo(56.5, -47 * l).drive_maxVolt(0.8_volt) | run;
 
     // matchload
     pros::delay(300);
 
-    mb.moveTo(45, -47 * l).reverse().linear_clampMaxVoltage(0.5_volt) | run;
+    mb.moveTo(45, -47 * l).reverse().drive_maxVolt(0.5_volt) | run;
 
-    mb.turnTo(0, -47 * l).linear_clampMaxVoltage(0.5_volt) | run;
+    mb.turnTo(0, -47 * l).turn_maxVolt(0.5_volt) | run;
     matchloader::set(false);
     intake::set(intake::priming);
 
-    mb.moveTo(28, -47 * l).linear_clampMaxVoltage(0.6_volt) | run;
+    mb.moveTo(28, -47 * l).drive_maxVolt(0.6_volt) | run;
 
     intake::set(intake::scoring_long);
 

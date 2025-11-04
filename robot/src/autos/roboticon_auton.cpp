@@ -40,27 +40,27 @@ void run_auton() {
     // printf("before move\n");
     // pf_model.setDisabled(true);
     mb.moveTo(31, -22.5 * l)
-        .linear_clampMaxVoltage(0.7_volt)
-        .linearErrorTolerance(5_in) |
+        .drive_maxVolt(0.7_volt)
+        .drive_ErrorTolerance(5_in) |
       run;
 
     matchloader::set(true);
     pros::delay(50);
 
-    mb.moveTo(19, -23.2 * l).linear_clampMaxVoltage(0.3_volt) | async;
+    mb.moveTo(19, -23.2 * l).drive_maxVolt(0.3_volt) | async;
     async.wait();
     // printf("after move\n");
 
     if (bl) {
         mb.moveTo(9.7, -10 * l)
-            .linear_clampMaxVoltage(0.5_volt)
-            .largeLinearErrorTolerance(5_in)
+            .drive_maxVolt(0.5_volt)
+            .drive_largeErrorTolerance(5_in)
             .timeout(2_sec) |
           run;
         intake::set(intake::scoring_middle);
         pros::delay(2000);
     } else {
-        mb.moveTo(10, -11 * l).linear_clampMaxVoltage(0.5_volt) | async;
+        mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | async;
         pros::delay(200);
         matchloader::set(false);
         async.wait();
@@ -74,15 +74,12 @@ void run_auton() {
 
     // pf_model.setDisabled(false);
 
-    mb.moveTo(40_in, -2_tile * l).reverse().linear_clampMaxVoltage(0.5_volt) |
-      run;
+    mb.moveTo(40_in, -2_tile * l).reverse().drive_maxVolt(0.5_volt) | run;
 
     matchloader::set(true);
 
-    mb.turnTo(67_in, -2_tile * l).angular_clampMaxVoltage(0.9_volt) | run;
-    mb.moveTo(60.5_in, -2_tile * l)
-        .linear_clampMaxVoltage(0.75_volt)
-        .timeout(2.5_sec) |
+    mb.turnTo(67_in, -2_tile * l).turn_maxVolt(0.9_volt) | run;
+    mb.moveTo(60.5_in, -2_tile * l).drive_maxVolt(0.75_volt).timeout(2.5_sec) |
       run;
     // mb.distanceAtHeading(-0.5_in) | run;
 

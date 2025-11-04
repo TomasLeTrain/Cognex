@@ -29,8 +29,8 @@ void DistanceSensorReset(int timeout, double new_alpha) {
     vexmaps::SmootherConfig new_config = smoother_config;
 
     // change alpha values to quickly reset to mcl pose
-    new_config.pose_x = new_alpha;
-    new_config.pose_y = new_alpha;
+    new_config.alpha_x = new_alpha;
+    new_config.alpha_y = new_alpha;
 
     smoother_model.changeConfiguration(new_config);
     pros::delay(timeout);

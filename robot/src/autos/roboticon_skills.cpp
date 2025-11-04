@@ -21,18 +21,17 @@ void run_auton() {
 
     intake::set(intake::intake);
 
-    mb.moveTo(-31, 22.5).linear_clampMaxVoltage(0.7_volt).linearErrorTolerance(
-      5_in) |
+    mb.moveTo(-31, 22.5).drive_maxVolt(0.7_volt).drive_ErrorTolerance(5_in) |
       run;
 
     matchloader::set(true);
     pros::delay(50);
 
-    mb.moveTo(-19, 23.2).linear_clampMaxVoltage(0.3_volt) | run;
+    mb.moveTo(-19, 23.2).drive_maxVolt(0.3_volt) | run;
 
     mb.moveTo(-9.7, 10)
-        .linear_clampMaxVoltage(0.5_volt)
-        .largeLinearErrorTolerance(5_in)
+        .drive_maxVolt(0.5_volt)
+        .drive_largeErrorTolerance(5_in)
         .timeout(2_sec) |
       run;
     intake::set(intake::scoring_middle);
@@ -40,17 +39,14 @@ void run_auton() {
 
     intake::set(intake::scoring_bottom);
 
-    mb.moveTo(-40_in, 2_tile).reverse().linear_clampMaxVoltage(0.5_volt) | run;
+    mb.moveTo(-40_in, 2_tile).reverse().drive_maxVolt(0.5_volt) | run;
 
     matchloader::set(true);
 
-    mb.turnTo(-67_in, 2_tile).angular_clampMaxVoltage(0.8_volt) | run;
+    mb.turnTo(-67_in, 2_tile).turn_maxVolt(0.8_volt) | run;
     intake::set(intake::intake);
-    // mb.moveTo(-60_in, 2_tile).linear_clampMaxVoltage(0.8_volt) | run;
-    mb.moveTo(-60_in, 2_tile)
-        .linear_clampMaxVoltage(0.85_volt)
-        .timeout(2.5_sec) |
-      run;
+    // mb.moveTo(-60_in, 2_tile).drive_maxVolt(0.8_volt) | run;
+    mb.moveTo(-60_in, 2_tile).drive_maxVolt(0.85_volt).timeout(2.5_sec) | run;
     // mb.distanceAtHeading(-2_in) | run;
 
     // matchload
@@ -68,31 +64,25 @@ void run_auton() {
 
     // turn around and go towards matchloader
     right_motors.set_brake_mode(pros::MotorBrake::brake);
-    mb.turnTo(0_stDeg)
+    mb.arc(0_stDeg)
         .direction(AngularDirection::RIGHT)
-        .angular_clampMaxVoltage(0.5_volt)
-        .linear_clampMaxVoltage(0.5_volt)
-        .radius(1.0) // makes it a swing
-      | run;
+        .turn_maxVolt(0.5_volt)
+        .drive_maxVolt(0.5_volt) |
+      run;
 
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
 
     // go to other side of the field, close to the wall
-    mb.moveTo(22.41, 60).linear_clampMaxVoltage(0.5_volt) | run;
+    mb.moveTo(22.41, 60).drive_maxVolt(0.5_volt) | run;
     matchloader::set(true);
 
     // go to matchloader
-    mb.boomerang(52.4_in, 2_tile, 0_stDeg)
-        .lead(0.5)
-        .linear_clampMaxVoltage(0.5_volt) |
+    mb.boomerang(52.4_in, 2_tile, 0_stDeg).lead(0.5).drive_maxVolt(0.5_volt) |
       run;
     intake::set(intake::intake);
 
-    mb.turnTo(67_in, 2_tile).angular_clampMaxVoltage(0.8_volt) | run;
-    mb.moveTo(60_in, 2_tile)
-        .linear_clampMaxVoltage(0.85_volt)
-        .timeout(2.5_sec) |
-      run;
+    mb.turnTo(67_in, 2_tile).turn_maxVolt(0.8_volt) | run;
+    mb.moveTo(60_in, 2_tile).drive_maxVolt(0.85_volt).timeout(2.5_sec) | run;
 
     // get balls from matchloader 2
     pros::delay(1000);
@@ -108,14 +98,11 @@ void run_auton() {
     // ???
 
     mb.distanceAtHeading(-15_in) | run;
-    mb.moveTo(33, -25).linear_clampMaxVoltage(0.5_volt) | run;
-    mb.moveTo(40_in, -2_tile).linear_clampMaxVoltage(0.6_volt) | run;
+    mb.moveTo(33, -25).drive_maxVolt(0.5_volt) | run;
+    mb.moveTo(40_in, -2_tile).drive_maxVolt(0.6_volt) | run;
     intake::set(intake::intake);
-    mb.turnTo(67_in, -2_tile).angular_clampMaxVoltage(0.8_volt) | run;
-    mb.moveTo(60_in, -2_tile)
-        .linear_clampMaxVoltage(0.85_volt)
-        .timeout(2.5_sec) |
-      run;
+    mb.turnTo(67_in, -2_tile).turn_maxVolt(0.8_volt) | run;
+    mb.moveTo(60_in, -2_tile).drive_maxVolt(0.85_volt).timeout(2.5_sec) | run;
     // mb.distanceAtHeading(-2_in) | run;
 
     // matchload
@@ -131,10 +118,10 @@ void run_auton() {
 
     // go to other side of long goal and matchloader
     right_motors.set_brake_mode(pros::MotorBrake::brake);
-    mb.turnTo(180_stDeg)
+    mb.arc(180_stDeg)
+        .drive_maxVolt(0.5_volt)
         .direction(AngularDirection::RIGHT)
-        .angular_clampMaxVoltage(0.5_volt)
-        .linear_clampMaxVoltage(0.5_volt)
+        .turn_maxVolt(0.5_volt)
         .radius(1.0) // makes it a swing
       | run;
 
@@ -147,14 +134,11 @@ void run_auton() {
     // go to matchloader
     mb.boomerang(-52.4_in, -2_tile, 180_stDeg)
         .lead(0.5)
-        .angular_clampMaxVoltage(0.5_volt)
-        .linear_clampMaxVoltage(0.5_volt) |
+        .turn_maxVolt(0.5_volt)
+        .drive_maxVolt(0.5_volt) |
       run;
-    mb.turnTo(-67_in, -2_tile).angular_clampMaxVoltage(0.8_volt) | run;
-    mb.moveTo(-60_in, -2_tile)
-        .linear_clampMaxVoltage(0.85_volt)
-        .timeout(2.5_sec) |
-      run;
+    mb.turnTo(-67_in, -2_tile).turn_maxVolt(0.8_volt) | run;
+    mb.moveTo(-60_in, -2_tile).drive_maxVolt(0.85_volt).timeout(2.5_sec) | run;
     // mb.distanceAtHeading(-2_in) | run;
 
     // get balls from matchloader 2

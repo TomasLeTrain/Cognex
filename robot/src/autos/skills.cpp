@@ -28,7 +28,7 @@ void run_auton() {
     intake::set(intake::intake);
 
     // clear park
-    mb.moveTo(-63.3, 15.5).angular_clampMinVoltage(1_volt) | run;
+    mb.moveTo(-63.3, 15.5) | run;
     pros::delay(2000);
 
     mb.turnTo(-42, 46) | run;
@@ -38,7 +38,7 @@ void run_auton() {
     // matchloading!
     mb.turnTo(-59, 46.5) | run;
     matchloader::set(true);
-    mb.moveTo(-59, 46.5).linear_clampMaxVoltage(0.8_volt) | run;
+    mb.moveTo(-59, 46.5).drive_maxVolt(0.8_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
@@ -57,7 +57,7 @@ void run_auton() {
     // matchloading!
     mb.turnTo(59, 46.5) | run;
     matchloader::set(true);
-    mb.moveTo(59, 46.5).linear_clampMaxVoltage(0.8_volt) | run;
+    mb.moveTo(59, 46.5).drive_maxVolt(0.8_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
@@ -89,7 +89,7 @@ void run_auton() {
     mb.moveTo(47, -47) | run;
     mb.turnTo(59, -46.5) | run;
     matchloader::set(true);
-    mb.moveTo(58, -46.5).linear_clampMaxVoltage(0.9_volt) | run;
+    mb.moveTo(58, -46.5).drive_maxVolt(0.9_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
@@ -112,14 +112,14 @@ void run_auton() {
     // matchloading!
     mb.turnTo(-59, -46.5) | run;
     matchloader::set(true);
-    mb.moveTo(-59, -46.5).linear_clampMaxVoltage(0.8_volt) | run;
+    mb.moveTo(-59, -46.5).drive_maxVolt(0.8_volt) | run;
     pros::delay(2500);
     matchloader::set(false);
 
     mb.moveTo(-50, -47).reverse() | run;
 
     mb.turnTo(-70, 0) | run;
-    mb.moveTo(-70, 0).angular_clampMinVoltage(0.7_volt) | run;
+    mb.moveTo(-70, 0) | run;
 }
 
 } // namespace skills

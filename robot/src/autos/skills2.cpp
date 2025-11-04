@@ -94,7 +94,7 @@ void run_auton() {
     // chassis.moveToPose(-29,31,145,2000,{.lead=0.5});
 
     // move towards center goal to score
-    mb.moveTo(-10, 11).linear_clampMaxVoltage(0.3_volt) | async;
+    mb.moveTo(-10, 11).drive_maxVolt(0.3_volt) | async;
 
     pros::delay(2300);
     matchloader::set(true);
@@ -125,23 +125,23 @@ void run_auton() {
     mb.turnTo(-23.3, -22.5)
         .direction(AngularDirection::LEFT)
         .radius(1.0)
-        .angular_clampMinVoltage(0.3_volt) |
+        .turn_minVolt(0.3_volt) |
       run;
 
     // move to second corner
     // mb.moveTo(-30,-8, 2000, {.minSpeed=40,.earlyExitRange=5},
     // false);
-    mb.turnTo(-40, -22).angular_clampMinVoltage(0.4_volt) | run;
+    mb.turnTo(-40, -22).turn_minVolt(0.4_volt) | run;
     mb.moveTo(-40, -20) | run;
 
-    mb.turnTo(-23, -22).angular_clampMinVoltage(0.4_volt) | run;
-    mb.moveTo(-23, -22).linear_clampMaxVoltage(0.9_volt) | run;
+    mb.turnTo(-23, -22).turn_minVolt(0.4_volt) | run;
+    mb.moveTo(-23, -22).drive_maxVolt(0.9_volt) | run;
 
     // turn to and go the third corner
     mb.turnTo(23.5, -23.5) | run;
     mb.moveTo(23.5, -23.5)
-        .linear_clampMaxVoltage(0.7_volt)
-        .linear_clampMinVoltage(0.2_volt) |
+        .drive_maxVolt(0.7_volt)
+        .drive_minVolt(0.2_volt) |
       run;
 
     matchloader::set(true);
@@ -157,7 +157,7 @@ void run_auton() {
     // pf_model.setDisabled(false);
 
     // back up to go to goal
-    mb.moveTo(50, -47.5).reverse().linear_clampMinVoltage(0.1_volt) | run;
+    mb.moveTo(50, -47.5).reverse().drive_minVolt(0.1_volt) | run;
 
     // turn to and score on
     // long goal
@@ -193,15 +193,15 @@ void run_auton() {
 
     mb.turnTo(40)
         .direction(AngularDirection::LEFT)
-        .angular_clampMinVoltage(20_volt) |
+        .turn_minVolt(20_volt) |
       run;
 
     // move towards blue park
-    mb.boomerang(61.3, -17.5, 0).lead(0.3).linear_clampMinVoltage(0.5_volt) |
+    mb.boomerang(61.3, -17.5, 0).lead(0.3).drive_minVolt(0.5_volt) |
       run;
 
     // clear blue park
-    mb.moveTo(62, 15.5).linear_clampMinVoltage(0.5_volt) | run;
+    mb.moveTo(62, 15.5).drive_minVolt(0.5_volt) | run;
 
     // wait for mcl to work?
     RobotSetPose(63, 16, 90);
@@ -229,7 +229,7 @@ void run_auton() {
     mb.moveTo(32.3, 31.5) | run;
 
     // score on center goal
-    mb.moveTo(11.3, 11.7).linear_clampMaxVoltage(0.5_volt) | run;
+    mb.moveTo(11.3, 11.7).drive_maxVolt(0.5_volt) | run;
     // mb.moveTo(11, -11.5, 2500, {.maxSpeed=80});
     pf_model.setDisabled(true);
 
@@ -252,7 +252,7 @@ void run_auton() {
 
     // move to matchloader
     mb.moveTo(-50, 44) | run;
-    mb.turnTo(-71, 46.7).angular_clampMaxVoltage(0.2_volt) | run;
+    mb.turnTo(-71, 46.7).turn_maxVolt(0.2_volt) | run;
     matchloader::set(true);
     mb.moveTo(-55, 46.7) | run;
     // pf_model.setDisabled(true);
@@ -278,13 +278,13 @@ void run_auton() {
     intake::set(intake::intake_disabled);
 
     // swing and run for the park
-    mb.turnTo(-63, 0)
+    mb.arc(-63, 0)
         .direction(AngularDirection::LEFT)
         .radius(1.0)
-        .linear_clampMinVoltage(0.4_volt) |
+        .drive_minVolt(0.4_volt) |
       run;
 
-    mb.moveTo(-63, 0).linear_clampMinVoltage(0.5_volt) | run;
+    mb.moveTo(-63, 0).drive_minVolt(0.5_volt) | run;
 }
 
 } // namespace skills2
