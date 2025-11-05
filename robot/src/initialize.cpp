@@ -12,6 +12,42 @@ void initialize() {
     // initialize screens
     screen::init();
 
+    // bool finished_reading_task = false;
+	
+	// initialize everything else automatically
+    bool finished_reading_task = true;
+
+    // start reading map same time as calibrating imu
+    pros::Task([&finished_reading_task] {
+        pros::delay(100);
+        int map_reader_notif = screen::health::add_init_notif("Reading map");
+
+        // give time for notifications to propagage
+        pros::delay(50);
+
+        // doesn't work???
+        // map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
+
+        // if (!map_reader.mapAvailable()) {
+            // try to read map
+		std::cout << "compressed map failed, try reading full map"
+				  << std::endl;
+		map_reader.read("/usd/field_720_100_100.map");
+		std::cout << "finished reading at " << pros::millis() << std::endl;
+        // }
+
+        if (map_reader.mapAvailable()) {
+            screen::health::update_init_notif_severity(map_reader_notif,
+                                                       screen::health::succeed);
+        } else {
+            screen::health::update_init_notif_severity(
+              map_reader_notif,
+              screen::health::critical);
+        }
+
+        finished_reading_task = true;
+    });
+
     int imu_notif = screen::health::add_init_notif("calibrating imu");
 
     // imu calibration
@@ -46,24 +82,12 @@ void initialize() {
                                                    screen::health::succeed);
     }
 
-    int map_reader_notif = screen::health::add_init_notif("Reading map");
-
-    map_reader.read_compressed("/usd/field.map.compressed");
-
-    if (!map_reader.mapAvailable()) {
-        // try to read map
-        map_reader.read("/usd/field.map");
-    }
-
-    if (map_reader.mapAvailable()) {
-        screen::health::update_init_notif_severity(map_reader_notif,
-                                                   screen::health::succeed);
-    } else {
-        screen::health::update_init_notif_severity(map_reader_notif,
-                                                   screen::health::critical);
-    }
-
     pros::delay(100);
+
+	// wait for reading task to finish
+	while(!finished_reading_task){
+		pros::delay(20);
+	}
 
     int init_models_notif =
       screen::health::add_init_notif("initializing models");
