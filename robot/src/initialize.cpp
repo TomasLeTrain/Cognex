@@ -12,13 +12,12 @@ void initialize() {
     // initialize screens
     screen::init();
 
-    // bool finished_reading_task = false;
-	
-	// initialize everything else automatically
+	// dont wait for task to finish?
     bool finished_reading_task = true;
 
     // start reading map same time as calibrating imu
     pros::Task([&finished_reading_task] {
+		// give time for imu to start calibrating
         pros::delay(100);
         int map_reader_notif = screen::health::add_init_notif("Reading map");
 
@@ -26,15 +25,15 @@ void initialize() {
         pros::delay(50);
 
         // doesn't work???
-        // map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
+        map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
 
-        // if (!map_reader.mapAvailable()) {
+        if (!map_reader.mapAvailable()) {
             // try to read map
-		std::cout << "compressed map failed, try reading full map"
-				  << std::endl;
-		map_reader.read("/usd/field_720_100_100.map");
-		std::cout << "finished reading at " << pros::millis() << std::endl;
-        // }
+            std::cout << "compressed map failed, try reading full map"
+                      << std::endl;
+            map_reader.read("/usd/field_720_100_100.map");
+            std::cout << "finished reading at " << pros::millis() << std::endl;
+        }
 
         if (map_reader.mapAvailable()) {
             screen::health::update_init_notif_severity(map_reader_notif,
@@ -84,10 +83,10 @@ void initialize() {
 
     pros::delay(100);
 
-	// wait for reading task to finish
-	while(!finished_reading_task){
-		pros::delay(20);
-	}
+    // wait for reading task to finish
+    while (!finished_reading_task) {
+        pros::delay(20);
+    }
 
     int init_models_notif =
       screen::health::add_init_notif("initializing models");

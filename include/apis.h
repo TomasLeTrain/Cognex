@@ -19,7 +19,7 @@
 #include "blazing/api.hpp"
 #include "units/all.hpp"
 #include "vexmaps/api.hpp"
-#include "lz4/lz4.h"
+#include "zlib/zlib.h"
 
 // lvgl
 #include "liblvgl/lvgl.h"
