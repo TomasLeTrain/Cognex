@@ -2,7 +2,7 @@
 
 #include "systems/piston.h"
 
-namespace wings {
+namespace odom_retract {
 void set(piston_state_t new_wings_state);
 
 void init(bool gdriver);

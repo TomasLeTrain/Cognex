@@ -1,20 +1,21 @@
 #include "apis.h"
 //
 #include "globals.h"
+#include "systems/piston.h"
 #include "systems/wings.h"
 
 namespace wings {
 bool is_driver = false;
 bool tasks_active = false;
 
-bool wings_state = false;
+piston_state_t wings_state = inactive;
 
 /**
  * @brief updates intake state, with optional speed parameter
  *
  * @param new_wings_state new intake state
  */
-void set(bool new_wings_state) {
+void set(piston_state_t new_wings_state) {
     wings_state = new_wings_state;
 }
 
@@ -23,7 +24,7 @@ void driverUpdate() {
     // update states based on driver input
     bool toggleWings = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
 
-    set(toggleWings);
+    set(piston_state_t(toggleWings));
 }
 
 // code that should run during autonomous - should be based on extra state
@@ -34,7 +35,7 @@ void autoUpdate() {}
 // runs regardless of driver mode
 void hardwareUpdate() {
     // intake update
-    if (wings_state) {
+    if (wings_state == active) {
         wings_piston.set_value(true);
     } else {
         wings_piston.set_value(false);

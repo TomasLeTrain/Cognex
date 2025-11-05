@@ -9,6 +9,8 @@
 #include "systems/drivetrain.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/odom_retract.h"
+#include "systems/wings.h"
 #include "tuning.h"
 
 void opcontrol() {
@@ -21,6 +23,8 @@ void opcontrol() {
 
     intake::init(true);
     matchloader::init(true);
+    wings::init(true);
+	odom_retract::init(true);
 
     // no need to initialize in auto
     base::init();
@@ -68,7 +72,7 @@ void opcontrol() {
     //     }
     // } };
 
-    RobotSetPose(0, 0, 0);
+    // RobotSetPose(0, 0, 0);
 
 	odom_tuning();
 

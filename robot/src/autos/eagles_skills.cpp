@@ -17,20 +17,20 @@ namespace eagles_skills {
 
 void run_auton() {
 
-    RobotSetPose(-48.5, 17, 0);
+    RobotSetPose(-48.5, 16, 0);
     intake::setColorSortEnabled(false);
 
     intake::set(intake::intake);
 
     mb.moveTo(-46.5, 2_tile) | run;
 
-    matchloader::set(matchloader::active);
+    matchloader::set(active);
     // pros::delay(50);
 
     // go into matchloader
     mb.moveTo(-58, 2_tile).drive_maxVolt(0.3_volt) | run;
     pros::delay(1000);
-    matchloader::set(matchloader::inactive);
+    matchloader::set(inactive);
 
     // go to goal
     mb.moveTo(-24.5_in, 2_tile).reverse() | run;
@@ -54,12 +54,12 @@ void run_auton() {
 
     // move to right before matchloader
     mb.moveTo(48.328, 2_tile) | run;
-    matchloader::set(matchloader::active);
+    matchloader::set(active);
 
     // go into matchloader
     mb.moveTo(58, 2_tile).drive_maxVolt(0.3_volt) | run;
     pros::delay(1000);
-    matchloader::set(matchloader::inactive);
+    matchloader::set(inactive);
 
     // go to goal
     mb.moveTo(24.5_in, 2_tile).reverse() | run;
@@ -73,12 +73,12 @@ void run_auton() {
 
     // go before matchloader
     mb.moveTo(48.328, -2_tile) | run;
-    matchloader::set(matchloader::active);
+    matchloader::set(active);
 
     // go into matchloader
     mb.moveTo(58, -2_tile).drive_maxVolt(0.3_volt) | run;
     pros::delay(1000);
-    matchloader::set(matchloader::inactive);
+    matchloader::set(inactive);
 
     // go to goal
     mb.moveTo(24.5_in, -2_tile).reverse() | run;
@@ -93,12 +93,12 @@ void run_auton() {
 
     // go to right before matchloader
     mb.moveTo(-46.5, -2_tile) | run;
-    matchloader::set(matchloader::active);
+    matchloader::set(active);
 
     // go into matchloader
     mb.moveTo(-58, -2_tile).drive_maxVolt(0.3_volt) | run;
     pros::delay(1000);
-    matchloader::set(matchloader::inactive);
+    matchloader::set(inactive);
 
     // go to goal
     mb.moveTo(-24.5_in, -2_tile).reverse() | run;

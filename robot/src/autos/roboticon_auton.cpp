@@ -44,7 +44,7 @@ void run_auton() {
         .drive_ErrorTolerance(5_in) |
       run;
 
-    matchloader::set(matchloader::active);
+    matchloader::set(active);
     pros::delay(50);
 
     mb.moveTo(19, -23.2 * l).drive_maxVolt(0.3_volt) | async;
@@ -62,7 +62,7 @@ void run_auton() {
     } else {
         mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | async;
         pros::delay(200);
-        matchloader::set(matchloader::inactive);
+        matchloader::set(inactive);
         async.wait();
         intake::set(intake::scoring_bottom);
         pros::delay(2000);
@@ -70,13 +70,13 @@ void run_auton() {
 
     intake::set(intake::intake);
     // make sure its down
-    // matchloader::set(matchloader::inactive);
+    // matchloader::set(inactive);
 
     // pf_model.setDisabled(false);
 
     mb.moveTo(40_in, -2_tile * l).reverse().drive_maxVolt(0.5_volt) | run;
 
-    matchloader::set(matchloader::active);
+    matchloader::set(active);
 
     mb.turnTo(67_in, -2_tile * l).turn_maxVolt(0.9_volt) | run;
     mb.moveTo(60.5_in, -2_tile * l).drive_maxVolt(0.75_volt).timeout(2.5_sec) |

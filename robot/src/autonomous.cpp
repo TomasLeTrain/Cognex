@@ -8,6 +8,8 @@
 #include "screen/screen.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/odom_retract.h"
+#include "systems/wings.h"
 
 // run if no auton is selected - useful for testing
 // NOTE: select the disabled auton if you don't want anything to run!!!
@@ -18,7 +20,8 @@ void testing_auton_func() {
 	// printf("got before selected auto\n");
 
     // selected_auton = "current skills";
-    selected_auton = "current quals";
+    // selected_auton = "current quals";
+    selected_auton = "current skills";
     auto selected_auton_function = auton_list[selected_auton];
 	// printf("got after selected auto\n");
     selected_auton_function();
@@ -28,6 +31,8 @@ void autonomous() {
     // initialize subsystems
     intake::init(false);
     matchloader::init(false);
+    wings::init(false);
+	odom_retract::init(false);
 
     // change to W screen
     // screen::setScreen(&screen::bouncing_dvd_screen::screen);

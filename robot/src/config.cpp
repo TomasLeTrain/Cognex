@@ -28,11 +28,12 @@ pros::Optical bottom_intake_color_sensor(21);
 // pistons
 pros::adi::DigitalOut intake_stop_piston('H', true);
 pros::adi::DigitalOut matchloader_piston('G', false);
-pros::adi::DigitalOut wings_piston('A', false);
+pros::adi::DigitalOut wings_piston('F', false);
+pros::adi::DigitalOut odom_retract_piston('E', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(4);
+pros::Rotation forwards_odom_rotation(-4);
 pros::Rotation sideways_odom_rotation(6);
 
 // particle filter distance sensors
@@ -51,12 +52,12 @@ units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
 
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
-    .diameter = 1.97_in,
+    .diameter = 1.9654_in,
     .offset = 0.3_in,
 };
 
 tracker_config_t sideways_tracker_config = {
-    .diameter = 1.97_in,
+    .diameter = 1.9869_in,
     .offset = 0.75_in,
 };
 

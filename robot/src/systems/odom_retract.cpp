@@ -1,34 +1,30 @@
 #include "apis.h"
 //
 #include "globals.h"
-#include "systems/matchloader.h"
+#include "systems/odom_retract.h"
+#include "systems/piston.h"
 
-namespace matchloader {
+namespace odom_retract {
 bool is_driver = false;
 bool tasks_active = false;
 
-piston_state_t matchloader_state = inactive;
+piston_state_t odom_retract_state = inactive;
 
 /**
  * @brief updates intake state, with optional speed parameter
  *
- * @param new_matchloader_state new intake state
+ * @param new_wings_state new intake state
  */
-void set(bool new_matchloader_state) {
-    matchloader_state = piston_state_t(new_matchloader_state);
-}
-
-void set(piston_state_t new_matchloader_state) {
-    matchloader_state = new_matchloader_state;
+void set(piston_state_t new_wings_state) {
+    odom_retract_state = new_wings_state;
 }
 
 // code that should run during driver
 void driverUpdate() {
     // update states based on driver input
-    bool toggleMatchloader =
-      controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT);
+    bool toggle_piston_retract = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 
-    set(toggleMatchloader);
+    set(piston_state_t(toggle_piston_retract));
 }
 
 // code that should run during autonomous - should be based on extra state
@@ -39,10 +35,10 @@ void autoUpdate() {}
 // runs regardless of driver mode
 void hardwareUpdate() {
     // intake update
-    if (matchloader_state) {
-        matchloader_piston.set_value(true);
+    if (odom_retract_state == active) {
+        odom_retract_piston.set_value(true);
     } else {
-        matchloader_piston.set_value(false);
+        odom_retract_piston.set_value(false);
     }
 }
 
@@ -64,7 +60,7 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    pros::Task main_matchloader_task([] {
+    pros::Task odom_retract_task([] {
         while (true) {
             update();
             pros::delay(10);
@@ -73,4 +69,4 @@ void init(bool gdriver) {
 
     tasks_active = true;
 }
-}; // namespace matchloader
+}; // namespace wings
