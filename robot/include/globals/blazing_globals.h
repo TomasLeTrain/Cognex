@@ -20,6 +20,7 @@ extern ForwardsTracker right_motor_tracker;
 
 extern ForwardsTracker forwards_tracker;
 extern SidewaysTracker sideways_tracker;
+extern TrackingImu imu_tracker;
 
 extern ArcOdomTracker tracker;
 

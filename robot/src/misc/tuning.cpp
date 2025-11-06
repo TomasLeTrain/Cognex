@@ -56,6 +56,34 @@ void odom_tuning() {
     }
 }
 
+void odom_offset_tuning() {
+    // units::Pose pose = { 0_in, 0_in };
+    // model_manager.setPose(pose);
+    // tracker.setPose(pose);
+
+    sideways_odom_rotation.set_position(0);
+    forwards_odom_rotation.set_position(0);
+    pros::delay(10);
+
+    int pct = 0.5;
+
+    left_motors.move_voltage(12000 * pct);
+    right_motors.move_voltage(12000 * pct);
+
+    while (true) {
+        units::V2Position deltas = { forwards_tracker.getDelta(),
+                                     sideways_tracker.getDelta() };
+        Angle delta_theta = imu_tracker.getDelta();
+
+        units::V2Position offsets = deltas / to_stRad(delta_theta);
+
+        std::cout << offsets.x.convert(in) << " " << offsets.y.convert(in)
+                  << std::endl;
+
+        pros::delay(10);
+    }
+}
+
 void turn_pid_tuning() {
     double target_theta = 90;
     // by how much we can increase or decrease

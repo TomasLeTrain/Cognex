@@ -158,14 +158,16 @@ SidewaysTracker sideways_tracker(&sideways_odom_rotation,
                                  sideways_tracker_config.offset,
                                  sideways_tracker_config.diameter);
 
+TrackingImu imu_tracker(&imu);
+
 // blazing tracker
 ArcOdomTracker tracker(
   // forward trackers
-  { forwards_tracker, left_motor_tracker, right_motor_tracker },
+  { &forwards_tracker, &left_motor_tracker, &right_motor_tracker },
   // sideways trackers
-  { sideways_tracker },
+  { &sideways_tracker },
   // imus
-  { TrackingImu(&imu) });
+  { &imu_tracker });
 
 // controller stuff
 PID<Length, Voltage> linear_pid(linear_pid_config.kp,
