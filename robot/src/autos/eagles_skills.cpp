@@ -16,18 +16,19 @@ namespace eagles_skills {
 // you can add any variables / functions here
 
 void run_auton() {
-
-    RobotSetPose(-48.5, 16, 0);
+    RobotSetPose(-45.8, 17.14, 90);
     intake::setColorSortEnabled(false);
 
     intake::set(intake::intake);
 
     mb.moveTo(-46.5, 2_tile) | run;
+    // return;
 
-    matchloader::set(active);
     // pros::delay(50);
 
     // go into matchloader
+    mb.turnTo(-58, 2_tile) | run;
+    matchloader::set(active);
     mb.moveTo(-58, 2_tile).drive_maxVolt(0.3_volt) | run;
     pros::delay(1000);
     matchloader::set(inactive);
@@ -53,10 +54,11 @@ void run_auton() {
     intake::setColorSortEnabled(false);
 
     // move to right before matchloader
-    mb.moveTo(48.328, 2_tile) | run;
-    matchloader::set(active);
+    mb.moveTo(47, 2_tile) | run;
 
     // go into matchloader
+    mb.turnTo(58, 2_tile) | run;
+    matchloader::set(active);
     mb.moveTo(58, 2_tile).drive_maxVolt(0.3_volt) | run;
     pros::delay(1000);
     matchloader::set(inactive);
@@ -68,8 +70,14 @@ void run_auton() {
     intake::set(intake::intake);
 
     // go through park
-    mb.boomerang(63.27, 21.496, 270) | run;
-    mb.moveTo(62.655, -26.413) | run;
+    // mb.boomerang(63.27, 21.496, 270) | run;
+    // mb.moveTo(62.655, -26.413) | run;
+
+    // scuff
+    mb.moveTo(48, 2_tile) | run;
+    mb.turnTo(48, -2_tile) | run;
+    mb.moveTo(48, -2_tile) | run;
+    ///
 
     // go before matchloader
     mb.moveTo(48.328, -2_tile) | run;

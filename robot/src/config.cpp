@@ -53,7 +53,7 @@ units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.9654_in,
-    .offset = 0.3_in,
+    .offset = 0.33_in,
 };
 
 tracker_config_t sideways_tracker_config = {

@@ -1,5 +1,6 @@
 #include "autos.h"
 #include "globals/vexmaps_globals.h"
+#include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include <cmath>
 
@@ -20,7 +21,8 @@ void RobotSetPose(double x, double y, double angle) {
 }
 
 units::Pose RobotGetPose() {
-    return model_manager.getPose();
+    // return model_manager.getPose();
+    return { tracker.getPosition(), tracker.getAngle() };
 }
 
 // effectively resets to whatever mcl measures
@@ -40,6 +42,7 @@ void DistanceSensorReset(int timeout, double new_alpha) {
 void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     units::Pose current_pose = RobotGetPose();
     Angle theta = current_pose.orientation;
+    theta = units::constrainAngle2pi(theta);
 
     // update all lasers
     for (auto laser : enabled_lasers) {
@@ -53,8 +56,8 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     auto update_x = [&](laser_model_type* laser) {
         auto expected = laser->getExpected();
         if (expected.has_value()) {
-            std::cout << "x: has expected: " << expected.value().x << " "
-                      << expected.value().y << std::endl;
+            std::cout << "x: has expected: " << expected.value().x.convert(in)
+                      << " " << expected.value().y.convert(in) << std::endl;
             // either set equal to or average both
             new_x = new_x ? (*new_x + expected->x) / 2 : Length(expected->x);
         }
@@ -62,8 +65,8 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     auto update_y = [&](laser_model_type* laser) {
         auto expected = laser->getExpected();
         if (expected.has_value()) {
-            std::cout << "y: has expected: " << expected.value().x << " "
-                      << expected.value().y << std::endl;
+            std::cout << "y: has expected: " << expected.value().x.convert(in)
+                      << " " << expected.value().y.convert(in) << std::endl;
             // either set equal to or average both
             new_y = new_y ? (*new_y + expected->y) / 2 : Length(expected->y);
         }
@@ -74,7 +77,8 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     const Angle pi3_2 = Angle(M_PI + M_PI_2);
 
     // either pointing left or right on global map
-    if (units::abs(theta) <= 20_stDeg || units::abs(theta - pi) <= 20_stDeg) {
+    if (units::abs(units::cos(theta)) >= M_SQRT1_2) {
+        std::cout << "pointing left/right" << std::endl;
         for (auto laser : enabled_lasers) {
             if (laser == &left_laser_model || laser == &right_laser_model)
                 update_y(laser);
@@ -85,8 +89,8 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     }
 
     // either pointing upwards or downwards on global map
-    if (units::abs(theta - pi_2) <= 20_stDeg ||
-        units::abs(theta - pi3_2) <= 20_stDeg) {
+    if (units::abs(units::sin(theta)) >= M_SQRT1_2) {
+        std::cout << "up/down" << std::endl;
         for (auto laser : enabled_lasers) {
             if (laser == &left_laser_model || laser == &right_laser_model)
                 update_x(laser);

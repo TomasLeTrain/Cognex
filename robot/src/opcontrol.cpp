@@ -24,7 +24,7 @@ void opcontrol() {
     intake::init(true);
     matchloader::init(true);
     wings::init(true);
-	odom_retract::init(true);
+    odom_retract::init(true);
 
     // no need to initialize in auto
     base::init();
@@ -72,27 +72,30 @@ void opcontrol() {
     //     }
     // } };
 
-    // RobotSetPose(0, 0, 0);
+    // RobotSetPose({ 2_tile, 2_tile, 90_stDeg });
+    RobotSetPose(0, 0, 0);
+    pros::delay(100);
+    LaserResets({ &back_laser_model, &right_laser_model });
 
-	odom_tuning();
+    // odom_tuning();
 
-    // while (true) {
-    //     auto blazing_position = tracker.getPosition();
-    //     auto blazing_theta = tracker.getAngle();
-    //
-    //     auto vexmaps_pose = model_manager.getPose();
-    //
-    //     // printf("tf\n");
-    //     screen::health::set_console_text(std::format(
-    //       "blazing: {:.2f} {:.2f} {:.2f}\nvexmaps: {:.2f} {:.2f} {:.2f}",
-    //       blazing_position.x.convert(in),
-    //       blazing_position.y.convert(in),
-    //       blazing_theta.convert(deg),
-    //       vexmaps_pose.x.convert(in),
-    //       vexmaps_pose.y.convert(in),
-    //       vexmaps_pose.orientation.convert(deg)));
-    //
-    //     // maybe unneeded?
-    //     pros::delay(50);
-    // }
+    while (true) {
+        auto blazing_position = tracker.getPosition();
+        auto blazing_theta = tracker.getAngle();
+
+        auto vexmaps_pose = model_manager.getPose();
+
+        // printf("tf\n");
+        screen::health::set_console_text(std::format(
+          "blazing: {:.2f} {:.2f} {:.2f}\nvexmaps: {:.2f} {:.2f} {:.2f}",
+          blazing_position.x.convert(in),
+          blazing_position.y.convert(in),
+          blazing_theta.convert(deg),
+          vexmaps_pose.x.convert(in),
+          vexmaps_pose.y.convert(in),
+          vexmaps_pose.orientation.convert(deg)));
+
+        // maybe unneeded?
+        pros::delay(50);
+    }
 }
