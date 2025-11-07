@@ -27,4 +27,6 @@ void DistanceSensorReset(int timeout = 150, double new_alpha = 0.8);
 
 // resets using passed in lasers
 // orientation should be as close to an axis as possible
-void LaserResets(std::vector<laser_model_type*> enabled_lasers);
+void LaserResets(std::vector<laser_model_type*> enabled_lasers,
+                 bool x = true,
+                 bool y = true);

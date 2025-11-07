@@ -39,11 +39,11 @@ pros::Rotation sideways_odom_rotation(6);
 // particle filter distance sensors
 pros::Distance front_distance(2);
 pros::Distance back_distance(11);
-pros::Distance left_distance(2);
+pros::Distance left_distance(5);
 pros::Distance right_distance(10);
 
 // distance sensor offsets
-units::Pose front_distance_offsets = { 5.67_in, 3_in, 0_stDeg };
+units::Pose front_distance_offsets = { 5.67_in, 3.4_in, 0_stDeg };
 units::Pose left_distance_offsets = { 2.25_in, 5.25_in, 90_stDeg };
 units::Pose back_distance_offsets = { -4.4_in, 4.5_in, 180_stDeg };
 units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
@@ -53,12 +53,12 @@ units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.9654_in,
-    .offset = 0.33_in,
+    .offset = -0.045_in,
 };
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.9869_in,
-    .offset = 0.75_in,
+    .offset = 0.45_in,
 };
 
 /* drivetrain / pid configuration */

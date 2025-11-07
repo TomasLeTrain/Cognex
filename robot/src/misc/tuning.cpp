@@ -65,10 +65,10 @@ void odom_offset_tuning() {
     forwards_odom_rotation.set_position(0);
     pros::delay(10);
 
-    int pct = 0.5;
+    float pct = 0.5;
 
     left_motors.move_voltage(12000 * pct);
-    right_motors.move_voltage(12000 * pct);
+    right_motors.move_voltage(-12000 * pct);
 
     while (true) {
         units::V2Position deltas = { forwards_tracker.getDelta(),

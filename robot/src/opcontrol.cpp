@@ -10,6 +10,7 @@
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 #include "systems/odom_retract.h"
+#include "systems/piston.h"
 #include "systems/wings.h"
 #include "tuning.h"
 
@@ -20,6 +21,8 @@ void opcontrol() {
     // return;
 
     // cancel any auton motions that could be currently running
+
+	// odom_offset_tuning();
 
     intake::init(true);
     matchloader::init(true);
@@ -73,11 +76,14 @@ void opcontrol() {
     // } };
 
     // RobotSetPose({ 2_tile, 2_tile, 90_stDeg });
-    RobotSetPose(0, 0, 0);
-    pros::delay(100);
-    LaserResets({ &back_laser_model, &right_laser_model });
+    // RobotSetPose(0, 0, 0);
+    // pros::delay(100);
+    // LaserResets({ &back_laser_model, &right_laser_model });
 
     // odom_tuning();
+
+    // move odom up automatically
+    odom_retract::set(piston_state_t::active);
 
     while (true) {
         auto blazing_position = tracker.getPosition();

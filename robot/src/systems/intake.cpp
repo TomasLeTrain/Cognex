@@ -105,7 +105,7 @@ bool prime_active = false;
 void set(intake_state_t new_intake_state) {
     intake_state = new_intake_state;
 
-	// update prime state
+    // update prime state
     prime_active = new_intake_state == priming;
 }
 
@@ -219,28 +219,13 @@ void antiJam() {
     // wait for stuff to be available
     std::lock_guard lock(intake_mutex);
 
-    bool top_slowed = motorSlowed(top_motor);
-
-    if (intake_state == scoring_long && top_slowed && !tmp_activated) {
-        bottom_motor.move(0);
-
+    if (intake_state == scoring_long && motorJammed(bottom_motor)) {
+        bottom_motor.move(-127);
         pros::delay(200);
     }
-    if (intake_state == intake &&
-        (motorJammed(bottom_motor) || motorJammed(top_motor))) {
-        // ???
-    }
-    if (intake_state == scoring_middle && motorJammed(bottom_motor)) {
-        // ???
-    }
-
-    if (intake_state == scoring_bottom && motorJammed(bottom_motor)) {
-        // ???
-    }
-
-    // not slowed, can disable the temporary
-    if (!top_slowed && tmp_activated) {
-        tmp_activated = false;
+    if (intake_state == scoring_long && motorJammed(top_motor)) {
+        top_motor.move(-127);
+        pros::delay(100);
     }
 }
 
@@ -395,12 +380,12 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    // pros::Task antijam_task([] {
-    //     while (true) {
-    //         antiJam();
-    //         pros::delay(10);
-    //     }
-    // });
+    pros::Task antijam_task([] {
+        while (true) {
+            antiJam();
+            pros::delay(10);
+        }
+    });
 
     pros::Task colorsort_task([] {
         while (true) {

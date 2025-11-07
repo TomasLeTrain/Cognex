@@ -39,7 +39,9 @@ void DistanceSensorReset(int timeout, double new_alpha) {
     smoother_model.changeConfiguration(smoother_config);
 }
 
-void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
+void LaserResets(std::vector<laser_model_type*> enabled_lasers,
+                 bool x = true,
+                 bool y = true) {
     units::Pose current_pose = RobotGetPose();
     Angle theta = current_pose.orientation;
     theta = units::constrainAngle2pi(theta);
@@ -54,6 +56,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
     std::optional<Length> new_y = std::nullopt;
 
     auto update_x = [&](laser_model_type* laser) {
+        if (!x) return;
         auto expected = laser->getExpected();
         if (expected.has_value()) {
             std::cout << "x: has expected: " << expected.value().x.convert(in)
@@ -63,6 +66,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
         }
     };
     auto update_y = [&](laser_model_type* laser) {
+        if (!y) return;
         auto expected = laser->getExpected();
         if (expected.has_value()) {
             std::cout << "y: has expected: " << expected.value().x.convert(in)
@@ -71,10 +75,6 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers) {
             new_y = new_y ? (*new_y + expected->y) / 2 : Length(expected->y);
         }
     };
-
-    const Angle pi_2 = Angle(M_PI_2);
-    const Angle pi = Angle(M_PI);
-    const Angle pi3_2 = Angle(M_PI + M_PI_2);
 
     // either pointing left or right on global map
     if (units::abs(units::cos(theta)) >= M_SQRT1_2) {

@@ -22,7 +22,8 @@ void set(piston_state_t new_wings_state) {
 // code that should run during driver
 void driverUpdate() {
     // update states based on driver input
-    bool toggle_piston_retract = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+    bool toggle_piston_retract =
+      controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A);
 
     set(piston_state_t(toggle_piston_retract));
 }
@@ -69,4 +70,4 @@ void init(bool gdriver) {
 
     tasks_active = true;
 }
-}; // namespace wings
+}; // namespace odom_retract
