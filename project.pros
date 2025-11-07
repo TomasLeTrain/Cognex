@@ -651,7 +651,7 @@
                 "version": "9.2.0"
             },
             "vexmaps": {
-                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.9",
+                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.10",
                 "metadata": {
                     "origin": "local"
                 },
@@ -669,6 +669,7 @@
                     "include/vexmaps/localization_model.hpp",
                     "include/vexmaps/api.hpp",
                     "include/vexmaps/mcl/pf_motion_model.hpp",
+                    "include/vexmaps/blazing_wrapper.hpp",
                     "include/vexmaps/mcl/sensor.hpp",
                     "include/vexmaps/odometry/api.hpp",
                     "include/vexmaps/smoother_model.hpp",
@@ -681,7 +682,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.9"
+                "version": "0.0.10"
             },
             "vexmath": {
                 "location": "/home/tomas/.config/pros/templates/vexmath@0.0.7",
