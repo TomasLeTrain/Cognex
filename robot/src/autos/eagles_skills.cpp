@@ -70,7 +70,7 @@ void run_auton() {
   // };
   //
   intake::set(intake::scoring_long);
-  pros::delay(2200);
+  pros::delay(3200);
   intake::set(intake::intake);
   matchloader::set(inactive);
   LaserResets({&right_laser_model});
@@ -103,7 +103,7 @@ void run_auton() {
 
   // LaserResets({ &left_laser_model });
   // mb.moveTo(58.5, 2_tile).drive_maxVolt(0.4_volt).timeout(0.8_sec) | run;
-  mb.distanceAtHeading(14_in).timeout(1_sec) | run;
+  mb.distanceAtHeading(14.2_in).timeout(1_sec) | run;
   LaserResets({&left_laser_model});
 
   pros::delay(200);
@@ -120,7 +120,7 @@ void run_auton() {
 
   // LaserResets({ &left_laser_model });
   intake::set(intake::scoring_long);
-  pros::delay(2200);
+  pros::delay(3200);
   intake::set(intake::intake);
   matchloader::set(inactive);
 
@@ -166,7 +166,7 @@ void run_auton() {
   // mb.turnTo(58, match3) | run;
   mb.turnTo(0) | run;
 
-  mb.distanceAtHeading(14.4_in).timeout(1_sec) | run;
+  mb.distanceAtHeading(14.7_in).timeout(1_sec) | run;
   pros::delay(100);
   drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
   LaserResets({&right_laser_model});
@@ -178,7 +178,7 @@ void run_auton() {
 
   mb.moveTo(26.5_in, -2_tile).reverse() | run;
   intake::set(intake::scoring_long);
-  pros::delay(2200);
+  pros::delay(3200);
   intake::set(intake::intake);
   matchloader::set(inactive);
 
@@ -209,7 +209,7 @@ void run_auton() {
   // go to goal
   mb.moveTo(-25_in, -2_tile).reverse() | run;
   intake::set(intake::scoring_long);
-  pros::delay(2200);
+  pros::delay(3200);
   intake::set(intake::intake);
   matchloader::set(inactive);
 
@@ -227,7 +227,13 @@ void run_auton() {
   sideways_tracker.disable();
 
   // mb.moveTo(-62.275, 1.137) | run;
-  mb.moveTo(-62.275, 1.137).drive_accelSlew(100_volt) | run;
+  mb.moveTo(-62.275, 1.137)
+          // go max?
+          .drive_accelSlew(100_volt)
+          .drive_minVolt(0.3_volt)
+          .drive_ErrorTolerance(4_in)
+          .drive_ToleranceDuration(0.01_sec) |
+      run;
 
   // mb.moveTo(-62.275, 1.137).reverse().drive_backwardsAccelSlew(100_volt) |
   // run;

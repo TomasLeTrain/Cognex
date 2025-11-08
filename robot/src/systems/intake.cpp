@@ -121,17 +121,19 @@ void driverUpdate() {
   bool scoreMiddleHeight = controller.get_digital(R2);
   bool scoreLong = controller.get_digital(R1);
 
-  bool slowScoring = controller.get_digital(RIGHT_SHIFT);
+  bool slowScoring = false;
 
-  bool toggleColorSort = controller.get_digital_new_press(LEFT);
+  bool killColorSort = controller.get_digital_new_press(LEFT);
 
   bool unjam = controller.get_digital(X);
 
   bool primeMacro = controller.get_digital(RIGHT_SHIFT) &&
                     controller.get_digital_new_press(LEFT_SHIFT);
 
-  if (toggleColorSort)
-    driverColorSortEnabled = !driverColorSortEnabled;
+  // one time kill switch
+  if (driverColorSortEnabled == true && killColorSort) {
+    driverColorSortEnabled = false;
+  }
 
   if (primeMacro)
     set(intake_state_t::priming);

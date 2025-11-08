@@ -20,7 +20,7 @@ void driveUpdate() {
   float angular_curveGain = 1.019;
   float angular_minOutput = 10;
 
-  bool use_expo = false;
+  bool use_expo = true;
 
   auto curve_func = [&](float input, float deadband, float curveGain,
                         float minOutput) -> float {
