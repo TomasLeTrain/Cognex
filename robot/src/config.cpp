@@ -97,11 +97,11 @@ AngularVoltageClampController angular_voltage_constraints;
 tolerances_config_t<Length> linear_tolerances_config {
     .duration = 200_msec,
     .error { 3_in },
-    .velocity { 200_inps },
+    .velocity { 400_inps },
 
     .large_duration = 1_sec,
     .large_error { 5_in },
-    .large_velocity { 300_inps },
+    .large_velocity { 400_inps },
 
     .chain_duration = 1_sec,
     .chain_error { 6_in },

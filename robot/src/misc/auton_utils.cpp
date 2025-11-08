@@ -11,7 +11,7 @@ field_side_t auto_side = field_side_t::unset;
 std::string selected_auton = "";
 
 void RobotSetPose(units::Pose pose) {
-    model_manager.setPose(pose);
+    // model_manager.setPose(pose);
 
     tracker.setPose(pose);
 }
@@ -28,15 +28,15 @@ units::Pose RobotGetPose() {
 // effectively resets to whatever mcl measures
 void DistanceSensorReset(int timeout, double new_alpha) {
     // uses default config for all other values
-    vexmaps::SmootherConfig new_config = smoother_config;
-
-    // change alpha values to quickly reset to mcl pose
-    new_config.alpha_x = new_alpha;
-    new_config.alpha_y = new_alpha;
-
-    smoother_model.changeConfiguration(new_config);
-    pros::delay(timeout);
-    smoother_model.changeConfiguration(smoother_config);
+    // vexmaps::SmootherConfig new_config = smoother_config;
+    //
+    // // change alpha values to quickly reset to mcl pose
+    // new_config.alpha_x = new_alpha;
+    // new_config.alpha_y = new_alpha;
+    //
+    // smoother_model.changeConfiguration(new_config);
+    // pros::delay(timeout);
+    // smoother_model.changeConfiguration(smoother_config);
 }
 
 void LaserResets(std::vector<laser_model_type*> enabled_lasers,

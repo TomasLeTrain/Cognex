@@ -91,7 +91,7 @@ void initialize() {
     int init_models_notif =
       screen::health::add_init_notif("initializing models");
     // initialize all models
-    model_manager.init();
+    // model_manager.init();
     screen::health::update_init_notif_severity(init_models_notif,
                                                screen::health::succeed);
 
