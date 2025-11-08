@@ -40,7 +40,7 @@ void run_auton() {
     // mb.moveTo(-57, 2_tile).drive_maxVolt(0.4_volt).timeout(0.8_sec) | run;
     // mb.distanceAtHeading(10_in).drive_maxVolt(0.4_volt).timeout(0.8_sec) |
     // run;
-    mb.distanceAtHeading(11.5_in).timeout(1_sec) | run;
+    mb.distanceAtHeading(13_in).timeout(0.9_sec) | run;
     LaserResets({ &right_laser_model, &front_laser_model });
     pros::delay(200);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
@@ -95,7 +95,7 @@ void run_auton() {
     mb.turnTo(58, 2_tile) | run;
     // LaserResets({ &left_laser_model });
     // mb.moveTo(58.5, 2_tile).drive_maxVolt(0.4_volt).timeout(0.8_sec) | run;
-    mb.distanceAtHeading(17_in).timeout(1_sec) | run;
+    mb.distanceAtHeading(13_in).timeout(1_sec) | run;
     pros::delay(200);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
     pros::delay(1300);
@@ -107,7 +107,7 @@ void run_auton() {
     // matchloader::set(inactive);
 
     // go to goal
-    mb.moveTo(26.5_in, 2_tile).reverse().timeout(1.2_sec) | run;
+    mb.moveTo(24.9_in, 2_tile).reverse().timeout(1_sec) | run;
     // LaserResets({ &left_laser_model });
     intake::set(intake::scoring_long);
     pros::delay(2000);
@@ -135,13 +135,15 @@ void run_auton() {
     // scuff
     intake::set(intake::scoring_long);
 
-    mb.moveTo(48, 2_tile) | run;
-    mb.turnTo(48, -2_tile) | run;
-    mb.moveTo(48, -2_tile).drive_maxVolt(0.8_volt) | run;
+    mb.moveTo(41, 2_tile) | run;
+    mb.turnTo(41, -2_tile) | run;
+    mb.moveTo(41, -1_tile).drive_maxVolt(0.8_volt) | run;
+	// reset all
+    LaserResets({ &front_laser_model, &right_laser_model });
     ///
 
     // go before matchloader
-    mb.moveTo(48.328, -2_tile) | run;
+    mb.moveTo(44, -2_tile) | run;
 
     matchloader::set(active);
     intake::set(intake::intake);
@@ -149,7 +151,8 @@ void run_auton() {
     // go into matchloader
     mb.turnTo(58, -2_tile) | run;
     LaserResets({ &right_laser_model });
-    mb.moveTo(60, -2_tile) | run;
+
+    mb.moveTo(58, -2_tile) | run;
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
     pros::delay(1400);
     matchloader::set(inactive);
