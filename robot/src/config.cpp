@@ -80,7 +80,7 @@ linear_pid_config_t linear_pid_config { .kp = 4.5,
 angular_pid_config_t angular_pid_config {
     .kp = 2.5,
     .ki = 0,
-    .kd = 4.2,
+    .kd = 4.1,
     .windupRange = 14,
     .maxVoltage = 127,
 };

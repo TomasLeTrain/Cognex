@@ -5,6 +5,8 @@
 // clang-format off
 std::unordered_map<std::string, std::function<void()>> auton_list = {
 	L_AUTON(eagles_skills, "current skills")
+	L_AUTON(eagles_quals, "current quals")
+
 	L_AUTON(roboticon_quals, "roboticon quals")
 	
     L_AUTON(disabled_auton, "disabled")
