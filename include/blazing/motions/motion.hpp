@@ -480,6 +480,14 @@ class LinearMotion {
         return self.getReference();
     }
 
+    motionChangerT drive_backwardsAccelSlew(this Self&& self,
+                                           T backwardsAccelSlew)
+        requires hasLinearSlew<typename Self::controllersType>
+    {
+        self.controllers.linear_slew.set_backwards_accel(backwardsAccelSlew);
+        return self.getReference();
+    }
+
     motionChangerT drive_decelSlew(this Self&& self, T decelSlew)
         requires hasLinearSlew<typename Self::controllersType>
     {

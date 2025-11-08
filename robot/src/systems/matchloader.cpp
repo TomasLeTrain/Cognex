@@ -1,6 +1,7 @@
 #include "apis.h"
 //
 #include "globals.h"
+#include "systems/piston.h"
 #include "systems/matchloader.h"
 
 namespace matchloader {
@@ -16,6 +17,10 @@ piston_state_t matchloader_state = inactive;
  */
 void set(bool new_matchloader_state) {
     matchloader_state = piston_state_t(new_matchloader_state);
+}
+
+piston_state_t get(){
+    return matchloader_state;
 }
 
 void set(piston_state_t new_matchloader_state) {

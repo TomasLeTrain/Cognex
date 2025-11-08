@@ -25,10 +25,10 @@ void run_auton() {
   // complete reset
   LaserResets({&left_laser_model});
 
-  Length match1 = 2_tile - 1.5_in;
-  Length match2 = 2_tile - 0.5_in;
-  Length match3 = -2_tile + 2.75_in;
-  Length match4 = -2_tile + 0.5_in;
+  Length match1 = 2_tile - 1.0_in;
+  Length match2 = 2_tile - 0.0_in;
+  Length match3 = -2_tile + 1.75_in;
+  Length match4 = -2_tile + 0.0_in;
 
   mb.moveTo(-46.5, match1) | run;
   // return;
@@ -70,7 +70,7 @@ void run_auton() {
   // };
   //
   intake::set(intake::scoring_long);
-  pros::delay(2000);
+  pros::delay(2200);
   intake::set(intake::intake);
   matchloader::set(inactive);
   LaserResets({&right_laser_model});
@@ -103,7 +103,7 @@ void run_auton() {
 
   // LaserResets({ &left_laser_model });
   // mb.moveTo(58.5, 2_tile).drive_maxVolt(0.4_volt).timeout(0.8_sec) | run;
-  mb.distanceAtHeading(13_in).timeout(1_sec) | run;
+  mb.distanceAtHeading(14_in).timeout(1_sec) | run;
   LaserResets({&left_laser_model});
 
   pros::delay(200);
@@ -116,11 +116,11 @@ void run_auton() {
   // matchloader::set(inactive);
 
   // go to goal
-  mb.moveTo(24.0_in, 2_tile).reverse().timeout(1_sec) | run;
+  mb.moveTo(23.6_in, 2_tile - 0.5_in).reverse().timeout(1_sec) | run;
 
   // LaserResets({ &left_laser_model });
   intake::set(intake::scoring_long);
-  pros::delay(2000);
+  pros::delay(2200);
   intake::set(intake::intake);
   matchloader::set(inactive);
 
@@ -166,7 +166,7 @@ void run_auton() {
   // mb.turnTo(58, match3) | run;
   mb.turnTo(0) | run;
 
-  mb.distanceAtHeading(14_in).timeout(1_sec) | run;
+  mb.distanceAtHeading(14.4_in).timeout(1_sec) | run;
   pros::delay(100);
   drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
   LaserResets({&right_laser_model});
@@ -178,7 +178,7 @@ void run_auton() {
 
   mb.moveTo(26.5_in, -2_tile).reverse() | run;
   intake::set(intake::scoring_long);
-  pros::delay(1700);
+  pros::delay(2200);
   intake::set(intake::intake);
   matchloader::set(inactive);
 
@@ -209,22 +209,28 @@ void run_auton() {
   // go to goal
   mb.moveTo(-25_in, -2_tile).reverse() | run;
   intake::set(intake::scoring_long);
-  pros::delay(1500);
+  pros::delay(2200);
   intake::set(intake::intake);
   matchloader::set(inactive);
 
-  mb.moveTo(-40_in, -2_tile).reverse() | run;
-  mb.turnTo(180) | run;
+  // mb.moveTo(-40_in, -2_tile) | run;
+  // mb.turnTo(180) | run;
 
-  mb.boomerang(-60.755, -18.904, 90)
-          .reverse()
-          .lead(0.2)
+  mb.boomerang(-58.755, -18.904, 90)
+          // .reverse()
+          // .lead(0.35)
+          .lead(0.4)
           .drive_maxVolt(0.5_volt) |
       run;
+
   odom_retract::set(active);
   sideways_tracker.disable();
+
   // mb.moveTo(-62.275, 1.137) | run;
-  mb.moveTo(-62.275, 1.137).reverse() | run;
+  mb.moveTo(-62.275, 1.137).drive_accelSlew(100_volt) | run;
+
+  // mb.moveTo(-62.275, 1.137).reverse().drive_backwardsAccelSlew(100_volt) |
+  // run;
 
   intake::set(intake::intake_disabled);
 }
