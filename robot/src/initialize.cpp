@@ -131,7 +131,7 @@ void initialize() {
 
     mb.setMoveToModifier([](auto moveTo) {
         // return moveTo.customAngularLinearFunc(angular_linear_func);
-        return moveTo.k_lat(0.3 * rad / m).timeout(5_sec);
+        return moveTo.k_lat(0.3 * rad / m).timeout(3_sec);
     });
 
     mb.setBoomerangModifier([](auto boomerang) {

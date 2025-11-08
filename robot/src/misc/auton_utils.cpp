@@ -40,8 +40,8 @@ void DistanceSensorReset(int timeout, double new_alpha) {
 }
 
 void LaserResets(std::vector<laser_model_type*> enabled_lasers,
-                 bool x = true,
-                 bool y = true) {
+                 bool x,
+                 bool y) {
     units::Pose current_pose = RobotGetPose();
     Angle theta = current_pose.orientation;
     theta = units::constrainAngle2pi(theta);

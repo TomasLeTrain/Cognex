@@ -34,16 +34,17 @@ pros::adi::DigitalOut odom_retract_piston('E', false);
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
 pros::Rotation forwards_odom_rotation(-4);
-pros::Rotation sideways_odom_rotation(6);
+pros::Rotation sideways_odom_rotation(3);
 
 // particle filter distance sensors
-pros::Distance front_distance(2);
+pros::Distance front_distance(6);
 pros::Distance back_distance(11);
 pros::Distance left_distance(5);
 pros::Distance right_distance(10);
 
 // distance sensor offsets
-units::Pose front_distance_offsets = { 5.67_in, 3.4_in, 0_stDeg };
+units::Pose front_distance_offsets = { 5.8_in, 4.75_in, 0_stDeg };
+// ????
 units::Pose left_distance_offsets = { 2.25_in, 5.25_in, 90_stDeg };
 units::Pose back_distance_offsets = { -4.4_in, 4.5_in, 180_stDeg };
 units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
@@ -71,7 +72,7 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
 // units are in inches
 linear_pid_config_t linear_pid_config { .kp = 4.5,
                                         .ki = 0,
-                                        .kd = 3.7,
+                                        .kd = 3.6,
                                         .windupRange = 7,
                                         .maxVoltage = 127 };
 
@@ -94,26 +95,26 @@ AngularVoltageClampController angular_voltage_constraints;
 
 // tolerances
 tolerances_config_t<Length> linear_tolerances_config {
-    .duration = 150_msec,
-    .error { 2.5_in },
-    .velocity { 20_inps },
+    .duration = 200_msec,
+    .error { 3_in },
+    .velocity { 200_inps },
 
     .large_duration = 1_sec,
     .large_error { 5_in },
-    .large_velocity { 30_inps },
+    .large_velocity { 300_inps },
 
     .chain_duration = 1_sec,
     .chain_error { 6_in },
 };
 
 tolerances_config_t<Angle> angular_tolerances_config {
-    .duration = 150_msec,
-    .error = { 4_stDeg },
-    .velocity = { 20_degps },
+    .duration = 200_msec,
+    .error = { 8_stDeg },
+    .velocity = { 400_degps },
 
     .large_duration = 1_sec,
-    .large_error = { 12_stDeg },
-    .large_velocity = { 30_degps },
+    .large_error = { 15_stDeg },
+    .large_velocity = { 300_degps },
 
     .chain_duration = 1_sec,
     .chain_error = { 20_stDeg },
