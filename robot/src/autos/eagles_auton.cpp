@@ -82,7 +82,7 @@ void run_auton() {
   // matchload
   pros::delay(1000);
 
-  mb.moveTo(24.5_in, -2_tile * l).reverse() | run;
+  mb.moveTo(25_in, -2_tile * l).reverse().timeout(1.2_sec) | run;
 
   intake::set(intake::scoring_long);
 }
