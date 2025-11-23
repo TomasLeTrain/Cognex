@@ -109,17 +109,16 @@ void health_task() {
     process_device_dc(top_motor, "Top Intake", screen::health::critical);
 
     // now check tracking subsystems
-
-    // if (auto curr_pose = model_manager.getPose();
-    //     (!isfinite(curr_pose.x.internal()) ||
-    //      !isfinite(curr_pose.y.internal()) ||
-    //      !isfinite(curr_pose.orientation.internal())) &&
-    //     !vexmaps_tracker_inf) {
-    //     vexmaps_tracker_inf = true;
-    //     screen::health::add_notification("model being used is INF!",
-    //                                      "Make sure this isn't critical!",
-    //                                      screen::health::warn);
-    // }
+    if (auto curr_pose = model_manager.getPose();
+        (!isfinite(curr_pose.x.internal()) ||
+         !isfinite(curr_pose.y.internal()) ||
+         !isfinite(curr_pose.orientation.internal())) &&
+        !vexmaps_tracker_inf) {
+        vexmaps_tracker_inf = true;
+        screen::health::add_notification("model being used is INF!",
+                                         "Make sure this isn't critical!",
+                                         screen::health::warn);
+    }
 
     if (auto curr_position = tracker.getPosition();
         (!isfinite(curr_position.x.internal()) ||

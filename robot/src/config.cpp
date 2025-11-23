@@ -2,7 +2,6 @@
 //
 
 #include "globals.h"
-#include <cstddef>
 
 using namespace blazing;
 using namespace vexmaps;
@@ -43,8 +42,7 @@ pros::Distance left_distance(5);
 pros::Distance right_distance(10);
 
 // distance sensor offsets
-units::Pose front_distance_offsets = { 5.8_in, 4.75_in, 0_stDeg };
-// ????
+units::Pose front_distance_offsets = { 5.8_in, -4.75_in, 0_stDeg };
 units::Pose left_distance_offsets = { 2.25_in, 5.25_in, 90_stDeg };
 units::Pose back_distance_offsets = { -4.4_in, 4.5_in, 180_stDeg };
 units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
@@ -123,8 +121,11 @@ tolerances_config_t<Angle> angular_tolerances_config {
 // custom pf configs - probably can leave alone
 vexmaps::MotionModelConfig motion_model_config = {};
 vexmaps::PFConfiguration Pfconfig = {
-    .logging = false,
-    .particle_logging = false,
+    // .logging = false,
+    // .particle_logging = false,
+    .logging = true,
+    .particle_logging = true,
+	//
     // .custom_particle_logging=true,
 };
 vexmaps::SmootherConfig smoother_config = {};
@@ -316,13 +317,6 @@ double angular_linear_func(Angle angle) {
 //
 //
 // vexmaps configs
-vexmaps::ModelManager model_manager(
-  {
-    { &pf_motion_model, "odom model",     1 },
-    { &pf_model,        "pf model",       2 },
-    { &smoother_model,  "smoother model", 3 },
-},
-  &smoother_model);
 
 // if the tracker is not installed the list can be left empty -> tracker = {};
 std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers = {
@@ -386,3 +380,13 @@ vexmaps::ParticleFilterModel<pf_particle_count> pf_model(&pf_motion_model,
 
 vexmaps::SmootherModel
   smoother_model(&pf_motion_model, &pf_model, smoother_config);
+
+vexmaps::ModelManager model_manager(
+  {
+    { &pf_motion_model, "odom model",     1 },
+    { &pf_model,        "pf model",       2 },
+    { &smoother_model,  "smoother model", 3 },
+},
+  &smoother_model);
+
+BlazingWrapper vexmaps_tracker(&model_manager);

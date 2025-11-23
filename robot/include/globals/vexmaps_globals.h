@@ -11,13 +11,8 @@
 
 using namespace vexmaps;
 
-// pointers to be able to change the pose getter
-// TODO: replace all that with model manager
-// extern vexmaps::LocalizationModel* pose_getter;
-// extern vexmaps::LocalizationModel* orientation_getter;
-// extern pros::Mutex pose_mutex;
-
 extern ModelManager model_manager;
+extern BlazingWrapper vexmaps_tracker;
 
 extern MapReader<> map_reader;
 

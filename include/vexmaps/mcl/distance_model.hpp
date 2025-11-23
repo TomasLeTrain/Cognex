@@ -79,14 +79,14 @@ class DistanceSensorModel : public Sensor {
           name(name),
           map_reader(map_reader) {}
 
-    void update(Angle angle) override {
+    void update(Angle angle, std::optional<units::FPose> pose) override {
         // first check if the distance sensor is available, and if its not then
         // fail non-destructively while still alerting user
         if (distance_sensor == nullptr || !distance_sensor->is_installed()) {
             // not available, just set exit to true
             exit = true;
-            printf(
-              "ONE OF THE DISTANCE SENSORS ARE NOT CONNECTED CORRECTLY!!\n");
+            // printf(
+            //   "ONE OF THE DISTANCE SENSORS ARE NOT CONNECTED CORRECTLY!!\n");
             return;
         }
 
@@ -152,6 +152,17 @@ class DistanceSensorModel : public Sensor {
         // (only depends on measured distance)
         expFactor = expVal * DistanceSensorConfig::expCoeff + randomFactor;
 
+        if (pose) {
+            FLength abs_pose_distance_difference =
+              units::abs(getDistanceDifference(pose->x, pose->y));
+
+            // assumes pose is close enough to actual pose
+            if (abs_pose_distance_difference >
+                DistanceSensorConfig::maxDistanceDifference) {
+                exit = true;
+            }
+        }
+
         if (DistanceSensorConfig::logging) {
             // name:distance,confidence,std,exit,obj_size
             std::cout << name << ":" << measured_distance.convert(in) << ","
@@ -178,6 +189,14 @@ class DistanceSensorModel : public Sensor {
         } else {
             return normal_dist + randomFactor;
         }
+    }
+
+    // assumes that its only getting called if exit is false
+    // this assumption saves some conditionals improving performance
+    FLength getDistanceDifference(FLength x, FLength y) {
+        const FLength difference = units::min(hor_wall_coeff + x * x_coeff,
+                                              ver_wall_coeff + y * y_coeff);
+        return difference;
     }
 
     // assumes that its only getting called if exit is false
@@ -376,7 +395,8 @@ class DistanceSensorModel : public Sensor {
             return std::nullopt;
         }
 
-        // std::cout << std::format("offset is {}, {}, {}. hor/ver wall is {},{}, "
+        // std::cout << std::format("offset is {}, {}, {}. hor/ver wall is
+        // {},{}, "
         //                          "measured is {}, fcos/sin {},{}",
         //                          rotated_offsets.x.convert(in),
         //                          rotated_offsets.y.convert(in),

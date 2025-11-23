@@ -25,15 +25,15 @@ void initialize() {
         pros::delay(50);
 
         // doesn't work???
-        map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
-
-        if (!map_reader.mapAvailable()) {
-            // try to read map
-            std::cout << "compressed map failed, try reading full map"
-                      << std::endl;
-            map_reader.read("/usd/field_720_100_100.map");
-            std::cout << "finished reading at " << pros::millis() << std::endl;
-        }
+        // map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
+        //
+        // if (!map_reader.mapAvailable()) {
+        //     // try to read map
+        //     std::cout << "compressed map failed, try reading full map"
+        //               << std::endl;
+        //     map_reader.read("/usd/field_720_100_100.map");
+        //     std::cout << "finished reading at " << pros::millis() << std::endl;
+        // }
 
         if (map_reader.mapAvailable()) {
             screen::health::update_init_notif_severity(map_reader_notif,
@@ -81,7 +81,7 @@ void initialize() {
                                                    screen::health::succeed);
     }
 
-    pros::delay(100);
+    // pros::delay(100);
 
     // wait for reading task to finish
     while (!finished_reading_task) {
@@ -91,7 +91,7 @@ void initialize() {
     int init_models_notif =
       screen::health::add_init_notif("initializing models");
     // initialize all models
-    // model_manager.init();
+    model_manager.init();
     screen::health::update_init_notif_severity(init_models_notif,
                                                screen::health::succeed);
 

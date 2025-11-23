@@ -83,6 +83,8 @@ void opcontrol() {
     // move odom up automatically
     odom_retract::set(piston_state_t::active);
 
+    RobotSetPose(36, -36, 0);
+
     // while (true) {
     //     auto blazing_position = tracker.getPosition();
     //     auto blazing_theta = tracker.getAngle();

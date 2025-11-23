@@ -11,7 +11,7 @@ field_side_t auto_side = field_side_t::unset;
 std::string selected_auton = "";
 
 void RobotSetPose(units::Pose pose) {
-    // model_manager.setPose(pose);
+    model_manager.setPose(pose);
 
     tracker.setPose(pose);
 }
@@ -48,7 +48,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers,
 
     // update all lasers
     for (auto laser : enabled_lasers) {
-        laser->update(theta);
+        laser->update(theta,std::nullopt);
         std::cout << "updated laser!\n";
     }
 

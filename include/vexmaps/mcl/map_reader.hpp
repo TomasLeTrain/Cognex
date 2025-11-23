@@ -8,16 +8,19 @@
 template<int theta_res = 721, int x_res = 101, int y_res = 101>
 class MapReader {
   private:
+	// mainly protects when reading is available
     pros::Mutex m_mutex;
 
     std::unique_ptr<unsigned char[][x_res][y_res]> map;
 
     bool map_is_read;
 
-    // works for (x, y) alredy in inches and theta in 2 * degrees
+    // works for (x, y, theta) scaled with the appropriate factors
     float query_internal(float x, float y, float theta);
 
   public:
+	static constexpr Length max_read_length = 2.0_Fm;
+
     void read(std::string filename);
 
     void read_compressed(std::string filename);

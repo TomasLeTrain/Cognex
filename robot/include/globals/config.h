@@ -1,6 +1,7 @@
 #pragma once
 
 #include "apis.h"
+
 //
 
 // structs for helping specify configs
@@ -41,15 +42,15 @@ struct tracker_config_t {
 template<typename T>
 struct tolerances_config_t {
     Time duration = 1000_sec;
-	blazing::ErrorTolerance<T> error = T(0);
+    blazing::ErrorTolerance<T> error = T(0);
     blazing::VelocityTolerance<T> velocity = T(100000) / sec;
 
     Time large_duration = 1000_sec;
-	blazing::ErrorTolerance<T> large_error = T(0);
+    blazing::ErrorTolerance<T> large_error = T(0);
     blazing::VelocityTolerance<T> large_velocity = T(100000) / sec;
 
     Time chain_duration = 1000_sec;
-	blazing::ErrorTolerance<T> chain_error = T(0);
+    blazing::ErrorTolerance<T> chain_error = T(0);
     blazing::VelocityTolerance<T> chain_velocity = T(100000) / sec;
 };
 
@@ -91,11 +92,13 @@ struct CustomDistanceSensorConfiguration {
     static constexpr double normalCoeff = 0.6;
     static constexpr double mapCoeff = 0.25;
 
-    static constexpr bool logging = false;
+    static constexpr FLength maxDistanceDifference = 18_in;
+
+
+    // static constexpr bool logging = false;
+    static constexpr bool logging = true;
 };
 
 // only variable which cannot be set on globals.cpp
 // constexpr size_t pf_particle_count = 10000;
 constexpr size_t pf_particle_count = 500;
-
-

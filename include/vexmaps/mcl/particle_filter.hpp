@@ -134,9 +134,14 @@ class ParticleFilter {
     }
 
     void updateSensors() {
+        // uses an approximate position using global delta
+        units::FPose approximate_pos = { getPose().x + globalPoseDelta.x,
+                                         getPose().y + globalPoseDelta.y,
+                                         current_angle };
+
         // perform the one time updates on the sensors
         for (Sensor* sensor : sensors) {
-            sensor->update(current_angle);
+            sensor->update(current_angle, approximate_pos);
         }
     }
 
@@ -316,7 +321,7 @@ class ParticleFilter {
             printf("total weight: %f, time taken: %lld, timestamp: ",
                    total_weight,
                    pros::micros() - start_time);
-            printf("%ud\n", pros::millis());
+            printf("%u\n", pros::millis());
             printf("things done:%d,%d,%d,%d\n",
                    this->appliedMotionModel,
                    this->weightedParticles,

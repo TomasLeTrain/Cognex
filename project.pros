@@ -5,7 +5,7 @@
         "target": "v5",
         "templates": {
             "blazing": {
-                "location": "/home/tomas/.config/pros/templates/blazing@0.0.5",
+                "location": "/home/tomas/.config/pros/templates/blazing@0.0.6",
                 "metadata": {
                     "origin": "local"
                 },
@@ -39,7 +39,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.5"
+                "version": "0.0.6"
             },
             "float_units": {
                 "location": "/home/tomas/.config/pros/templates/float_units@0.7.3",
@@ -651,7 +651,7 @@
                 "version": "9.2.0"
             },
             "vexmaps": {
-                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.10",
+                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.11",
                 "metadata": {
                     "origin": "local"
                 },
@@ -676,13 +676,13 @@
                     "include/vexmaps/mcl/map_reader.hpp",
                     "include/vexmaps/mcl/config.hpp",
                     "include/vexmaps/odometry/odometry.hpp",
-                    "include/vexmaps/mcl/distance_model.hpp",
                     "include/vexmaps/mcl/utils.hpp",
+                    "include/vexmaps/mcl/distance_model.hpp",
                     "include/vexmaps/odometry/tracking_wheel.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.10"
+                "version": "0.0.11"
             },
             "vexmath": {
                 "location": "/home/tomas/.config/pros/templates/vexmath@0.0.7",
