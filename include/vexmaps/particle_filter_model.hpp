@@ -150,6 +150,17 @@ class ParticleFilterModel : public LocalizationModel {
         return angular_velocity;
     }
 
+    void setCustomParticles(
+      std::vector<std::pair<units::V2FPosition, float>> newParticles) {
+        std::lock_guard lock(m_mutex);
+        particle_filter.setCustomParticles(newParticles);
+    }
+
+    void setCustomPrediction(units::FPose pose) {
+        std::lock_guard lock(m_mutex);
+        particle_filter.setCustomPrediction(pose);
+    }
+
     ~ParticleFilterModel() override = default;
 };
 }; // namespace vexmaps

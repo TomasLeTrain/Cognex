@@ -33,6 +33,9 @@ class ParticleFilter {
     alignas(16) std::array<float, max_size> tmp_list1;
     alignas(16) std::array<float, max_size> tmp_list2;
 
+    std::vector<std::pair<units::V2FPosition, float>> custom_particles;
+    units::FPose custom_prediction;
+
     BasePfMotionModel* motion_model;
     PFConfiguration PFConfig;
     std::vector<Sensor*> sensors;
@@ -327,10 +330,18 @@ class ParticleFilter {
                    this->weightedParticles,
                    this->appliedResampling,
                    N);
-            printf("prediction:%f,%f,%f\n",
-                   this->prediction.x.convert(in),
-                   this->prediction.y.convert(in),
-                   this->prediction.orientation.convert(Fdeg));
+            if (PFConfig.custom_particle_logging) {
+                printf("prediction:%f,%f,%f\n",
+                       this->custom_prediction.x.convert(in),
+                       this->custom_prediction.y.convert(in),
+                       this->custom_prediction.orientation.convert(Fdeg));
+            } else {
+                printf("prediction:%f,%f,%f\n",
+                       this->prediction.x.convert(in),
+                       this->prediction.y.convert(in),
+                       this->prediction.orientation.convert(Fdeg));
+            }
+
             printf("end generation\n");
         }
     }
@@ -445,11 +456,20 @@ class ParticleFilter {
         if (PFConfig.logging) {
             printf("start particles\n");
             if (PFConfig.particle_logging) {
-                for (size_t i = 0; i < N; i++) {
-                    printf("%.1f %.1f %.1f\n",
-                           x[i].convert(in),
-                           y[i].convert(in),
-                           weights[i] * 100);
+                if (PFConfig.custom_particle_logging) {
+                    for (auto [pose, weight] : custom_particles) {
+                        printf("%.1f %.1f %.1f\n",
+                               pose.x.convert(in),
+                               pose.y.convert(in),
+                               weight * 100);
+                    }
+                } else {
+                    for (size_t i = 0; i < N; i++) {
+                        printf("%.1f %.1f %.1f\n",
+                               x[i].convert(in),
+                               y[i].convert(in),
+                               weights[i] * 100);
+                    }
                 }
             }
             printf("end particles\n");
@@ -559,6 +579,15 @@ class ParticleFilter {
 
     void setDisabled(bool new_state) {
         disabled = new_state;
+    }
+
+    void setCustomParticles(
+      std::vector<std::pair<units::V2FPosition, float>> newParticles) {
+        custom_particles = newParticles;
+    }
+
+    void setCustomPrediction(units::FPose pose) {
+        custom_prediction = pose;
     }
 
     bool getDisabled() {

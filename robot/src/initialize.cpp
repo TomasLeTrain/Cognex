@@ -12,12 +12,12 @@ void initialize() {
     // initialize screens
     screen::init();
 
-	// dont wait for task to finish?
+    // dont wait for task to finish?
     bool finished_reading_task = true;
 
     // start reading map same time as calibrating imu
     pros::Task([&finished_reading_task] {
-		// give time for imu to start calibrating
+        // give time for imu to start calibrating
         pros::delay(100);
         int map_reader_notif = screen::health::add_init_notif("Reading map");
 
@@ -32,7 +32,8 @@ void initialize() {
         //     std::cout << "compressed map failed, try reading full map"
         //               << std::endl;
         //     map_reader.read("/usd/field_720_100_100.map");
-        //     std::cout << "finished reading at " << pros::millis() << std::endl;
+        //     std::cout << "finished reading at " << pros::millis() <<
+        //     std::endl;
         // }
 
         if (map_reader.mapAvailable()) {
@@ -131,13 +132,13 @@ void initialize() {
 
     mb.setMoveToModifier([](auto moveTo) {
         // return moveTo.customAngularLinearFunc(angular_linear_func);
-        return moveTo.k_lat(0.3 * rad / m).timeout(3_sec);
+        return moveTo.k_lat(0.15 * rad / m).timeout(3_sec);
     });
 
     mb.setBoomerangModifier([](auto boomerang) {
         // return boomerang.customAngularLinearFunc(angular_linear_func);
         // return boomerang.k_lat();
-        return boomerang.k_lat(0.2 * rad / m, true).timeout(5_sec);
+        return boomerang.k_lat(0.15 * rad / m, true).timeout(5_sec);
     });
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
                                                screen::health::succeed);
@@ -156,4 +157,20 @@ void initialize() {
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
+
+    pros::Task([&] {
+        while (true) {
+            std::vector<std::pair<units::V2FPosition, float>> particles = {
+                { pf_motion_model.getPose(), 0.01 },
+                { pf_model.getPose(),        10   },
+                { tracker.getPosition(),     30   },
+                { smoother_model.getPose(),  100  }
+            };
+
+            pf_model.setCustomParticles(particles);
+            pf_model.setCustomPrediction(smoother_model.getPose());
+
+            pros::delay(10);
+        }
+    });
 }

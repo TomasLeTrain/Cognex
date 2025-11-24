@@ -5,6 +5,7 @@
 #include "auton_globals.h"
 #include "globals/config.h"
 #include "globals/device_globals.h"
+#include "globals/vexmaps_globals.h"
 
 using namespace blazing;
 
@@ -87,7 +88,14 @@ extern Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 extern RunExecutor run;
 extern AsyncExecutor async;
 
-extern MotionBuilder<decltype(chassis), decltype(controllers)> mb;
+extern MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing;
+
+extern Chassis<decltype(drivetrain),
+               decltype(vexmaps_tracker),
+               decltype(tolerances)>
+  vexmaps_chassis;
+
+extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)> mb;
 
 extern ChainedExecutor chain;
 

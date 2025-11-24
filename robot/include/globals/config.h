@@ -92,7 +92,8 @@ struct CustomDistanceSensorConfiguration {
     static constexpr double normalCoeff = 0.6;
     static constexpr double mapCoeff = 0.25;
 
-    static constexpr FLength maxDistanceDifference = 18_in;
+    // static constexpr FLength maxDistanceDifference = 18_in;
+    static constexpr FLength maxDistanceDifference = 3_in;
 
 
     // static constexpr bool logging = false;

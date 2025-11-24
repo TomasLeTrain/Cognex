@@ -153,12 +153,13 @@ class DistanceSensorModel : public Sensor {
         expFactor = expVal * DistanceSensorConfig::expCoeff + randomFactor;
 
         if (pose) {
-            FLength abs_pose_distance_difference =
-              units::abs(getDistanceDifference(pose->x, pose->y));
+            FLength pose_distance_difference =
+              getDistanceDifference(pose->x, pose->y);
 
             // assumes pose is close enough to actual pose
-            if (abs_pose_distance_difference >
-                DistanceSensorConfig::maxDistanceDifference) {
+            if (units::sgn(pose_distance_difference) > 0.0 &&
+                units::abs(pose_distance_difference) >
+                  DistanceSensorConfig::maxDistanceDifference) {
                 exit = true;
             }
         }

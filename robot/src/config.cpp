@@ -18,14 +18,21 @@ pros::MotorGroup right_motors({ 7, 17, -16 }, pros::MotorGears::blue, pros::Moto
 vexmaps::ScaledIMU imu(15, (360.0 + 3.8) / 360.0);
 
 // intake motors
-pros::Motor bottom_motor(-19);
-pros::Motor top_motor(-1);
+// pros::Motor bottom_motor(-19);
+// pros::Motor top_motor(-1);
+
+// disable for testing
+pros::Motor bottom_motor(21);
+pros::Motor top_motor(21);
 
 pros::Optical middle_intake_color_sensor(8);
 pros::Optical bottom_intake_color_sensor(21);
 
 // pistons
-pros::adi::DigitalOut intake_stop_piston('H', true);
+// disable for testing
+// pros::adi::DigitalOut intake_stop_piston('H', true);
+pros::adi::DigitalOut intake_stop_piston('A', true);
+
 pros::adi::DigitalOut matchloader_piston('G', false);
 pros::adi::DigitalOut wings_piston('F', false);
 pros::adi::DigitalOut odom_retract_piston('E', false);
@@ -78,7 +85,7 @@ linear_pid_config_t linear_pid_config { .kp = 4.5,
 angular_pid_config_t angular_pid_config {
     .kp = 2.5,
     .ki = 0,
-    .kd = 4.1,
+    .kd = 3.5,
     .windupRange = 14,
     .maxVoltage = 127,
 };
@@ -125,10 +132,24 @@ vexmaps::PFConfiguration Pfconfig = {
     // .particle_logging = false,
     .logging = true,
     .particle_logging = true,
-	//
-    // .custom_particle_logging=true,
+    //
+    .custom_particle_logging = true,
 };
-vexmaps::SmootherConfig smoother_config = {};
+vexmaps::SmootherConfig smoother_config = {
+    // for all parameters:
+    // 0 = all model
+    // 1 = all measurement
+
+    // // determines how much a pose measurement influences the pose estimate
+    .alpha_x = 0.06,
+    .alpha_y = 0.06,
+    .alpha_theta = 0.00,
+
+    // used by pose_delta_measurement to estimate the pose
+    .beta_x = 1,
+    .beta_y = 1,
+    .beta_theta = 1
+};
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -273,8 +294,8 @@ Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 RunExecutor run;
 AsyncExecutor async;
 
-MotionBuilder<decltype(chassis), decltype(controllers)> mb(chassis,
-                                                           controllers);
+MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing(chassis,
+                                                                   controllers);
 
 // same as default chain lerp
 auto chain_lerp = [](Voltage a, Voltage b, double t) -> Voltage {
@@ -390,3 +411,9 @@ vexmaps::ModelManager model_manager(
   &smoother_model);
 
 BlazingWrapper vexmaps_tracker(&model_manager);
+
+Chassis<decltype(drivetrain), decltype(vexmaps_tracker), decltype(tolerances)>
+  vexmaps_chassis(drivetrain, vexmaps_tracker, tolerances);
+
+MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
+  mb(vexmaps_chassis, controllers);

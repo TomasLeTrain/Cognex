@@ -15,14 +15,14 @@
 // NOTE: select the disabled auton if you don't want anything to run!!!
 void testing_auton_func() {
     auto_side = field_side_t::left;
-    auto_alliance = alliance_t::red;
+    auto_alliance = alliance_t::blue;
 
     // simple_auton::run_auton();
 	// printf("got before selected auto\n");
 
     // selected_auton = "current skills";
-    selected_auton = "current quals";
-    // selected_auton = "current skills";
+    // selected_auton = "current quals";
+    selected_auton = "current skills";
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();
     //

@@ -48,7 +48,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers,
 
     // update all lasers
     for (auto laser : enabled_lasers) {
-        laser->update(theta,std::nullopt);
+        laser->update(theta, std::nullopt);
         std::cout << "updated laser!\n";
     }
 

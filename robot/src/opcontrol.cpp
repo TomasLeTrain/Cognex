@@ -83,25 +83,5 @@ void opcontrol() {
     // move odom up automatically
     odom_retract::set(piston_state_t::active);
 
-    RobotSetPose(36, -36, 0);
-
-    // while (true) {
-    //     auto blazing_position = tracker.getPosition();
-    //     auto blazing_theta = tracker.getAngle();
-    //
-    //     // auto vexmaps_pose = model_manager.getPose();
-    //
-    //     // printf("tf\n");
-    //     // screen::health::set_console_text(std::format(
-    //     //   "blazing: {:.2f} {:.2f} {:.2f}\nvexmaps: {:.2f} {:.2f} {:.2f}",
-    //     //   blazing_position.x.convert(in),
-    //     //   blazing_position.y.convert(in),
-    //     //   blazing_theta.convert(deg),
-    //     //   vexmaps_pose.x.convert(in),
-    //     //   vexmaps_pose.y.convert(in),
-    //     //   vexmaps_pose.orientation.convert(deg)));
-    //
-    //     // maybe unneeded?
-    //     pros::delay(50);
-    // }
+    RobotSetPose({ 2_tile, -2_tile, 0_stDeg });
 }
