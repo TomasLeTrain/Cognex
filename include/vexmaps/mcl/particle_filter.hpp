@@ -43,8 +43,10 @@ class ParticleFilter {
     // global pose delta from the base motion model
     units::FPose globalPoseDelta;
 
-    std::uniform_real_distribution<float> field_dist { -wall_length.internal(),
-                                                       wall_length.internal() };
+    // std::uniform_real_distribution<float> field_dist {
+    // -global_hor_wall_length.internal(),
+    //                                                    global_hor_wall_length.internal()
+    //                                                    };
 
     uint64_t start_time;
 
@@ -366,7 +368,8 @@ class ParticleFilter {
         : motion_model(motionModel),
           PFConfig(config),
           sensors(std::move(sensors)) {
-        bordered_wall_length = wall_length - (PFConfig.wall_border_width);
+        bordered_wall_length =
+          global_hor_wall_length - (PFConfig.wall_border_width);
     }
 
     void addSensor(Sensor* sensor) {
@@ -561,10 +564,10 @@ class ParticleFilter {
             weights[i] = average_weight;
         }
 
-        initUniform(-wall_length,
-                    -wall_length,
-                    wall_length,
-                    wall_length,
+        initUniform(-global_hor_wall_length,
+                    -global_ver_wall_length,
+                    global_hor_wall_length,
+                    global_ver_wall_length,
                     0_FstDeg);
     }
 

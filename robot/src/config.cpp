@@ -186,7 +186,11 @@ TrackingImu imu_tracker(&imu);
 // blazing tracker
 ArcOdomTracker tracker(
   // forward trackers
-  { &forwards_tracker, &left_motor_tracker, &right_motor_tracker },
+  {
+		// &forwards_tracker,
+		&left_motor_tracker,
+		&right_motor_tracker
+	},
   // sideways trackers
   { &sideways_tracker },
   // imus
@@ -339,12 +343,24 @@ double angular_linear_func(Angle angle) {
 //
 // vexmaps configs
 
+vexmaps::HorizontalOdometryTracker
+  horizontal_tracker(&sideways_odom_rotation,
+                     sideways_tracker_config.diameter,
+                     1,
+                     sideways_tracker_config.offset);
+vexmaps::VerticalOdometryTracker
+  vertical_tracker(&forwards_odom_rotation,
+                   forwards_tracker_config.diameter,
+                   1,
+                   forwards_tracker_config.offset);
+
+
 // if the tracker is not installed the list can be left empty -> tracker = {};
 std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers = {
     &horizontal_tracker
 };
 std::initializer_list<VerticalOdometryTracker*> vertical_trackers = {
-    &vertical_tracker
+    // &vertical_tracker
 };
 
 // trackers
@@ -357,17 +373,6 @@ vexmaps::MotorGroupTracking right_dt_tracker(&right_motors,
                                              drivetrain_config.wheel_diameter,
                                              drivetrain_config.rpm,
                                              drivetrain_config.track_width / 2);
-
-vexmaps::HorizontalOdometryTracker
-  horizontal_tracker(&sideways_odom_rotation,
-                     sideways_tracker_config.diameter,
-                     1,
-                     sideways_tracker_config.offset);
-vexmaps::VerticalOdometryTracker
-  vertical_tracker(&forwards_odom_rotation,
-                   forwards_tracker_config.diameter,
-                   1,
-                   forwards_tracker_config.offset);
 
 // never really changes
 vexmaps::PfMotionModel<vexmaps::OdometryModel>

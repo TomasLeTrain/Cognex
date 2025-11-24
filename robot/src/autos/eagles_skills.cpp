@@ -55,12 +55,12 @@ void run_auton() {
 
     // LaserResets({ &right_laser_model, &front_laser_model });
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-    pros::delay(2200);
+    // pros::delay(2200);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
 
     // go to goal
     // mb.moveTo(-23.9_in, 2_tile).reverse().timeout(1_sec) | run;
-    mb.moveTo(-26.6_in, 46.8_in).reverse() | run;
+    mb.moveTo(-24_in, long_goal).reverse().timeout(1.0_sec) | run;
 
     std::cout << tracker.getPosition().x.convert(in) << " "
               << tracker.getPosition().y.convert(in) << std::endl;
@@ -75,7 +75,7 @@ void run_auton() {
     // };
     //
     intake::set(intake::scoring_long);
-    pros::delay(3200);
+    // pros::delay(3200);
     intake::set(intake::intake);
     matchloader::set(inactive);
     // LaserResets({ &right_laser_model });
@@ -115,7 +115,7 @@ void run_auton() {
 
     // pros::delay(200);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-    pros::delay(2200);
+    // pros::delay(2200);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
 
     // LaserResets({ &left_laser_model });
@@ -123,11 +123,11 @@ void run_auton() {
     // matchloader::set(inactive);
 
     // go to goal
-    mb.moveTo(26.6_in, 46.8_in).reverse().timeout(1_sec) | run;
+    mb.moveTo(24_in, long_goal).reverse().timeout(1.0_sec) | run;
 
     // LaserResets({ &left_laser_model });
     intake::set(intake::scoring_long);
-    pros::delay(3200);
+    // pros::delay(3200);
     intake::set(intake::intake);
     matchloader::set(inactive);
 
@@ -153,8 +153,9 @@ void run_auton() {
     // scuff
     intake::set(intake::scoring_long);
 
-    mb.moveTo(41, 2_tile) | run;
-    mb.turnTo(44, -2_tile) | run;
+    mb.boomerang(41_in, 1_tile, 270_stDeg).lead(0.4) | run;
+    // mb.moveTo(41, 2_tile) | run;
+    // mb.turnTo(44, -2_tile) | run;
     // mb.moveTo(41, -1_tile).drive_maxVolt(0.8_volt) | run;
     // reset all
     // pros::delay(400);
@@ -176,18 +177,19 @@ void run_auton() {
     // mb.distanceAtHeading(14.7_in).timeout(1_sec) | run;
     mb.moveTo(57.7, match3) | run;
 
-    pros::delay(100);
+    // pros::delay(100);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
     // LaserResets({ &right_laser_model });
-    pros::delay(2200);
+    // pros::delay(2200);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
 
     // go to goal
     // LaserResets({&right_laser_model});
 
-    mb.moveTo(26.6_in, -46.8_in).reverse() | run;
+    mb.moveTo(24_in, -long_goal).reverse().timeout(1.0_sec) | run;
+
     intake::set(intake::scoring_long);
-    pros::delay(3200);
+    // pros::delay(3200);
     intake::set(intake::intake);
     matchloader::set(inactive);
 
@@ -212,25 +214,25 @@ void run_auton() {
     mb.moveTo(-57.7, match4) | run;
 
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-    pros::delay(2200);
+    // pros::delay(2200);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
 
     // go to goal
-    mb.moveTo(-26.6_in, -46.8_in).reverse() | run;
+    mb.moveTo(-24_in, -long_goal).reverse().timeout(1.0_sec) | run;
     intake::set(intake::scoring_long);
-    pros::delay(3200);
+    // pros::delay(3200);
     intake::set(intake::intake);
     matchloader::set(inactive);
 
     // mb.moveTo(-40_in, -2_tile) | run;
     // mb.turnTo(180) | run;
 
-    mb.boomerang(-58.755, -18.904, 90)
+    mb.boomerang(-60.755, -18.904, 90)
         // .reverse()
         // .lead(0.35)
         .lead(0.4)
-        .drive_maxVolt(0.5_volt) |
-      run;
+      // .drive_maxVolt(0.5_volt)
+      | run;
 
     odom_retract::set(active);
     sideways_tracker.disable();
