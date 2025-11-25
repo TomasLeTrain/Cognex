@@ -38,14 +38,11 @@ extern units::Pose left_distance_offsets;
 extern units::Pose back_distance_offsets;
 extern units::Pose right_distance_offsets;
 
-using laser_model_type =
-  vexmaps::DistanceSensorModel<CustomDistanceSensorConfiguration>;
-
 // clang-format off
-extern laser_model_type front_laser_model;
-extern laser_model_type left_laser_model;
-extern laser_model_type back_laser_model;
-extern laser_model_type right_laser_model;
+extern vexmaps::DistanceSensorModel front_laser_model;
+extern vexmaps::DistanceSensorModel left_laser_model;
+extern vexmaps::DistanceSensorModel back_laser_model;
+extern vexmaps::DistanceSensorModel right_laser_model;
 // clang-format on
 
 extern vexmaps::ParticleFilterModel<pf_particle_count> pf_model;

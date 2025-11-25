@@ -1,7 +1,9 @@
+#include "globals/config.h"
 #include "apis.h"
 //
 
 #include "globals.h"
+#include "vexmaps/mcl/distance_model.hpp"
 
 using namespace blazing;
 using namespace vexmaps;
@@ -155,7 +157,7 @@ vexmaps::SmootherConfig smoother_config = {
     // 1 = all measurement
 
     // // determines how much a pose measurement influences the pose estimate
-	// good ?
+    // good ?
     // .alpha_x = 0.06,
     // .alpha_y = 0.06,
     // .alpha_theta = 0.00,
@@ -407,12 +409,30 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
 // init map reader
 MapReader<> map_reader;
 
-// clang-format off
-laser_model_type front_laser_model(&front_distance, front_distance_offsets,front_distance_scale_factor, "front", &map_reader);
-laser_model_type left_laser_model(&left_distance,   left_distance_offsets,left_distance_scale_factor, "left",  &map_reader);
-laser_model_type back_laser_model(&back_distance,   back_distance_offsets,back_distance_scale_factor , "back",  &map_reader);
-laser_model_type right_laser_model(&right_distance, right_distance_offsets,right_distance_scale_factor, "right", &map_reader);
-// clang-format on
+DistanceSensorModel front_laser_model(&front_distance,
+                                      front_distance_offsets,
+                                      front_distance_scale_factor,
+                                      "front",
+                                      distance_sensor_config,
+                                      &map_reader);
+DistanceSensorModel left_laser_model(&left_distance,
+                                     left_distance_offsets,
+                                     left_distance_scale_factor,
+                                     "left",
+                                     distance_sensor_config,
+                                     &map_reader);
+DistanceSensorModel back_laser_model(&back_distance,
+                                     back_distance_offsets,
+                                     back_distance_scale_factor,
+                                     "back",
+                                     distance_sensor_config,
+                                     &map_reader);
+DistanceSensorModel right_laser_model(&right_distance,
+                                      right_distance_offsets,
+                                      right_distance_scale_factor,
+                                      "right",
+                                      distance_sensor_config,
+                                      &map_reader);
 
 vexmaps::ParticleFilterModel<pf_particle_count> pf_model(&pf_motion_model,
                                                          { // distance sensors

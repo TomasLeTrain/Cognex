@@ -80,24 +80,23 @@ extern vexmaps::SmootherConfig smoother_config;
 // header only configs
 
 // likely does not need to change
-struct CustomDistanceSensorConfiguration {
+inline vexmaps::DistanceSensorConfig distance_sensor_config {
     // all floats without units are in meters
-    static constexpr double exp_l = 1.5;
-    static constexpr double std_deviation = (2_in).internal();
-    static constexpr double map_deviation = (3_in).internal();
+    .exp_l = 1.5,
+    .std_deviation = (2_in).internal(),
+    .map_deviation = (3_in).internal(),
 
     // sum of coefficients 1
-    static constexpr double randomCoeff = 0.0;
-    static constexpr double expCoeff = 0.15;
-    static constexpr double normalCoeff = 0.6;
-    static constexpr double mapCoeff = 0.25;
+    .randomCoeff = 0.0,
+    .expCoeff = 0.15,
+    .normalCoeff = 0.6,
+    .mapCoeff = 0.25,
 
     // static constexpr FLength maxDistanceDifference = 18_in;
-    static constexpr FLength maxDistanceDifference = 3_in;
-
+    .maxDistanceDifference = 3_in,
 
     // static constexpr bool logging = false;
-    static constexpr bool logging = true;
+    .logging = true
 };
 
 // only variable which cannot be set on globals.cpp

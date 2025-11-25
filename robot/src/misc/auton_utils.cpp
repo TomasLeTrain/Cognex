@@ -2,6 +2,7 @@
 #include "globals/vexmaps_globals.h"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
+#include "vexmaps/mcl/distance_model.hpp"
 #include <cmath>
 
 // defaults
@@ -39,7 +40,7 @@ void DistanceSensorReset(int timeout, double new_alpha) {
     // smoother_model.changeConfiguration(smoother_config);
 }
 
-void LaserResets(std::vector<laser_model_type*> enabled_lasers,
+void LaserResets(std::vector<vexmaps::DistanceSensorModel*> enabled_lasers,
                  bool x,
                  bool y) {
     units::Pose current_pose = RobotGetPose();
@@ -55,7 +56,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers,
     std::optional<Length> new_x = std::nullopt;
     std::optional<Length> new_y = std::nullopt;
 
-    auto update_x = [&](laser_model_type* laser) {
+    auto update_x = [&](vexmaps::DistanceSensorModel* laser) {
         if (!x) return;
         auto expected = laser->getExpected();
         if (expected.has_value()) {
@@ -65,7 +66,7 @@ void LaserResets(std::vector<laser_model_type*> enabled_lasers,
             new_x = new_x ? (*new_x + expected->x) / 2 : Length(expected->x);
         }
     };
-    auto update_y = [&](laser_model_type* laser) {
+    auto update_y = [&](vexmaps::DistanceSensorModel* laser) {
         if (!y) return;
         auto expected = laser->getExpected();
         if (expected.has_value()) {
