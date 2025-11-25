@@ -400,21 +400,21 @@ void init(bool gdriver) {
       antiJam();
       pros::delay(10);
     }
-  });
+  },"antijam");
 
   pros::Task colorsort_task([] {
     while (true) {
       colorSort();
       pros::delay(10);
     }
-  });
+  },"colorsort");
 
   pros::Task main_intake_task([] {
     while (true) {
       update();
       pros::delay(10);
     }
-  });
+  },"intake task");
 
   tasks_active = true;
 }

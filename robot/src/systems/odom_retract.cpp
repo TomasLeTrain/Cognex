@@ -71,7 +71,7 @@ void init(bool gdriver) {
       update();
       pros::delay(10);
     }
-  });
+  },"odom retract");
 
   tasks_active = true;
 }

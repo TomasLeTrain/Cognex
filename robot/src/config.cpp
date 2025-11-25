@@ -44,15 +44,29 @@ pros::Rotation sideways_odom_rotation(3);
 
 // particle filter distance sensors
 pros::Distance front_distance(6);
-pros::Distance back_distance(11);
+pros::Distance back_distance(4);
 pros::Distance left_distance(5);
 pros::Distance right_distance(10);
 
 // distance sensor offsets
-units::Pose front_distance_offsets = { 5.8_in, -4.75_in, 0_stDeg };
-units::Pose left_distance_offsets = { 2.25_in, 5.25_in, 90_stDeg };
-units::Pose back_distance_offsets = { -4.4_in, 4.5_in, 180_stDeg };
-units::Pose right_distance_offsets = { 2.25_in, -5.25_in, 270_stDeg };
+units::Pose front_distance_offsets = { 5.45_in,
+                                       -(12.5_in / 2) + 1.6_in,
+                                       0_stDeg };
+units::Pose left_distance_offsets = { 6.25_in,
+                                      +(12.5_in / 2) - 1.25_in,
+                                      90_stDeg };
+units::Pose back_distance_offsets = { -4.45_in,
+                                      +(12.5_in / 2) - 2.25_in,
+                                      180_stDeg };
+units::Pose right_distance_offsets = { 2.5_in,
+                                       -(12.5_in / 2) + 1_in,
+                                       270_stDeg };
+
+// TODO: gray right distance sensor bad (dc's)
+double front_distance_scale_factor = 0.985454688793;
+double left_distance_scale_factor = 0.986105769705;
+double back_distance_scale_factor = 0.97905795044;
+double right_distance_scale_factor = 0.987332523721;
 
 /* vexmaps configuration */
 
@@ -64,7 +78,7 @@ tracker_config_t forwards_tracker_config = {
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.9869_in,
-    .offset = 0.45_in,
+    .offset = 1.0_in,
 };
 
 /* drivetrain / pid configuration */
@@ -141,8 +155,13 @@ vexmaps::SmootherConfig smoother_config = {
     // 1 = all measurement
 
     // // determines how much a pose measurement influences the pose estimate
-    .alpha_x = 0.06,
-    .alpha_y = 0.06,
+	// good ?
+    // .alpha_x = 0.06,
+    // .alpha_y = 0.06,
+    // .alpha_theta = 0.00,
+
+    .alpha_x = 0.04,
+    .alpha_y = 0.04,
     .alpha_theta = 0.00,
 
     // used by pose_delta_measurement to estimate the pose
@@ -186,13 +205,13 @@ TrackingImu imu_tracker(&imu);
 // blazing tracker
 ArcOdomTracker tracker(
   // forward trackers
-  {
-		// &forwards_tracker,
-		&left_motor_tracker,
-		&right_motor_tracker
-	},
+  { // &forwards_tracker,
+    &left_motor_tracker,
+    &right_motor_tracker },
   // sideways trackers
-  { &sideways_tracker },
+  {
+    // &sideways_tracker
+  },
   // imus
   { &imu_tracker });
 
@@ -354,10 +373,9 @@ vexmaps::VerticalOdometryTracker
                    1,
                    forwards_tracker_config.offset);
 
-
 // if the tracker is not installed the list can be left empty -> tracker = {};
 std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers = {
-    &horizontal_tracker
+    // &horizontal_tracker
 };
 std::initializer_list<VerticalOdometryTracker*> vertical_trackers = {
     // &vertical_tracker
@@ -390,10 +408,10 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
 MapReader<> map_reader;
 
 // clang-format off
-laser_model_type front_laser_model(&front_distance, front_distance_offsets, "front", &map_reader);
-laser_model_type left_laser_model(&left_distance,   left_distance_offsets,  "left",  &map_reader);
-laser_model_type back_laser_model(&back_distance,   back_distance_offsets,  "back",  &map_reader);
-laser_model_type right_laser_model(&right_distance, right_distance_offsets, "right", &map_reader);
+laser_model_type front_laser_model(&front_distance, front_distance_offsets,front_distance_scale_factor, "front", &map_reader);
+laser_model_type left_laser_model(&left_distance,   left_distance_offsets,left_distance_scale_factor, "left",  &map_reader);
+laser_model_type back_laser_model(&back_distance,   back_distance_offsets,back_distance_scale_factor , "back",  &map_reader);
+laser_model_type right_laser_model(&right_distance, right_distance_offsets,right_distance_scale_factor, "right", &map_reader);
 // clang-format on
 
 vexmaps::ParticleFilterModel<pf_particle_count> pf_model(&pf_motion_model,

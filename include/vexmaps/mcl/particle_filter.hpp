@@ -78,6 +78,8 @@ class ParticleFilter {
     float max_unnormalized_weight = 0;
     float max_weight = 0;
 
+    LocalizationModel* reference_model = nullptr;
+
     // holds if none of the sensors detect values
     // useful for determining how to handle weights when there is no current
     // update
@@ -143,6 +145,11 @@ class ParticleFilter {
         units::FPose approximate_pos = { getPose().x + globalPoseDelta.x,
                                          getPose().y + globalPoseDelta.y,
                                          current_angle };
+
+        // use reference model if possible
+        if (reference_model != nullptr) {
+            approximate_pos = reference_model->getPose();
+        }
 
         // perform the one time updates on the sensors
         for (Sensor* sensor : sensors) {
@@ -591,6 +598,10 @@ class ParticleFilter {
 
     void setCustomPrediction(units::FPose pose) {
         custom_prediction = pose;
+    }
+
+    void setReferenceModel(LocalizationModel* model) {
+        reference_model = model;
     }
 
     bool getDisabled() {

@@ -65,7 +65,7 @@ void init(bool gdriver) {
             update();
             pros::delay(10);
         }
-    });
+    },"wings task");
 
     tasks_active = true;
 }

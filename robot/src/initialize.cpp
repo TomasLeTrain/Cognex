@@ -46,7 +46,7 @@ void initialize() {
         }
 
         finished_reading_task = true;
-    });
+    },"map reading");
 
     int imu_notif = screen::health::add_init_notif("calibrating imu");
 
@@ -112,7 +112,7 @@ void initialize() {
             tracker.update();
             pros::delay(10);
         }
-    });
+    },"blazing tracker");
     screen::health::update_init_notif_severity(init_tracker_notif,
                                                screen::health::succeed);
 
@@ -155,6 +155,8 @@ void initialize() {
     screen::health::add_init_notif("finished initialize!",
                                    screen::health::succeed);
 
+    pf_model.setReferenceModel(&smoother_model);
+
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 
@@ -172,5 +174,5 @@ void initialize() {
 
             pros::delay(10);
         }
-    });
+    },"particle task");
 }

@@ -23,6 +23,7 @@ class DistanceSensorModel : public Sensor {
 
     pros::Distance* distance_sensor;
     units::Pose offsets;
+    double m_distance_scale_factor;
     std::string name;
 
     // optional
@@ -71,11 +72,13 @@ class DistanceSensorModel : public Sensor {
 
   public:
     DistanceSensorModel(pros::Distance* distance_sensor,
-                        const units::Pose offset,
+                        units::Pose offset,
+                        double distance_scale_factor,
                         std::string name,
                         MapReader<>* map_reader = nullptr)
         : distance_sensor(std::move(distance_sensor)),
           offsets(offset),
+          m_distance_scale_factor(distance_scale_factor),
           name(name),
           map_reader(map_reader) {}
 
@@ -93,6 +96,14 @@ class DistanceSensorModel : public Sensor {
         const int32_t measured_mm = distance_sensor->get();
 
         measured_distance = from_mm(measured_mm);
+
+        // only applies scale factor if distance sensor uses alternate algo for
+        // determining distance (smaller than 200_mm probably does not need a
+        // scaling factor)
+        if (measured_distance > 200_mm) {
+            measured_distance *= m_distance_scale_factor;
+        }
+
         f_measured_distance = measured_distance.internal();
 
         // distance sensor doesn't measure anything
@@ -121,8 +132,10 @@ class DistanceSensorModel : public Sensor {
         // one vertical and one horizontal
         // since the walls we check are always the same for both we can cache
         // the x/y value of the wall for each axis
-        Length original_horizontal_wall_length = global_hor_wall_length * cos_sign;
-        Length original_vertical_wall_length = global_ver_wall_length * sin_sign;
+        Length original_horizontal_wall_length =
+          global_hor_wall_length * cos_sign;
+        Length original_vertical_wall_length =
+          global_ver_wall_length * sin_sign;
 
         horizontal_wall_length =
           original_horizontal_wall_length - rotated_offsets.x;

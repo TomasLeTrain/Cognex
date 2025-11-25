@@ -151,6 +151,6 @@ void init_health_daemon() {
             health_task();
             pros::delay(20);
         }
-    });
+    },"health daemon");
 }
 } // namespace health_daemon

@@ -74,7 +74,7 @@ void init(bool gdriver) {
             update();
             pros::delay(10);
         }
-    });
+    },"matchloader");
 
     tasks_active = true;
 }

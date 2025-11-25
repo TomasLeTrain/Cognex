@@ -21,8 +21,8 @@ void RobotSetPose(double x, double y, double angle) {
 }
 
 units::Pose RobotGetPose() {
-    // return model_manager.getPose();
-    return { tracker.getPosition(), tracker.getAngle() };
+    return model_manager.getPose();
+    // return { tracker.getPosition(), tracker.getAngle() };
 }
 
 // effectively resets to whatever mcl measures

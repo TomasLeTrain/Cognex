@@ -161,6 +161,10 @@ class ParticleFilterModel : public LocalizationModel {
         particle_filter.setCustomPrediction(pose);
     }
 
+    void setReferenceModel(LocalizationModel* model) {
+        particle_filter.setReferenceModel(model);
+    }
+
     ~ParticleFilterModel() override = default;
 };
 }; // namespace vexmaps

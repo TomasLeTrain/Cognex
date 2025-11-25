@@ -206,12 +206,13 @@ class Motion : public MotionBase {
         // before motion should be blocking - prereq to the motion executing
         if (before_motion_func) before_motion_func();
 
-        custom_functions_task =
-          pros::Task([during_motion_func = this->during_motion_func] {
+        custom_functions_task = pros::Task(
+          [during_motion_func = this->during_motion_func] {
               printf("before\n");
               if (during_motion_func) during_motion_func();
               printf("after\n");
-          });
+          },
+          "start motion task");
     }
 
     ~Motion() override {
@@ -222,11 +223,13 @@ class Motion : public MotionBase {
         printf("after removing custom functions\n");
 
         // run it on a separate task - take function by copy
-        pros::Task([after_motion_func = this->after_motion_func] {
-            printf("before2\n");
-            if (after_motion_func) after_motion_func();
-            printf("after2\n");
-        });
+        pros::Task(
+          [after_motion_func = this->after_motion_func] {
+              printf("before2\n");
+              if (after_motion_func) after_motion_func();
+              printf("after2\n");
+          },
+          "end motion task");
     }
 };
 
