@@ -650,6 +650,21 @@
                 "user_files": [],
                 "version": "9.2.0"
             },
+            "misc": {
+                "location": "/home/tomas/.config/pros/templates/misc@0.0.3",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "misc",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.2.1",
+                "system_files": [
+                    "firmware/misc.a"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.0.3"
+            },
             "vexmaps": {
                 "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.11",
                 "metadata": {
