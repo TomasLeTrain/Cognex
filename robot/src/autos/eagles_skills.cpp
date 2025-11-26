@@ -3,6 +3,7 @@
 #include "auton_globals.h"
 #include "autos.h"
 #include "globals/blazing_globals.h"
+#include "globals/config.h"
 #include "globals/vexmaps_globals.h"
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
@@ -10,6 +11,7 @@
 #include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Vector2D.hpp"
+#include "vexmaps/mcl/distance_model.hpp"
 
 // do not do anything outside here!
 
@@ -21,19 +23,20 @@ void run_auton() {
     RobotSetPose(-47.9, 14.8, 90);
     intake::setColorSortEnabled(false);
 
+    // TODO: make distance autmatic
     auto make_machloader_point = [&](units::V2FPosition target,
                                      Length distance) -> units::V2FPosition {
-        auto difference = (target - RobotGetPose()).normalize() * distance;
+        auto difference = (target - RobotGetPose()).normalize() *
+                          (RobotGetPose().distanceTo(target) - distance);
+        ;
         auto new_point = RobotGetPose() + difference;
+
         return new_point;
     };
 
     units::V2FPosition target_point;
 
     intake::set(intake::intake);
-
-    // complete reset
-    // LaserResets({ &left_laser_model });
 
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
@@ -43,107 +46,56 @@ void run_auton() {
     Length match3 = -(normal_match);
     Length match4 = -(normal_match);
 
-    // mb.moveTo(-46.5, match1 - 1.5_in) | run;
-    // return;
-
-    // pros::delay(50);
-
-    // go into matchloader
-    // mb.turnTo(-57, match1) | run;
-    // mb.turnTo(-70, match1) | run;
-
-    // should reset y
-    // LaserResets({ &right_laser_model });
-    // matchloader::set(active);
-    // pros::delay(300);
-
-    // mb.moveTo(-57, 2_tile).drive_maxVolt(0.4_volt).timeout(0.8_sec) | run;
-    // mb.distanceAtHeading(10_in).drive_maxVolt(0.4_volt).timeout(0.8_sec) |
-    // run;
-    // mb.distanceAtHeading(13.8_in).timeout(0.9_sec) | run;
-    // target_point = make_machloader_point({ -67.71_in, match1 }, 10.5_in);
-    // mb.moveTo(target_point.x, target_point.y) | run;
-
-    mb.boomerang(-63_in, match1, 180)
-        .lead(0.8)
-        .k_lat(std::nullopt)
-        .drive_kd(linear_pid.get_kd() * 0.5) |
+    mb.boomerang(-58_in, match1, 180)
+        .lead(0.65, 0.42)
+        .lead2DistThreshold(14_in)
+        .k_lat(0.15, false)
+        .drive_minVolt(0.2_volt)
+        .drive_maxVolt(0.5_volt)
+        .drive_ErrorTolerance(3_in)
+        .drive_largeErrorTolerance(4_in)
+        .drive_kd(linear_pid.get_kd() * 0.8) |
       run;
-
-    // LaserResets({ &right_laser_model, &front_laser_model });
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-    // pros::delay(2200);
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
 
     // go to goal
     // mb.moveTo(-23.9_in, 2_tile).reverse().timeout(1_sec) | run;
-    mb.moveTo(-24_in, long_goal).reverse().timeout(1.0_sec).k_lat(0.0) | run;
+    mb.moveTo(-24_in, long_goal - 0.5_in)
+        .reverse()
+        .timeout(1.1_sec)
+        .k_lat(0.0) |
+      run;
 
     intake::set(intake::scoring_long);
     // pros::delay(3200);
     intake::set(intake::intake);
     matchloader::set(inactive);
-    // LaserResets({ &right_laser_model });
-
-    // move away from goal
-    // mb.moveTo(-46.394, 28.801) | run;
-    // mb.moveTo(-46.394, 28.801) | run;
-    // mb.moveTo(-4.245, 23.208) | run;
-
-    // intake::setColorSortEnabled(true);
 
     // color sort for red
     // auto_alliance = alliance_t::red;
     intake::set(intake::scoring_long);
 
     // go through the balls
-    mb.moveTo(28, 28.201)
-        .drive_ErrorTolerance(7_in)
-        .drive_ToleranceDuration(0.01_sec) |
-      run;
+    drivetrain.moveTank(-1.0_volt, 1_volt);
+    pros::delay(400);
 
     // balls
-    // LaserResets({ &front_laser_model });
-
-    // intake::setColorSortEnabled(false);
-
-    // move to right before matchloader
-    // mb.moveTo(44, match2) | run;
-
-    // go into matchloader
-    // intake::set(intake::intake);
-    // matchloader::set(active);
-    // mb.turnTo(58, match2) | run;
-    // mb.turnTo(70, match2) | run;
-
-    // LaserResets({ &left_laser_model });
-    // mb.moveTo(58.5, 2_tile).drive_maxVolt(0.4_volt).timeout(0.8_sec) | run;
-    // mb.distanceAtHeading(14.2_in).timeout(1_sec) | run;
-    // mb.moveTo(57.7, match2) | run;
-
-    // target_point = make_machloader_point({ 67.71_in, match2 }, 12_in);
-    // mb.moveTo(target_point.x, target_point.y) | run;
-
-    boomerang(controllers, chassis, 58_in, match2, 0_stDeg)
-        .k_lat(std::nullopt)
-        .drive_kd(linear_pid.get_kd() * 0.5) |
+    mb.moveTo(30, 34.5)
+        .drive_ErrorTolerance(7_in)
+        .drive_ToleranceDuration(0.01_sec)
+        .drive_minVolt(0.2_volt) |
       run;
 
-    // mb.boomerang(58_in, match2, 0)
-    //     .k_lat(std::nullopt)
-    //     .drive_kd(linear_pid.get_kd() * 0.5) |
-    //   run;
-
-    // LaserResets({ &left_laser_model });
-
-    // pros::delay(200);
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-    // pros::delay(2200);
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
-
-    // LaserResets({ &left_laser_model });
-    // pros::delay(1000);
-    // matchloader::set(inactive);
+    // matchloader 2
+    mb.boomerang(58_in, match2, 0)
+        .lead(0.55, 0.05)
+        // .k_lat(0.15, true)
+        // .k_lat(std::nullopt)
+        .k_lat(0.05, true)
+        .drive_ErrorTolerance(3_in)
+        .drive_largeErrorTolerance(4_in)
+        .drive_maxVolt(0.5_volt)
+        .drive_kd(linear_pid.get_kd() * 0.8) |
+      run;
 
     // go to goal
     mb.moveTo(24_in, long_goal).reverse().timeout(1.0_sec).k_lat(0.0) | run;
@@ -154,44 +106,32 @@ void run_auton() {
     intake::set(intake::intake);
     matchloader::set(inactive);
 
-    // mb.boomerang(63.27, 21.496, 270) | run;
-
-    // go through park
-    // sideways_tracker.disable();
-    // odom_retract::set(piston_state_t::active);
-    //
-    // mb.moveTo(62.655, -28.413)
-    //     .drive_maxVolt(0.6_volt)
-    //     // effectively no slew
-    //     .drive_accelSlew(10_volt) |
-    //   run;
-    //
-    // odom_retract::set(piston_state_t::inactive);
-    // pros::delay(100);
-    // sideways_tracker.enable();
-    //
-    // LaserResets({ &front_laser_model, &right_laser_model });
-    // pros::delay(300);
-
-    // scuff
     intake::set(intake::scoring_long);
 
-    // mb.boomerang(41_in, 1_tile, 270_stDeg)
-    //     .lead(0.4)
-    //     .drive_ErrorTolerance(6_in)
-    //     .drive_ToleranceDuration(0_sec) |
-    //   run;
-    // mb.moveTo(41, 2_tile) | run;
-    // mb.turnTo(44, -2_tile) | run;
-    // mb.moveTo(41, -1_tile).drive_maxVolt(0.8_volt) | run;
-    // reset all
-    // pros::delay(400);
-    // LaserResets({ &front_laser_model, &left_laser_model });
-    // pros::delay(50);
-    ///
-
     // go before matchloader
-    mb.moveTo(44, match3 + 1.5_in) | run;
+
+    drivetrain.moveTank(1.0_volt, -1.0_volt);
+    pros::delay(200);
+
+    vexmaps::DistanceSensorConfig new_config = distance_sensor_config;
+
+    new_config.maxDistanceDifference = 5_in;
+
+    // change front model to accept larger changes due to drift in wheels
+    front_laser_model.setConfig(new_config);
+
+    SmootherConfig new_abg_config = smoother_config;
+
+    // new_abg_config.alpha_x = 0.6;
+    new_abg_config.alpha_y = 0.6;
+
+    smoother_model.changeConfiguration(new_abg_config);
+
+    mb.moveTo(44, match3 + 2.0_in).drive_ToleranceDuration(50_msec) | run;
+
+    front_laser_model.setConfig(distance_sensor_config);
+    smoother_model.changeConfiguration(smoother_config);
+
     // LaserResets({ &front_laser_model });
 
     matchloader::set(active);
@@ -203,19 +143,16 @@ void run_auton() {
 
     // mb.distanceAtHeading(14.7_in).timeout(1_sec) | run;
     // mb.moveTo(57.7, match3) | run;
-    target_point = make_machloader_point({ 67.71_in, match3 }, 11.5_in);
+    target_point = make_machloader_point({ 67.71_in, match3 }, 7_in);
     mb.moveTo(target_point.x, target_point.y) | run;
 
-    // pros::delay(100);
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-    // LaserResets({ &right_laser_model });
-    // pros::delay(2200);
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
-
     // go to goal
-    // LaserResets({&right_laser_model});
 
-    mb.moveTo(24_in, -long_goal).reverse().timeout(1.0_sec).k_lat(0.0) | run;
+    mb.moveTo(24_in, -long_goal - 1.0_in)
+        .reverse()
+        .timeout(1.2_sec)
+        .k_lat(0.0) |
+      run;
 
     intake::set(intake::scoring_long);
     // pros::delay(3200);
@@ -223,30 +160,35 @@ void run_auton() {
     matchloader::set(inactive);
 
     // move away from goal
-    mb.moveTo(40.34, -60.67) | run;
+    // mb.moveTo(40.34, -60.67) | run;
+    drivetrain.moveTank(-1.0_volt, 1.0_volt);
+    pros::delay(400);
+
     // move to other side of field
-    mb.moveTo(-23.892, -61.27) | run;
+    mb.moveTo(-24, -34.27)
+        .drive_ErrorTolerance(7_in)
+        .drive_ToleranceDuration(10_msec) |
+      run;
     // pros::delay(100);
     // LaserResets({ &front_laser_model, &left_laser_model });
     // pros::delay(50);
 
     // go to right before matchloader
-    mb.moveTo(-46.5, match4) | run;
+    mb.moveTo(-46.5, match4).drive_ToleranceDuration(50_msec) | run;
     matchloader::set(active);
 
     // go into matchloader
     // mb.turnTo(-58, match4) | run;
-    mb.turnTo(-70, match4) | run;
+    mb.turnTo(-70, match4)
+        .turn_toleranceDuration(50_msec)
+        .turn_kd(angular_pid.get_kd() * 0.8) |
+      run;
     // LaserResets({ &left_laser_model });
 
     // mb.distanceAtHeading(13.5_in).timeout(1_sec) | run;
     // mb.moveTo(-57.7, match4) | run;
-    target_point = make_machloader_point({ -67.71_in, match4 }, 11_in);
+    target_point = make_machloader_point({ -67.71_in, match4 }, 7_in);
     mb.moveTo(target_point.x, target_point.y) | run;
-
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-    // pros::delay(2200);
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
 
     // go to goal
     mb.moveTo(-24_in, -long_goal).reverse().timeout(1.0_sec).k_lat(0.0) | run;
@@ -261,7 +203,7 @@ void run_auton() {
     mb.boomerang(-60.755, -18.904, 90)
         // .reverse()
         // .lead(0.35)
-        .lead(0.4)
+        .lead(0.3, 0.1)
       // .drive_maxVolt(0.5_volt)
       | run;
 

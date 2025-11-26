@@ -88,11 +88,11 @@ class Motion : public MotionBase {
   protected:
     std::optional<Time> chain_time = std::nullopt;
 
-    std::function<void()> before_motion_func;
-    std::function<void()> during_motion_func;
-    std::function<void()> after_motion_func;
-
-    pros::Task custom_functions_task = nullptr;
+    // std::function<void()> before_motion_func;
+    // std::function<void()> during_motion_func;
+    // std::function<void()> after_motion_func;
+    //
+    // pros::Task custom_functions_task = nullptr;
 
   public:
     Motion(ControllersType controllers,
@@ -202,35 +202,38 @@ class Motion : public MotionBase {
         return self.getReference();
     }
 
-    void start_motion_callback() override {
-        // before motion should be blocking - prereq to the motion executing
-        if (before_motion_func) before_motion_func();
+    // void start_motion_callback() override {
+    //     // before motion should be blocking - prereq to the motion executing
+    //     // if (before_motion_func) before_motion_func();
+    //     //
+    //     // custom_functions_task = pros::Task(
+    //     //   [during_motion_func = this->during_motion_func] {
+    //     //       printf("before\n");
+    //     //       if (during_motion_func) during_motion_func();
+    //     //       printf("after\n");
+    //     //   },
+    //     //   "start motion task");
+    // }
 
-        custom_functions_task = pros::Task(
-          [during_motion_func = this->during_motion_func] {
-              printf("before\n");
-              if (during_motion_func) during_motion_func();
-              printf("after\n");
-          },
-          "start motion task");
-    }
-
-    ~Motion() override {
-        printf("end motion\n");
-        if (custom_functions_task.get_state() != pros::E_TASK_STATE_INVALID &&
-            custom_functions_task.get_state() != pros::E_TASK_STATE_DELETED)
-            custom_functions_task.remove();
-        printf("after removing custom functions\n");
-
-        // run it on a separate task - take function by copy
-        pros::Task(
-          [after_motion_func = this->after_motion_func] {
-              printf("before2\n");
-              if (after_motion_func) after_motion_func();
-              printf("after2\n");
-          },
-          "end motion task");
-    }
+    ~Motion() override = default;
+    // ~Motion() override {
+    //     // printf("end motion\n");
+    //     // if (custom_functions_task.get_state() !=
+    //     pros::E_TASK_STATE_INVALID &&
+    //     //     custom_functions_task.get_state() !=
+    //     pros::E_TASK_STATE_DELETED)
+    //     //     custom_functions_task.remove();
+    //     // printf("after removing custom functions\n");
+    //     //
+    //     // // run it on a separate task - take function by copy
+    //     // pros::Task(
+    //     //   [after_motion_func = this->after_motion_func] {
+    //     //       printf("before2\n");
+    //     //       if (after_motion_func) after_motion_func();
+    //     //       printf("after2\n");
+    //     //   },
+    //     //   "end motion task");
+    // }
 };
 
 // allows motions to specify if they use angular/linear components to only show

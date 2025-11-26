@@ -40,7 +40,7 @@ VERSION:=1.0.0
 # this line excludes opcontrol.c and similar files
 # EXCLUDE_SRC_FROM_LIB+=$(foreach file, $(SRCDIR)/main,$(foreach cext,$(CEXTS),$(file).$(cext)) $(foreach cxxext,$(CXXEXTS),$(file).$(cxxext)))
 
-INCLUDE_SRC_IN_LIB+=$(SRCDIR)/instantiations.cpp $(SRCDIR)/screen/images/monkey_75x.cpp
+INCLUDE_SRC_IN_LIB+=$(SRCDIR)/instantiations.cpp
 
 
 # files that get distributed to every user (beyond your source archive) - add

@@ -41,12 +41,12 @@ pros::adi::DigitalOut odom_retract_piston('E', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(-4);
+pros::Rotation forwards_odom_rotation(4);
 pros::Rotation sideways_odom_rotation(3);
 
 // particle filter distance sensors
 pros::Distance front_distance(6);
-pros::Distance back_distance(4);
+pros::Distance back_distance(11);
 pros::Distance left_distance(5);
 pros::Distance right_distance(10);
 
@@ -75,7 +75,7 @@ double right_distance_scale_factor = 0.987332523721;
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.9654_in,
-    .offset = -0.045_in,
+    .offset = 0.1_in,
 };
 
 tracker_config_t sideways_tracker_config = {
@@ -207,13 +207,9 @@ TrackingImu imu_tracker(&imu);
 // blazing tracker
 ArcOdomTracker tracker(
   // forward trackers
-  { // &forwards_tracker,
-    &left_motor_tracker,
-    &right_motor_tracker },
+  { &forwards_tracker, &left_motor_tracker, &right_motor_tracker },
   // sideways trackers
-  {
-    // &sideways_tracker
-  },
+  { &sideways_tracker },
   // imus
   { &imu_tracker });
 
@@ -377,10 +373,10 @@ vexmaps::VerticalOdometryTracker
 
 // if the tracker is not installed the list can be left empty -> tracker = {};
 std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers = {
-    // &horizontal_tracker
+    &horizontal_tracker
 };
 std::initializer_list<VerticalOdometryTracker*> vertical_trackers = {
-    // &vertical_tracker
+    &vertical_tracker
 };
 
 // trackers

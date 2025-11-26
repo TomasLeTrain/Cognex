@@ -26,6 +26,8 @@ H_AUTON(roboticon_quals)
 H_AUTON(eagles_skills)
 H_AUTON(eagles_quals)
 
+H_AUTON(sunshine_skills)
+
 
 // special disabled auton that does nothing
 namespace disabled_auton {

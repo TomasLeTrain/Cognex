@@ -83,5 +83,5 @@ void opcontrol() {
     // move odom up automatically
     odom_retract::set(piston_state_t::active);
 
-    RobotSetPose({ 2_tile, -2_tile, 0_stDeg });
+    RobotSetPose({ -60_in, 20_in, 90_stDeg });
 }

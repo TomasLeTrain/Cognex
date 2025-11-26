@@ -14,7 +14,10 @@ std::unordered_map<std::string, std::function<void()>> auton_list = {
     L_AUTON(simple_other_goal_auton, "simple other goal")
     L_AUTON(roboticon_skills, "roboticon skills")
 
-	L_AUTON(eagles_skills, "current skills")
-	L_AUTON(eagles_quals, "current quals")
+	L_AUTON(eagles_skills, "eagles skills")
+	L_AUTON(eagles_quals, "eagles quals")
+
+	L_AUTON(sunshine_skills, "current skills")
+
 };
 // clang-format on

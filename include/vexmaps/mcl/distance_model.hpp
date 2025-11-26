@@ -454,6 +454,10 @@ class DistanceSensorModel : public Sensor {
         enabled = true;
     }
 
+    void setConfig(DistanceSensorConfig new_config) {
+        config = new_config;
+    }
+
     bool getEnabled() override {
         return enabled;
     }
