@@ -48,11 +48,14 @@ void run_auton() {
 
     units::V2Position centerBallOne = { -24_in, 24_in };
 
-    units::V2Position centerTopGoal = { -13_in, 12_in };
-    units::V2Position centerBottomGoal = { 13_in, 12_in };
+    units::V2Position centerTopGoal = { -12_in, 11_in };
+    units::V2Position centerBottomGoal = { 10.4_in, 11_in };
 
     // move away from park
-    mb.moveTo(-36_in, 36_in) | run;
+    mb.moveTo(-36_in, 36_in)
+        .drive_ErrorTolerance(5_in)
+        .drive_ToleranceDuration(50_msec) |
+      run;
 
     // mb.turnTo(centerBallOne.x, centerBallOne.y) | run;
     // mb.moveTo(centerBallOne.x, centerBallOne.y) | run;
@@ -73,7 +76,11 @@ void run_auton() {
       run;
 
     // boomerang to matchloader 1
-    mb.boomerang(-58_in, match1, 180).drive_maxVolt(0.4_volt) | run;
+    mb.boomerang(-58.5_in, match1, 180)
+        .drive_ErrorTolerance(3_in)
+        .drive_largeErrorTolerance(4_in)
+        .drive_maxVolt(0.4_volt) |
+      run;
 
     // move to goal
     mb.moveTo(-24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
@@ -83,13 +90,17 @@ void run_auton() {
     pros::delay(400);
 
     // get balls
-    mb.moveTo(24, -24) | run;
+    mb.moveTo(24, -24)
+        .k_lat(0.3)
+        .drive_ErrorTolerance(7_in)
+        .drive_ToleranceDuration(0_sec) |
+      run;
 
     // get close to matchload 2
-    mb.moveTo(48, -48) | run;
+    mb.moveTo(48, match2).drive_ToleranceDuration(0_msec) | run;
 
     // turn to matchload 2
-    mb.turnTo(70, match2) | run;
+    mb.turnTo(70, match2).turn_toleranceDuration(0_msec) | run;
 
     target_point = make_machloader_point({ 67.71_in, match2 }, 7_in);
     mb.moveTo(target_point.x, target_point.y) | run;
@@ -107,14 +118,16 @@ void run_auton() {
     mb.moveTo(24, 24) | run;
 
     // go to bottom goal
-    mb.turnTo(centerBottomGoal.x, centerBottomGoal.y) | run;
+    mb.turnTo(centerBottomGoal.x, centerBottomGoal.y)
+        .turn_toleranceDuration(0_sec) |
+      run;
     mb.moveTo(centerBottomGoal.x, centerBottomGoal.y) | run;
 
     // go towards match3 backwards
-    mb.moveTo(48, 48).reverse() | run;
+    mb.moveTo(48, match3).reverse().drive_ToleranceDuration(0_sec) | run;
 
     // turn to and go to match3
-    mb.turnTo(70, match3) | run;
+    mb.turnTo(70, match3).turn_toleranceDuration(0.01_sec) | run;
     target_point = make_machloader_point({ 67.71_in, match3 }, 7_in);
     mb.moveTo(target_point.x, target_point.y) | run;
 
@@ -123,7 +136,7 @@ void run_auton() {
 
     // move towards balls
     drivetrain.moveTank(1.0_volt, -1.0_volt);
-    pros::delay(400);
+    pros::delay(500);
 
     // balls
     mb.moveTo(-30, 34.5)
@@ -132,8 +145,8 @@ void run_auton() {
         .drive_minVolt(0.2_volt) |
       run;
 
-    // matchloader 2
-    mb.boomerang(-58_in, match4, 180)
+    // matchloader 4
+    mb.boomerang(-58.5_in, match4, 180)
         .lead(0.5)
         .drive_ErrorTolerance(3_in)
         .drive_largeErrorTolerance(4_in)
