@@ -5,7 +5,7 @@
         "target": "v5",
         "templates": {
             "blazing": {
-                "location": "/home/tomas/.config/pros/templates/blazing@0.0.6",
+                "location": "/home/tomas/.config/pros/templates/blazing@0.0.9",
                 "metadata": {
                     "origin": "local"
                 },
@@ -39,7 +39,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.6"
+                "version": "0.0.9"
             },
             "float_units": {
                 "location": "/home/tomas/.config/pros/templates/float_units@0.7.3",
@@ -649,6 +649,34 @@
                 "target": "v5",
                 "user_files": [],
                 "version": "9.2.0"
+            },
+            "lyfast": {
+                "location": "/home/tomas/.config/pros/templates/lyfast@0.0.2",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "lyfast",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.2.1",
+                "system_files": [
+                    "include/lyfast/motion_profiling/mp.hpp",
+                    "include/lyfast/vel_controller.hpp",
+                    "include/lyfast/geometry/primitives.hpp",
+                    "include/lyfast/api.hpp",
+                    "include/lyfast/geometry/spline.hpp",
+                    "include/lyfast/geometry/line.hpp",
+                    "include/lyfast/motor_dynamics.hpp",
+                    "include/lyfast/ramsete.hpp",
+                    "include/lyfast/motion_profiling/constraints.hpp",
+                    "include/lyfast/geometry/curve.hpp",
+                    "include/lyfast/motion_profiling/simple_mp.hpp",
+                    "include/lyfast/stanley.hpp",
+                    "include/lyfast/geometry/cubicBezier.hpp",
+                    "firmware/lyfast.a"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.0.2"
             },
             "misc": {
                 "location": "/home/tomas/.config/pros/templates/misc@0.0.3",

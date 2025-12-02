@@ -40,8 +40,14 @@ extern AngularVoltageClampController angular_voltage_constraints;
 extern PIDLinearController linear_pid_controller;
 extern PIDAngularController angular_pid_controller;
 
+// velocity control stuff
+extern blazing::lyfast::VelocityController velocity_controller;
+extern lyfast::VelocityFeedforward<decltype(velocity_controller)>
+  controller_velocity_controller;
+
 extern Controllers<decltype(linear_pid_controller),
                    decltype(angular_pid_controller),
+                   decltype(controller_velocity_controller),
                    decltype(linear_slew),
                    decltype(angular_slew),
                    decltype(linear_voltage_constraints),
@@ -86,7 +92,7 @@ extern Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 // executors
 extern RunExecutor run;
-extern AsyncExecutor async;
+extern AsyncExecutor async_exec;
 
 extern MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing;
 

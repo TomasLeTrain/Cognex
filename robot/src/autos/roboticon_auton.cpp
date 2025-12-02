@@ -41,14 +41,14 @@ void run_auton() {
     // pf_model.setDisabled(true);
     mb.moveTo(31, -22.5 * l)
         .drive_maxVolt(0.7_volt)
-        .drive_ErrorTolerance(5_in) |
+        .drive_errorTolerance(5_in) |
       run;
 
     matchloader::set(active);
     pros::delay(50);
 
-    mb.moveTo(19, -23.2 * l).drive_maxVolt(0.3_volt) | async;
-    async.wait();
+    mb.moveTo(19, -23.2 * l).drive_maxVolt(0.3_volt) | async_exec;
+    async_exec.wait();
     // printf("after move\n");
 
     if (bl) {
@@ -60,10 +60,10 @@ void run_auton() {
         intake::set(intake::scoring_middle);
         pros::delay(2000);
     } else {
-        mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | async;
+        mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | async_exec;
         pros::delay(200);
         matchloader::set(inactive);
-        async.wait();
+        async_exec.wait();
         intake::set(intake::scoring_bottom);
         pros::delay(2000);
     }

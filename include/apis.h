@@ -16,9 +16,14 @@
 #include "api.h" // IWYU pragma: keep
 
 // libs
-#include "blazing/api.hpp"
 #include "units/all.hpp"
+
 #include "vexmaps/api.hpp"
+
+#include "blazing/api.hpp"
+
+#include "lyfast/api.hpp"
+
 #include "zlib/zlib.h"
 
 // lvgl

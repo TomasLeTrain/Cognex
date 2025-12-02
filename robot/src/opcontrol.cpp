@@ -3,6 +3,7 @@
 
 #include "autos.h"
 #include "globals.h"
+#include "globals/blazing_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "main.h"
 #include "screen/screen.h"
@@ -84,4 +85,16 @@ void opcontrol() {
     odom_retract::set(piston_state_t::active);
 
     RobotSetPose({ -60_in, 20_in, 90_stDeg });
+
+    while (true) {
+        screen::health::set_console_text(
+          std::format("vexmaps forwards travel: {:.4f}_in\n"
+                      "pf model forwards travel: {:.4f}_in\n"
+                      "blazing forwards travel: {:.4f}_in\n",
+                      vexmaps_tracker.getForwardTravel().convert(in),
+                      pf_motion_model.getForwardTravel().convert(in),
+                      tracker.getForwardTravel().convert(in)));
+
+        pros::delay(50);
+    }
 }

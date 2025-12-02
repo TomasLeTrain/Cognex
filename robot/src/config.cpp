@@ -235,8 +235,19 @@ PID<Angle, Voltage> angular_pid(angular_pid_config.kp,
 PIDLinearController linear_pid_controller(linear_pid);
 PIDAngularController angular_pid_controller(angular_pid);
 
+blazing::lyfast::VelocityController
+  velocity_controller((0.58345 - 0.05) * volt / mps,
+                      0.00297879 * volt / mps2,
+                      0.107902 * volt / radps,
+                      0.0107677 * volt / radps2,
+                      0.0041 * volt);
+
+lyfast::VelocityFeedforward<blazing::lyfast::VelocityController>
+  controller_velocity_controller(velocity_controller);
+
 Controllers<decltype(linear_pid_controller),
             decltype(angular_pid_controller),
+            decltype(controller_velocity_controller),
             decltype(linear_slew),
             decltype(angular_slew),
             decltype(linear_voltage_constraints),
@@ -245,6 +256,7 @@ Controllers<decltype(linear_pid_controller),
     // pid controllers
     linear_pid_controller,
     angular_pid_controller,
+    controller_velocity_controller,
 
     // slew controllers
     linear_slew,
@@ -313,7 +325,7 @@ Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 // executors
 RunExecutor run;
-AsyncExecutor async;
+AsyncExecutor async_exec;
 
 MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing(chassis,
                                                                    controllers);

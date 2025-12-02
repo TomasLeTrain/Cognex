@@ -94,11 +94,11 @@ void run_auton() {
     // chassis.moveToPose(-29,31,145,2000,{.lead=0.5});
 
     // move towards center goal to score
-    mb.moveTo(-10, 11).drive_maxVolt(0.3_volt) | async;
+    mb.moveTo(-10, 11).drive_maxVolt(0.3_volt) | async_exec;
 
     pros::delay(2300);
     matchloader::set(active);
-    async.wait();
+    async_exec.wait();
 
     // score on center top goal
     pf_model.setDisabled(true);

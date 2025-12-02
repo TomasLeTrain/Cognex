@@ -99,7 +99,7 @@ void initialize() {
     int init_executors_notif =
       screen::health::add_init_notif("initializing executors");
     // needed for async/chain motions to run
-    async.init();
+    async_exec.init();
     chain.init();
     screen::health::update_init_notif_severity(init_executors_notif,
                                                screen::health::succeed);

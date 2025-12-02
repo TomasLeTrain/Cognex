@@ -52,7 +52,7 @@ void run_auton() {
         .k_lat(0.15, false)
         .drive_minVolt(0.2_volt)
         .drive_maxVolt(0.5_volt)
-        .drive_ErrorTolerance(3_in)
+        .drive_errorTolerance(3_in)
         .drive_largeErrorTolerance(4_in)
         .drive_kd(linear_pid.get_kd() * 0.8) |
       run;
@@ -80,8 +80,8 @@ void run_auton() {
 
     // balls
     mb.moveTo(30, 34.5)
-        .drive_ErrorTolerance(7_in)
-        .drive_ToleranceDuration(0.01_sec)
+        .drive_errorTolerance(7_in)
+        .drive_toleranceDuration(0.01_sec)
         .drive_minVolt(0.2_volt) |
       run;
 
@@ -91,7 +91,7 @@ void run_auton() {
         // .k_lat(0.15, true)
         // .k_lat(std::nullopt)
         .k_lat(0.05, true)
-        .drive_ErrorTolerance(3_in)
+        .drive_errorTolerance(3_in)
         .drive_largeErrorTolerance(4_in)
         .drive_maxVolt(0.5_volt)
         .drive_kd(linear_pid.get_kd() * 0.8) |
@@ -127,7 +127,7 @@ void run_auton() {
 
     smoother_model.changeConfiguration(new_abg_config);
 
-    mb.moveTo(44, match3 + 2.0_in).drive_ToleranceDuration(50_msec) | run;
+    mb.moveTo(44, match3 + 2.0_in).drive_toleranceDuration(50_msec) | run;
 
     front_laser_model.setConfig(distance_sensor_config);
     smoother_model.changeConfiguration(smoother_config);
@@ -166,15 +166,15 @@ void run_auton() {
 
     // move to other side of field
     mb.moveTo(-24, -34.27)
-        .drive_ErrorTolerance(7_in)
-        .drive_ToleranceDuration(10_msec) |
+        .drive_errorTolerance(7_in)
+        .drive_toleranceDuration(10_msec) |
       run;
     // pros::delay(100);
     // LaserResets({ &front_laser_model, &left_laser_model });
     // pros::delay(50);
 
     // go to right before matchloader
-    mb.moveTo(-46.5, match4).drive_ToleranceDuration(50_msec) | run;
+    mb.moveTo(-46.5, match4).drive_toleranceDuration(50_msec) | run;
     matchloader::set(active);
 
     // go into matchloader
@@ -216,8 +216,8 @@ void run_auton() {
         // go max?
         .drive_accelSlew(100_volt)
         .drive_minVolt(0.3_volt)
-        .drive_ErrorTolerance(4_in)
-        .drive_ToleranceDuration(0.01_sec) |
+        .drive_errorTolerance(4_in)
+        .drive_toleranceDuration(0.01_sec) |
       run;
 
     // mb.moveTo(-62.275, 1.137).reverse().drive_backwardsAccelSlew(100_volt) |

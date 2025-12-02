@@ -21,7 +21,7 @@ void run_auton() {
 
     intake::set(intake::intake);
 
-    mb.moveTo(-31, 22.5).drive_maxVolt(0.7_volt).drive_ErrorTolerance(5_in) |
+    mb.moveTo(-31, 22.5).drive_maxVolt(0.7_volt).drive_errorTolerance(5_in) |
       run;
 
     matchloader::set(active);

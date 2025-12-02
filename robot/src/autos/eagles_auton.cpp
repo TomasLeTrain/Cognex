@@ -44,7 +44,7 @@ void run_auton() {
     // pf_model.setDisabled(true);
     mb.moveTo(31, -22.5 * l)
         .drive_maxVolt(0.7_volt)
-        .drive_ErrorTolerance(5_in) |
+        .drive_errorTolerance(5_in) |
       run;
 
     matchloader::set(active);
