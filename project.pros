@@ -5,7 +5,7 @@
         "target": "v5",
         "templates": {
             "blazing": {
-                "location": "/home/tomas/.config/pros/templates/blazing@0.0.9",
+                "location": "/home/tomas/.config/pros/templates/blazing@0.0.10",
                 "metadata": {
                     "origin": "local"
                 },
@@ -39,7 +39,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.9"
+                "version": "0.0.10"
             },
             "float_units": {
                 "location": "/home/tomas/.config/pros/templates/float_units@0.7.3",
@@ -651,7 +651,7 @@
                 "version": "9.2.0"
             },
             "lyfast": {
-                "location": "/home/tomas/.config/pros/templates/lyfast@0.0.2",
+                "location": "/home/tomas/.config/pros/templates/lyfast@0.0.3",
                 "metadata": {
                     "origin": "local"
                 },
@@ -676,7 +676,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.2"
+                "version": "0.0.3"
             },
             "misc": {
                 "location": "/home/tomas/.config/pros/templates/misc@0.0.3",
