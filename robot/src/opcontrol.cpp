@@ -84,17 +84,27 @@ void opcontrol() {
     // move odom up automatically
     odom_retract::set(piston_state_t::active);
 
-    RobotSetPose({ -60_in, 20_in, 90_stDeg });
+    RobotSetPose({ 49_in, -16.8_in, 200 * deg });
 
-    while (true) {
-        screen::health::set_console_text(
-          std::format("vexmaps forwards travel: {:.4f}_in\n"
-                      "pf model forwards travel: {:.4f}_in\n"
-                      "blazing forwards travel: {:.4f}_in\n",
-                      vexmaps_tracker.getForwardTravel().convert(in),
-                      pf_motion_model.getForwardTravel().convert(in),
-                      tracker.getForwardTravel().convert(in)));
+    // vexmaps::DistanceSensorConfig new_config = distance_sensor_config;
+    //
+    // new_config.maxDistanceDifference = 10_in;
 
-        pros::delay(50);
-    }
+    // change front model to accept larger changes due to drift in wheels
+    // front_laser_model.setConfig(new_config);
+    // left_laser_model.setConfig(new_config);
+    // right_laser_model.setConfig(new_config);
+    // back_laser_model.setConfig(new_config);
+
+    // while (true) {
+    //     screen::health::set_console_text(
+    //       std::format("vexmaps forwards travel: {:.4f}_in\n"
+    //                   "pf model forwards travel: {:.4f}_in\n"
+    //                   "blazing forwards travel: {:.4f}_in\n",
+    //                   vexmaps_tracker.getForwardTravel().convert(in),
+    //                   pf_motion_model.getForwardTravel().convert(in),
+    //                   tracker.getForwardTravel().convert(in)));
+    //
+    //     pros::delay(50);
+    // }
 }

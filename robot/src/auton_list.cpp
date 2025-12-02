@@ -20,6 +20,6 @@ std::unordered_map<std::string, std::function<void()>> auton_list = {
 	// L_AUTON(eagles_quals, "eagles quals")
 
 	L_AUTON(sunshine_skills, "current skills")
-
+	L_AUTON(sunshine_fast_auton, "fast auton")
 };
 // clang-format on

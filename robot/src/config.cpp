@@ -269,10 +269,12 @@ Controllers<decltype(linear_pid_controller),
 
 // normal tolerances
 Tolerances<decltype(linear_tolerances_config.error),
-           decltype(linear_tolerances_config.velocity)>
+           decltype(linear_tolerances_config.velocity),
+           decltype(linear_tolerances_config.halfCircle)>
   linearTolerances(linear_tolerances_config.duration,
                    linear_tolerances_config.error,
-                   linear_tolerances_config.velocity);
+                   linear_tolerances_config.velocity,
+                   linear_tolerances_config.halfCircle);
 
 Tolerances<decltype(angular_tolerances_config.error),
            decltype(angular_tolerances_config.velocity)>
@@ -282,10 +284,12 @@ Tolerances<decltype(angular_tolerances_config.error),
 
 // large tolerances
 Tolerances<decltype(linear_tolerances_config.large_error),
-           decltype(linear_tolerances_config.large_velocity)>
+           decltype(linear_tolerances_config.large_velocity),
+           decltype(linear_tolerances_config.large_halfCircle)>
   largeLinearTolerances(linear_tolerances_config.large_duration,
                         linear_tolerances_config.large_error,
-                        linear_tolerances_config.large_velocity);
+                        linear_tolerances_config.large_velocity,
+                        linear_tolerances_config.large_halfCircle);
 
 Tolerances<decltype(angular_tolerances_config.large_error),
            decltype(angular_tolerances_config.large_velocity)>
@@ -294,9 +298,11 @@ Tolerances<decltype(angular_tolerances_config.large_error),
                          angular_tolerances_config.large_velocity);
 
 // chain tolerances
-Tolerances<decltype(linear_tolerances_config.chain_error)>
+Tolerances<decltype(linear_tolerances_config.chain_error),
+           decltype(linear_tolerances_config.chain_halfCircle)>
   chainLinearTolerances(linear_tolerances_config.chain_duration,
-                        linear_tolerances_config.chain_error
+                        linear_tolerances_config.chain_error,
+                        linear_tolerances_config.chain_halfCircle
                         // linear_tolerances_config.chain_velocity
   );
 

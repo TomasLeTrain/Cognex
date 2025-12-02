@@ -16,37 +16,40 @@ void initialize() {
     bool finished_reading_task = true;
 
     // start reading map same time as calibrating imu
-    pros::Task([&finished_reading_task] {
-        // give time for imu to start calibrating
-        pros::delay(100);
-        int map_reader_notif = screen::health::add_init_notif("Reading map");
+    pros::Task(
+      [&finished_reading_task] {
+          // give time for imu to start calibrating
+          pros::delay(100);
+          int map_reader_notif = screen::health::add_init_notif("Reading map");
 
-        // give time for notifications to propagage
-        pros::delay(50);
+          // give time for notifications to propagage
+          pros::delay(50);
 
-        // doesn't work???
-        // map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
-        //
-        // if (!map_reader.mapAvailable()) {
-        //     // try to read map
-        //     std::cout << "compressed map failed, try reading full map"
-        //               << std::endl;
-        //     map_reader.read("/usd/field_720_100_100.map");
-        //     std::cout << "finished reading at " << pros::millis() <<
-        //     std::endl;
-        // }
+          // doesn't work???
+          // map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
+          //
+          // if (!map_reader.mapAvailable()) {
+          //     // try to read map
+          //     std::cout << "compressed map failed, try reading full map"
+          //               << std::endl;
+          //     map_reader.read("/usd/field_720_100_100.map");
+          //     std::cout << "finished reading at " << pros::millis() <<
+          //     std::endl;
+          // }
 
-        if (map_reader.mapAvailable()) {
-            screen::health::update_init_notif_severity(map_reader_notif,
-                                                       screen::health::succeed);
-        } else {
-            screen::health::update_init_notif_severity(
-              map_reader_notif,
-              screen::health::critical);
-        }
+          if (map_reader.mapAvailable()) {
+              screen::health::update_init_notif_severity(
+                map_reader_notif,
+                screen::health::succeed);
+          } else {
+              screen::health::update_init_notif_severity(
+                map_reader_notif,
+                screen::health::critical);
+          }
 
-        finished_reading_task = true;
-    },"map reading");
+          finished_reading_task = true;
+      },
+      "map reading");
 
     int imu_notif = screen::health::add_init_notif("calibrating imu");
 
@@ -107,12 +110,14 @@ void initialize() {
     int init_tracker_notif =
       screen::health::add_init_notif("initializing tracker");
     // blazing tracker task
-    pros::Task([&]() {
-        while (true) {
-            tracker.update();
-            pros::delay(10);
-        }
-    },"blazing tracker");
+    pros::Task(
+      [&]() {
+          while (true) {
+              tracker.update();
+              pros::delay(10);
+          }
+      },
+      "blazing tracker");
     screen::health::update_init_notif_severity(init_tracker_notif,
                                                screen::health::succeed);
 
@@ -160,19 +165,40 @@ void initialize() {
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 
-    pros::Task([&] {
-        while (true) {
-            std::vector<std::pair<units::V2FPosition, float>> particles = {
-                { pf_motion_model.getPose(), 0.01 },
-                { pf_model.getPose(),        10   },
-                { tracker.getPosition(),     30   },
-                { smoother_model.getPose(),  100  }
-            };
+    pros::Task(
+      [&] {
+          while (true) {
+              std::vector<std::pair<units::V2FPosition, float>> particles = {
+                  { pf_motion_model.getPose(), 0.01 },
+                  { pf_model.getPose(),        10   },
+                  { tracker.getPosition(),     30   },
+                  { smoother_model.getPose(),  100  }
+              };
 
-            pf_model.setCustomParticles(particles);
-            pf_model.setCustomPrediction(smoother_model.getPose());
+              pf_model.setCustomParticles(particles);
+              pf_model.setCustomPrediction(smoother_model.getPose());
 
-            pros::delay(10);
-        }
-    },"particle task");
+              pros::delay(10);
+          }
+      },
+      "particle task");
+
+    pros::Task(
+      [&] {
+          while (true) {
+              screen::health::set_console_text(
+                std::format("vexmaps pose: {:.4f} {:.4f}\n"
+                            "motion model pose: {:.4f} {:.4f}\n"
+                            "blazing pose: {:.4f} {:.4f}\n",
+                            vexmaps_tracker.getPosition().x.convert(in),
+                            vexmaps_tracker.getPosition().y.convert(in),
+                            pf_motion_model.getPose().x.convert(in),
+                            pf_motion_model.getPose().y.convert(in),
+                            tracker.getPosition().x.convert(in),
+                            tracker.getPosition().y.convert(in)));
+
+              pros::delay(50);
+          }
+      },
+      "particle task");
 }

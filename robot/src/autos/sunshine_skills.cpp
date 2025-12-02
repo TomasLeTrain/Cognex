@@ -63,7 +63,8 @@ void run_auton() {
     // mb.moveTo(centerBallOne.x, centerBallOne.y) | run;
 
     // move to top center goal
-    mb.turnTo(centerTopGoal.x, centerTopGoal.y).turn_toleranceDuration(0_msec) | run;
+    mb.turnTo(centerTopGoal.x, centerTopGoal.y).turn_toleranceDuration(0_msec) |
+      run;
     mb.moveTo(centerTopGoal.x, centerTopGoal.y).k_lat(0.3) | run;
 
     // move back
@@ -167,33 +168,41 @@ void first_matchloader_mp() {
     using namespace blazing::lyfast;
     geometry::Line line({ -23.6_in, -23.6_in }, { -34.72_in, -39.79_in });
 
-    geometry::CubicBezier test_cubic({ -34.72_in, -39.79_in },
-                                     { -36.58_in, -41.79_in },
-                                     { -36.86_in, -46.17_in },
-                                     { -56_in, -47.1_in });
+    geometry::CubicBezier cubic({ -34.72_in, -39.79_in },
+                                // { -36.58_in, -41.79_in },
+                                { -38.5_in, -43.8_in },
+                                { -36.86_in, -46.7_in },
+                                { -56_in, -46.7_in });
 
-    geometry::Spline spline({ &line, &test_cubic });
+    geometry::Spline spline({ &line, &cubic });
 
     mp::RobotConstraints robot_constraints(10.5_in,
-                                           0.043,
+                                           // pretty good
+                                           0.08,
+                                           //
+                                           // 0.043,
                                            // 0.08,
                                            // 0.2,
+                                           // 1.0,
                                            3.25_in,
                                            450_rpm,
                                            12_lb,
                                            6.0f);
 
-    mp::LinearConstraints linear_constraints(20_inps, 20.0_mps2, 1.0_mps2);
-    // 2.0_mps2);
+    // mp::LinearConstraints linear_constraints(20_inps, 20.0_mps2, 2.0_mps2);
+    mp::LinearConstraints linear_constraints(40_inps, 20.0_mps2, 2.0_mps2);
+    // 3.0_mps2);
     // 1.6_mps2);
     // effectively infinity
+    // mp::AngularConstraints angular_constraints(0.8_radps, 0.25_radps2,
+    // 0.1_radps2);
     mp::AngularConstraints angular_constraints(20_radps, 20_radps2, 20_radps2);
 
     mp::Constraints constraints(robot_constraints,
                                 linear_constraints,
                                 angular_constraints);
 
-    mp::Trajectory cubic_trajectory(
+    mp::Trajectory spline_trajectory(
       &spline,
       constraints,
       {
@@ -206,10 +215,18 @@ void first_matchloader_mp() {
       0_inps,
       0.1_in);
 
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
+    drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
 
     // run spline on ramsette
-    Ramsete(controllers, chassis, &cubic_trajectory, 0.7, 35.0) | run;
+    Ramsete(controllers, chassis, &spline_trajectory, 0.7, 35.0)
+        .drive_errorTolerance(1_in)
+        .drive_largeErrorTolerance(6_in)
+        // mainly uses half circle to exit
+        .halfcircleTolerance(0_in, 5_in) |
+      run;
+
+    pros::delay(100);
+    drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
 }
 
 } // namespace sunshine_skills

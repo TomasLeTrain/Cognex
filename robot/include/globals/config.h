@@ -1,6 +1,7 @@
 #pragma once
 
 #include "apis.h"
+#include "blazing/tolerances.hpp"
 
 //
 
@@ -44,14 +45,17 @@ struct tolerances_config_t {
     Time duration = 1000_sec;
     blazing::ErrorTolerance<T> error = T(0);
     blazing::VelocityTolerance<T> velocity = T(100000) / sec;
+    blazing::HalfCircleTolerance halfCircle { std::nullopt };
 
     Time large_duration = 1000_sec;
     blazing::ErrorTolerance<T> large_error = T(0);
     blazing::VelocityTolerance<T> large_velocity = T(100000) / sec;
+    blazing::HalfCircleTolerance large_halfCircle { std::nullopt };
 
     Time chain_duration = 1000_sec;
     blazing::ErrorTolerance<T> chain_error = T(0);
     blazing::VelocityTolerance<T> chain_velocity = T(100000) / sec;
+    blazing::HalfCircleTolerance chain_halfCircle { std::nullopt };
 };
 
 extern drivetrain_config_t drivetrain_config;

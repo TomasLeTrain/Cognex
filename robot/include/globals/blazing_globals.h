@@ -56,7 +56,8 @@ extern Controllers<decltype(linear_pid_controller),
 
 // normal tolerances
 extern Tolerances<decltype(linear_tolerances_config.error),
-                  decltype(linear_tolerances_config.velocity)>
+                  decltype(linear_tolerances_config.velocity),
+                  decltype(linear_tolerances_config.halfCircle)>
   linearTolerances;
 
 extern Tolerances<decltype(angular_tolerances_config.error),
@@ -65,7 +66,8 @@ extern Tolerances<decltype(angular_tolerances_config.error),
 
 // large tolerances
 extern Tolerances<decltype(linear_tolerances_config.large_error),
-                  decltype(linear_tolerances_config.large_velocity)>
+                  decltype(linear_tolerances_config.large_velocity),
+                  decltype(linear_tolerances_config.large_halfCircle)>
   largeLinearTolerances;
 
 extern Tolerances<decltype(angular_tolerances_config.large_error),
@@ -73,7 +75,8 @@ extern Tolerances<decltype(angular_tolerances_config.large_error),
   largeAngularTolerances;
 
 // chain tolerances
-extern Tolerances<decltype(linear_tolerances_config.chain_error)>
+extern Tolerances<decltype(linear_tolerances_config.chain_error),
+                  decltype(linear_tolerances_config.chain_halfCircle)>
   chainLinearTolerances;
 
 extern Tolerances<decltype(angular_tolerances_config.chain_error)>

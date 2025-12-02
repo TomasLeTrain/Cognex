@@ -26,12 +26,14 @@ template<typename ControllersType,
          typename TrackerType,
          typename TolerancesType>
     requires poseTracker<TrackerType> && forwardTravelTracker<TrackerType> &&
-             TankDrivetrain<DrivetrainType> &&
-             hasVelocityFeedforward<ControllersType>
+               TankDrivetrain<DrivetrainType> &&
+               hasVelocityFeedforward<ControllersType>
 class Ramsete : public Motion<ControllersType,
                               DrivetrainType,
                               TrackerType,
-                              TolerancesType> {
+                              TolerancesType>,
+                public LinearMotion,
+                public AngularMotion {
   private:
     using zeta_units = Divided<Number, Angle>;
     using beta_units = Exponentiated<Divided<Angle, Length>, std::ratio<2>>;
@@ -78,9 +80,12 @@ class Ramsete : public Motion<ControllersType,
             return reversed ? reverseAngle(heading) : heading;
         }();
 
-        int target_idx = target_trajectory->get_index_by_distance(
-          units::max(0_in,
-                     this->tracker.getForwardTravel() - state.start_distance));
+        int target_idx =
+          // target_trajectory->get_index_by_distance(
+          //        units::max(0_in,
+          //                   this->tracker.getForwardTravel() -
+          //                   state.start_distance));
+          target_trajectory->findClosestPointIndex(position);
 
         mp::MotionPoint target_motion_point =
           target_trajectory->points[target_idx];
@@ -125,15 +130,17 @@ class Ramsete : public Motion<ControllersType,
           this->controllers.velocity_feedforward.update(new_speeds, delta_time);
 
         auto curve_endpoint = target_trajectory->points.back().point;
+        auto curve_endpoint_heading = target_trajectory->points.back().heading;
         auto distance_to_end = curve_endpoint.distanceTo(position);
 
         // update tolerances
         this->tolerances.linearErrorToleranceUpdate(distance_to_end);
         this->tolerances.linearVelocityToleranceUpdate(
           this->tracker.getLinearVelocity());
-        this->tolerances.linearHalfcircleToleranceUpdate(position,
-                                                         curve_endpoint,
-                                                         heading);
+        this->tolerances.linearHalfcircleToleranceUpdate(
+          position,
+          curve_endpoint,
+          curve_endpoint_heading);
 
         result.finished = false;
 
@@ -156,7 +163,8 @@ class Ramsete : public Motion<ControllersType,
         // check timeout
         result.finished |= timeoutDone(m_timeout, state.start_time);
 
-        // finished if any of the available tolerances or timeout are triggered
+        // finished if any of the available tolerances or timeout are
+        // triggered
         if (result.finished) {
             this->drivetrain.moveArcade(0_volt, 0_volt);
             // returns immediately to avoid more movement
@@ -170,20 +178,21 @@ class Ramsete : public Motion<ControllersType,
         auto [normal_left_voltage, normal_right_voltage] =
           desaturate(saturated_voltages, 1_volt);
 
-        std::cout << std::format("pos: {:.2f} {:.2f}, error: {:.2f} "
-                                 "{:.2f}, target: {:.2f} {:.2f} k {:.4f}",
-                                 // "lin/alg: {:.2f} {:.2f}, k {:.4f}",
-                                 // new_speeds.linear_velocity.convert(inps),
-                                 // new_speeds.angular_velocity.convert(radps),
-                                 // k.internal())
-                                 position.x.convert(in),
-                                 position.y.convert(in),
-                                 local_error.x.convert(in),
-                                 local_error.y.convert(in),
-                                 target.x.convert(in),
-                                 target.y.convert(in),
-                                 k.internal())
-                  << std::endl;
+        // std::cout << std::format("pos: {:.2f} {:.2f}, error: {:.2f} "
+        //                          "{:.2f}, target: {:.2f} {:.2f} k {:.4f}",
+        //                          // "lin/alg: {:.2f} {:.2f}, k {:.4f}",
+        //                          // new_speeds.linear_velocity.convert(inps),
+        //                          //
+        //                          new_speeds.angular_velocity.convert(radps),
+        //                          // k.internal())
+        //                          position.x.convert(in),
+        //                          position.y.convert(in),
+        //                          local_error.x.convert(in),
+        //                          local_error.y.convert(in),
+        //                          target.x.convert(in),
+        //                          target.y.convert(in),
+        //                          k.internal())
+        //           << std::endl;
 
         this->drivetrain.moveTank(normal_left_voltage, normal_right_voltage);
 
