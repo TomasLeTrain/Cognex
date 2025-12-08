@@ -1,8 +1,8 @@
 #include "apis.h"
 //
 #include "globals.h"
-#include "systems/piston.h"
 #include "systems/matchloader.h"
+#include "systems/piston.h"
 
 namespace matchloader {
 bool is_driver = false;
@@ -19,7 +19,7 @@ void set(bool new_matchloader_state) {
     matchloader_state = piston_state_t(new_matchloader_state);
 }
 
-piston_state_t get(){
+piston_state_t get() {
     return matchloader_state;
 }
 
@@ -69,13 +69,24 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    pros::Task main_matchloader_task([] {
-        while (true) {
-            update();
-            pros::delay(10);
-        }
-    },"matchloader");
+    pros::Task main_matchloader_task(
+      [] {
+          while (true) {
+              update();
+              pros::delay(10);
+          }
+      },
+      "matchloader");
 
     tasks_active = true;
 }
+
+void down() {
+    set(piston_state_t::active);
+}
+
+void up() {
+    set(piston_state_t::inactive);
+}
+
 }; // namespace matchloader

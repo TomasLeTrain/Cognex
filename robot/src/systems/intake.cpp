@@ -406,11 +406,11 @@ void init(bool gdriver) {
 }
 
 // helper tasks to do common stuff
-void _intake() {
+void in() {
     set(intake);
 }
 
-void _outtake() {
+void out() {
     set(outtake);
 }
 

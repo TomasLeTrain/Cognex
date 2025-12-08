@@ -12,45 +12,6 @@ void initialize() {
     // initialize screens
     screen::init();
 
-    // dont wait for task to finish?
-    bool finished_reading_task = true;
-
-    // start reading map same time as calibrating imu
-    pros::Task(
-      [&finished_reading_task] {
-          // give time for imu to start calibrating
-          pros::delay(100);
-          int map_reader_notif = screen::health::add_init_notif("Reading map");
-
-          // give time for notifications to propagage
-          pros::delay(50);
-
-          // doesn't work???
-          // map_reader.read_compressed("/usd/field_720_100_100.map.compressed");
-          //
-          // if (!map_reader.mapAvailable()) {
-          //     // try to read map
-          //     std::cout << "compressed map failed, try reading full map"
-          //               << std::endl;
-          //     map_reader.read("/usd/field_720_100_100.map");
-          //     std::cout << "finished reading at " << pros::millis() <<
-          //     std::endl;
-          // }
-
-          if (map_reader.mapAvailable()) {
-              screen::health::update_init_notif_severity(
-                map_reader_notif,
-                screen::health::succeed);
-          } else {
-              screen::health::update_init_notif_severity(
-                map_reader_notif,
-                screen::health::critical);
-          }
-
-          finished_reading_task = true;
-      },
-      "map reading");
-
     int imu_notif = screen::health::add_init_notif("calibrating imu");
 
     // imu calibration
@@ -85,13 +46,6 @@ void initialize() {
                                                    screen::health::succeed);
     }
 
-    // pros::delay(100);
-
-    // wait for reading task to finish
-    while (!finished_reading_task) {
-        pros::delay(20);
-    }
-
     int init_models_notif =
       screen::health::add_init_notif("initializing models");
     // initialize all models
@@ -102,7 +56,7 @@ void initialize() {
     int init_executors_notif =
       screen::health::add_init_notif("initializing executors");
     // needed for async/chain motions to run
-    async_exec.init();
+    async.init();
     chain.init();
     screen::health::update_init_notif_severity(init_executors_notif,
                                                screen::health::succeed);

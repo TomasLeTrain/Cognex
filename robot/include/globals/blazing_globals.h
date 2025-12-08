@@ -95,7 +95,7 @@ extern Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 // executors
 extern RunExecutor run;
-extern AsyncExecutor async_exec;
+extern AsyncExecutor async;
 
 extern MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing;
 

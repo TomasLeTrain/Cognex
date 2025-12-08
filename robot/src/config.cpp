@@ -331,7 +331,7 @@ Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 // executors
 RunExecutor run;
-AsyncExecutor async_exec;
+AsyncExecutor async;
 
 MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing(chassis,
                                                                    controllers);
@@ -420,33 +420,26 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
                           // can be left on false since it falls back to
                           // drivetrain of no rotations are connected
 
-// init map reader
-MapReader<> map_reader;
-
 DistanceSensorModel front_laser_model(&front_distance,
                                       front_distance_offsets,
                                       front_distance_scale_factor,
                                       "front",
-                                      distance_sensor_config,
-                                      &map_reader);
+                                      distance_sensor_config);
 DistanceSensorModel left_laser_model(&left_distance,
                                      left_distance_offsets,
                                      left_distance_scale_factor,
                                      "left",
-                                     distance_sensor_config,
-                                     &map_reader);
+                                     distance_sensor_config);
 DistanceSensorModel back_laser_model(&back_distance,
                                      back_distance_offsets,
                                      back_distance_scale_factor,
                                      "back",
-                                     distance_sensor_config,
-                                     &map_reader);
+                                     distance_sensor_config);
 DistanceSensorModel right_laser_model(&right_distance,
                                       right_distance_offsets,
                                       right_distance_scale_factor,
                                       "right",
-                                      distance_sensor_config,
-                                      &map_reader);
+                                      distance_sensor_config);
 
 vexmaps::ParticleFilterModel<pf_particle_count> pf_model(&pf_motion_model,
                                                          { // distance sensors

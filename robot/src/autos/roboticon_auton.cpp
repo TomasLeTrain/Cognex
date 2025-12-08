@@ -47,8 +47,8 @@ void run_auton() {
     matchloader::set(active);
     pros::delay(50);
 
-    mb.moveTo(19, -23.2 * l).drive_maxVolt(0.3_volt) | async_exec;
-    async_exec.wait();
+    mb.moveTo(19, -23.2 * l).drive_maxVolt(0.3_volt) | async;
+    async.wait();
     // printf("after move\n");
 
     if (bl) {
@@ -60,10 +60,10 @@ void run_auton() {
         intake::set(intake::scoring_middle);
         pros::delay(2000);
     } else {
-        mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | async_exec;
+        mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | async;
         pros::delay(200);
         matchloader::set(inactive);
-        async_exec.wait();
+        async.wait();
         intake::set(intake::scoring_bottom);
         pros::delay(2000);
     }
