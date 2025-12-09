@@ -18,6 +18,7 @@
 namespace sunshine_skills {
 
 void first_matchloader_mp();
+void chained_first_matchloader(Length match1);
 
 // you can add any variables / functions here
 
@@ -38,7 +39,7 @@ void run_auton() {
 
     units::V2FPosition target_point;
 
-    intake::set(intake::intake);
+    intake::in();
 
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
@@ -56,20 +57,31 @@ void run_auton() {
     // move away from park
     mb.moveTo(-36_in, 36_in)
         .drive_errorTolerance(5_in)
-        .drive_toleranceDuration(50_msec) |
-      run;
+        .drive_toleranceDuration(50_msec)
+        .drive_chainErrorTolerance(8_in)
+        .setChainTime(50_msec) |
+      chain;
 
     // mb.turnTo(centerBallOne.x, centerBallOne.y) | run;
     // mb.moveTo(centerBallOne.x, centerBallOne.y) | run;
 
     // move to top center goal
-    mb.turnTo(centerTopGoal.x, centerTopGoal.y).turn_toleranceDuration(0_msec) |
-      run;
-    mb.moveTo(centerTopGoal.x, centerTopGoal.y).k_lat(0.3) | run;
+    mb.turnTo(centerTopGoal.x, centerTopGoal.y)
+        // .turn_errorTolerance(10 * deg)
+        // .turn_toleranceDuration(0_msec)
+        .turn_chainErrorTolerance(30 * deg)
+        .setChainTime(0.001_msec) |
+      chain;
+
+    mb.moveTo(centerTopGoal.x, centerTopGoal.y).k_lat(0.3) | chain;
+
+    chain.wait();
+    intake::score_middle();
 
     // move back
-    drivetrain.moveTank(-0.6_volt, -0.5_volt);
-    pros::delay(300);
+    drivetrain.moveTank(-1.0_volt, -0.9_volt);
+    pros::delay(150);
+    intake::in();
 
     // move to center balls 2
     mb.moveTo(-24_in, -24_in)
@@ -78,20 +90,31 @@ void run_auton() {
         .drive_toleranceDuration(0_sec) |
       run;
 
+    // TODO: might have to do earlier based on distance?
+    matchloader::down();
+
     // boomerang to matchloader 1
     // mb.boomerang(-58.5_in, match1, 180)
     //     .drive_errorTolerance(3_in)
     //     .drive_largeErrorTolerance(4_in)
     //     .drive_maxVolt(0.4_volt) |
     //   run;
-    first_matchloader_mp();
+    // first_matchloader_mp();
+    chained_first_matchloader(match1);
 
     // move to goal
     mb.moveTo(-24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    // TODO: maybe should be based on when its close enough to save score time?
+    intake::score_long();
+
+    // TODO: add delay for however long
 
     // move towards balls
     drivetrain.moveTank(1.0_volt, -1.0_volt);
     pros::delay(400);
+    intake::in();
+
+    // TODO: matchload??
 
     // get balls
     mb.moveTo(24, -24)
@@ -103,14 +126,22 @@ void run_auton() {
     // get close to matchload 2
     mb.moveTo(48, match2).drive_toleranceDuration(0_msec) | run;
 
+    matchloader::down();
+
     // turn to matchload 2
     mb.turnTo(70, match2).turn_toleranceDuration(0_msec) | run;
 
     target_point = make_machloader_point({ 67.71_in, match2 }, 7_in);
     mb.moveTo(target_point.x, target_point.y) | run;
+    // TODO: delay however long
 
     // move to goal
     mb.moveTo(24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    // TODO: start when close enough
+    intake::score_long();
+    // TODO: delay however long
+    matchloader::up();
+    intake::in();
 
     // simulate going over park
     mb.moveTo(48_in, 24_in)
@@ -119,6 +150,7 @@ void run_auton() {
       run;
 
     // explode center balls
+    matchloader::down();
     mb.moveTo(24, 24) | run;
 
     // go to bottom goal
@@ -126,23 +158,31 @@ void run_auton() {
         .turn_toleranceDuration(0_sec) |
       run;
     mb.moveTo(centerBottomGoal.x, centerBottomGoal.y) | run;
+    intake::score_bottom();
+    // TODO: delay
 
     // go towards match3 backwards
     mb.moveTo(48, match3).reverse().drive_toleranceDuration(0_sec) | run;
 
     // turn to and go to match3
+    matchloader::down();
     mb.turnTo(70, match3).turn_toleranceDuration(0.01_sec) | run;
     target_point = make_machloader_point({ 67.71_in, match3 }, 7_in);
     mb.moveTo(target_point.x, target_point.y) | run;
 
     // go to goal
     mb.moveTo(24_in, long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    // TODO: start when close enough
+    intake::score_long();
+    // TODO: delay
+    matchloader::up();
+    intake::in();
 
     // move towards balls
     drivetrain.moveTank(1.0_volt, -1.0_volt);
     pros::delay(500);
 
-    // balls
+    // go through first center (does not have any balls)
     mb.moveTo(-30, 34.5)
         .drive_errorTolerance(7_in)
         .drive_toleranceDuration(0.01_sec)
@@ -150,15 +190,22 @@ void run_auton() {
       run;
 
     // matchloader 4
+    matchloader::down();
     mb.boomerang(-58.5_in, match4, 180)
         .lead(0.5)
         .drive_errorTolerance(3_in)
         .drive_largeErrorTolerance(4_in)
         .drive_maxVolt(0.4_volt) |
       run;
+    // TODO: delay
 
     // go to goal
     mb.moveTo(-24_in, long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    // TODO: start just at right time
+    intake::score_long();
+    // TODO: delay
+    matchloader::up();
+    intake::in();
 
     // go to park
     mb.boomerang(-60.755, 18.904, 270).lead(0.3, 0.1) | run;
@@ -227,6 +274,17 @@ void first_matchloader_mp() {
 
     pros::delay(100);
     drivetrain.setBrakeMode(pros::v5::MotorBrake::coast);
+}
+
+void chained_first_matchloader(Length match1) {
+    // boomerang to matchloader 1
+    mb.moveTo(-39.823, -41.915).drive_minVolt(0.5_volt) | chain;
+    mb.boomerang(-58.5_in, match1, 180).lead(0.2).closeThreshold(6_in)
+      // .drive_errorTolerance(3_in)
+      // .drive_largeErrorTolerance(4_in)
+      // .drive_maxVolt(0.4_volt)
+      | chain;
+    chain.wait();
 }
 
 } // namespace sunshine_skills

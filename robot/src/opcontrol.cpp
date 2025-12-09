@@ -24,6 +24,10 @@ void opcontrol() {
     drive_pid_tuning();
     return;
 
+    // 90 turn:  2.6 3.35
+    // 135 turn: 2.6 3.95
+    // 180 turn: 2.6 4.45
+
     // cancel any auton motions that could be currently running
 
     intake::init(true);
@@ -85,7 +89,7 @@ void opcontrol() {
     // odom_tuning();
 
     // move odom up automatically
-    odom_retract::set(piston_state_t::active);
+    odom_retract::retractOdom();
 
     RobotSetPose({ 49_in, -16.8_in, 200 * deg });
 

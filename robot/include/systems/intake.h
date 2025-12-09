@@ -33,4 +33,12 @@ void set(intake_state_t new_intake_state);
 void setColorSortEnabled(bool enabled);
 
 void init(bool gdriver);
+
+// helper tasks to do common stuff
+void in();
+void out();
+void score_long();
+void score_middle();
+void score_bottom();
+
 } // namespace intake

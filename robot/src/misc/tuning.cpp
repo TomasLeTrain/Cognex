@@ -117,7 +117,7 @@ void turn_pid_tuning() {
                   << std::endl;
 
         std::cout << std::format("took {:.4f} time to finish turn",
-                                 time_difference.convert(sec))
+                                 time_difference.convert(msec))
                   << std::endl;
 
         while (
@@ -233,7 +233,7 @@ void drive_pid_tuning() {
                 mb.moveTo(-target_distance, 0_in)
                     .drive_maxVolt(0.6_volt)
                     .reverse() |
-                  run;
+                  async;
             }
 
             if (controller.get_digital_new_release(

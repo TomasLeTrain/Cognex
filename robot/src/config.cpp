@@ -381,11 +381,12 @@ MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing(chassis,
                                                                    controllers);
 
 // same as default chain lerp
-auto chain_lerp = [](Voltage a, Voltage b, double t) -> Voltage {
-    return (1 - t) * a + t * b;
-};
+// auto chain_lerp = [](Voltage a, Voltage b, double t) -> Voltage {
+//     return (1 - t) * a + t * b;
+// };
 
-ChainedExecutor chain(100_msec, chain_lerp);
+// ChainedExecutor chain(100_msec, chain_lerp);
+ChainedExecutor chain(100_msec);
 
 // custom cos-like func
 double angular_linear_func(Angle angle) {

@@ -55,6 +55,10 @@ void lowerOdom() {
     set(piston_state_t::inactive);
 }
 
+piston_state_t get() {
+    return odom_retract_state;
+}
+
 // updates the state of the subsystem
 void update() {
     if (is_driver) {
