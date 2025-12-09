@@ -1,4 +1,5 @@
 #include "autos.h"
+#include "globals/config.h"
 #include "globals/vexmaps_globals.h"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
@@ -24,6 +25,31 @@ void RobotSetPose(double x, double y, double angle) {
 units::Pose RobotGetPose() {
     return model_manager.getPose();
     // return { tracker.getPosition(), tracker.getAngle() };
+}
+
+void setMaxDistanceThresholdAll(FLength new_length) {
+    front_laser_model.setMaxDistanceDifference(new_length);
+    back_laser_model.setMaxDistanceDifference(new_length);
+    left_laser_model.setMaxDistanceDifference(new_length);
+    right_laser_model.setMaxDistanceDifference(new_length);
+}
+
+void resetMaxDistanceThresholdAll(FLength default_distance) {
+    setMaxDistanceThresholdAll(default_distance);
+}
+
+void setSmootherAlphas(std::optional<float> new_alpha_x,
+                       std::optional<float> new_alpha_y) {
+    SmootherConfig new_smoother_config = smoother_model.getConfiguration();
+
+    if (new_alpha_x) new_smoother_config.alpha_x = *new_alpha_x;
+    if (new_alpha_y) new_smoother_config.alpha_y = *new_alpha_y;
+
+    smoother_model.changeConfiguration(new_smoother_config);
+}
+
+void resetSmootherConfig(SmootherConfig default_config) {
+    smoother_model.changeConfiguration(default_config);
 }
 
 // effectively resets to whatever mcl measures

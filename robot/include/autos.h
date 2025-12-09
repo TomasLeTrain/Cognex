@@ -19,6 +19,13 @@ void RobotSetPose(double x, double y, double angle);
 // gets pose from vexmaps tracker
 units::Pose RobotGetPose();
 
+void setMaxDistanceThresholdAll(FLength new_length);
+void resetMaxDistanceThresholdAll(
+  FLength default_distance = distance_sensor_config.maxDistanceDifference);
+void setSmootherAlphas(std::optional<float> new_alpha_x,
+                       std::optional<float> new_alpha_y);
+void resetSmootherConfig(SmootherConfig default_config = smoother_config);
+
 // changes vexmaps tracker whose pose is used
 void changePoseGetter(vexmaps::LocalizationModel* new_getter);
 
