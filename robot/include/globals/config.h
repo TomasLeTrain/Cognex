@@ -2,6 +2,7 @@
 
 #include "apis.h"
 #include "blazing/tolerances.hpp"
+#include "vexmaps/mcl/config.hpp"
 
 //
 
@@ -81,27 +82,10 @@ extern vexmaps::MotionModelConfig motion_model_config;
 extern vexmaps::PFConfiguration Pfconfig;
 extern vexmaps::SmootherConfig smoother_config;
 
+extern vexmaps::DistanceSensorConfig distance_sensor_config;
+
+
 // header only configs
-
-// likely does not need to change
-inline vexmaps::DistanceSensorConfig distance_sensor_config {
-    // all floats without units are in meters
-    .exp_l = 1.5,
-    .std_deviation = (2_in).internal(),
-    .map_deviation = (3_in).internal(),
-
-    // sum of coefficients 1
-    .randomCoeff = 0.0,
-    .expCoeff = 0.15,
-    .normalCoeff = 0.6,
-    .mapCoeff = 0.25,
-
-    // static constexpr FLength maxDistanceDifference = 18_in;
-    .maxDistanceDifference = 3_in,
-
-    // static constexpr bool logging = false;
-    .logging = true
-};
 
 // only variable which cannot be set on globals.cpp
 // constexpr size_t pf_particle_count = 10000;

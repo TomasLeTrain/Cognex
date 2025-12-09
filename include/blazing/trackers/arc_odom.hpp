@@ -238,7 +238,7 @@ class ArcOdomTracker {
                 heading_delta += current;
                 imu_count++;
             } else {
-                printf("imu returned infinity!\n");
+                // printf("imu returned infinity!\n");
             }
         }
 
@@ -335,7 +335,7 @@ class ArcOdomTracker {
         for (auto& tracker : forwards_trackers) {
             Length current_delta = tracker->getDelta();
             if (!std::isfinite(current_delta.internal())) {
-                printf("forward tracker returned infinity!\n");
+                // printf("forward tracker returned infinity!\n");
                 first_failed = true;
                 continue;
             }
@@ -352,7 +352,7 @@ class ArcOdomTracker {
         for (auto& tracker : sideways_trackers) {
             Length current_delta = tracker->getDelta();
             if (!std::isfinite(current_delta.internal())) {
-                printf("sideways tracker returned infinity!\n");
+                // printf("sideways tracker returned infinity!\n");
                 continue;
             }
             deltas.y = current_delta;

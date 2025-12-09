@@ -12,20 +12,33 @@ using namespace vexmaps;
 
 // clang-format off
 // motor groups
-pros::MotorGroup left_motors({ -12, -13, 14 }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
-pros::MotorGroup right_motors({ 7, 17, -16 }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+
+int8_t left_front = 3;
+int8_t left_middle = -1;
+int8_t left_back = -15;
+
+int8_t right_front = -13;
+int8_t right_middle = 14;
+int8_t right_back = 12;
+
+bool vexmaps_logging_enabled = false;
+
+pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 // clang-format on
 
 // inertial sensor
-vexmaps::ScaledIMU imu(15, (360.0 + 3.8) / 360.0);
+// vexmaps::ScaledIMU imu(15, (360.0 + 3.8) / 360.0);
+// vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
+vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
 // intake motors
 // pros::Motor bottom_motor(-19);
 // pros::Motor top_motor(-1);
 
 // disable for testing
-pros::Motor bottom_motor(21);
-pros::Motor top_motor(21);
+pros::Motor bottom_motor(16);
+pros::Motor top_motor(18);
 
 pros::Optical middle_intake_color_sensor(8);
 pros::Optical bottom_intake_color_sensor(21);
@@ -35,9 +48,9 @@ pros::Optical bottom_intake_color_sensor(21);
 // pros::adi::DigitalOut intake_stop_piston('H', true);
 pros::adi::DigitalOut intake_stop_piston('A', true);
 
-pros::adi::DigitalOut matchloader_piston('G', false);
-pros::adi::DigitalOut wings_piston('F', false);
-pros::adi::DigitalOut odom_retract_piston('E', false);
+pros::adi::DigitalOut matchloader_piston('A', false);
+pros::adi::DigitalOut wings_piston('A', false);
+pros::adi::DigitalOut odom_retract_piston('A', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
@@ -51,6 +64,7 @@ pros::Distance left_distance(5);
 pros::Distance right_distance(10);
 
 // distance sensor offsets
+// TODO: update
 units::Pose front_distance_offsets = { 5.45_in,
                                        -(12.5_in / 2) + 1.6_in,
                                        0_stDeg };
@@ -65,6 +79,7 @@ units::Pose right_distance_offsets = { 2.5_in,
                                        270_stDeg };
 
 // TODO: gray right distance sensor bad (dc's)
+// TODO: update
 double front_distance_scale_factor = 0.985454688793;
 double left_distance_scale_factor = 0.986105769705;
 double back_distance_scale_factor = 0.97905795044;
@@ -72,6 +87,7 @@ double right_distance_scale_factor = 0.987332523721;
 
 /* vexmaps configuration */
 
+// TODO:update
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.9654_in,
@@ -91,25 +107,33 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
                                         .rpm = 450_rpm };
 
 // units are in inches
-linear_pid_config_t linear_pid_config { .kp = 4.5,
-                                        .ki = 0,
-                                        .kd = 3.6,
-                                        .windupRange = 7,
-                                        .maxVoltage = 127 };
+linear_pid_config_t linear_pid_config {
+    .kp = 8.65,
+    .ki = 0,
+    .kd = 10.0,
+
+    // linear_pid_config_t linear_pid_config { .kp = 4.5,
+    //                                         .ki = 0,
+    //                                         .kd = 3.6,
+    .windupRange = 7,
+    .maxVoltage = 127
+};
 
 // units are in degrees
 angular_pid_config_t angular_pid_config {
-    .kp = 2.5,
+    .kp = 2.6,
     .ki = 0,
-    .kd = 3.5,
+    .kd = 3.35,
     .windupRange = 14,
     .maxVoltage = 127,
 };
 
-LinearSlewController linear_slew(0.07_volt, 0.06_volt);
-AngularSlewController angular_slew(0.8_volt);
+// LinearSlewController linear_slew(0.07_volt, 0.06_volt);
+LinearSlewController linear_slew {};
+// AngularSlewController angular_slew(0.8_volt);
+AngularSlewController angular_slew {};
 
-LinearSlewController driver_linear_slew(0.1_volt, 0.09_volt);
+// LinearSlewController driver_linear_slew(0.1_volt, 0.09_volt);
 
 LinearVoltageClampController linear_voltage_constraints;
 AngularVoltageClampController angular_voltage_constraints;
@@ -146,10 +170,10 @@ vexmaps::MotionModelConfig motion_model_config = {};
 vexmaps::PFConfiguration Pfconfig = {
     // .logging = false,
     // .particle_logging = false,
-    .logging = true,
-    .particle_logging = true,
+    .logging = true && vexmaps_logging_enabled,
+    .particle_logging = true && vexmaps_logging_enabled,
     //
-    .custom_particle_logging = true,
+    .custom_particle_logging = true && vexmaps_logging_enabled,
 };
 vexmaps::SmootherConfig smoother_config = {
     // for all parameters:
@@ -170,6 +194,26 @@ vexmaps::SmootherConfig smoother_config = {
     .beta_x = 1,
     .beta_y = 1,
     .beta_theta = 1
+};
+
+// likely does not need to change
+vexmaps::DistanceSensorConfig distance_sensor_config {
+    // all floats without units are in meters
+    .exp_l = 1.5,
+    .std_deviation = (2_in).internal(),
+    .map_deviation = (3_in).internal(),
+
+    // sum of coefficients 1
+    .randomCoeff = 0.0,
+    .expCoeff = 0.15,
+    .normalCoeff = 0.6,
+    .mapCoeff = 0.25,
+
+    // static constexpr FLength maxDistanceDifference = 18_in;
+    .maxDistanceDifference = 3_in,
+
+    // static constexpr bool logging = false;
+    .logging = true && vexmaps_logging_enabled
 };
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);

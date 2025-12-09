@@ -20,6 +20,9 @@ void opcontrol() {
 
     // autonomous();
     // return;
+    // turn_pid_tuning();
+    drive_pid_tuning();
+    return;
 
     // cancel any auton motions that could be currently running
 
