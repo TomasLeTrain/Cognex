@@ -28,9 +28,9 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 // clang-format on
 
 // inertial sensor
-// vexmaps::ScaledIMU imu(15, (360.0 + 3.8) / 360.0);
+vexmaps::ScaledIMU imu(17, (360.0 + 3.8) / 360.0);
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
-vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
+// vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
 // intake motors
 // pros::Motor bottom_motor(-19);
@@ -40,47 +40,47 @@ vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 pros::Motor bottom_motor(-16);
 pros::Motor top_motor(-18);
 
-pros::Optical middle_intake_color_sensor(8);
+pros::Optical middle_intake_color_sensor(10);
 pros::Optical bottom_intake_color_sensor(21);
 
 // pistons
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
-pros::adi::DigitalOut top_intake_piston('A', true);
-pros::adi::DigitalOut middle_intake_piston('C', true);
-pros::adi::DigitalOut wings_piston('B', false);
+pros::adi::DigitalOut top_intake_piston('B', true);
+pros::adi::DigitalOut middle_intake_piston('D', true);
+pros::adi::DigitalOut wings_piston('C', false);
 
-pros::adi::DigitalOut matchloader_piston('C', false);
-pros::adi::DigitalOut odom_retract_piston('C', false);
+pros::adi::DigitalOut matchloader_piston('A', false);
+pros::adi::DigitalOut odom_retract_piston('E', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(4);
-pros::Rotation sideways_odom_rotation(3);
+pros::Rotation forwards_odom_rotation(21);
+pros::Rotation sideways_odom_rotation(7);
 
 // particle filter distance sensors
-pros::Distance front_distance(6);
-pros::Distance back_distance(11);
-pros::Distance left_distance(5);
-pros::Distance right_distance(10);
+pros::Distance front_distance(9);
+pros::Distance back_distance(19);
+pros::Distance left_distance(8);
+pros::Distance right_distance(20);
 
 // distance sensor offsets
 // TODO: update
 
-units::Pose front_distance_offsets = { +(15.5_in / 2) + 0.375_in - 4.3_in,
-                                       +(12.5_in / 2) - 1.75_in,
+units::Pose front_distance_offsets = { 3.5_in,
+                                       +(12.5_in / 2) - 1.25_in,
                                        0_stDeg };
 
-units::Pose left_distance_offsets = { +(15.5_in / 2) - 4.3_in,
-                                      +(12.5_in / 2) - 1.25_in,
+units::Pose left_distance_offsets = { 3.5_in + 0.625_in,
+                                      +(12.5_in / 2) - 1.25_in - 0.4_in,
                                       90_stDeg };
 
 units::Pose back_distance_offsets = { -(15.5_in / 2) + 1.4_in,
-                                      2.9_in,
+                                      3.0_in,
                                       180_stDeg };
 
-units::Pose right_distance_offsets = { +(15.5_in / 2) - 6.9_in,
-                                       -(12.5_in / 2) + 2.2_in,
+units::Pose right_distance_offsets = { -0.7_in,
+                                       -(12.5_in / 2) + 2.25_in,
                                        270_stDeg };
 
 // front from here was moved to front in new one as well
@@ -89,11 +89,17 @@ units::Pose right_distance_offsets = { +(15.5_in / 2) - 6.9_in,
 // double back_distance_scale_factor = 0.97905795044;
 // double right_distance_scale_factor = 0.987332523721;
 
+// old    new
+// front -> right
+// back -> back
+// left -> front
+// new -> left
+
 // TODO: update
-double front_distance_scale_factor = 0.985454688793;
+double front_distance_scale_factor = 0.986105769705;
 double left_distance_scale_factor = 0.985;
-double back_distance_scale_factor = 0.985;
-double right_distance_scale_factor = 0.985;
+double back_distance_scale_factor = 0.97905795044;
+double right_distance_scale_factor = 0.985454688793;
 
 /* vexmaps configuration */
 
@@ -106,7 +112,7 @@ tracker_config_t forwards_tracker_config = {
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.9869_in,
-    .offset = 1.0_in,
+    .offset = 2.5_in,
 };
 
 /* drivetrain / pid configuration */
@@ -222,6 +228,8 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
     // static constexpr FLength maxDistanceDifference = 18_in;
     .maxDistanceDifference = 3_in,
     .maxOutDistanceDifference = 4.5_in,
+
+    .detect_obstacles = false,
 
     // static constexpr bool logging = false;
     .logging = true && vexmaps_logging_enabled

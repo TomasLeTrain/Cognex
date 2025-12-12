@@ -224,9 +224,7 @@ class DistanceSensorModel : public Sensor {
 
             bool make_shorter = false;
 
-            bool detect_obstacles = false;
-
-            if (detect_obstacles) {
+            if (config.detect_obstacles) {
                 FLength matchloader_x = 70_in;
                 FLength matchloader_y = 46.7_in;
                 FLength match_big_radius = 7_in;
