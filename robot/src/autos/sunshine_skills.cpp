@@ -51,13 +51,13 @@ void run_auton() {
 
     units::V2Position centerBallOne = { -24_in, 24_in };
 
-    units::V2Position centerTopGoal = { -12_in, 11_in };
-    units::V2Position centerBottomGoal = { 10.4_in, 11_in };
+    units::V2Position centerTopGoal = { -13_in, 12_in };
+    units::V2Position centerBottomGoal = { 13_in, 13_in };
 
     // move away from park
-    mb.moveTo(-36_in, 36_in)
-        .drive_errorTolerance(5_in)
-        .drive_toleranceDuration(50_msec)
+    mb.moveTo(-37_in, 36_in)
+        // .drive_errorTolerance(5_in)
+        // .drive_toleranceDuration(50_msec)
         .drive_chainErrorTolerance(8_in)
         .setChainTime(50_msec) |
       chain;
@@ -131,7 +131,7 @@ void run_auton() {
     // turn to matchload 2
     mb.turnTo(70, match2).turn_toleranceDuration(0_msec) | run;
 
-    target_point = make_machloader_point({ 67.71_in, match2 }, 7_in);
+    target_point = make_machloader_point({ 67.71_in, match2 }, 11_in);
     mb.moveTo(target_point.x, target_point.y) | run;
     // TODO: delay however long
 
@@ -167,7 +167,7 @@ void run_auton() {
     // turn to and go to match3
     matchloader::down();
     mb.turnTo(70, match3).turn_toleranceDuration(0.01_sec) | run;
-    target_point = make_machloader_point({ 67.71_in, match3 }, 7_in);
+    target_point = make_machloader_point({ 67.71_in, match3 }, 11_in);
     mb.moveTo(target_point.x, target_point.y) | run;
 
     // go to goal
@@ -191,10 +191,11 @@ void run_auton() {
 
     // matchloader 4
     matchloader::down();
-    mb.boomerang(-58.5_in, match4, 180)
+    mb.boomerang(-55.8_in, match4, 180)
         .lead(0.5)
-        .drive_errorTolerance(3_in)
-        .drive_largeErrorTolerance(4_in)
+        // .drive_errorTolerance(3_in)
+        // .drive_largeErrorTolerance(4_in)
+        .drive_minVolt(0.1_volt)
         .drive_maxVolt(0.4_volt) |
       run;
     // TODO: delay
@@ -265,7 +266,7 @@ void first_matchloader_mp() {
     drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
 
     // run spline on ramsette
-    Ramsete(controllers, chassis, &spline_trajectory, 0.7, 35.0)
+    Ramsete(controllers, vexmaps_chassis, &spline_trajectory, 0.7, 35.0)
         .drive_errorTolerance(1_in)
         .drive_largeErrorTolerance(6_in)
         // mainly uses half circle to exit
@@ -279,7 +280,7 @@ void first_matchloader_mp() {
 void chained_first_matchloader(Length match1) {
     // boomerang to matchloader 1
     mb.moveTo(-39.823, -41.915).drive_minVolt(0.5_volt) | chain;
-    mb.boomerang(-58.5_in, match1, 180).lead(0.2).closeThreshold(6_in)
+    mb.boomerang(-55.5_in, match1, 180).lead(0.2).closeThreshold(6_in)
       // .drive_errorTolerance(3_in)
       // .drive_largeErrorTolerance(4_in)
       // .drive_maxVolt(0.4_volt)

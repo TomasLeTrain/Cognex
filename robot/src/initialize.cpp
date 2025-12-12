@@ -46,12 +46,17 @@ void initialize() {
                                                    screen::health::succeed);
     }
 
+	// give time for screen to update
+	pros::delay(50);
+
     int init_models_notif =
       screen::health::add_init_notif("initializing models");
     // initialize all models
     model_manager.init();
     screen::health::update_init_notif_severity(init_models_notif,
                                                screen::health::succeed);
+	// give time for screen to update
+	pros::delay(20);
 
     int init_executors_notif =
       screen::health::add_init_notif("initializing executors");
@@ -114,11 +119,13 @@ void initialize() {
     screen::health::add_init_notif("finished initialize!",
                                    screen::health::succeed);
 
+	// sets reference for mcl
     pf_model.setReferenceModel(&smoother_model);
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 
+	// taks to update custom particles in mcl logging
     pros::Task(
       [&] {
           while (true) {

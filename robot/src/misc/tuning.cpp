@@ -178,16 +178,28 @@ void drive_pid_tuning() {
     double kd_delta = 0.05;
     Voltage slew_delta = 0.025_volt;
 
+    bool reversed = false;
+
     while (true) {
-        RobotSetPose(0, 0, 0);
 
         auto start_time = from_msec(pros::millis());
 
-        mb.moveTo(target_distance, 0_in)
-            .drive_kp(curr_kp)
-            .drive_kd(curr_kd)
-            .drive_accelSlew(curr_accel_slew) |
-          run;
+        if (reversed) {
+            RobotSetPose(2 * target_distance.convert(in), 0, 0);
+            mb.moveTo(target_distance, 0_in)
+                .drive_kp(curr_kp)
+                .drive_kd(curr_kd)
+                .drive_accelSlew(curr_accel_slew)
+                .reverse() |
+              run;
+        } else {
+            RobotSetPose(0, 0, 0);
+            mb.moveTo(target_distance, 0_in)
+                .drive_kp(curr_kp)
+                .drive_kd(curr_kd)
+                .drive_accelSlew(curr_accel_slew) |
+              run;
+        }
 
         auto end_time = from_msec(pros::millis());
 
@@ -230,10 +242,24 @@ void drive_pid_tuning() {
                   pros::E_CONTROLLER_DIGITAL_B)) {
                 RobotSetPose(0, 0, 0);
 
-                mb.moveTo(-target_distance, 0_in)
-                    .drive_maxVolt(0.6_volt)
-                    .reverse() |
-                  async;
+                if (reversed) {
+                    mb.moveTo(target_distance, 0_in).drive_maxVolt(0.6_volt) |
+                      async;
+                } else {
+                    mb.moveTo(-target_distance, 0_in)
+                        .drive_maxVolt(0.6_volt)
+                        .reverse() |
+                      async;
+                }
+            }
+
+            if (controller.get_digital_new_release(
+                  pros::E_CONTROLLER_DIGITAL_X)) {
+                reversed = !reversed;
+
+                RobotSetPose(0, 0, 0);
+                // turns around
+                mb.turnTo(180) | async;
             }
 
             if (controller.get_digital_new_release(

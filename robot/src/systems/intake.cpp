@@ -39,8 +39,8 @@ std::map<intake_state_t, int> top_motor_speeds = {
     { slow_scoring_bottom, -40  },
     { scoring_bottom,      -70  },
 
-    { slow_scoring_middle, -50  },
-    { scoring_middle,      -70  },
+    { slow_scoring_middle, -70  },
+    { scoring_middle,      -127  },
 
     { scoring_long,        127  },
 
@@ -109,8 +109,9 @@ void driverUpdate() {
 
     bool unjam = controller.get_digital(controls::X);
 
-    bool primeMacro = controller.get_digital(controls::RIGHT_SHIFT) &&
-                      controller.get_digital_new_press(controls::LEFT_SHIFT);
+    // bool primeMacro = controller.get_digital(controls::RIGHT_SHIFT) &&
+    //                   controller.get_digital_new_press(controls::LEFT_SHIFT);
+    bool primeMacro = false;
 
     // one time kill switch
     if (driverColorSortEnabled == true && killColorSort) {
@@ -268,21 +269,27 @@ void colorSort() {
             // matchloading, should color sort through the back
             std::lock_guard lock(intake_mutex);
 
-            // move balls up
+            // make sure no other balls are in the way since those would not get
+            // color sorted out?
             bottom_motor.move(0);
             // move top most ball out through score side
             top_motor.move(127);
-            intake_stop_piston.set_value(active);
+            top_intake_piston.set_value(true);
 
-            pros::delay(600);
+            // really long delay, could be really inconsistent
+            pros::delay(800);
         } else if (intake_state == intake || intake_state == scoring_long) {
             // need to take mutex
             std::lock_guard lock(intake_mutex);
 
-            // move balls up
-            bottom_motor.move(0);
-            // move top most ball out
-            top_motor.move(-100);
+            // move balls towards center hole
+            bottom_motor.move(127);
+
+            // open up center
+            middle_intake_piston.set_value(false);
+
+            // move top motor backwards a bit to ensure it gets thrown out
+            top_motor.move(-50);
 
             pros::delay(80);
         }
@@ -314,7 +321,8 @@ void hardwareUpdate() {
     // only update motors if they are not being used elsewhere - waits for 2
     // millisecends to be able to use
     if (intake_mutex.take(2)) {
-        intake_stop_piston.set_value(intake_state == scoring_long);
+        top_intake_piston.set_value(intake_state == scoring_long);
+        middle_intake_piston.set_value(intake_state != scoring_middle);
 
         // priming is a special mode, don't use normal speeds
         if (intake_state == priming && prime_active) {

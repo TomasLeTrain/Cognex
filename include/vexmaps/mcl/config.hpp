@@ -100,6 +100,7 @@ struct DistanceSensorConfig {
 
     // static constexpr FLength maxDistanceDifference = 18_in;
     FLength maxDistanceDifference = 3_in;
+    FLength maxOutDistanceDifference = 4.5_in;
 
     // static constexpr bool logging = false;
     bool logging = true;

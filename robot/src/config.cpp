@@ -37,8 +37,8 @@ vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 // pros::Motor top_motor(-1);
 
 // disable for testing
-pros::Motor bottom_motor(16);
-pros::Motor top_motor(18);
+pros::Motor bottom_motor(-16);
+pros::Motor top_motor(-18);
 
 pros::Optical middle_intake_color_sensor(8);
 pros::Optical bottom_intake_color_sensor(21);
@@ -46,11 +46,12 @@ pros::Optical bottom_intake_color_sensor(21);
 // pistons
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
-pros::adi::DigitalOut intake_stop_piston('A', true);
+pros::adi::DigitalOut top_intake_piston('A', true);
+pros::adi::DigitalOut middle_intake_piston('C', true);
+pros::adi::DigitalOut wings_piston('B', false);
 
-pros::adi::DigitalOut matchloader_piston('A', false);
-pros::adi::DigitalOut wings_piston('A', false);
-pros::adi::DigitalOut odom_retract_piston('A', false);
+pros::adi::DigitalOut matchloader_piston('C', false);
+pros::adi::DigitalOut odom_retract_piston('C', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
@@ -65,25 +66,34 @@ pros::Distance right_distance(10);
 
 // distance sensor offsets
 // TODO: update
-units::Pose front_distance_offsets = { 5.45_in,
-                                       -(12.5_in / 2) + 1.6_in,
+
+units::Pose front_distance_offsets = { +(15.5_in / 2) + 0.375_in - 4.3_in,
+                                       +(12.5_in / 2) - 1.75_in,
                                        0_stDeg };
-units::Pose left_distance_offsets = { 6.25_in,
+
+units::Pose left_distance_offsets = { +(15.5_in / 2) - 4.3_in,
                                       +(12.5_in / 2) - 1.25_in,
                                       90_stDeg };
-units::Pose back_distance_offsets = { -4.45_in,
-                                      +(12.5_in / 2) - 2.25_in,
+
+units::Pose back_distance_offsets = { -(15.5_in / 2) + 1.4_in,
+                                      2.9_in,
                                       180_stDeg };
-units::Pose right_distance_offsets = { 2.5_in,
-                                       -(12.5_in / 2) + 1_in,
+
+units::Pose right_distance_offsets = { +(15.5_in / 2) - 6.9_in,
+                                       -(12.5_in / 2) + 2.2_in,
                                        270_stDeg };
 
-// TODO: gray right distance sensor bad (dc's)
+// front from here was moved to front in new one as well
+// double front_distance_scale_factor = 0.985454688793;
+// double left_distance_scale_factor = 0.986105769705;
+// double back_distance_scale_factor = 0.97905795044;
+// double right_distance_scale_factor = 0.987332523721;
+
 // TODO: update
 double front_distance_scale_factor = 0.985454688793;
-double left_distance_scale_factor = 0.986105769705;
-double back_distance_scale_factor = 0.97905795044;
-double right_distance_scale_factor = 0.987332523721;
+double left_distance_scale_factor = 0.985;
+double back_distance_scale_factor = 0.985;
+double right_distance_scale_factor = 0.985;
 
 /* vexmaps configuration */
 
@@ -211,6 +221,7 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
 
     // static constexpr FLength maxDistanceDifference = 18_in;
     .maxDistanceDifference = 3_in,
+    .maxOutDistanceDifference = 4.5_in,
 
     // static constexpr bool logging = false;
     .logging = true && vexmaps_logging_enabled
@@ -370,15 +381,9 @@ normalLargeChainTolerances<decltype(linearTolerances),
              chainLinearTolerances,
              chainAngularTolerances);
 
-Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
-  chassis(drivetrain, tracker, tolerances);
-
 // executors
 RunExecutor run;
 AsyncExecutor async;
-
-MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing(chassis,
-                                                                   controllers);
 
 // same as default chain lerp
 // auto chain_lerp = [](Voltage a, Voltage b, double t) -> Voltage {
@@ -510,5 +515,11 @@ BlazingWrapper vexmaps_tracker(&model_manager);
 Chassis<decltype(drivetrain), decltype(vexmaps_tracker), decltype(tolerances)>
   vexmaps_chassis(drivetrain, vexmaps_tracker, tolerances);
 
+Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
+  blazing_chassis(drivetrain, tracker, tolerances);
+
 MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
   mb(vexmaps_chassis, controllers);
+
+// MotionBuilder<decltype(blazing_chassis), decltype(controllers)>
+//   mb(blazing_chassis, controllers);

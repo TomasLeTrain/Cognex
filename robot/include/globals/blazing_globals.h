@@ -90,20 +90,28 @@ extern normalLargeChainTolerances<decltype(linearTolerances),
                                   decltype(chainAngularTolerances)>
   tolerances;
 
-extern Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
-  chassis;
-
 // executors
 extern RunExecutor run;
 extern AsyncExecutor async;
 
-extern MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing;
+// extern MotionBuilder<decltype(chassis), decltype(controllers)> mb_blazing;
+
+// extern Chassis<decltype(drivetrain),
+//                decltype(vexmaps_tracker),
+//                decltype(tolerances)>
+//   vexmaps_chassis;
 
 extern Chassis<decltype(drivetrain),
                decltype(vexmaps_tracker),
                decltype(tolerances)>
   vexmaps_chassis;
+extern Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
+  blazing_chassis;
 
+// MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
+//   mb(vexmaps_chassis, controllers);
+
+// extern MotionBuilder<decltype(blazing_chassis), decltype(controllers)> mb;
 extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)> mb;
 
 extern ChainedExecutor chain;
