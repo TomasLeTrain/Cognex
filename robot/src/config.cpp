@@ -21,7 +21,7 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -124,9 +124,9 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
 
 // units are in inches
 linear_pid_config_t linear_pid_config {
-    .kp = 8.65,
+    .kp = 6.65,
     .ki = 0,
-    .kd = 10.0,
+    .kd = 6.0,
 
     // linear_pid_config_t linear_pid_config { .kp = 4.5,
     //                                         .ki = 0,
@@ -137,9 +137,9 @@ linear_pid_config_t linear_pid_config {
 
 // units are in degrees
 angular_pid_config_t angular_pid_config {
-    .kp = 2.6,
+    .kp = 2.3,
     .ki = 0,
-    .kd = 3.35,
+    .kd = 2.35,
     .windupRange = 14,
     .maxVoltage = 127,
 };

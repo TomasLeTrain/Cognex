@@ -55,27 +55,28 @@ void run_auton() {
     units::V2Position centerBottomGoal = { 13_in, 13_in };
 
     // move away from park
-    mb.moveTo(-37_in, 36_in)
-        // .drive_errorTolerance(5_in)
-        // .drive_toleranceDuration(50_msec)
-        .drive_chainErrorTolerance(8_in)
-        .setChainTime(50_msec) |
-      chain;
+    mb.moveTo(-37_in, 36_in).drive_maxVolt(0.5_volt)
+      // .drive_errorTolerance(5_in)
+      // .drive_toleranceDuration(50_msec)
+      // .drive_chainErrorTolerance(8_in)
+      // .setChainTime(50_msec)
+      | run;
 
     // mb.turnTo(centerBallOne.x, centerBallOne.y) | run;
     // mb.moveTo(centerBallOne.x, centerBallOne.y) | run;
 
     // move to top center goal
     mb.turnTo(centerTopGoal.x, centerTopGoal.y)
-        // .turn_errorTolerance(10 * deg)
-        // .turn_toleranceDuration(0_msec)
-        .turn_chainErrorTolerance(30 * deg)
-        .setChainTime(0.001_msec) |
-      chain;
+      // .turn_errorTolerance(10 * deg)
+      // .turn_toleranceDuration(0_msec)
+      // .turn_chainErrorTolerance(30 * deg)
+      // .setChainTime(0.001_msec)
+      | run;
 
-    mb.moveTo(centerTopGoal.x, centerTopGoal.y).k_lat(0.3) | chain;
+    mb.moveTo(centerTopGoal.x, centerTopGoal.y).k_lat(0.3) | run;
+    pros::delay(5000);
 
-    chain.wait();
+    // chain.wait();
     intake::score_middle();
 
     // move back
@@ -279,13 +280,13 @@ void first_matchloader_mp() {
 
 void chained_first_matchloader(Length match1) {
     // boomerang to matchloader 1
-    mb.moveTo(-39.823, -41.915).drive_minVolt(0.5_volt) | chain;
+    mb.moveTo(-39.823, -41.915).drive_minVolt(0.5_volt) | run;
     mb.boomerang(-55.5_in, match1, 180).lead(0.2).closeThreshold(6_in)
       // .drive_errorTolerance(3_in)
       // .drive_largeErrorTolerance(4_in)
       // .drive_maxVolt(0.4_volt)
-      | chain;
-    chain.wait();
+      | run;
+    // chain.wait();
 }
 
 } // namespace sunshine_skills

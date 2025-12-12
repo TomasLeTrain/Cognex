@@ -39,8 +39,8 @@ std::map<intake_state_t, int> top_motor_speeds = {
     { slow_scoring_bottom, -40  },
     { scoring_bottom,      -70  },
 
-    { slow_scoring_middle, -70  },
-    { scoring_middle,      -127  },
+    { slow_scoring_middle, 0    },
+    { scoring_middle,      0    },
 
     { scoring_long,        127  },
 
