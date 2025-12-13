@@ -14,12 +14,12 @@
 // run if no auton is selected - useful for testing
 // NOTE: select the disabled auton if you don't want anything to run!!!
 void testing_auton_func() {
-    auto_side = field_side_t::left;
+    auto_side = field_side_t::right;
     auto_alliance = alliance_t::blue;
 
     // selected_auton = "current skills";
-    // selected_auton = "current quals";
-    selected_auton = "current skills";
+    selected_auton = "current quals";
+    // selected_auton = "current skills";
     // selected_auton = "fast auton";
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();
@@ -30,7 +30,7 @@ void autonomous() {
     intake::init(false);
     matchloader::init(false);
     wings::init(false);
-	odom_retract::init(false);
+    odom_retract::init(false);
 
     // change to W screen
     // screen::setScreen(&screen::bouncing_dvd_screen::screen);
@@ -40,8 +40,8 @@ void autonomous() {
         auto selected_auton_function = auton_list[selected_auton];
         selected_auton_function();
 
-		// sets dvd screen only if on match
-		screen::setScreen(&screen::bouncing_dvd_screen::screen);
+        // sets dvd screen only if on match
+        screen::setScreen(&screen::bouncing_dvd_screen::screen);
     } else {
         testing_auton_func();
     }

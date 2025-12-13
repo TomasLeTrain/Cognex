@@ -99,8 +99,8 @@ class DistanceSensorModel : public Sensor {
         }
 
         auto unit_v = units::Vector2D<Number>::fromPolar(angle, 1);
-        auto cross = u.cross(unit_v);
-        auto dot = u * unit_v;
+        Length cross = units::abs(u.cross(unit_v));
+        Length dot = u * unit_v;
         auto diff = units::square(radius) - units::square(cross);
 
         // circle is behind position, does not intersect
@@ -116,7 +116,7 @@ class DistanceSensorModel : public Sensor {
         // behind us
 
         // circle not really intersected since wall distance was smaller
-        if (wall_distance < circle_dist) return std::nullopt;
+        // if (wall_distance < circle_dist) return std::nullopt;
 
         auto actual_diff =
           units::max(units::square(actual_radius) - units::square(cross),
@@ -127,10 +127,10 @@ class DistanceSensorModel : public Sensor {
 
         // distance is too big so it's unlikely object is close enough where it
         // matters
-        if (units::abs(wall_distance - actual_dist) > 10_in &&
-            use_big_distance) {
-            return std::nullopt;
-        }
+        // if (units::abs(wall_distance - actual_dist) > 10_in &&
+        //     use_big_distance) {
+        //     return std::nullopt;
+        // }
 
         // object might be measured, returns expected distance to object
         return actual_dist;
@@ -249,8 +249,7 @@ class DistanceSensorModel : public Sensor {
                             { matchloader_x * i, matchloader_y * j },
                             match_big_radius,
                             matchloader_actual_radius,
-                            expected_distance,
-                            true)
+                            expected_distance)
                             .has_value();
 
                         // check corner

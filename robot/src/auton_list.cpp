@@ -17,7 +17,7 @@ std::unordered_map<std::string, std::function<void()>> auton_list = {
 	//    L_AUTON(roboticon_skills, "roboticon skills")
 	//
 	// L_AUTON(eagles_skills, "eagles skills")
-	L_AUTON(eagles_quals, "eagles quals")
+	L_AUTON(eagles_quals, "current quals")
 	L_AUTON(sunshine_fast_auton, "fast auton")
 	L_AUTON(neocity_awp, "awp")
 

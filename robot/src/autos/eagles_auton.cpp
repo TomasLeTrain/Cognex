@@ -50,7 +50,7 @@ void run_auton() {
     matchloader::set(active);
     pros::delay(50);
 
-    mb.moveTo(19, -23.2 * l).drive_maxVolt(0.3_volt) | run;
+    mb.moveTo(21, -23.2 * l).drive_maxVolt(0.3_volt) | run;
     // printf("after move\n");
 
     if (bl) {
@@ -64,7 +64,7 @@ void run_auton() {
     } else {
         matchloader::set(inactive);
         pros::delay(100);
-        mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | run;
+        mb.moveTo(11, -10 * l).drive_maxVolt(0.5_volt) | run;
         intake::set(intake::scoring_bottom);
         pros::delay(1700);
     }
@@ -80,14 +80,18 @@ void run_auton() {
     matchloader::set(active);
 
     mb.turnTo(67_in, -2_tile * l).turn_maxVolt(0.9_volt) | run;
-    mb.moveTo(60.5_in, -2_tile * l).drive_maxVolt(0.75_volt).timeout(2.5_sec) |
+    mb.moveTo(61_in, -2_tile * l).drive_maxVolt(0.7_volt).timeout(2.5_sec) |
       run;
     // mb.distanceAtHeading(-0.5_in) | run;
 
     // matchload
     pros::delay(1000);
 
-    mb.moveTo(25_in, -2_tile * l).reverse().timeout(1.2_sec) | run;
+    mb.moveTo(25_in, -2_tile * l)
+        .reverse()
+        .timeout(1.2_sec)
+        .drive_maxVolt(0.9_volt) |
+      run;
 
     intake::set(intake::scoring_long);
 }

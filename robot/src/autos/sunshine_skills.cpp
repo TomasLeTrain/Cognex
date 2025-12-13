@@ -52,7 +52,7 @@ void run_auton() {
     units::V2Position centerBallOne = { -24_in, 24_in };
 
     units::V2Position centerTopGoal = { -13_in, 12_in };
-    units::V2Position centerBottomGoal = { 13_in, 13_in };
+    units::V2Position centerBottomGoal = { 13_in, 12.8_in };
 
     intake::in();
 
@@ -66,7 +66,7 @@ void run_auton() {
 
     // wait till its close enough
     async.waitUntil([] -> bool {
-        return RobotGetPose().distanceTo({ -24_in, -24_in }) < 6_in;
+        return RobotGetPose().distanceTo({ -24_in, -24_in }) < 10_in;
     });
     matchloader::down();
     async.wait();
@@ -80,18 +80,22 @@ void run_auton() {
     // first_matchloader_mp();
     // chained_first_matchloader(match1);
     //
-    mb.turnTo(-45.823, match1) | chain;
-    mb.moveTo(-45.823, match1) | chain;
+    mb.turnTo(-45.823, -long_goal) | chain;
+    mb.moveTo(-45.823, -long_goal) | chain;
     chain.wait();
     mb.turnTo(0_in, -long_goal).reverse() | run;
 
-    mb.moveTo(-25_in, -long_goal).reverse().timeout(1.0_sec).k_lat(0.0) | run;
+    mb.moveTo(-24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | async;
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ -24_in, -long_goal }) < 4_in;
+    });
     intake::score_long();
-    pros::delay(1000);
+    async.wait();
+    pros::delay(2000);
 
     intake::in();
-    mb.moveTo(-60, match1) | run;
-    pros::delay(2000);
+    mb.moveTo(-60, match1).drive_maxVolt(0.6_volt) | run;
+    pros::delay(1200);
     matchloader::up();
 
     // move to goal
@@ -109,45 +113,55 @@ void run_auton() {
     // get balls
 
     // get away from matchloader
-    mb.moveTo(-24, -24).reverse().drive_chainErrorTolerance(8_in).setChainTime(
+    mb.moveTo(-24, -24).reverse().drive_chainErrorTolerance(10_in).setChainTime(
       50_msec) |
       chain;
     mb.turnTo(24, -24) | chain;
 
     chain.wait();
 
-    mb.moveTo(24, -24)
-        .k_lat(0.3)
-        .drive_errorTolerance(7_in)
-        .drive_toleranceDuration(0_sec) |
-      run;
+    mb.moveTo(24, -24).k_lat(0.3)
+      // .drive_errorTolerance(7_in)
+      // .drive_toleranceDuration(0_sec)
+      | run;
 
     // get close to matchload 2
+    mb.turnTo(44, match2) | run;
     mb.moveTo(44, match2)
-        .drive_toleranceDuration(0_msec)
+        // .drive_toleranceDuration(0_msec)
         .drive_maxVolt(0.5_volt) |
       run;
 
     matchloader::down();
 
     // turn to matchload 2
-    mb.turnTo(70, match2).turn_toleranceDuration(0_msec) | run;
+    mb.turnTo(70, match2) | run;
 
     // score balls from other side
-    mb.moveTo(25_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    mb.moveTo(24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | async;
+
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ 24_in, -long_goal }) < 4_in;
+    });
     intake::score_long();
-    matchloader::down();
+    async.wait();
     pros::delay(2000);
     intake::in();
     // go to matchloader
 
     target_point = make_machloader_point({ 67.71_in, match2 }, 9_in);
-    mb.moveTo(target_point.x, target_point.y) | run;
-    pros::delay(2000);
+    mb.turnTo(target_point.x, target_point.y) | chain;
+    mb.moveTo(target_point.x, target_point.y).drive_maxVolt(0.7_volt) | chain;
+    chain.wait();
+    pros::delay(1300);
 
     // move to goal
-    mb.moveTo(25_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    mb.moveTo(24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ 24_in, -long_goal }) < 4_in;
+    });
     intake::score_long();
+    async.wait();
     pros::delay(2000);
 
     matchloader::up();
@@ -158,6 +172,25 @@ void run_auton() {
         .drive_errorTolerance(7_in)
         .drive_toleranceDuration(0_sec) |
       run;
+
+	// PARK
+    // mb.boomerang(60.755, -18.904, 90).lead(0.3, 0.1).drive_maxVolt(0.8_volt) |
+    //   chain;
+    // mb.moveTo(63.755, 26).drive_maxVolt(0.8_volt).executeBeforeMotion([] {
+    //     horizontal_tracker.setDisabled(true);
+    //     odom_retract::retractOdom();
+    //     matchloader::down();
+    // }) |
+    //   chain;
+    // chain.wait();
+    // horizontal_tracker.setDisabled(false);
+    // odom_retract::lowerOdom();
+    //
+    // drivetrain.moveTank(-0.3_volt, -0.3_volt);
+    // pros::delay(200);
+    // RobotSetPose(63.5, 16.2, RobotGetPose().orientation.convert(deg));
+	// PARK
+
 
     // explode center balls
     mb.turnTo(24, 24) | run;
@@ -185,7 +218,11 @@ void run_auton() {
 
     // go to goal
     mb.moveTo(24_in, long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ 24_in, long_goal }) < 4_in;
+    });
     intake::score_long();
+    async.wait();
     pros::delay(2000);
 
     matchloader::up();
@@ -217,15 +254,20 @@ void run_auton() {
     pros::delay(2000);
 
     // go to goal
-    mb.moveTo(-24_in, long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
-    // TODO: start just at right time
+    mb.moveTo(-24_in, long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | async;
+
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ -24_in, long_goal }) < 4_in;
+    });
     intake::score_long();
-    // TODO: delay
+    async.wait();
+    pros::delay(2000);
     matchloader::up();
     intake::in();
 
     // go to park
     mb.boomerang(-60.755, 18.904, 270).lead(0.3, 0.1) | run;
+    mb.moveTo(-60.755, -5) | run;
 }
 
 void first_matchloader_mp() {

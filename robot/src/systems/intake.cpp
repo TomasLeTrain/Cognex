@@ -23,8 +23,8 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { slow_scoring_bottom, -60  },
     { scoring_bottom,      -110 },
 
-    { slow_scoring_middle, 40   },
-    { scoring_middle,      70   },
+    { slow_scoring_middle, 127  },
+    { scoring_middle,      127  },
 
     { scoring_long,        127  },
 
@@ -39,8 +39,8 @@ std::map<intake_state_t, int> top_motor_speeds = {
     { slow_scoring_bottom, -40  },
     { scoring_bottom,      -80  },
 
-    { slow_scoring_middle, 0    },
-    { scoring_middle,      0    },
+    { slow_scoring_middle, 127  },
+    { scoring_middle,      127  },
 
     { scoring_long,        127  },
 
@@ -70,7 +70,7 @@ pros::Mutex intake_mutex;
 bool colorSortEnabled = true;
 bool driverColorSortEnabled = true;
 
-bool prime_active = false;
+bool tmp_middle_active = false;
 
 /*
  * setters and getters - meant to be used by autons/subsystems outside this file
@@ -87,7 +87,7 @@ void set(intake_state_t new_intake_state) {
     intake_state = new_intake_state;
 
     // update prime state
-    prime_active = new_intake_state == priming;
+    tmp_middle_active = new_intake_state == scoring_middle;
 }
 
 void setColorSortEnabled(bool enabled) {
@@ -155,7 +155,7 @@ void driverUpdate() {
         // only disable if prime was not active
     }
 
-    else if (!prime_active) {
+    else if (!tmp_middle_active) {
         set(intake_state_t::intake_disabled);
         last_tmp_activated = true;
     }
@@ -325,17 +325,14 @@ void hardwareUpdate() {
         middle_intake_piston.set_value(intake_state != scoring_middle);
 
         // priming is a special mode, don't use normal speeds
-        if (intake_state == priming && prime_active) {
-            bottom_motor.move(127);
-            top_motor.move(40);
-
-            // ball detected, stop moving
-            if (middle_detected_color) {
-                bottom_motor.move(0);
-                top_motor.move(0);
-
-                prime_active = false;
-            }
+        if (intake_state == scoring_middle && tmp_middle_active) {
+            bottom_motor.move(-127);
+            top_motor.move(-127);
+            pros::delay(100);
+            bottom_motor.move(70);
+            top_motor.move(-127);
+            pros::delay(400);
+            tmp_middle_active = false;
         } else {
             bottom_motor.move(bottom_speed);
             top_motor.move(top_speed);

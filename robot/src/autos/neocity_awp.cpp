@@ -30,74 +30,83 @@ void run_auton() {
 
     int l = bl ? 1 : -1;
 
-    double angle = 180;
+    Length long_goal = 47.1_in;
+    Length normal_match = 46.7_in;
+
+    double angle = 90;
 
     // printf("before set pose\n");
-    RobotSetPose(62.4, -15.5 * l, angle);
+    RobotSetPose(-48.3,
+                 16.5 * l,
+                 bl ? angle :
+                      units::constrainAngle2pi(-angle * deg).convert(deg));
     // RobotSetPose(-62.4, 15.5 * l, angle);
 
     intake::setColorSortEnabled(true);
 
-    intake::set(intake::intake);
+    intake::in();
 
-    // printf("before move\n");
-    // pf_model.setDisabled(true);
-    // mb.moveTo(31, -22.5 * l)
-    //     .drive_maxVolt(0.7_volt)
-    //     .drive_errorTolerance(5_in) |
-    //   run;
-    //
+    matchloader::down();
 
-    mb.moveTo(19, -23.2 * l) | async;
-    async.waitUntil([] -> bool {
-        return RobotGetPose().distanceTo({ 24_in, -24_in }) < 5_in;
-    });
-    matchloader::set(active);
-    async.wait();
-    // printf("after move\n");
+    mb.moveTo(-44, normal_match * l) | run;
+    // turn to and go to matchloader
+    mb.turnTo(-70, normal_match * l) | run;
+    mb.moveTo(-60, normal_match * l) | run;
 
-    if (bl) {
-        mb.moveTo(9.7, -10 * l)
-            .drive_maxVolt(0.5_volt)
-            .drive_largeErrorTolerance(5_in)
-            .timeout(2_sec) |
-          run;
-        intake::set(intake::scoring_middle);
-        pros::delay(2000);
-    } else {
-        matchloader::set(inactive);
-        pros::delay(100);
-        mb.moveTo(10, -11 * l).drive_maxVolt(0.5_volt) | run;
-        intake::set(intake::scoring_bottom);
-        pros::delay(1700);
-    }
+    pros::delay(2000);
+    matchloader::up();
 
-    intake::set(intake::intake);
-    // make sure its down
-    // matchloader::set(inactive);
-
-    // pf_model.setDisabled(false);
-
-    mb.moveTo(40_in, -2_tile * l).reverse().drive_maxVolt(0.5_volt) | run;
-
-    matchloader::set(active);
-
-    mb.turnTo(67_in, -2_tile * l).turn_maxVolt(0.9_volt) | run;
-    mb.moveTo(60.5_in, -2_tile * l).drive_maxVolt(0.75_volt).timeout(2.5_sec) |
+    mb.moveTo(-25_in, long_goal * l).reverse().timeout(1.1_sec).k_lat(0.0) |
       run;
-    // mb.distanceAtHeading(-0.5_in) | run;
-
-    // matchload
-    pros::delay(900);
-
-    mb.moveTo(25_in, -2_tile * l).reverse().timeout(1.2_sec).k_lat(0) | async;
-
-    async.waitUntil([] -> bool {
-        return RobotGetPose().distanceTo({ 25_in, -2_tile }) < 5_in;
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ -25_in, long_goal * l }) < 4_in;
     });
-    intake::set(intake::scoring_long);
-
+    intake::score_long();
     async.wait();
+    pros::delay(2000);
+
+    matchloader::up();
+    intake::in();
+
+    mb.turnTo(-1_tile, 1_tile * l) | run;
+    mb.moveTo(-1_tile, 1_tile * l) | async;
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ -1_tile, 1_tile * l }) < 6_in;
+    });
+    matchloader::down();
+    async.wait();
+
+    matchloader::up();
+    mb.moveTo(-1_tile, -1_tile * l) | async;
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ -1_tile, -1_tile * l }) < 6_in;
+    });
+    matchloader::down();
+    async.wait();
+
+    mb.turnTo(13_in, 12.8_in * l) | run;
+    matchloader::up();
+    mb.moveTo(13_in, 12.8_in * l) | run;
+    intake::score_bottom();
+    pros::delay(1000);
+
+    mb.moveTo(-44, -normal_match * l).reverse() | run;
+    matchloader::down();
+    mb.turnTo(-70, -normal_match * l) | run;
+    // mat
+    // go to matchloader
+    mb.moveTo(-60, -normal_match * l) | run;
+    pros::delay(1000);
+
+    // go to final goal
+    mb.moveTo(-25_in, -long_goal * l).reverse().timeout(1.1_sec).k_lat(0.0) |
+      run;
+    async.waitUntil([&] -> bool {
+        return RobotGetPose().distanceTo({ -25_in, -long_goal * l }) < 4_in;
+    });
+    intake::score_long();
+    async.wait();
+    // pros::delay(2000);
 }
 
 } // namespace neocity_awp
