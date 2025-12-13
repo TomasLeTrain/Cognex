@@ -112,7 +112,7 @@ tracker_config_t forwards_tracker_config = {
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.9869_in,
-    .offset = 2.5_in,
+    .offset = -2.5_in,
 };
 
 /* drivetrain / pid configuration */
@@ -124,9 +124,9 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
 
 // units are in inches
 linear_pid_config_t linear_pid_config {
-    .kp = 6.65,
+    .kp = 6.0,
     .ki = 0,
-    .kd = 6.0,
+    .kd = 7.45,
 
     // linear_pid_config_t linear_pid_config { .kp = 4.5,
     //                                         .ki = 0,
@@ -139,7 +139,7 @@ linear_pid_config_t linear_pid_config {
 angular_pid_config_t angular_pid_config {
     .kp = 2.3,
     .ki = 0,
-    .kd = 2.35,
+    .kd = 3.05,
     .windupRange = 14,
     .maxVoltage = 127,
 };
@@ -226,10 +226,10 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
     .mapCoeff = 0.25,
 
     // static constexpr FLength maxDistanceDifference = 18_in;
-    .maxDistanceDifference = 3_in,
-    .maxOutDistanceDifference = 4.5_in,
+    .maxDistanceDifference = 10_in,
+    .maxOutDistanceDifference = 10_in,
 
-    .detect_obstacles = false,
+    .detect_obstacles = true,
 
     // static constexpr bool logging = false;
     .logging = true && vexmaps_logging_enabled

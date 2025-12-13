@@ -89,11 +89,14 @@ class DistanceSensorModel : public Sensor {
                        units::V2FPosition circle_position,
                        FLength radius,
                        FLength actual_radius,
-                       FLength wall_distance) {
+                       FLength wall_distance,
+                       bool use_big_distance = false) {
         auto u = circle_position - position;
 
-        // inside circle
-        if (u.magnitude() < radius) return std::nullopt;
+        // inside circle, make smaller
+        if (u.magnitude() < radius) {
+            return u.magnitude();
+        }
 
         auto unit_v = units::Vector2D<Number>::fromPolar(angle, 1);
         auto cross = u.cross(unit_v);
@@ -124,7 +127,8 @@ class DistanceSensorModel : public Sensor {
 
         // distance is too big so it's unlikely object is close enough where it
         // matters
-        if (units::abs(wall_distance - actual_dist) > 10_in) {
+        if (units::abs(wall_distance - actual_dist) > 10_in &&
+            use_big_distance) {
             return std::nullopt;
         }
 
@@ -215,14 +219,14 @@ class DistanceSensorModel : public Sensor {
         // (only depends on measured distance)
         expFactor = expVal * config.expCoeff + randomFactor;
 
+        bool make_shorter = false;
+
         if (pose) {
             FLength pose_distance_difference =
               getDistanceDifference(pose->x, pose->y);
 
             FLength expected_distance =
               pose_distance_difference + measured_distance;
-
-            bool make_shorter = false;
 
             if (config.detect_obstacles) {
                 FLength matchloader_x = 70_in;
@@ -232,7 +236,7 @@ class DistanceSensorModel : public Sensor {
 
                 FLength corner_x = 70_in;
                 FLength corner_y = 70_in;
-                FLength corner_radius = 9_in;
+                FLength corner_radius = 10_in;
 
                 // check if it would have intersection with a matchloader
                 for (int i = -1; i <= 1; i += 2) {
@@ -245,7 +249,8 @@ class DistanceSensorModel : public Sensor {
                             { matchloader_x * i, matchloader_y * j },
                             match_big_radius,
                             matchloader_actual_radius,
-                            expected_distance)
+                            expected_distance,
+                            true)
                             .has_value();
 
                         // check corner
@@ -291,8 +296,10 @@ class DistanceSensorModel : public Sensor {
             std::cout << name << ":" << measured_distance.convert(in) << ","
                       << distance_sensor->get_confidence() << ","
                       << config.std_deviation << ","
-                      << (exit ? "true" : "false") << ","
-                      << distance_sensor->get_object_size() << "\n";
+                      << (exit ? "true" : "false")
+                      << ","
+                      // << distance_sensor->get_object_size() << "\n";
+                      << int(make_shorter) << "\n";
         }
     }
 

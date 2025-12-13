@@ -23,7 +23,7 @@ void chained_first_matchloader(Length match1);
 // you can add any variables / functions here
 
 void run_auton() {
-    RobotSetPose(-63.5, 16.2, 90);
+    RobotSetPose(-63.5, -16.2, 270);
     intake::setColorSortEnabled(false);
 
     // TODO: make distance autmatic
@@ -54,45 +54,22 @@ void run_auton() {
     units::V2Position centerTopGoal = { -13_in, 12_in };
     units::V2Position centerBottomGoal = { 13_in, 13_in };
 
+    intake::in();
+
     // move away from park
-    mb.moveTo(-37_in, 36_in).drive_maxVolt(0.5_volt)
+    mb.moveTo(-24_in, -24_in).drive_maxVolt(0.5_volt)
       // .drive_errorTolerance(5_in)
       // .drive_toleranceDuration(50_msec)
       // .drive_chainErrorTolerance(8_in)
       // .setChainTime(50_msec)
-      | run;
+      | async;
 
-    // mb.turnTo(centerBallOne.x, centerBallOne.y) | run;
-    // mb.moveTo(centerBallOne.x, centerBallOne.y) | run;
-
-    // move to top center goal
-    mb.turnTo(centerTopGoal.x, centerTopGoal.y)
-      // .turn_errorTolerance(10 * deg)
-      // .turn_toleranceDuration(0_msec)
-      // .turn_chainErrorTolerance(30 * deg)
-      // .setChainTime(0.001_msec)
-      | run;
-
-    mb.moveTo(centerTopGoal.x, centerTopGoal.y).k_lat(0.3) | run;
-    pros::delay(5000);
-
-    // chain.wait();
-    intake::score_middle();
-
-    // move back
-    drivetrain.moveTank(-1.0_volt, -0.9_volt);
-    pros::delay(150);
-    intake::in();
-
-    // move to center balls 2
-    mb.moveTo(-24_in, -24_in)
-        .k_lat(0.3)
-        .drive_errorTolerance(7_in)
-        .drive_toleranceDuration(0_sec) |
-      run;
-
-    // TODO: might have to do earlier based on distance?
+    // wait till its close enough
+    async.waitUntil([] -> bool {
+        return RobotGetPose().distanceTo({ -24_in, -24_in }) < 6_in;
+    });
     matchloader::down();
+    async.wait();
 
     // boomerang to matchloader 1
     // mb.boomerang(-58.5_in, match1, 180)
@@ -101,23 +78,44 @@ void run_auton() {
     //     .drive_maxVolt(0.4_volt) |
     //   run;
     // first_matchloader_mp();
-    chained_first_matchloader(match1);
+    // chained_first_matchloader(match1);
+    //
+    mb.turnTo(-45.823, match1) | chain;
+    mb.moveTo(-45.823, match1) | chain;
+    chain.wait();
+    mb.turnTo(0_in, -long_goal).reverse() | run;
+
+    mb.moveTo(-25_in, -long_goal).reverse().timeout(1.0_sec).k_lat(0.0) | run;
+    intake::score_long();
+    pros::delay(1000);
+
+    intake::in();
+    mb.moveTo(-60, match1) | run;
+    pros::delay(2000);
+    matchloader::up();
 
     // move to goal
-    mb.moveTo(-24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    // mb.moveTo(-25_in, -long_goal).reverse().timeout(1.0_sec).k_lat(0.0) |
+    // run;
     // TODO: maybe should be based on when its close enough to save score time?
-    intake::score_long();
-
-    // TODO: add delay for however long
+    // intake::score_long();
+    // pros::delay(2000);
 
     // move towards balls
-    drivetrain.moveTank(1.0_volt, -1.0_volt);
-    pros::delay(400);
-    intake::in();
-
-    // TODO: matchload??
+    // drivetrain.moveTank(1.0_volt, -1.0_volt);
+    // pros::delay(400);
+    // intake::in();
 
     // get balls
+
+    // get away from matchloader
+    mb.moveTo(-24, -24).reverse().drive_chainErrorTolerance(8_in).setChainTime(
+      50_msec) |
+      chain;
+    mb.turnTo(24, -24) | chain;
+
+    chain.wait();
+
     mb.moveTo(24, -24)
         .k_lat(0.3)
         .drive_errorTolerance(7_in)
@@ -125,22 +123,33 @@ void run_auton() {
       run;
 
     // get close to matchload 2
-    mb.moveTo(48, match2).drive_toleranceDuration(0_msec) | run;
+    mb.moveTo(44, match2)
+        .drive_toleranceDuration(0_msec)
+        .drive_maxVolt(0.5_volt) |
+      run;
 
     matchloader::down();
 
     // turn to matchload 2
     mb.turnTo(70, match2).turn_toleranceDuration(0_msec) | run;
 
-    target_point = make_machloader_point({ 67.71_in, match2 }, 11_in);
+    // score balls from other side
+    mb.moveTo(25_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
+    intake::score_long();
+    matchloader::down();
+    pros::delay(2000);
+    intake::in();
+    // go to matchloader
+
+    target_point = make_machloader_point({ 67.71_in, match2 }, 9_in);
     mb.moveTo(target_point.x, target_point.y) | run;
-    // TODO: delay however long
+    pros::delay(2000);
 
     // move to goal
-    mb.moveTo(24_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
-    // TODO: start when close enough
+    mb.moveTo(25_in, -long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
     intake::score_long();
-    // TODO: delay however long
+    pros::delay(2000);
+
     matchloader::up();
     intake::in();
 
@@ -151,8 +160,10 @@ void run_auton() {
       run;
 
     // explode center balls
+    mb.turnTo(24, 24) | run;
     matchloader::down();
     mb.moveTo(24, 24) | run;
+    matchloader::up();
 
     // go to bottom goal
     mb.turnTo(centerBottomGoal.x, centerBottomGoal.y)
@@ -160,22 +171,23 @@ void run_auton() {
       run;
     mb.moveTo(centerBottomGoal.x, centerBottomGoal.y) | run;
     intake::score_bottom();
-    // TODO: delay
+    pros::delay(3000);
 
     // go towards match3 backwards
-    mb.moveTo(48, match3).reverse().drive_toleranceDuration(0_sec) | run;
+    mb.moveTo(48, match3).reverse().drive_maxVolt(0.5_volt) | run;
 
     // turn to and go to match3
     matchloader::down();
     mb.turnTo(70, match3).turn_toleranceDuration(0.01_sec) | run;
-    target_point = make_machloader_point({ 67.71_in, match3 }, 11_in);
+    target_point = make_machloader_point({ 67.71_in, match3 }, 9_in);
     mb.moveTo(target_point.x, target_point.y) | run;
+    pros::delay(2000);
 
     // go to goal
     mb.moveTo(24_in, long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
-    // TODO: start when close enough
     intake::score_long();
-    // TODO: delay
+    pros::delay(2000);
+
     matchloader::up();
     intake::in();
 
@@ -198,8 +210,11 @@ void run_auton() {
         // .drive_largeErrorTolerance(4_in)
         .drive_minVolt(0.1_volt)
         .drive_maxVolt(0.4_volt) |
-      run;
+      chain;
+    mb.moveTo(-60_in, match4) | chain;
+
     // TODO: delay
+    pros::delay(2000);
 
     // go to goal
     mb.moveTo(-24_in, long_goal).reverse().timeout(1.1_sec).k_lat(0.0) | run;
@@ -280,13 +295,14 @@ void first_matchloader_mp() {
 
 void chained_first_matchloader(Length match1) {
     // boomerang to matchloader 1
-    mb.moveTo(-39.823, -41.915).drive_minVolt(0.5_volt) | run;
-    mb.boomerang(-55.5_in, match1, 180).lead(0.2).closeThreshold(6_in)
+    mb.moveTo(-41.823, -41.915) | chain;
+    // mb.boomerang(-55.5_in, match1, 180).lead(0.2).closeThreshold(6_in)
+    mb.boomerang(-58.5_in, match1, 180).lead(0.2).closeThreshold(6_in)
       // .drive_errorTolerance(3_in)
       // .drive_largeErrorTolerance(4_in)
       // .drive_maxVolt(0.4_volt)
-      | run;
-    // chain.wait();
+      | chain;
+    chain.wait();
 }
 
 } // namespace sunshine_skills

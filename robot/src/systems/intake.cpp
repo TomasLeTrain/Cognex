@@ -21,7 +21,7 @@ intake_state_t intake_state = intake_disabled;
 std::map<intake_state_t, int> bottom_motor_speeds = {
     // only different one
     { slow_scoring_bottom, -60  },
-    { scoring_bottom,      -100 },
+    { scoring_bottom,      -110 },
 
     { slow_scoring_middle, 40   },
     { scoring_middle,      70   },
@@ -37,7 +37,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
 
 std::map<intake_state_t, int> top_motor_speeds = {
     { slow_scoring_bottom, -40  },
-    { scoring_bottom,      -70  },
+    { scoring_bottom,      -80  },
 
     { slow_scoring_middle, 0    },
     { scoring_middle,      0    },
