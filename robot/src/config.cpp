@@ -46,7 +46,7 @@ pros::Optical bottom_intake_color_sensor(21);
 // pistons
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
-pros::adi::DigitalOut top_intake_piston('B', true);
+pros::adi::DigitalOut top_intake_piston('B', false);
 pros::adi::DigitalOut middle_intake_piston('D', true);
 pros::adi::DigitalOut wings_piston('C', false);
 
@@ -226,10 +226,10 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
     .mapCoeff = 0.25,
 
     // static constexpr FLength maxDistanceDifference = 18_in;
-    .maxDistanceDifference = 10_in,
-    .maxOutDistanceDifference = 10_in,
+    .maxDistanceDifference = 2.8_in,
+    .maxOutDistanceDifference = 2.8_in * 2,
 
-    .detect_obstacles = true,
+    .detect_obstacles = false,
 
     // static constexpr bool logging = false;
     .logging = true && vexmaps_logging_enabled

@@ -173,8 +173,9 @@ void run_auton() {
         .drive_toleranceDuration(0_sec) |
       run;
 
-	// PARK
-    // mb.boomerang(60.755, -18.904, 90).lead(0.3, 0.1).drive_maxVolt(0.8_volt) |
+    // PARK
+    // mb.boomerang(60.755, -18.904, 90).lead(0.3, 0.1).drive_maxVolt(0.8_volt)
+    // |
     //   chain;
     // mb.moveTo(63.755, 26).drive_maxVolt(0.8_volt).executeBeforeMotion([] {
     //     horizontal_tracker.setDisabled(true);
@@ -189,8 +190,7 @@ void run_auton() {
     // drivetrain.moveTank(-0.3_volt, -0.3_volt);
     // pros::delay(200);
     // RobotSetPose(63.5, 16.2, RobotGetPose().orientation.convert(deg));
-	// PARK
-
+    // PARK
 
     // explode center balls
     mb.turnTo(24, 24) | run;
@@ -241,7 +241,7 @@ void run_auton() {
 
     // matchloader 4
     matchloader::down();
-    mb.boomerang(-55.8_in, match4, 180)
+    mb.boomerang(-60_in, match4, 180)
         .lead(0.5)
         // .drive_errorTolerance(3_in)
         // .drive_largeErrorTolerance(4_in)

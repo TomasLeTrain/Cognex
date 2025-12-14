@@ -46,8 +46,8 @@ void initialize() {
                                                    screen::health::succeed);
     }
 
-	// give time for screen to update
-	pros::delay(50);
+    // give time for screen to update
+    pros::delay(50);
 
     int init_models_notif =
       screen::health::add_init_notif("initializing models");
@@ -55,8 +55,8 @@ void initialize() {
     model_manager.init();
     screen::health::update_init_notif_severity(init_models_notif,
                                                screen::health::succeed);
-	// give time for screen to update
-	pros::delay(20);
+    // give time for screen to update
+    pros::delay(20);
 
     int init_executors_notif =
       screen::health::add_init_notif("initializing executors");
@@ -96,13 +96,17 @@ void initialize() {
 
     mb.setMoveToModifier([](auto moveTo) {
         // return moveTo.customAngularLinearFunc(angular_linear_func);
-        return moveTo.k_lat(0.15 * rad / m).timeout(3_sec);
+        return moveTo.k_lat(0.15 * rad / m)
+          .timeout(3_sec)
+          .customAngularLinearFunc(angular_linear_func);
     });
 
     mb.setBoomerangModifier([](auto boomerang) {
         // return boomerang.customAngularLinearFunc(angular_linear_func);
         // return boomerang.k_lat();
-        return boomerang.k_lat(0.15 * rad / m, true).timeout(5_sec);
+        return boomerang.k_lat(0.15 * rad / m, true)
+          .timeout(5_sec)
+          .customAngularLinearFunc(angular_linear_func);
     });
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
                                                screen::health::succeed);
@@ -119,13 +123,13 @@ void initialize() {
     screen::health::add_init_notif("finished initialize!",
                                    screen::health::succeed);
 
-	// sets reference for mcl
+    // sets reference for mcl
     pf_model.setReferenceModel(&smoother_model);
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 
-	// taks to update custom particles in mcl logging
+    // taks to update custom particles in mcl logging
     pros::Task(
       [&] {
           while (true) {

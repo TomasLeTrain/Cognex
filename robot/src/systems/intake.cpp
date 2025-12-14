@@ -23,8 +23,9 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { slow_scoring_bottom, -60  },
     { scoring_bottom,      -110 },
 
-    { slow_scoring_middle, 127  },
-    { scoring_middle,      127  },
+    { slow_scoring_middle, 40   },
+    // { scoring_middle,      127  },
+    { scoring_middle,      40   },
 
     { scoring_long,        127  },
 
@@ -40,7 +41,8 @@ std::map<intake_state_t, int> top_motor_speeds = {
     { scoring_bottom,      -80  },
 
     { slow_scoring_middle, 127  },
-    { scoring_middle,      127  },
+    // { scoring_middle,      127  },
+    { scoring_middle,      -127 },
 
     { scoring_long,        127  },
 
@@ -71,6 +73,7 @@ bool colorSortEnabled = true;
 bool driverColorSortEnabled = true;
 
 bool tmp_middle_active = false;
+bool middle_active = false;
 
 /*
  * setters and getters - meant to be used by autons/subsystems outside this file
@@ -87,11 +90,23 @@ void set(intake_state_t new_intake_state) {
     intake_state = new_intake_state;
 
     // update prime state
-    tmp_middle_active = new_intake_state == scoring_middle;
+    // if (!middle_active && new_intake_state == scoring_middle) {
+    //     // started scoring middle
+    //     middle_active = true;
+    //     tmp_middle_active = true;
+    // }
+    // if (new_intake_state != scoring_middle) {
+    //     middle_active = false;
+    //     tmp_middle_active = false;
+    // }
 }
 
 void setColorSortEnabled(bool enabled) {
     colorSortEnabled = enabled;
+}
+
+void setDriverColorSortEnabled(bool enabled) {
+    driverColorSortEnabled = enabled;
 }
 
 // code that should run during driver
@@ -171,7 +186,7 @@ std::optional<alliance_t> colorDetected(pros::Optical& sensor) {
     double color_sensor_hue = sensor.get_hue();
 
     // intake senses something
-    if (sensor.get_proximity() > 80) {
+    if (sensor.get_proximity() > 200) {
         if (color_sensor_hue > 280 || color_sensor_hue < 100)
             result = alliance_t::red;
         else if (color_sensor_hue > 120 && color_sensor_hue < 280)
@@ -283,15 +298,18 @@ void colorSort() {
             std::lock_guard lock(intake_mutex);
 
             // move balls towards center hole
+            middle_intake_piston.set_value(false);
+            bottom_motor.move(0);
+            top_motor.move(-100);
+            pros::delay(200);
             bottom_motor.move(127);
+            top_motor.move(0);
 
             // open up center
-            middle_intake_piston.set_value(false);
 
             // move top motor backwards a bit to ensure it gets thrown out
-            top_motor.move(-50);
 
-            pros::delay(80);
+            pros::delay(150);
         }
         // else if (intake_state == scoring_middle ||
         //                     intake_state == slow_scoring_middle) {
@@ -325,18 +343,18 @@ void hardwareUpdate() {
         middle_intake_piston.set_value(intake_state != scoring_middle);
 
         // priming is a special mode, don't use normal speeds
-        if (intake_state == scoring_middle && tmp_middle_active) {
-            bottom_motor.move(-127);
-            top_motor.move(-127);
-            pros::delay(100);
-            bottom_motor.move(70);
-            top_motor.move(-127);
-            pros::delay(400);
-            tmp_middle_active = false;
-        } else {
+        // if (intake_state == scoring_middle && tmp_middle_active) {
+        //     // bottom_motor.move(-127);
+        //     // top_motor.move(-127);
+        //     // pros::delay(100);
+        //     // bottom_motor.move(70);
+        //     // top_motor.move(-127);
+        //     // pros::delay(500);
+        //     // tmp_middle_active = false;
+        // } else {
             bottom_motor.move(bottom_speed);
             top_motor.move(top_speed);
-        }
+        // }
 
         intake_mutex.give();
     }
@@ -389,14 +407,15 @@ void init(bool gdriver) {
       },
       "antijam");
 
-    pros::Task colorsort_task(
-      [] {
-          while (true) {
-              colorSort();
-              pros::delay(10);
-          }
-      },
-      "colorsort");
+    // no colorsort
+    // pros::Task colorsort_task(
+    //   [] {
+    //       while (true) {
+    //           colorSort();
+    //           pros::delay(10);
+    //       }
+    //   },
+    //   "colorsort");
 
     pros::Task main_intake_task(
       [] {

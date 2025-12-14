@@ -93,12 +93,12 @@ class DistanceSensorModel : public Sensor {
                        bool use_big_distance = false) {
         auto u = circle_position - position;
 
-        // inside circle, make smaller
+        // inside circle, activate smaller
         if (u.magnitude() < radius) {
             return u.magnitude();
         }
 
-        auto unit_v = units::Vector2D<Number>::fromPolar(angle, 1);
+        auto unit_v = units::Vector2D<Number>::unitVector(angle);
         Length cross = units::abs(u.cross(unit_v));
         Length dot = u * unit_v;
         auto diff = units::square(radius) - units::square(cross);
@@ -112,11 +112,8 @@ class DistanceSensorModel : public Sensor {
         // shortest intersection to circle
         auto circle_dist = dot - units::sqrt(diff);
 
-        // if circle dist is negative and not inside circle, then its definetly
-        // behind us
-
         // circle not really intersected since wall distance was smaller
-        // if (wall_distance < circle_dist) return std::nullopt;
+        if (wall_distance < circle_dist) return std::nullopt;
 
         auto actual_diff =
           units::max(units::square(actual_radius) - units::square(cross),

@@ -15,7 +15,7 @@
 // NOTE: select the disabled auton if you don't want anything to run!!!
 void testing_auton_func() {
     auto_side = field_side_t::right;
-    auto_alliance = alliance_t::blue;
+    auto_alliance = alliance_t::red;
 
     // selected_auton = "current skills";
     selected_auton = "current quals";

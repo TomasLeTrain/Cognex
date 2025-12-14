@@ -35,7 +35,6 @@ void opcontrol() {
     wings::init(true);
     odom_retract::init(true);
 
-
     // no need to initialize in auto
     base::init();
 
@@ -91,8 +90,9 @@ void opcontrol() {
 
     // move odom up automatically
     odom_retract::retractOdom();
+    intake::setDriverColorSortEnabled(false);
 
-    RobotSetPose({ 49_in, -16.8_in, 200 * deg });
+    // RobotSetPose({ 49_in, -16.8_in, 200 * deg });
 
     // vexmaps::DistanceSensorConfig new_config = distance_sensor_config;
     //

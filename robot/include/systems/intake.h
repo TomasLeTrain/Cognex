@@ -31,6 +31,7 @@ void set(intake_state_t new_intake_state);
 
 // sets if color sort is enabled
 void setColorSortEnabled(bool enabled);
+void setDriverColorSortEnabled(bool enabled);
 
 void init(bool gdriver);
 
