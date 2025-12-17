@@ -18,8 +18,8 @@ void testing_auton_func() {
     auto_alliance = alliance_t::red;
 
     // selected_auton = "current skills";
-    selected_auton = "current quals";
-    // selected_auton = "current skills";
+    // selected_auton = "current quals";
+    selected_auton = "current skills";
     // selected_auton = "fast auton";
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();

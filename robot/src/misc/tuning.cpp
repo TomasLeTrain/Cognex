@@ -8,6 +8,7 @@
 #include "globals/blazing_globals.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
+#include "pros/abstract_motor.hpp"
 #include "pros/misc.h"
 #include "screen/screen.h"
 #include "units/Vector2D.hpp"
@@ -97,7 +98,6 @@ void turn_pid_tuning() {
 
     while (true) {
         RobotSetPose(0, 0, 0);
-
         auto start_time = from_msec(pros::millis());
 
         mb.turnTo(target_theta).turn_kp(curr_kp).turn_kd(curr_kd) | run;
@@ -173,30 +173,42 @@ void drive_pid_tuning() {
     double curr_kd = linear_pid.get_kd() / linear_pid.UKD;
 
     Voltage curr_accel_slew = 1_volt;
+    Number curr_k_lat = 0.0;
 
     double kp_delta = 0.05;
     double kd_delta = 0.05;
     Voltage slew_delta = 0.025_volt;
+    Number k_lat_delta = 0.01;
+
+    bool k_lat_config_active = false;
 
     bool reversed = false;
+
+    units::Pose start_pose = { -24_in, -24_in, 0_stDeg };
+
+    RobotSetPose(start_pose);
+
+    drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     while (true) {
 
         auto start_time = from_msec(pros::millis());
 
         if (reversed) {
-            RobotSetPose(2 * target_distance.convert(in), 0, 0);
-            mb.moveTo(target_distance, 0_in)
+            // RobotSetPose(2 * target_distance.convert(in), 0, 0);
+            mb.moveTo(start_pose.x + target_distance, start_pose.y)
                 .drive_kp(curr_kp)
                 .drive_kd(curr_kd)
                 .drive_accelSlew(curr_accel_slew)
+                .k_lat(curr_k_lat)
                 .reverse() |
               run;
         } else {
-            RobotSetPose(0, 0, 0);
-            mb.moveTo(target_distance, 0_in)
+            // RobotSetPose(0, 0, 0);
+            mb.moveTo(start_pose.x + target_distance, start_pose.y)
                 .drive_kp(curr_kp)
                 .drive_kd(curr_kd)
+                .k_lat(curr_k_lat)
                 .drive_accelSlew(curr_accel_slew) |
               run;
         }
@@ -205,10 +217,14 @@ void drive_pid_tuning() {
 
         auto time_difference = end_time - start_time;
 
-        auto total_error = units::V2Position(target_distance, 0_in)
-                             .distanceTo(tracker.getPosition());
-        auto forwards_error = target_distance - tracker.getPosition().x;
-        auto sideways_error = 0_in - tracker.getPosition().y;
+        auto curr_pose = RobotGetPose();
+        auto error_vec =
+          units::V2Position(start_pose.x + target_distance, start_pose.y) -
+          curr_pose;
+
+        auto total_error = error_vec.magnitude();
+        auto forwards_error = error_vec.x;
+        auto sideways_error = error_vec.y;
 
         std::cout
           << std::format(
@@ -219,9 +235,9 @@ void drive_pid_tuning() {
           << std::endl;
 
         std::cout << std::format("position: {:.3f} {:.3f} {:.3f}",
-                                 tracker.getPosition().x.convert(in),
-                                 tracker.getPosition().y.convert(in),
-                                 tracker.getAngle().convert(deg))
+                                 curr_pose.x.convert(in),
+                                 curr_pose.y.convert(in),
+                                 curr_pose.orientation.convert(deg))
                   << std::endl;
 
         std::cout << std::format("took {:.4f} time to finish turn",
@@ -240,13 +256,12 @@ void drive_pid_tuning() {
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_B)) {
-                RobotSetPose(0, 0, 0);
-
                 if (reversed) {
-                    mb.moveTo(target_distance, 0_in).drive_maxVolt(0.6_volt) |
+                    mb.moveTo(start_pose.x, start_pose.y)
+                        .drive_maxVolt(0.6_volt) |
                       async;
                 } else {
-                    mb.moveTo(-target_distance, 0_in)
+                    mb.moveTo(start_pose.x, start_pose.y)
                         .drive_maxVolt(0.6_volt)
                         .reverse() |
                       async;
@@ -257,9 +272,17 @@ void drive_pid_tuning() {
                   pros::E_CONTROLLER_DIGITAL_X)) {
                 reversed = !reversed;
 
-                RobotSetPose(0, 0, 0);
                 // turns around
-                mb.turnTo(180) | async;
+                if (reversed) {
+                    mb.turnTo(0) | async;
+                } else {
+                    mb.turnTo(180) | async;
+                }
+            }
+
+            if (controller.get_digital_new_release(
+                  pros::E_CONTROLLER_DIGITAL_Y)) {
+                k_lat_config_active = !k_lat_config_active;
             }
 
             if (controller.get_digital_new_release(
@@ -298,19 +321,35 @@ void drive_pid_tuning() {
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_UP)) {
-                curr_accel_slew += slew_delta;
-                std::cout << std::format("increased slew to {:.3f}",
-                                         curr_accel_slew.internal())
-                          << std::endl;
+                if (k_lat_config_active) {
+                    curr_k_lat += k_lat_delta;
+                    std::cout << std::format("increased klat to {:.3f}",
+                                             curr_k_lat.internal())
+                              << std::endl;
+                } else {
+                    curr_accel_slew += slew_delta;
+                    std::cout << std::format("increased slew to {:.3f}",
+                                             curr_accel_slew.internal())
+                              << std::endl;
+                }
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_DOWN)) {
-                curr_accel_slew -= slew_delta;
-                std::cout << std::format("decreased slew to {:.3f}",
-                                         curr_accel_slew.internal())
-                          << std::endl;
+                if (k_lat_config_active) {
+                    curr_k_lat -= k_lat_delta;
+                    std::cout << std::format("decreased klat to {:.3f}",
+                                             curr_k_lat.internal())
+                              << std::endl;
+                } else {
+                    curr_accel_slew -= slew_delta;
+                    std::cout << std::format("decreased slew to {:.3f}",
+                                             curr_accel_slew.internal())
+                              << std::endl;
+                }
             }
+            // kp = 7
+            // kd = 10.5
             pros::delay(10);
         }
     }

@@ -21,8 +21,8 @@ void opcontrol() {
     // autonomous();
     // return;
     // turn_pid_tuning();
-    // drive_pid_tuning();
-    // return;
+    drive_pid_tuning();
+    return;
 
     // 90 turn:  2.6 3.35
     // 135 turn: 2.6 3.95
@@ -36,6 +36,8 @@ void opcontrol() {
     odom_retract::init(true);
 
     // no need to initialize in auto
+
+	drivetrain.setBrakeMode(pros::MotorBrake::coast);
     base::init();
 
     // set screen in case its different

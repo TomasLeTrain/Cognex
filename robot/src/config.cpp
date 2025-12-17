@@ -21,7 +21,7 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -137,9 +137,12 @@ linear_pid_config_t linear_pid_config {
 
 // units are in degrees
 angular_pid_config_t angular_pid_config {
-    .kp = 2.3,
+    // .kp = 2.3,
+    // .ki = 0,
+    // .kd = 3.05,
+    .kp = 3.0,
     .ki = 0,
-    .kd = 3.05,
+    .kd = 4.4,
     .windupRange = 14,
     .maxVoltage = 127,
 };
@@ -226,8 +229,8 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
     .mapCoeff = 0.25,
 
     // static constexpr FLength maxDistanceDifference = 18_in;
-    .maxDistanceDifference = 2.8_in,
-    .maxOutDistanceDifference = 2.8_in * 2,
+    .maxDistanceDifference = 5_in,
+    .maxOutDistanceDifference = 7_in,
 
     .detect_obstacles = false,
 
