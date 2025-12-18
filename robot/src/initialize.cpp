@@ -97,6 +97,7 @@ void initialize() {
     mb.setMoveToModifier([](auto moveTo) {
         // return moveTo.customAngularLinearFunc(angular_linear_func);
         return moveTo.k_lat(0.15 * rad / m).timeout(3_sec);
+        // return moveTo.timeout(3_sec);
         // .customAngularLinearFunc(angular_linear_func);
     });
 

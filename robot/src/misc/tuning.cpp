@@ -191,6 +191,10 @@ void drive_pid_tuning() {
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     while (true) {
+        std::cout << std::format("start is {:.3f} {:.3f}",
+                                 RobotGetPose().x.convert(in),
+                                 RobotGetPose().y.convert(in))
+                  << std::endl;
 
         auto start_time = from_msec(pros::millis());
 
@@ -350,6 +354,9 @@ void drive_pid_tuning() {
             }
             // kp = 7
             // kd = 10.5
+
+			// kp = 6.3
+			// kd = 10.2
             pros::delay(10);
         }
     }

@@ -124,9 +124,9 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
 
 // units are in inches
 linear_pid_config_t linear_pid_config {
-    .kp = 6.0,
+    .kp = 6.3,
     .ki = 0,
-    .kd = 7.45,
+    .kd = 10.2,
 
     // linear_pid_config_t linear_pid_config { .kp = 4.5,
     //                                         .ki = 0,
@@ -140,11 +140,7 @@ angular_pid_config_t angular_pid_config {
     // .kp = 2.3,
     // .ki = 0,
     // .kd = 3.05,
-    .kp = 3.0,
-    .ki = 0,
-    .kd = 4.4,
-    .windupRange = 14,
-    .maxVoltage = 127,
+    .kp = 3.0, .ki = 0, .kd = 4.4, .windupRange = 14, .maxVoltage = 127,
 };
 
 // LinearSlewController linear_slew(0.07_volt, 0.06_volt);
