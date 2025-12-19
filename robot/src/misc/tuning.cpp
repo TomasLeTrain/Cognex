@@ -5,7 +5,9 @@
 
 #include "tuning.h"
 #include "autos.h"
+#include "blazing/utils.hpp"
 #include "globals/blazing_globals.h"
+#include "globals/config.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "pros/abstract_motor.hpp"
@@ -14,7 +16,7 @@
 #include "units/Vector2D.hpp"
 #include <cmath>
 
-void odom_tuning() {
+void odom_diameter_tuning() {
     // units::Pose pose = { 0_in, 0_in };
     // model_manager.setPose(pose);
     // tracker.setPose(pose);
@@ -58,30 +60,69 @@ void odom_tuning() {
 }
 
 void odom_offset_tuning() {
-    // units::Pose pose = { 0_in, 0_in };
-    // model_manager.setPose(pose);
-    // tracker.setPose(pose);
-
     sideways_odom_rotation.set_position(0);
     forwards_odom_rotation.set_position(0);
     pros::delay(10);
 
     float pct = 0.5;
 
+    double last_sideways_rotation = sideways_odom_rotation.get_position();
+    double last_forwards_rotation = forwards_odom_rotation.get_position();
+    Angle last_angle = RobotGetPose().orientation;
+
+    auto get_offset =
+      [](double distance_delta, Length wheel_diameter, Angle angle_delta) {
+          const double rotations = (distance_delta * deg / 100.0) / rot;
+
+          const Length measured = rotations * (wheel_diameter * M_PI);
+          return measured / to_stRad(angle_delta);
+      };
+
+    Time last_measurement_time = now();
+
     while (true) {
-        left_motors.move_voltage(12000 * pct);
-        right_motors.move_voltage(-12000 * pct);
+        left_motors.move_voltage(-12000 * pct);
+        right_motors.move_voltage(12000 * pct);
 
-        units::V2Position deltas = { forwards_tracker.getDelta(),
-                                     sideways_tracker.getDelta() };
-        Angle delta_theta = imu_tracker.getDelta();
+        // units::V2Position deltas = { forwards_tracker.getDelta(),
+        //                              sideways_tracker.getDelta() };
+        // Angle delta_theta = imu_tracker.getDelta();
+        //
+        // units::V2Position offsets = deltas / to_stRad(delta_theta);
 
-        units::V2Position offsets = deltas / to_stRad(delta_theta);
+        // gets offsets every 0.2 seconds
+        if (blazing::timeoutDone(0.2_sec, last_measurement_time)) {
+            last_measurement_time = now();
+            Angle angle_delta = RobotGetPose().orientation - last_angle;
+            last_angle = RobotGetPose().orientation;
 
-        std::cout << offsets.x.convert(in) << " " << offsets.y.convert(in)
-                  << std::endl;
+            double curr_forwards_rotation =
+              forwards_odom_rotation.get_position();
+            double curr_sideways_rotation =
+              sideways_odom_rotation.get_position();
 
-        pros::delay(10);
+            double forwards_delta =
+              curr_forwards_rotation - last_forwards_rotation;
+            double sideways_delta =
+              curr_sideways_rotation - last_sideways_rotation;
+
+            last_forwards_rotation = curr_forwards_rotation;
+            last_sideways_rotation = curr_sideways_rotation;
+
+            units::V2Position offsets = {
+                get_offset(forwards_delta,
+                           forwards_tracker_config.diameter,
+                           angle_delta),
+                get_offset(sideways_delta,
+                           sideways_tracker_config.diameter,
+                           angle_delta)
+            };
+
+            std::cout << offsets.x.convert(in) << " " << offsets.y.convert(in)
+                      << std::endl;
+        }
+
+        pros::delay(20);
     }
 }
 
@@ -355,8 +396,8 @@ void drive_pid_tuning() {
             // kp = 7
             // kd = 10.5
 
-			// kp = 6.3
-			// kd = 10.2
+            // kp = 6.3
+            // kd = 10.2
             pros::delay(10);
         }
     }
