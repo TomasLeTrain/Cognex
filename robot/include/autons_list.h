@@ -15,7 +15,6 @@
 #define L_AUTON(auton, name) { name, auton::run_auton },
 
 // make sure autons are defined in here AND in autonomous.cpp!!
-H_AUTON(simple_auton)
 H_AUTON(skills)
 H_AUTON(skills2)
 H_AUTON(simple_other_goal_auton)

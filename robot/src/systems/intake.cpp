@@ -1,5 +1,7 @@
 #include "apis.h"
 //
+#include "auton_globals.h"
+#include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/device_globals.h"
 #include "pros/rtos.hpp"
@@ -7,6 +9,7 @@
 #include "systems/matchloader.h"
 #include <map>
 #include <mutex>
+#include <optional>
 
 namespace intake {
 // any needed variables can be specified here
@@ -20,47 +23,46 @@ intake_state_t intake_state = intake_disabled;
 
 std::map<intake_state_t, int> bottom_motor_speeds = {
     // only different one
-    { slow_scoring_bottom, -60  },
-    { scoring_bottom,      -110 },
+    { slow_scoring_bottom,         -60  },
+    { scoring_bottom,              -100 },
 
-    { slow_scoring_middle, 40   },
-    // { scoring_middle,      127  },
-    { scoring_middle,      40   },
+    // { slow_scoring_middle,         40   },
+    { scoring_middle_bottom_balls, 100  },
+    { scoring_middle_top_balls,    40   },
+    // acts as only top balls, good for driver
+    { scoring_middle,              40   },
 
-    { scoring_long,        127  },
+    { scoring_long,                127  },
+    { scoring_long_top_balls,      0    },
 
-    { intake,              127  },
-    { intake_slow_bottom,  127  },
+    { intake,                      127  },
+    { outtake,                     -127 },
 
-    { priming,             0    },
-    { unjam,               -127 },
+    { unjam,                       -127 },
 };
 
 std::map<intake_state_t, int> top_motor_speeds = {
-    { slow_scoring_bottom, -40  },
-    { scoring_bottom,      -80  },
+    { slow_scoring_bottom,         -60  },
+    { scoring_bottom,              -80  },
 
-    { slow_scoring_middle, 127  },
-    // { scoring_middle,      127  },
-    { scoring_middle,      -127 },
+    // { slow_scoring_middle, 127  },
+    { scoring_middle_bottom_balls, 40   },
+    { scoring_middle_top_balls,    -127 },
+    // acts as only top balls, good for driver
+    { scoring_middle,              -127 },
 
-    { scoring_long,        127  },
+    { scoring_long,                127  },
+    { scoring_long_top_balls,      127  },
 
-    { intake,              127  },
-    { intake_slow_bottom,  65   },
+    { intake,                      127  },
+    { outtake,                     -127 },
 
-    { priming,             0    },
-    { unjam,               -127 },
+    { unjam,                       -127 },
 };
 
 // speeds of the motors - can be positive or negative
 int bottom_speed;
 int top_speed;
-
-bool tmp_activated = false;
-
-// used to avoid the initial jam voltage disable
-bool last_tmp_activated = true;
 
 std::optional<alliance_t> last_middle_detected_color;
 
@@ -72,33 +74,45 @@ pros::Mutex intake_mutex;
 bool colorSortEnabled = true;
 bool driverColorSortEnabled = true;
 
-bool tmp_middle_active = false;
-bool middle_active = false;
+std::optional<Time> middle_active;
 
-/*
- * setters and getters - meant to be used by autons/subsystems outside this file
- * should also be specified in the intake.h file */
+bool color_sort_one = false;
 
-/**
- * @brief updates intake state, with optional speed parameter
- *
- * @param new_intake_state new intake state
- * @param new_intake_speed speed at which to run the intake. Defaults to max
- * speed
- */
+// intake piston stuff
+intake_piston_state_t top_intake_piston_state;
+intake_piston_state_t middle_intake_piston_state;
+
+// updates state as well as piston
+void setTopIntakePistonState(intake_piston_state_t intake_piston_state) {
+    top_intake_piston_state = intake_piston_state;
+
+    // top piston in allows passthrough when actuated
+    top_intake_piston.set_value(top_intake_piston_state == passthrough);
+}
+
+void setMiddleIntakePistonState(intake_piston_state_t intake_piston_state) {
+    middle_intake_piston_state = intake_piston_state;
+
+    // bottom piston in allows passthrough when not actuated
+    middle_intake_piston.set_value(middle_intake_piston_state == blocking);
+}
+
+std::optional<alliance_t> getMiddleDetectedColor() {
+    return middle_detected_color;
+}
+
+std::optional<alliance_t> getBottomDetectedColor() {
+    return bottom_detected_color;
+}
+
 void set(intake_state_t new_intake_state) {
     intake_state = new_intake_state;
 
-    // update prime state
-    // if (!middle_active && new_intake_state == scoring_middle) {
-    //     // started scoring middle
-    //     middle_active = true;
-    //     tmp_middle_active = true;
-    // }
-    // if (new_intake_state != scoring_middle) {
-    //     middle_active = false;
-    //     tmp_middle_active = false;
-    // }
+    if (intake_state == scoring_middle) {
+        middle_active = now();
+    } else {
+        middle_active = std::nullopt;
+    }
 }
 
 void setColorSortEnabled(bool enabled) {
@@ -112,67 +126,37 @@ void setDriverColorSortEnabled(bool enabled) {
 // code that should run during driver
 void driverUpdate() {
     // update states based on driver input
-    bool intakeToBackpack = controller.get_digital(controls::L1);
+    bool intake = controller.get_digital(controls::L1);
 
     bool scoreBottomHeight = controller.get_digital(controls::L2);
     bool scoreMiddleHeight = controller.get_digital(controls::R2);
     bool scoreLong = controller.get_digital(controls::R1);
 
-    bool slowScoring = false;
-
     bool killColorSort = controller.get_digital_new_press(controls::LEFT);
 
     bool unjam = controller.get_digital(controls::X);
-
-    // bool primeMacro = controller.get_digital(controls::RIGHT_SHIFT) &&
-    //                   controller.get_digital_new_press(controls::LEFT_SHIFT);
-    bool primeMacro = false;
 
     // one time kill switch
     if (driverColorSortEnabled == true && killColorSort) {
         driverColorSortEnabled = false;
     }
 
-    if (primeMacro)
-        set(intake_state_t::priming);
-
     else if (unjam)
         set(intake_state_t::unjam);
 
-    else if (intakeToBackpack)
+    else if (intake)
         set(intake_state_t::intake);
 
     else if (scoreMiddleHeight) {
-        // change the intake state based on the speed
-        if (slowScoring) {
-            set(intake_state_t::slow_scoring_middle);
-        } else {
-            set(intake_state_t::scoring_middle);
-        }
+        set(intake_state_t::scoring_middle);
     }
 
     else if (scoreBottomHeight) {
-        if (slowScoring) {
-            set(intake_state_t::slow_scoring_bottom);
-        } else {
-            set(intake_state_t::scoring_bottom);
-        }
+        set(intake_state_t::scoring_bottom);
     }
 
     else if (scoreLong) {
-        // not active and last was not active either
-        if (last_tmp_activated) {
-            tmp_activated = true;
-            last_tmp_activated = false;
-        }
-
         set(intake_state_t::scoring_long);
-        // only disable if prime was not active
-    }
-
-    else if (!tmp_middle_active) {
-        set(intake_state_t::intake_disabled);
-        last_tmp_activated = true;
     }
 }
 
@@ -229,23 +213,57 @@ void antiJam() {
     }
 }
 
-void waitUntilBottomColor(alliance_t color, uint32_t timeout) {
-    uint32_t start_time = pros::millis();
-    // either timeout triggers
-    while (pros::millis() - start_time < timeout &&
-           // or we get the color we want
-           color != bottom_detected_color) {
+bool waitUntilBottomColor(std::optional<alliance_t> color, Time timeout) {
+    Time start_time = blazing::now();
+
+    bool triggered_timeout, detected_ball;
+
+    while (true) {
+        triggered_timeout = blazing::timeoutDone(timeout, start_time);
+        detected_ball =
+          color
+            .transform([](alliance_t color) -> bool {
+                // detected wanted color
+                return color == bottom_detected_color;
+            })
+            // color has no value, detect ball if middle color has value
+            .value_or(bottom_detected_color.has_value());
+
+        if (triggered_timeout || detected_ball) break;
         pros::delay(10);
     }
+    if (detected_ball) return true;
+    return false;
 }
 
-void waitUntilMiddleColor(alliance_t color, uint32_t timeout) {
-    uint32_t start_time = pros::millis();
-    // either timeout triggers
-    while (pros::millis() - start_time < timeout &&
-           // or we get the color we want
-           color != middle_detected_color) {
+bool waitUntilMiddleColor(std::optional<alliance_t> color, Time timeout) {
+    Time start_time = blazing::now();
+
+    bool triggered_timeout, detected_ball;
+
+    while (true) {
+        triggered_timeout = blazing::timeoutDone(timeout, start_time);
+        detected_ball =
+          color
+            .transform([](alliance_t color) -> bool {
+                // detected wanted color
+                return color == middle_detected_color;
+            })
+            // color has no value, detect ball if middle color has value
+            .value_or(middle_detected_color.has_value());
+
+        if (triggered_timeout || detected_ball) break;
         pros::delay(10);
+    }
+    if (detected_ball) return true;
+    return false;
+}
+
+void throwOutDetectedBall(std::optional<alliance_t> color, Time timeout) {
+    bool detected_ball = waitUntilMiddleColor(color, timeout);
+
+    if (detected_ball) {
+        color_sort_one = true;
     }
 }
 
@@ -278,38 +296,40 @@ void colorSort() {
     //     .value_or(false);
 
     // we have the wrong color, prcoess based on current state
-    if (middle_wrong_color_detected) {
-        // try to outake through the middle of the intake
+    if (middle_wrong_color_detected || color_sort_one) {
+        // try to outake through top of the intake since we are matchloading
         if (intake_state == intake && matchloader::get() == active) {
             // matchloading, should color sort through the back
             std::lock_guard lock(intake_mutex);
 
-            // make sure no other balls are in the way since those would not get
-            // color sorted out?
+            // make sure no other balls are in the way since those would not
+            // get color sorted out?
             bottom_motor.move(0);
             // move top most ball out through score side
             top_motor.move(127);
-            top_intake_piston.set_value(true);
+            setTopIntakePistonState(passthrough);
 
             // really long delay, could be really inconsistent
             pros::delay(800);
-        } else if (intake_state == intake || intake_state == scoring_long) {
+        } else if (intake_state == intake || intake_state == scoring_long ||
+                   color_sort_one) {
             // need to take mutex
             std::lock_guard lock(intake_mutex);
 
             // move balls towards center hole
-            middle_intake_piston.set_value(false);
+            setMiddleIntakePistonState(passthrough);
+            // reverse ball a bit if touching top motor
             bottom_motor.move(0);
             top_motor.move(-100);
             pros::delay(200);
-            bottom_motor.move(127);
+            // move bottom motor fast and no top motor
+            bottom_motor.move(100);
             top_motor.move(0);
 
-            // open up center
-
-            // move top motor backwards a bit to ensure it gets thrown out
-
+            // delay some time to throw out ball
             pros::delay(150);
+
+            if (color_sort_one) color_sort_one = false;
         }
         // else if (intake_state == scoring_middle ||
         //                     intake_state == slow_scoring_middle) {
@@ -339,30 +359,39 @@ void hardwareUpdate() {
     // only update motors if they are not being used elsewhere - waits for 2
     // millisecends to be able to use
     if (intake_mutex.take(2)) {
-        top_intake_piston.set_value(intake_state == scoring_long);
-        middle_intake_piston.set_value(intake_state != scoring_middle);
+        setTopIntakePistonState(intake_state == scoring_long ? passthrough :
+                                                               blocking);
+        setMiddleIntakePistonState(
+          (intake_state == scoring_middle ||
+           intake_state == scoring_middle_bottom_balls ||
+           intake_state == scoring_middle_top_balls) ?
+            passthrough :
+            blocking);
 
-        // priming is a special mode, don't use normal speeds
-        // if (intake_state == scoring_middle && tmp_middle_active) {
-        //     // bottom_motor.move(-127);
-        //     // top_motor.move(-127);
-        //     // pros::delay(100);
-        //     // bottom_motor.move(70);
-        //     // top_motor.move(-127);
-        //     // pros::delay(500);
-        //     // tmp_middle_active = false;
-        // } else {
-            bottom_motor.move(bottom_speed);
-            top_motor.move(top_speed);
-        // }
+        if (middle_active) {
+            // if within first 400 msec then we are scoring top, otherwise
+            // bottom
+            if (blazing::now() - *middle_active < 400_msec) {
+                bottom_speed = bottom_motor_speeds[scoring_middle_top_balls];
+                top_speed = top_motor_speeds[scoring_middle_top_balls];
+            } else {
+                bottom_speed = bottom_motor_speeds[scoring_middle_bottom_balls];
+                top_speed = top_motor_speeds[scoring_middle_bottom_balls];
+            }
+        }
 
+        bottom_motor.move(bottom_speed);
+        top_motor.move(top_speed);
+
+        // release mutex
         intake_mutex.give();
     }
 }
 
 // updates the state of the subsystem
 void update() {
-    // any code that needs to run regardless of driver mode can also run here
+    // any code that needs to run regardless of driver mode can also run
+    // here
 
     // update current detected color
     last_middle_detected_color = middle_detected_color;
@@ -407,15 +436,14 @@ void init(bool gdriver) {
       },
       "antijam");
 
-    // no colorsort
-    // pros::Task colorsort_task(
-    //   [] {
-    //       while (true) {
-    //           colorSort();
-    //           pros::delay(10);
-    //       }
-    //   },
-    //   "colorsort");
+    pros::Task colorsort_task(
+      [] {
+          while (true) {
+              colorSort();
+              pros::delay(10);
+          }
+      },
+      "colorsort");
 
     pros::Task main_intake_task(
       [] {
