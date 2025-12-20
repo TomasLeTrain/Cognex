@@ -45,6 +45,7 @@ void run_auton() {
             return RobotGetPose().distanceTo(target) < threshold;
         };
     };
+
     auto start_time = now();
 
     units::V2FPosition target_point;
