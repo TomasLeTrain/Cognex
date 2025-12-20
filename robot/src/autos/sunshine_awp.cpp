@@ -18,7 +18,7 @@
 
 // do not do anything outside here!
 
-namespace neocity_awp {
+namespace sunshine_awp {
 
 // you can add any variables / functions here
 
@@ -32,8 +32,6 @@ void run_auton() {
 
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
-
-    double angle = 90;
 
     // printf("before set pose\n");
     RobotSetPose(-48.3, 16.5 * l, bl ? 90 : 270);

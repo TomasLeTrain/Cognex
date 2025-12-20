@@ -17,10 +17,11 @@ void testing_auton_func() {
     auto_side = field_side_t::right;
     auto_alliance = alliance_t::red;
 
-    // selected_auton = "current skills";
-    // selected_auton = "current quals";
-    selected_auton = "current skills";
+    // selected_auton = "awp";
+    // selected_auton = "quals";
+    selected_auton = "skills";
     // selected_auton = "fast auton";
+
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();
 }

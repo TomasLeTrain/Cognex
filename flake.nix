@@ -57,6 +57,8 @@ EOF
 		  alias mc="make clean && m"
 		  alias t="pros --no-sentry --no-analytics t"
 		  alias ut="pros --no-sentry --no-analytics ut"
+
+		  alias mcc="make include/apis.h.gch && mc"
         '';
       };
     });

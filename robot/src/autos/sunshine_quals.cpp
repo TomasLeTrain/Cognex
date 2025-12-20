@@ -18,7 +18,7 @@
 
 // do not do anything outside here!
 
-namespace eagles_quals {
+namespace sunshine_quals {
 
 // you can add any variables / functions here
 

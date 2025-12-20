@@ -23,10 +23,9 @@ H_AUTON(roboticon_skills)
 H_AUTON(roboticon_quals)
 
 H_AUTON(eagles_skills)
-H_AUTON(eagles_quals)
 
-H_AUTON(neocity_awp)
-
+H_AUTON(sunshine_quals)
+H_AUTON(sunshine_awp)
 H_AUTON(sunshine_skills)
 H_AUTON(sunshine_fast_auton)
 
