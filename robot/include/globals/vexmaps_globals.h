@@ -21,9 +21,6 @@ extern vexmaps::MotorGroupTracking right_dt_tracker;
 extern vexmaps::HorizontalOdometryTracker horizontal_tracker;
 extern vexmaps::VerticalOdometryTracker vertical_tracker;
 
-extern vexmaps::HorizontalOdometryTracker horizontal_tracker;
-extern vexmaps::VerticalOdometryTracker vertical_tracker;
-
 // lists of intalled trackers
 extern std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers;
 extern std::initializer_list<VerticalOdometryTracker*> vertical_trackers;

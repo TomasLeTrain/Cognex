@@ -228,7 +228,7 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
     .maxDistanceDifference = 5_in,
     .maxOutDistanceDifference = 7_in,
 
-    .detect_obstacles = false,
+    .detect_obstacles = true,
 
     // static constexpr bool logging = false;
     .logging = true && vexmaps_logging_enabled

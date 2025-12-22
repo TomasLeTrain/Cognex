@@ -45,6 +45,9 @@ void initialize() {
         screen::health::update_init_notif_severity(imu_notif,
                                                    screen::health::succeed);
     }
+	
+	// make the imu return data as fast as possible?
+	// imu.set_data_rate(5);
 
     // give time for screen to update
     pros::delay(50);
