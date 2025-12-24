@@ -20,6 +20,7 @@ void testing_auton_func() {
     // selected_auton = "awp";
     // selected_auton = "quals";
     selected_auton = "skills";
+    // selected_auton = "max skills";
     // selected_auton = "fast auton";
 
     auto selected_auton_function = auton_list[selected_auton];

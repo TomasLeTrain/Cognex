@@ -22,6 +22,8 @@ H_AUTON(simple_other_goal_auton)
 H_AUTON(roboticon_skills)
 H_AUTON(roboticon_quals)
 
+H_AUTON(max_skills)
+
 H_AUTON(eagles_skills)
 
 H_AUTON(sunshine_quals)

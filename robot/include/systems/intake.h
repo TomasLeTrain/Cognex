@@ -8,6 +8,7 @@ enum intake_state_t {
     intake_disabled,
 
     intake,
+    intake_bottom_balls,
     outtake,
 
     unjam,
@@ -22,8 +23,8 @@ enum intake_state_t {
     scoring_bottom,
     scoring_long,
 
-	// scores on long but only scores top balls
-	scoring_long_top_balls,
+    // scores on long but only scores top balls
+    scoring_long_top_balls,
 };
 
 enum intake_piston_state_t {

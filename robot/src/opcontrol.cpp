@@ -37,7 +37,7 @@ void opcontrol() {
 
     // no need to initialize in auto
 
-	drivetrain.setBrakeMode(pros::MotorBrake::coast);
+    drivetrain.setBrakeMode(pros::MotorBrake::coast);
     base::init();
 
     // set screen in case its different
@@ -93,6 +93,16 @@ void opcontrol() {
     // move odom up automatically
     odom_retract::retractOdom();
     intake::setDriverColorSortEnabled(false);
+
+    // RobotSetPose(-46.471, 18.535, 0);
+		//   while (true) {
+		//       std::cout << std::format(
+		//         "{:.2f},{:.2f},{:.2f}",
+		//         model_manager.getPose().x.convert(in),
+		//         model_manager.getPose().y.convert(in),
+		//         model_manager.getPose().orientation.convert(deg)) << std::endl;
+		// pros::delay(1000);
+		//   }
 
     // RobotSetPose({ 49_in, -16.8_in, 200 * deg });
 

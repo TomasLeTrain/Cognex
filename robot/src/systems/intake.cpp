@@ -18,6 +18,7 @@ namespace intake {
 // these variables
 bool is_driver = false;
 bool tasks_active = false;
+bool skills_middle_scoring = true;
 
 intake_state_t intake_state = intake_disabled;
 
@@ -36,6 +37,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { scoring_long_top_balls,      0    },
 
     { intake,                      127  },
+    { intake_bottom_balls,         127  },
     { outtake,                     -127 },
 
     { unjam,                       -127 },
@@ -55,6 +57,7 @@ std::map<intake_state_t, int> top_motor_speeds = {
     { scoring_long_top_balls,      127  },
 
     { intake,                      127  },
+    { intake_bottom_balls,         0    },
     { outtake,                     -127 },
 
     { unjam,                       -127 },
@@ -87,14 +90,14 @@ void setTopIntakePistonState(intake_piston_state_t intake_piston_state) {
     top_intake_piston_state = intake_piston_state;
 
     // top piston in allows passthrough when actuated
-    top_intake_piston.set_value(top_intake_piston_state == passthrough);
+    top_intake_piston.set_value(top_intake_piston_state == blocking);
 }
 
 void setMiddleIntakePistonState(intake_piston_state_t intake_piston_state) {
     middle_intake_piston_state = intake_piston_state;
 
     // bottom piston in allows passthrough when not actuated
-    middle_intake_piston.set_value(middle_intake_piston_state == blocking);
+    middle_intake_piston.set_value(middle_intake_piston_state == passthrough);
 }
 
 std::optional<alliance_t> getMiddleDetectedColor() {
@@ -109,7 +112,7 @@ void set(intake_state_t new_intake_state) {
     intake_state = new_intake_state;
 
     if (intake_state == scoring_middle) {
-        middle_active = now();
+        if (!middle_active) middle_active = now();
     } else {
         middle_active = std::nullopt;
     }
@@ -157,6 +160,8 @@ void driverUpdate() {
 
     else if (scoreLong) {
         set(intake_state_t::scoring_long);
+    } else {
+        set(intake_state_t::intake_disabled);
     }
 }
 
@@ -371,13 +376,23 @@ void hardwareUpdate() {
         if (middle_active) {
             // if within first 400 msec then we are scoring top, otherwise
             // bottom
-            if (blazing::now() - *middle_active < 400_msec) {
-                bottom_speed = bottom_motor_speeds[scoring_middle_top_balls];
-                top_speed = top_motor_speeds[scoring_middle_top_balls];
+
+            intake_state_t new_state;
+
+            Time timeout_time = skills_middle_scoring ? 2_sec : 2_sec;
+
+            bool first_timeout = blazing::now() - *middle_active > timeout_time;
+
+            if (skills_middle_scoring) {
+                new_state = first_timeout ? scoring_middle_top_balls :
+                                            scoring_middle_bottom_balls;
             } else {
-                bottom_speed = bottom_motor_speeds[scoring_middle_bottom_balls];
-                top_speed = top_motor_speeds[scoring_middle_bottom_balls];
+                new_state = first_timeout ? scoring_middle_bottom_balls :
+                                            scoring_middle_top_balls;
             }
+
+            bottom_speed = bottom_motor_speeds[new_state];
+            top_speed = top_motor_speeds[new_state];
         }
 
         bottom_motor.move(bottom_speed);
@@ -427,15 +442,15 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    pros::Task antijam_task(
-      [] {
-          while (true) {
-              antiJam();
-              pros::delay(10);
-          }
-      },
-      "antijam");
-
+    // pros::Task antijam_task(
+    //   [] {
+    //       while (true) {
+    //           antiJam();
+    //           pros::delay(10);
+    //       }
+    //   },
+    //   "antijam");
+    //
     pros::Task colorsort_task(
       [] {
           while (true) {
