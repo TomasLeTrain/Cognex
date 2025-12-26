@@ -17,6 +17,9 @@
 
 void opcontrol() {
     // initialize tasks for each subsystem
+	// odom_diameter_tuning();
+	// odom_offset_tuning();
+	// return;
 
     // autonomous();
     // return;
@@ -35,10 +38,12 @@ void opcontrol() {
     wings::init(true);
     odom_retract::init(true);
 
-    // no need to initialize in auto
+	intake::setDriverColorSortEnabled(true);
 
+    // no need to initialize in auto
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
     base::init();
+    odom_retract::retractOdom();
 
     // set screen in case its different
     // screen::setScreen(&screen::bouncing_dvd_screen::screen);
@@ -91,8 +96,8 @@ void opcontrol() {
     // odom_tuning();
 
     // move odom up automatically
-    odom_retract::retractOdom();
-    intake::setDriverColorSortEnabled(false);
+
+    // intake::setDriverColorSortEnabled(false);
 
     // RobotSetPose(-46.471, 18.535, 0);
 		//   while (true) {

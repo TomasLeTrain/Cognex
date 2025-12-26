@@ -21,7 +21,7 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -47,7 +47,7 @@ pros::Optical bottom_intake_color_sensor(21);
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
 pros::adi::DigitalOut top_intake_piston('B', false);
-pros::adi::DigitalOut middle_intake_piston('D', true);
+pros::adi::DigitalOut middle_intake_piston('D', false);
 pros::adi::DigitalOut wings_piston('C', false);
 
 pros::adi::DigitalOut matchloader_piston('A', false);
@@ -111,8 +111,8 @@ tracker_config_t forwards_tracker_config = {
 };
 
 tracker_config_t sideways_tracker_config = {
-    .diameter = 1.9869_in,
-    .offset = -2.5_in,
+    .diameter = 1.98_in,
+    .offset = -2.85_in,
 };
 
 /* drivetrain / pid configuration */

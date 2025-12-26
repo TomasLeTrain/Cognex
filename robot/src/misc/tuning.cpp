@@ -81,8 +81,8 @@ void odom_offset_tuning() {
     Time last_measurement_time = now();
 
     while (true) {
-        left_motors.move_voltage(-12000 * pct);
-        right_motors.move_voltage(12000 * pct);
+        left_motors.move_voltage(-6000);
+        right_motors.move_voltage(6000);
 
         // units::V2Position deltas = { forwards_tracker.getDelta(),
         //                              sideways_tracker.getDelta() };

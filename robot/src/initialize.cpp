@@ -150,22 +150,22 @@ void initialize() {
       },
       "particle task");
 
-    pros::Task(
-      [&] {
-          while (true) {
-              screen::health::set_console_text(
-                std::format("vexmaps pose: {:.4f} {:.4f}\n"
-                            "motion model pose: {:.4f} {:.4f}\n"
-                            "blazing pose: {:.4f} {:.4f}\n",
-                            vexmaps_tracker.getPosition().x.convert(in),
-                            vexmaps_tracker.getPosition().y.convert(in),
-                            pf_motion_model.getPose().x.convert(in),
-                            pf_motion_model.getPose().y.convert(in),
-                            tracker.getPosition().x.convert(in),
-                            tracker.getPosition().y.convert(in)));
-
-              pros::delay(50);
-          }
-      },
-      "particle task");
+    // pros::Task(
+    //   [&] {
+    //       while (true) {
+    //           screen::health::set_console_text(
+    //             std::format("vexmaps pose: {:.4f} {:.4f}\n"
+    //                         "motion model pose: {:.4f} {:.4f}\n"
+    //                         "blazing pose: {:.4f} {:.4f}\n",
+    //                         vexmaps_tracker.getPosition().x.convert(in),
+    //                         vexmaps_tracker.getPosition().y.convert(in),
+    //                         pf_motion_model.getPose().x.convert(in),
+    //                         pf_motion_model.getPose().y.convert(in),
+    //                         tracker.getPosition().x.convert(in),
+    //                         tracker.getPosition().y.convert(in)));
+    //
+    //           pros::delay(50);
+    //       }
+    //   },
+    //   "health screen particle task");
 }

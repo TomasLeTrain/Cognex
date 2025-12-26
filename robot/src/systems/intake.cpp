@@ -208,13 +208,13 @@ void antiJam() {
     // wait for stuff to be available
     std::lock_guard lock(intake_mutex);
 
-    if (intake_state == scoring_long && motorJammed(bottom_motor)) {
-        bottom_motor.move(-127);
-        pros::delay(200);
-    }
-    if (intake_state == scoring_long && motorJammed(top_motor)) {
-        top_motor.move(-127);
-        pros::delay(100);
+    if (motorJammed(bottom_motor) || motorJammed(top_motor)) {
+        bottom_speed = bottom_motor_speeds[intake_state];
+        top_speed = top_motor_speeds[intake_state];
+
+        bottom_motor.move(units::sgn(bottom_speed) * -127);
+        top_motor.move(units::sgn(top_speed) * -127);
+        pros::delay(150);
     }
 }
 
@@ -303,7 +303,8 @@ void colorSort() {
     // we have the wrong color, prcoess based on current state
     if (middle_wrong_color_detected || color_sort_one) {
         // try to outake through top of the intake since we are matchloading
-        if (intake_state == intake && matchloader::get() == active) {
+        if (intake_state == intake && matchloader::get() == active &&
+            is_driver == true) {
             // matchloading, should color sort through the back
             std::lock_guard lock(intake_mutex);
 
@@ -324,15 +325,24 @@ void colorSort() {
             // move balls towards center hole
             setMiddleIntakePistonState(passthrough);
             // reverse ball a bit if touching top motor
-            bottom_motor.move(0);
-            top_motor.move(-100);
-            pros::delay(200);
+            // bottom_motor.move(-100);
+            // top_motor.move(-127);
+            // pros::delay(120);
+            // top_motor.move(-100);
+            // pros::delay(200);
             // move bottom motor fast and no top motor
             bottom_motor.move(100);
+            top_motor.move(50);
+            pros::delay(90);
             top_motor.move(0);
 
             // delay some time to throw out ball
-            pros::delay(150);
+            pros::delay(100);
+            // give slight time to take back ball that could have been taken out
+            setMiddleIntakePistonState(blocking);
+            bottom_motor.move(-100);
+            top_motor.move(0);
+            pros::delay(100);
 
             if (color_sort_one) color_sort_one = false;
         }
@@ -450,7 +460,7 @@ void init(bool gdriver) {
     //       }
     //   },
     //   "antijam");
-    //
+
     pros::Task colorsort_task(
       [] {
           while (true) {
