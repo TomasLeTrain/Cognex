@@ -18,49 +18,61 @@ namespace intake {
 // these variables
 bool is_driver = false;
 bool tasks_active = false;
-bool skills_middle_scoring = true;
+
+bool skills_middle_scoring = false;
+
+void setSkillsMiddleScoring(bool enabled) {
+    skills_middle_scoring = enabled;
+}
 
 intake_state_t intake_state = intake_disabled;
 
 std::map<intake_state_t, int> bottom_motor_speeds = {
     // only different one
-    { slow_scoring_bottom,         -60  },
-    { scoring_bottom,              -100 },
+    { slow_scoring_bottom,             -60  },
+    { scoring_bottom,                  -100 },
 
     // { slow_scoring_middle,         40   },
-    { scoring_middle_bottom_balls, 100  },
-    { scoring_middle_top_balls,    40   },
+    { scoring_middle_bottom_balls,     127  },
+    { scoring_middle_top_balls,        40   },
+    { scoring_middle_top_balls_skills, 40   },
     // acts as only top balls, good for driver
-    { scoring_middle,              40   },
+    { scoring_middle,                  40   },
 
-    { scoring_long,                127  },
-    { scoring_long_top_balls,      0    },
+    { scoring_long,                    127  },
+    { scoring_long_top_balls,          0    },
 
-    { intake,                      127  },
-    { intake_bottom_balls,         127  },
-    { outtake,                     -127 },
+    { intake_disabled_open_middle,     0    },
 
-    { unjam,                       -127 },
+    { intake,                          127  },
+    { intake_bottom_balls,             127  },
+    { outtake,                         -127 },
+
+    { unjam,                           -127 },
 };
 
 std::map<intake_state_t, int> top_motor_speeds = {
-    { slow_scoring_bottom,         -60  },
-    { scoring_bottom,              -80  },
+    { slow_scoring_bottom,             -100 },
+    { scoring_bottom,                  -127 },
 
     // { slow_scoring_middle, 127  },
-    { scoring_middle_bottom_balls, 40   },
-    { scoring_middle_top_balls,    -127 },
+    { scoring_middle_bottom_balls,     40   },
+    { scoring_middle_top_balls,        -127 },
+    { scoring_middle_top_balls_skills, -100 },
     // acts as only top balls, good for driver
-    { scoring_middle,              -127 },
+    { scoring_middle,                  -127 },
 
-    { scoring_long,                127  },
-    { scoring_long_top_balls,      127  },
+    { scoring_long,                    127  },
+    { scoring_long_top_balls,          127  },
 
-    { intake,                      127  },
-    { intake_bottom_balls,         0    },
-    { outtake,                     -127 },
+    { intake,                          127  },
+    { intake_bottom_balls,             0    },
 
-    { unjam,                       -127 },
+    { intake_disabled_open_middle,     0    },
+
+    { outtake,                         -127 },
+
+    { unjam,                           -127 },
 };
 
 // speeds of the motors - can be positive or negative
@@ -97,7 +109,7 @@ void setMiddleIntakePistonState(intake_piston_state_t intake_piston_state) {
     middle_intake_piston_state = intake_piston_state;
 
     // bottom piston in allows passthrough when not actuated
-    middle_intake_piston.set_value(middle_intake_piston_state == passthrough);
+    middle_intake_piston.set_value(middle_intake_piston_state == blocking);
 }
 
 std::optional<alliance_t> getMiddleDetectedColor() {
@@ -208,13 +220,13 @@ void antiJam() {
     // wait for stuff to be available
     std::lock_guard lock(intake_mutex);
 
-    if (motorJammed(bottom_motor) || motorJammed(top_motor)) {
+    if (motorJammed(top_motor) && (intake_state == scoring_long)) {
         bottom_speed = bottom_motor_speeds[intake_state];
         top_speed = top_motor_speeds[intake_state];
 
-        bottom_motor.move(units::sgn(bottom_speed) * -127);
+        // bottom_motor.move(units::sgn(bottom_speed) * -127);
         top_motor.move(units::sgn(top_speed) * -127);
-        pros::delay(150);
+        pros::delay(200);
     }
 }
 
@@ -379,7 +391,9 @@ void hardwareUpdate() {
         setMiddleIntakePistonState(
           (intake_state == scoring_middle ||
            intake_state == scoring_middle_bottom_balls ||
-           intake_state == scoring_middle_top_balls) ?
+           intake_state == scoring_middle_top_balls ||
+           intake_state == intake_disabled_open_middle ||
+           intake_state == scoring_middle_top_balls_skills) ?
             passthrough :
             blocking);
 
@@ -393,7 +407,7 @@ void hardwareUpdate() {
 
             bool first_timeout = blazing::now() - *middle_active > timeout_time;
 
-            if (skills_middle_scoring) {
+            if (skills_middle_scoring && !is_driver) {
                 new_state = first_timeout ? scoring_middle_top_balls :
                                             scoring_middle_bottom_balls;
             } else {
@@ -452,14 +466,14 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    // pros::Task antijam_task(
-    //   [] {
-    //       while (true) {
-    //           antiJam();
-    //           pros::delay(10);
-    //       }
-    //   },
-    //   "antijam");
+    pros::Task antijam_task(
+      [] {
+          while (true) {
+              antiJam();
+              pros::delay(10);
+          }
+      },
+      "antijam");
 
     pros::Task colorsort_task(
       [] {

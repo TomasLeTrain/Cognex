@@ -6,6 +6,7 @@
 namespace intake {
 enum intake_state_t {
     intake_disabled,
+    intake_disabled_open_middle,
 
     intake,
     intake_bottom_balls,
@@ -18,6 +19,7 @@ enum intake_state_t {
 
     scoring_middle,
     scoring_middle_top_balls,
+    scoring_middle_top_balls_skills,
     scoring_middle_bottom_balls,
 
     scoring_bottom,
@@ -78,5 +80,7 @@ void out();
 void score_long();
 void score_middle();
 void score_bottom();
+
+void setSkillsMiddleScoring(bool enabled);
 
 } // namespace intake

@@ -16,10 +16,13 @@
 #include "tuning.h"
 
 void opcontrol() {
+    // autonomous();
+    // return;
+
     // initialize tasks for each subsystem
-	// odom_diameter_tuning();
-	// odom_offset_tuning();
-	// return;
+    // odom_diameter_tuning();
+    // odom_offset_tuning();
+    // return;
 
     // autonomous();
     // return;
@@ -38,7 +41,7 @@ void opcontrol() {
     wings::init(true);
     odom_retract::init(true);
 
-	intake::setDriverColorSortEnabled(true);
+    intake::setDriverColorSortEnabled(true);
 
     // no need to initialize in auto
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
@@ -100,14 +103,14 @@ void opcontrol() {
     // intake::setDriverColorSortEnabled(false);
 
     // RobotSetPose(-46.471, 18.535, 0);
-		//   while (true) {
-		//       std::cout << std::format(
-		//         "{:.2f},{:.2f},{:.2f}",
-		//         model_manager.getPose().x.convert(in),
-		//         model_manager.getPose().y.convert(in),
-		//         model_manager.getPose().orientation.convert(deg)) << std::endl;
-		// pros::delay(1000);
-		//   }
+    //   while (true) {
+    //       std::cout << std::format(
+    //         "{:.2f},{:.2f},{:.2f}",
+    //         model_manager.getPose().x.convert(in),
+    //         model_manager.getPose().y.convert(in),
+    //         model_manager.getPose().orientation.convert(deg)) << std::endl;
+    // pros::delay(1000);
+    //   }
 
     // RobotSetPose({ 49_in, -16.8_in, 200 * deg });
 

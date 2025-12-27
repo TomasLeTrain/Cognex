@@ -28,6 +28,13 @@ void run_auton() {
     bool bl =
       (auto_side == field_side_t::left || auto_side == field_side_t::unset);
 
+    auto closeEnough = [](units::V2Position target,
+                          Length threshold) -> std::function<bool()> {
+        return [target, threshold] -> bool {
+            return RobotGetPose().distanceTo(target) < threshold;
+        };
+    };
+
     int l = bl ? 1 : -1;
 
     Length long_goal = 47.1_in;
@@ -52,9 +59,7 @@ void run_auton() {
 
     mb.moveTo(-25_in, long_goal * l).reverse().timeout(1.1_sec).k_lat(0.0) |
       run;
-    async.waitUntil([&] -> bool {
-        return RobotGetPose().distanceTo({ -25_in, long_goal * l }) < 5_in;
-    });
+    async.waitUntil(closeEnough({ -25_in, long_goal * l }, 5_in));
     intake::score_long();
     async.wait();
     pros::delay(1300);
@@ -67,26 +72,34 @@ void run_auton() {
     async.waitUntil([&] -> bool {
         return RobotGetPose().distanceTo({ -1_tile, 1_tile * l }) < 10_in;
     });
+
+    async.waitUntil(closeEnough({ -1_tile, 1_tile * l }, 10_in));
     matchloader::down();
     async.wait();
 
     matchloader::up();
     mb.moveTo(-1_tile, -1_tile * l) | async;
-    async.waitUntil([&] -> bool {
-        return RobotGetPose().distanceTo({ -1_tile, -1_tile * l }) < 6_in;
-    });
+    async.waitUntil(closeEnough({ -1_tile, -1_tile * l }, 10_in));
     matchloader::down();
     async.wait();
 
-    mb.turnTo(-11_in, -10_in * l) | run;
-    matchloader::up();
-    mb.moveTo(-11_in, -10_in * l) | async;
-    async.waitUntil([&] -> bool {
-        return RobotGetPose().distanceTo({ -11_in, -10_in * l }) < 6_in;
-    });
-    intake::score_bottom();
-    pros::delay(1200);
-    async.wait();
+    if (bl) {
+        mb.turnTo(-11_in, -10_in * l) | run;
+        matchloader::up();
+        mb.moveTo(-11_in, -10_in * l) | async;
+        async.waitUntil(closeEnough({ -11_in, -10_in * l }, 6_in));
+        intake::score_bottom();
+        pros::delay(1200);
+        async.wait();
+    } else {
+        mb.turnTo(-11_in, -10_in * l) | run;
+        matchloader::up();
+        mb.moveTo(-11_in, -10_in * l) | async;
+        async.waitUntil(closeEnough({ -11_in, -10_in * l }, 6_in));
+        intake::score_middle();
+        pros::delay(1200);
+        async.wait();
+    }
 
     mb.moveTo(-44, -normal_match * l).reverse() | run;
     matchloader::down();
@@ -99,12 +112,10 @@ void run_auton() {
     // go to final goal
     mb.moveTo(-25_in, -long_goal * l).reverse().timeout(1.1_sec).k_lat(0.0) |
       run;
-    async.waitUntil([&] -> bool {
-        return RobotGetPose().distanceTo({ -25_in, -long_goal * l }) < 5_in;
-    });
+    async.waitUntil(closeEnough({ -25_in, -long_goal * l }, 5_in));
     intake::score_long();
     async.wait();
     // pros::delay(2000);
 }
 
-} // namespace neocity_awp
+} // namespace sunshine_awp

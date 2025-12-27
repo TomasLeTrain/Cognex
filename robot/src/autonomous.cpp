@@ -14,14 +14,15 @@
 // run if no auton is selected - useful for testing
 // NOTE: select the disabled auton if you don't want anything to run!!!
 void testing_auton_func() {
-    auto_side = field_side_t::right;
+    auto_side = field_side_t::left;
     auto_alliance = alliance_t::red;
 
     // selected_auton = "awp";
     // selected_auton = "quals";
-    selected_auton = "skills";
-    // selected_auton = "max skills";
+    // selected_auton = "skills";
     // selected_auton = "fast auton";
+	//
+    selected_auton = "match first qual";
 
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();

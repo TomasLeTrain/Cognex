@@ -30,6 +30,7 @@ H_AUTON(sunshine_quals)
 H_AUTON(sunshine_awp)
 H_AUTON(sunshine_skills)
 H_AUTON(sunshine_fast_auton)
+H_AUTON(qual_match_first)
 
 // special disabled auton that does nothing
 namespace disabled_auton {

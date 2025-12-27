@@ -18,7 +18,7 @@
 
 // do not do anything outside here!
 
-namespace sunshine_quals {
+namespace qual_match_first {
 
 // you can add any variables / functions here
 
@@ -61,26 +61,63 @@ void run_auton() {
     double angle = 180;
 
     intake::setSkillsMiddleScoring(true);
+    intake::setColorSortEnabled(false);
 
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
     wings::set(inactive);
 
-    RobotSetPose(-47.2, 14.9, 0);
+    RobotSetPose(-48.2, 16.3, 90);
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
-    // only intake bottom balls to save time
-    intake::setColorSortEnabled(false);
-    pros::delay(10);
-    intake::set(intake::intake_bottom_balls);
+    mb.moveTo(-48, match1)
+        // .reverse()
+        .only_y(true)
+      // .drive_backwardsAccelSlew(0.1_volt)
+      | run;
+    // its a run here, so we can do these things
+    intake::in();
+    matchloader::down();
+
+    mb.turnTo(-80, match1) | chain;
+    mb.moveTo(-60.5, match1).drive_maxVolt(0.5_volt) | chain;
+    chain.wait();
+    pros::delay(100);
+
+    mb.turnTo(-26.5_in, long_goal).reverse() | chain;
+    mb.moveTo(-26.5_in, long_goal)
+        .reverse()
+        .timeout(1.3_sec)
+        .k_lat(0.0)
+        .drive_maxVolt(0.8_volt)
+        .closeThreshold(8_in)
+        .executeAfterMotion([] {
+            drivetrain.moveTank(-0.3_volt, -0.3_volt);
+        }) |
+      chain;
+
+    chain.waitUntil(closeEnough({ -32_in, -long_goal }, 4_in));
+    intake::score_long();
+
+	start_time = now();
+	while()
+
+    pros::delay(1000);
+    // intake::in();
 
     // mb.moveTo(-31.5, 19.4).drive_maxVolt(0.3_volt) | run;
     // pros::delay(200);
     // intake::set(intake::intake_disabled);
     mb.moveTo(-25.5, 23.4) | async;
 
-    async.waitUntil(closeEnough({ -31.93_in, 18.784_in }, 5_in));
+    pros::delay(300);
+
+    // only intake bottom balls to save time
+    pros::delay(10);
+    intake::set(intake::intake_bottom_balls);
+
+    async.waitUntil(closeEnough({ -23.758_in, 23.872_in }, 10_in));
     matchloader::down();
 
     async.wait();
@@ -102,49 +139,13 @@ void run_auton() {
       chain;
 
     chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
-    // controller.rumble(".");
-    // outtake slightly in case first ball is stuck
-    // intake::out();
-    // pros::delay(50);
-    // intake::set(intake::scoring_middle_bottom_balls);
+
     intake::out();
-    pros::delay(200);
+    pros::delay(150);
     intake::set(intake::scoring_middle_bottom_balls);
     chain.exitAll();
     drivetrain.moveTank(0.1_volt, 0.2_volt);
-    pros::delay(1000);
-
-    mb.moveTo(-48, match1)
-        .reverse()
-        .only_y(true)
-        .drive_backwardsAccelSlew(0.1_volt) |
-      run;
-    // its a run here, so we can do these things
-    intake::in();
-    intake::setColorSortEnabled(false);
-    matchloader::down();
-
-    mb.turnTo(-80, match1) | chain;
-    mb.moveTo(-60.5, match1).drive_maxVolt(0.5_volt) | chain;
-    chain.wait();
-    pros::delay(200);
-
-    mb.turnTo(-26.5_in, long_goal).reverse() | chain;
-    mb.moveTo(-26.5_in, long_goal)
-        .reverse()
-        .timeout(1.3_sec)
-        .k_lat(0.0)
-        .drive_maxVolt(0.8_volt)
-        .closeThreshold(8_in)
-        .executeAfterMotion([] {
-            drivetrain.moveTank(-0.3_volt, -0.3_volt);
-        }) |
-      chain;
-
-    chain.waitUntil(closeEnough({ -32_in, -long_goal }, 4_in));
-    intake::score_long();
-    pros::delay(1000);
-    intake::in();
+    // pros::delay(800);
 }
 
-} // namespace sunshine_quals
+} // namespace qual_match_first
