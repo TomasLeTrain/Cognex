@@ -41,6 +41,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
 
     { scoring_long,                    127  },
     { scoring_long_top_balls,          0    },
+    { scoring_long_top_balls_outake_bottom, -127  },
 
     { intake_disabled_open_middle,     0    },
 
@@ -52,27 +53,28 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
 };
 
 std::map<intake_state_t, int> top_motor_speeds = {
-    { slow_scoring_bottom,             -100 },
-    { scoring_bottom,                  -127 },
+    { slow_scoring_bottom,                  -100 },
+    { scoring_bottom,                       -127 },
 
     // { slow_scoring_middle, 127  },
-    { scoring_middle_bottom_balls,     40   },
-    { scoring_middle_top_balls,        -127 },
-    { scoring_middle_top_balls_skills, -100 },
+    { scoring_middle_bottom_balls,          40   },
+    { scoring_middle_top_balls,             -127 },
+    { scoring_middle_top_balls_skills,      -100 },
     // acts as only top balls, good for driver
-    { scoring_middle,                  -127 },
+    { scoring_middle,                       -127 },
 
-    { scoring_long,                    127  },
-    { scoring_long_top_balls,          127  },
+    { scoring_long,                         127  },
+    { scoring_long_top_balls,               127  },
+    { scoring_long_top_balls_outake_bottom, 127  },
 
-    { intake,                          127  },
-    { intake_bottom_balls,             0    },
+    { intake,                               127  },
+    { intake_bottom_balls,                  0    },
 
-    { intake_disabled_open_middle,     0    },
+    { intake_disabled_open_middle,          0    },
 
-    { outtake,                         -127 },
+    { outtake,                              -127 },
 
-    { unjam,                           -127 },
+    { unjam,                                -127 },
 };
 
 // speeds of the motors - can be positive or negative
@@ -386,8 +388,12 @@ void hardwareUpdate() {
     // only update motors if they are not being used elsewhere - waits for 2
     // millisecends to be able to use
     if (intake_mutex.take(2)) {
-        setTopIntakePistonState(intake_state == scoring_long ? passthrough :
-                                                               blocking);
+        setTopIntakePistonState(
+          (intake_state == scoring_long ||
+           intake_state == scoring_long_top_balls ||
+           intake_state == scoring_long_top_balls_outake_bottom) ?
+            passthrough :
+            blocking);
         setMiddleIntakePistonState(
           (intake_state == scoring_middle ||
            intake_state == scoring_middle_bottom_balls ||

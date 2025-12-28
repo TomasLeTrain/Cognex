@@ -27,6 +27,7 @@ enum intake_state_t {
 
     // scores on long but only scores top balls
     scoring_long_top_balls,
+    scoring_long_top_balls_outake_bottom,
 };
 
 enum intake_piston_state_t {

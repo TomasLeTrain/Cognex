@@ -41,7 +41,7 @@ void opcontrol() {
     wings::init(true);
     odom_retract::init(true);
 
-    intake::setDriverColorSortEnabled(true);
+    intake::setDriverColorSortEnabled(false);
 
     // no need to initialize in auto
     drivetrain.setBrakeMode(pros::MotorBrake::coast);

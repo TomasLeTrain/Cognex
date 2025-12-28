@@ -21,8 +21,11 @@ void testing_auton_func() {
     // selected_auton = "quals";
     // selected_auton = "skills";
     // selected_auton = "fast auton";
-	//
-    selected_auton = "match first qual";
+    //
+    // selected_auton = "match first qual";
+    // selected_auton = "seven ball";
+    selected_auton = "elims";
+
 
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();

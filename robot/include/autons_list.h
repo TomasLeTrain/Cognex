@@ -22,6 +22,8 @@ H_AUTON(simple_other_goal_auton)
 H_AUTON(roboticon_skills)
 H_AUTON(roboticon_quals)
 
+H_AUTON(seven_ball)
+
 H_AUTON(max_skills)
 
 H_AUTON(eagles_skills)
@@ -31,6 +33,9 @@ H_AUTON(sunshine_awp)
 H_AUTON(sunshine_skills)
 H_AUTON(sunshine_fast_auton)
 H_AUTON(qual_match_first)
+
+H_AUTON(sunshine_elims)
+
 
 // special disabled auton that does nothing
 namespace disabled_auton {

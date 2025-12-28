@@ -32,42 +32,31 @@ void run_auton() {
         };
     };
 
-    auto start_time = now();
-
-    units::V2FPosition target_point;
-
-    intake::in();
-
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
 
     Length match1 = normal_match;
-    Length match2 = normal_match;
-    Length match3 = -normal_match;
-    Length match4 = -normal_match;
-
-    units::V2Position centerBallOne = { -24_in, 24_in };
 
     units::V2Position centerTopGoalFirst = { -7.9_in, 7.4_in };
-    units::V2Position centerTopGoalSecond = { 1_in, 0_in };
-    units::V2Position centerBottomGoalFirst = { 12_in, 12_in };
-    units::V2Position centerBottomGoalSecond = { -12_in, -11_in };
+    units::V2Position centerBottomGoalFirst = { -11_in, -11_in };
 
     bool bl =
       (auto_side == field_side_t::left || auto_side == field_side_t::unset);
 
     int l = bl ? 1 : -1;
 
-    double angle = 180;
+    double angle = bl ? 0 : 0;
 
     intake::setSkillsMiddleScoring(true);
+
+    intake::in();
 
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
     wings::set(inactive);
 
-    RobotSetPose(-47.2, 14.9, 0);
+    RobotSetPose(-47.2, 14.9 * l, angle);
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     // only intake bottom balls to save time
@@ -75,48 +64,62 @@ void run_auton() {
     pros::delay(10);
     intake::set(intake::intake_bottom_balls);
 
-    // mb.moveTo(-31.5, 19.4).drive_maxVolt(0.3_volt) | run;
-    // pros::delay(200);
-    // intake::set(intake::intake_disabled);
-    mb.moveTo(-25.5, 23.4) | async;
+    if (bl) {
+        mb.moveTo(-25.5, 23.4 * l) | async;
 
-    async.waitUntil(closeEnough({ -31.93_in, 18.784_in }, 5_in));
-    matchloader::down();
+        async.waitUntil(closeEnough({ -31.93_in, 18.784_in * l }, 5_in));
+        matchloader::down();
 
-    async.wait();
+        async.wait();
 
-    pf_model.setDisabled(true);
-    mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | run;
-    pf_model.setDisabled(false);
+        pf_model.setDisabled(true);
+        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | run;
+        pf_model.setDisabled(false);
 
-    mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
-        .k_lat(0.3)
-        .drive_maxVolt(0.5_volt)
-        .executeBeforeMotion([] {
-            pros::Task([] {
-                matchloader::down();
-                pros::delay(200);
-                matchloader::up();
-            });
-        }) |
-      chain;
+        mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
+            .k_lat(0.3)
+            .drive_maxVolt(0.5_volt)
+            .executeBeforeMotion([] {
+                pros::Task([] {
+                    matchloader::down();
+                    pros::delay(200);
+                    matchloader::up();
+                });
+            }) |
+          chain;
 
-    chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
-    // controller.rumble(".");
-    // outtake slightly in case first ball is stuck
-    // intake::out();
-    // pros::delay(50);
-    // intake::set(intake::scoring_middle_bottom_balls);
-    intake::out();
-    pros::delay(200);
-    intake::set(intake::scoring_middle_bottom_balls);
-    chain.exitAll();
-    drivetrain.moveTank(0.1_volt, 0.2_volt);
-    pros::delay(1000);
+    } else {
+        mb.moveTo(-23.6, 23.6 * l) | async;
 
-    mb.moveTo(-48, match1)
+        async.waitUntil(closeEnough({ -31.93_in, 18.784_in * l }, 5_in));
+        matchloader::down();
+
+        async.wait();
+
+        pf_model.setDisabled(true);
+        mb.turnTo(centerBottomGoalFirst.x, centerBottomGoalFirst.y) | run;
+        pf_model.setDisabled(false);
+
+        mb.moveTo(centerBottomGoalFirst.x, centerBottomGoalFirst.y)
+            .k_lat(0.3)
+            .drive_maxVolt(0.5_volt)
+            .executeBeforeMotion([] {
+                pros::Task([] {
+                    // pros::delay(200);
+                    matchloader::up();
+                });
+            }) |
+          chain;
+
+        chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
+        intake::score_bottom();
+        chain.wait();
+        pros::delay(1000);
+    }
+
+    mb.moveTo(-48, match1 * l)
         .reverse()
-        .only_y(true)
+        // .only_y(true)
         .drive_backwardsAccelSlew(0.1_volt) |
       run;
     // its a run here, so we can do these things
@@ -124,13 +127,13 @@ void run_auton() {
     intake::setColorSortEnabled(false);
     matchloader::down();
 
-    mb.turnTo(-80, match1) | chain;
-    mb.moveTo(-60.5, match1).drive_maxVolt(0.5_volt) | chain;
+    mb.turnTo(-80, match1 * l) | chain;
+    mb.moveTo(-61, match1 * l).drive_maxVolt(0.8_volt) | chain;
     chain.wait();
     pros::delay(200);
 
-    mb.turnTo(-26.5_in, long_goal).reverse() | chain;
-    mb.moveTo(-26.5_in, long_goal)
+    mb.turnTo(-26.5_in, long_goal * l).reverse() | chain;
+    mb.moveTo(-26.5_in, long_goal * l)
         .reverse()
         .timeout(1.3_sec)
         .k_lat(0.0)
@@ -141,7 +144,7 @@ void run_auton() {
         }) |
       chain;
 
-    chain.waitUntil(closeEnough({ -32_in, -long_goal }, 4_in));
+    chain.waitUntil(closeEnough({ -32_in, -long_goal * l }, 4_in));
     intake::score_long();
     pros::delay(1000);
     intake::in();

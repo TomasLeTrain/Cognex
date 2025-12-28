@@ -111,7 +111,7 @@ void run_auton() {
         .executeBeforeMotion([] {
             pros::Task([] {
                 matchloader::down();
-                pros::delay(200);
+                pros::delay(250);
                 matchloader::up();
             });
         }) |
@@ -154,13 +154,13 @@ void run_auton() {
     matchloader::down();
 
     mb.turnTo(-80, match1) | chain;
-    mb.moveTo(-60.5, match1).drive_maxVolt(0.5_volt) | chain;
+    mb.moveTo(-61.1, match1).drive_maxVolt(0.5_volt) | chain;
     chain.wait();
     pros::delay(1200);
 
     // mb.arc(330, -1.0).direction(AngularDirection::RIGHT).reverse() | run;
 
-    mb.moveTo(-25, 61).reverse().executeAfterMotion([] {
+    mb.moveTo(-25, 61.1).reverse().executeAfterMotion([] {
         intake::set(intake::intake_disabled);
         matchloader::up();
     }) |
@@ -168,16 +168,16 @@ void run_auton() {
     // go to other side
     mb.moveTo(25, 59).reverse() | chain;
     // get on same y
-    mb.moveTo(43, long_goal + 0.5_in).reverse().only_y(true) | chain;
+    mb.moveTo(43, long_goal + 0.0_in).reverse().only_y(true) | chain;
 
     // turn to goal, reversed
-    mb.turnTo(0_in, long_goal).reverse() | chain;
+    mb.turnTo(10_in, long_goal).reverse() | chain;
     chain.wait();
 
-    LaserResets({ &left_laser_model });
+    // LaserResets({ &left_laser_model });
 
     // go to goal, reversed
-    mb.moveTo(24_in, long_goal + 0.2_in)
+    mb.moveTo(24_in, long_goal + 0.0_in)
         .reverse()
         .timeout(1.4_sec)
         .k_lat(0.0)
@@ -204,11 +204,11 @@ void run_auton() {
     //     intake::in();
     // }) |
     //   run;
-    mb.turnTo(50, match2 - 0.25_in) | run;
+    mb.turnTo(50, match2 - 0.0_in) | run;
     // mb.distanceAtHeading(31_in, RobotGetPose().angleTo({ 63_in, match2 }))
     //     .drive_maxVolt(0.4_volt) |
     //   chain;
-    mb.moveTo(60.25, match2 - 0.5_in)
+    mb.moveTo(61, match2 - 0.0_in)
         .drive_maxVolt(0.4_volt)
         .closeThreshold(4_in) |
       chain;
@@ -230,11 +230,20 @@ void run_auton() {
     LaserResets({ &left_laser_model });
 
     // go to goal to score again
-    mb.turnTo(27.5_in, long_goal + 0.5_in).reverse() | chain;
-    mb.moveTo(27.5_in, long_goal + 0.5_in)
+    mb.turnTo(27.5_in, long_goal + 0.0_in).reverse() | chain;
+    mb.moveTo(27.5_in, long_goal + 0.0_in)
         .reverse()
         .timeout(1.4_sec)
         .k_lat(0.3)
+        // changed today!
+        // .turn_kp(angular_pid.get_kp() * 0.5)
+        // .turn_kd(angular_pid.get_kd() * 0.5)
+        // .drive_backwardsAccelSlew(0.4_volt)
+        //
+
+        .drive_backwardsAccelSlew(0.4_volt)
+        .drive_maxVolt(0.7_volt)
+
         .closeThreshold(8_in)
         .executeAfterMotion([] {
             pros::delay(100);
@@ -315,7 +324,8 @@ void run_auton() {
     mb.turnTo(180) | run;
     matchloader::up();
     // reset position to guarantee its not wrong at all
-    LaserResets({ &back_laser_model, &left_laser_model });
+    // LaserResets({ &back_laser_model, &left_laser_model });
+    LaserResets({ &back_laser_model });
 
     mb.moveTo(31.5, -18.5).drive_maxVolt(0.5_volt) | run;
     // intake::set(intake::intake_disabled);
@@ -327,6 +337,9 @@ void run_auton() {
     resetSmootherConfig();
 
     // go to bottom goal
+
+    back_laser_model.disable();
+
     mb.turnTo(centerTopGoalSecond.x, centerTopGoalSecond.y) | run;
     right_laser_model.disable();
     mb.moveTo(7.3, -6.6)
@@ -373,13 +386,13 @@ void run_auton() {
     // exit any motions if the are somehow still executing
     async.exitAll();
 
-    setSmootherAlphas(smoother_config.alpha_x * 2.0,
-                      smoother_config.alpha_y * 2.0);
-    setMaxDistanceThresholdAll(10_in);
+    // setSmootherAlphas(smoother_config.alpha_x * 2.0,
+    //                   smoother_config.alpha_y * 2.0);
+    // setMaxDistanceThresholdAll(10_in);
 
     right_laser_model.enable();
 
-    mb.moveTo(48, match3 - 0.25_in)
+    mb.moveTo(48, match3 - 0.6_in)
         .reverse()
         .drive_maxVolt(0.4_volt)
         .drive_backwardsAccelSlew(0.05_volt)
@@ -395,13 +408,16 @@ void run_auton() {
 
     // return;
 
-    resetSmootherConfig();
-    resetMaxDistanceThresholdAll();
+    // resetSmootherConfig();
+    // resetMaxDistanceThresholdAll();
+
+    back_laser_model.enable();
+
     matchloader::down();
     intake::in();
 
-    mb.turnTo(60, match3 + 1.0_in) | run;
-    mb.moveTo(60.25, match3 + 0.25_in).drive_maxVolt(0.5_volt) | chain;
+    mb.turnTo(60, match3 + 0.0_in) | run;
+    mb.moveTo(60.25, match3 + 0.0_in).drive_maxVolt(0.5_volt) | chain;
     // mb.distanceAtHeading(12_in)
     // mb.distanceAtHeading(13_in).drive_maxVolt(0.5_volt) | chain;
     chain.wait();
@@ -423,7 +439,8 @@ void run_auton() {
     }) |
       chain;
     // get on same y
-    mb.moveTo(-46, -long_goal - 0.1_in).reverse()
+    mb.moveTo(-46, -long_goal - 0.8_in).reverse()
+		.only_y(true)
       // .executeBeforeMotion([] {
       //       // LaserResets({ &right_laser_model });
       //   })
@@ -442,9 +459,10 @@ void run_auton() {
         .timeout(1.3_sec)
         .k_lat(0.0)
         .drive_maxVolt(0.8_volt)
+
         .closeThreshold(8_in)
         .executeAfterMotion([] {
-            drivetrain.moveTank(-0.3_volt, -0.3_volt);
+            drivetrain.moveTank(-0.3_volt, -0.1_volt);
         })
       // .only_x(true)
       | async;
@@ -461,11 +479,14 @@ void run_auton() {
 
     // exit any motions if they are somehow still executing
     async.exitAll();
+
     drivetrain.moveTank(0.0_volt, 0.0_volt);
+    RobotSetPose({ -28.7_in, RobotGetPose().y, RobotGetPose().orientation });
     LaserResets({ &left_laser_model });
 
-    mb.turnTo(-60, match4 + 0.25_in) | run;
-    mb.moveTo(-60.5, match4 + 0.25_in).drive_maxVolt(0.5_volt) | chain;
+    mb.turnTo(-60, match4 + 0_in) | run;
+    mb.moveTo(-61, match4 + 0_in).drive_maxVolt(0.5_volt).closeThreshold(8_in) |
+      chain;
     // mb.distanceAtHeading(32_in, RobotGetPose().angleTo({ -80_in, match4 }))
     //   .drive_maxVolt(0.5_volt) |
     // chain;
@@ -478,17 +499,31 @@ void run_auton() {
     drivetrain.moveTank(0.0_volt, 0.0_volt);
     pros::delay(1000);
 
-    LaserResets({ &left_laser_model });
+    // LaserResets({ &left_laser_model });
 
     // mb.turnTo(0_in, current).reverse() | chain;
     // mb.turnTo(0_stDeg).reverse() | chain;
-    mb.moveTo(-27_in, -long_goal - 0.75_in)
+    mb.moveTo(-27_in, -long_goal - 0.0_in)
         .reverse()
         .timeout(1.4_sec)
         .k_lat(0.0)
+
+        // changed today!
+        // .turn_kp(angular_pid.get_kp() * 0.5)
+        // .turn_kd(angular_pid.get_kd() * 0.5)
+        // .drive_backwardsAccelSlew(0.4_volt)
+        //
+
         .closeThreshold(6_in)
         .executeAfterMotion([] {
-            drivetrain.moveTank(-0.3_volt, -0.0_volt);
+            mb.arc(180, -1)
+                .timeout(100_sec)
+                .turn_errorTolerance(0_stDeg)
+                .turn_largeErrorTolerance(0_stDeg)
+                .turn_toleranceDuration(100_sec)
+                .turn_largeToleranceDuration(100_sec) |
+              async;
+            // drivetrain.moveTank(-0.3_volt, -0.0_volt);
         })
       // .only_x(true)
       // .drive_maxVolt(0.4_volt)
@@ -502,6 +537,10 @@ void run_auton() {
     pros::delay(1200);
 
     chain.exitAll();
+
+    // make sure new motion doesn't run
+    pros::delay(40);
+    async.exitAll();
 
     mb.boomerang(-62, -18, 90)
         .lead(0.3)
@@ -517,43 +556,12 @@ void run_auton() {
     pros::delay(300);
 
     intake::in();
-    // drivetrain.moveTank(0.125_volt, 0.2_volt);
-    // move closer to the park slowly, also gives time for accurate start roll
-    // pros::delay(200);
-
-    // pros::delay(400);
-
-    // get over first part of park
     //
     drivetrain.moveTank(0.4_volt, 0.5_volt);
     pros::delay(1050);
-    // drivetrain.moveTank(0.2_volt, 0.3_volt);
-    // pros::delay(400);
-    // drivetrain.moveTank(0.2_volt, 0.3_volt);
-    // matchloader::down();
-    // pros::delay(800);
 
     // stop the robot
     drivetrain.moveTank(0.0_volt, 0.0_volt);
-
-    // mb.moveTo(-63, 0)
-    //     .only_y(true)
-    //     .closeThreshold(20_in)
-    //     .timeout(2_sec)
-    //     .drive_errorTolerance(0_m)
-    //     .drive_largeErrorTolerance(0_m)
-    //     .drive_toleranceDuration(4_sec)
-    //     .drive_largeToleranceDuration(4_sec) |
-    //   run;
-
-    // mb.distanceAtHeading(0_in)
-    //     .timeout(2_sec)
-    //     .drive_errorTolerance(0_m)
-    //     .drive_largeErrorTolerance(0_m)
-    //     .drive_toleranceDuration(4_sec)
-    //     .drive_largeToleranceDuration(4_sec) |
-    //   run;
-    // mb.moveTo(-62, 0) | run;
 }
 
 } // namespace sunshine_skills

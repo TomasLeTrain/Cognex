@@ -21,7 +21,7 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -65,22 +65,20 @@ pros::Distance left_distance(8);
 pros::Distance right_distance(20);
 
 // distance sensor offsets
-// TODO: update
-
 units::Pose front_distance_offsets = { 3.5_in,
-                                       +(12.5_in / 2) - 1.25_in,
+                                       +(12.5_in / 2) - 1.2_in,
                                        0_stDeg };
 
 units::Pose left_distance_offsets = { 3.5_in + 0.625_in,
-                                      +(12.5_in / 2) - 1.25_in - 0.4_in,
+                                      +(12.5_in / 2) - 1.2_in - 0.375_in,
                                       90_stDeg };
 
-units::Pose back_distance_offsets = { -(15.5_in / 2) + 1.4_in,
-                                      3.0_in,
+units::Pose back_distance_offsets = { -(15.5_in / 2) + 1.0_in,
+                                      2.35_in,
                                       180_stDeg };
 
 units::Pose right_distance_offsets = { -0.7_in,
-                                       -(12.5_in / 2) + 2.25_in,
+                                       -(12.5_in / 2) + 2.23_in,
                                        270_stDeg };
 
 // front from here was moved to front in new one as well
@@ -226,7 +224,7 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
 
     // static constexpr FLength maxDistanceDifference = 18_in;
     .maxDistanceDifference = 5_in,
-    .maxOutDistanceDifference = 7_in,
+    .maxOutDistanceDifference = 5_in,
 
     .detect_obstacles = true,
 
