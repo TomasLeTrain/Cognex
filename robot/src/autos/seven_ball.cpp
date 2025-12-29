@@ -47,22 +47,24 @@ void run_auton() {
 
     double angle = bl ? 0 : 0;
 
-    intake::setSkillsMiddleScoring(true);
+    bool winging = true;
 
     intake::in();
 
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
-    wings::set(inactive);
+    wings::up();
 
     RobotSetPose(-47.2, 14.9 * l, angle);
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
-    LaserResets({
-      &right_laser_model,
-      &back_laser_model,
-    });
+    if (!bl) {
+        LaserResets({
+          &right_laser_model,
+          &back_laser_model,
+        });
+    }
 
     std::cout << std::format("reset {:.2f},{:.2f},{:.2f}",
                              RobotGetPose().x.convert(in),
@@ -76,13 +78,22 @@ void run_auton() {
     intake::in();
 
     if (bl) {
-        mb.moveTo(-25.5, 23.4 * l).drive_maxVolt(0.3_volt) | chain;
-        mb.moveTo(-28, 23.4 * l).drive_maxVolt(0.5_volt) | chain;
-        //
-        chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 9.5_in));
+
+        mb.moveTo(-28, 21.4 * l).drive_maxVolt(0.5_volt) | chain;
+        // mb.moveTo(-23.6, 23.6 * l) | chain;
+
+        chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 8.5_in));
         matchloader::down();
 
         chain.wait();
+        // mb.moveTo(-25.5, 23.4 * l).drive_maxVolt(0.3_volt) | chain;
+        // mb.moveTo(-27, 20.4 * l).drive_maxVolt(0.2_volt) | chain;
+        // mb.moveTo(-30, 23.4 * l).drive_maxVolt(0.5_volt) | chain;
+        // //
+        // chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 8_in));
+        // matchloader::down();
+        //
+        // chain.wait();
         //
         // pf_model.setDisabled(true);
         // mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | run;
@@ -102,10 +113,10 @@ void run_auton() {
 
     } else {
         mb.moveTo(-28, 23.4 * l).drive_maxVolt(0.5_volt) | chain;
-        mb.moveTo(-23.6, 23.6 * l) | async;
+        // mb.moveTo(-23.6, 23.6 * l) | chain;
 
-        chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 9.5_in));
-        matchloader::down();
+        // chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 8.5_in));
+        // matchloader::down();
 
         chain.wait();
         //
@@ -165,42 +176,68 @@ void run_auton() {
 
     chain.waitUntil(closeEnough({ -32_in, long_goal * l }, 4_in));
     intake::score_long();
-    pros::delay(1300);
+    pros::delay(900);
 
-    mb.turnTo(-80, (match1)*l) | chain;
-    mb.moveTo(-61.3, (match1)*l)
-        .drive_maxVolt(0.65_volt)
-        .timeout(1.8_sec)
-        .executeBeforeMotion([] {
-            pros::delay(400);
-            intake::in();
-        }) |
-      chain;
-    chain.wait();
-    // pros::delay(100);
-
-    mb.turnTo(-24_in, long_goal * l).reverse() | run;
-    // mb.turnTo(0).reverse() | run;
-    mb.moveTo(-26.5_in, (match1 * l))
-        .reverse()
-        .timeout(1.4_sec)
-        .k_lat(0.0)
-
-        // changed today!
-        // .turn_kp(angular_pid.get_kp() * 0.5)
-        // .turn_kd(angular_pid.get_kd() * 0.5)
-        .drive_backwardsAccelSlew(0.4_volt)
-        //
-
-        .drive_maxVolt(0.65_volt)
-        .closeThreshold(8_in)
-        .executeAfterMotion([] {
-            drivetrain.moveTank(-0.3_volt, -0.3_volt);
-        }) |
-      chain;
+    // mb.turnTo(-80, (match1)*l) | chain;
+    // mb.moveTo(-61.1, (match1)*l)
+    //     .drive_maxVolt(0.65_volt)
+    //     .timeout(1.3_sec)
+    //     .executeBeforeMotion([] {
+    //         pros::delay(400);
+    //         intake::in();
+    //     }) |
+    //   chain;
+    // chain.wait();
+    // // pros::delay(100);
+    //
+    // mb.turnTo(-24_in, long_goal * l).reverse() | run;
+    // // mb.turnTo(0).reverse() | run;
+    // mb.moveTo(-26.5_in, (match1 * l))
+    //     .reverse()
+    //     .timeout(1.4_sec)
+    //     .k_lat(0.0)
+    //
+    //     // changed today!
+    //     // .turn_kp(angular_pid.get_kp() * 0.5)
+    //     // .turn_kd(angular_pid.get_kd() * 0.5)
+    //     .drive_backwardsAccelSlew(0.4_volt)
+    //     //
+    //
+    //     .drive_maxVolt(0.65_volt)
+    //     .closeThreshold(8_in)
+    //     .executeAfterMotion([] {
+    //         drivetrain.moveTank(-0.3_volt, -0.3_volt);
+    //     }) |
+    //   chain;
 
     chain.waitUntil(closeEnough({ -32_in, long_goal * l }, 4_in));
     intake::score_long();
+
+    if (winging) {
+        if (bl) {
+            pros::delay(1300);
+            matchloader::up();
+            mb.moveTo(-35.737, 58) | run;
+            mb.turnTo(0) | run;
+            wings::down();
+            mb.moveTo(-10.231, 58)
+                .drive_toleranceDuration(100_sec)
+                .drive_largeToleranceDuration(100_sec)
+                .timeout(100_sec) |
+              run;
+        } else {
+            pros::delay(1300);
+            matchloader::up();
+            mb.moveTo(-35.737, -36.729) | run;
+            mb.turnTo(0) | run;
+            wings::down();
+            mb.moveTo(-13.231, -37.419)
+                .drive_toleranceDuration(100_sec)
+                .drive_largeToleranceDuration(100_sec)
+                .timeout(100_sec) |
+              run;
+        }
+    }
 
     // pros::delay(500);
     // // start_time = now();

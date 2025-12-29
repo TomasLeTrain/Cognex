@@ -19,6 +19,14 @@ void set(piston_state_t new_wings_state) {
     wings_state = new_wings_state;
 }
 
+void down() {
+    wings::set(active);
+}
+
+void up() {
+    wings::set(inactive);
+}
+
 // code that should run during driver
 void driverUpdate() {
     // update states based on driver input
@@ -35,7 +43,7 @@ void autoUpdate() {}
 // runs regardless of driver mode
 void hardwareUpdate() {
     // intake update
-	wings_piston.set_value(wings_state != active);
+    wings_piston.set_value(wings_state != active);
 }
 
 // updates the state of the subsystem
@@ -56,12 +64,14 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    pros::Task main_wings_task([] {
-        while (true) {
-            update();
-            pros::delay(10);
-        }
-    },"wings task");
+    pros::Task main_wings_task(
+      [] {
+          while (true) {
+              update();
+              pros::delay(10);
+          }
+      },
+      "wings task");
 
     tasks_active = true;
 }

@@ -168,7 +168,7 @@ void run_auton() {
     // go to other side
     mb.moveTo(25, 59).reverse() | chain;
     // get on same y
-    mb.moveTo(43, long_goal + 0.0_in).reverse().only_y(true) | chain;
+    mb.moveTo(43, long_goal + 0.1_in).reverse().only_y(true) | chain;
 
     // turn to goal, reversed
     mb.turnTo(10_in, long_goal).reverse() | chain;
@@ -392,7 +392,7 @@ void run_auton() {
 
     right_laser_model.enable();
 
-    mb.moveTo(48, match3 - 0.6_in)
+    mb.moveTo(48, match3 - 0.7_in)
         .reverse()
         .drive_maxVolt(0.4_volt)
         .drive_backwardsAccelSlew(0.05_volt)
@@ -439,8 +439,7 @@ void run_auton() {
     }) |
       chain;
     // get on same y
-    mb.moveTo(-46, -long_goal - 0.8_in).reverse()
-		.only_y(true)
+    mb.moveTo(-46, -long_goal - 0.8_in).reverse().only_y(true)
       // .executeBeforeMotion([] {
       //       // LaserResets({ &right_laser_model });
       //   })
@@ -516,7 +515,7 @@ void run_auton() {
 
         .closeThreshold(6_in)
         .executeAfterMotion([] {
-            mb.arc(180, -1)
+            mb.arc(180, -0.8)
                 .timeout(100_sec)
                 .turn_errorTolerance(0_stDeg)
                 .turn_largeErrorTolerance(0_stDeg)

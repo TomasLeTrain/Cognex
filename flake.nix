@@ -19,7 +19,6 @@
         packages = with pkgs; [
           pros-cli-nix.packages.${system}.default
           gcc-arm-embedded
-					# clang
 					clang_21
         ];
         shellHook = ''

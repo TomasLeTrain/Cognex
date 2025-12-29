@@ -10,6 +10,8 @@ enum intake_state_t {
 
     intake,
     intake_bottom_balls,
+    intake_top_balls,
+    outtake_bottom_balls,
     outtake,
 
     unjam,
