@@ -16,16 +16,16 @@
 #include "tuning.h"
 
 void opcontrol() {
-    RobotSetPose(-46.57, -1.5, 90);
+    // RobotSetPose(-46.57, -1.5, 90);
 	//
-      while (true) {
-          std::cout << std::format(
-            "{:.2f},{:.2f},{:.2f}",
-            model_manager.getPose().x.convert(in),
-            model_manager.getPose().y.convert(in),
-            model_manager.getPose().orientation.convert(deg)) << std::endl;
-    pros::delay(1000);
-      }
+    //   while (true) {
+    //       std::cout << std::format(
+    //         "{:.2f},{:.2f},{:.2f}",
+    //         model_manager.getPose().x.convert(in),
+    //         model_manager.getPose().y.convert(in),
+    //         model_manager.getPose().orientation.convert(deg)) << std::endl;
+    // pros::delay(1000);
+    //   }
 	//
 	//
     // autonomous();

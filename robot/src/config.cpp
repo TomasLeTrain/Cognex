@@ -22,7 +22,7 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -61,7 +61,7 @@ pros::Rotation forwards_odom_rotation(-5);
 pros::Rotation sideways_odom_rotation(7);
 
 // particle filter distance sensors
-pros::Distance front_distance(8);
+pros::Distance front_distance(6);
 pros::Distance back_distance(19);
 pros::Distance left_distance(9);
 pros::Distance right_distance(20);
