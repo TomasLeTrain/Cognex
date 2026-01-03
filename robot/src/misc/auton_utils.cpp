@@ -132,3 +132,14 @@ void LaserResets(std::vector<vexmaps::DistanceSensorModel*> enabled_lasers,
                    new_y.value_or(current_pose.y),
                    theta });
 }
+
+std::function<bool()> closeEnough(units::V2Position target, Length threshold) {
+    return [target, threshold] -> bool {
+        return RobotGetPose().distanceTo(target) < threshold;
+    };
+}
+
+std::function<bool()>
+closeEnough(double target_x, double target_y, double threshold) {
+    return closeEnough({ target_x * in, target_y * in }, threshold * in);
+}

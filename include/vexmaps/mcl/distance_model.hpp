@@ -114,7 +114,7 @@ class DistanceSensorModel : public Sensor {
         auto circle_dist = dot - units::sqrt(diff);
 
         // circle not really intersected since wall distance was smaller
-        // if (wall_distance < circle_dist) return std::nullopt;
+        if (wall_distance < circle_dist) return std::nullopt;
 
         auto actual_diff =
           units::max(units::square(actual_radius) - units::square(cross),

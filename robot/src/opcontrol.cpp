@@ -16,13 +16,47 @@
 #include "tuning.h"
 
 void opcontrol() {
+    RobotSetPose(-46.57, -1.5, 90);
+	//
+      while (true) {
+          std::cout << std::format(
+            "{:.2f},{:.2f},{:.2f}",
+            model_manager.getPose().x.convert(in),
+            model_manager.getPose().y.convert(in),
+            model_manager.getPose().orientation.convert(deg)) << std::endl;
+    pros::delay(1000);
+      }
+	//
+	//
     // autonomous();
-    // return;
+    // turn_pid_tuning();
+    // drive_pid_tuning();
+    //    return;
 
     // initialize tasks for each subsystem
     // odom_diameter_tuning();
     // odom_offset_tuning();
     // return;
+    // Time last_measurement_time = now();
+    //
+    //    while (true) {
+    //        left_motors.move_voltage(-12000 * 0.5);
+    //        right_motors.move_voltage(12000 * 0.5);
+    //
+    //        // units::V2Position deltas = { forwards_tracker.getDelta(),
+    //        //                              sideways_tracker.getDelta() };
+    //        // Angle delta_theta = imu_tracker.getDelta();
+    //        //
+    //        // units::V2Position offsets = deltas / to_stRad(delta_theta);
+    //
+    //        // gets offsets every 0.2 seconds
+    //        if (blazing::timeoutDone(0.2_sec, last_measurement_time)) {
+    //            std::cout << RobotGetPose().x.convert(in) << " "
+    //                      << RobotGetPose().y.convert(in) << std::endl;
+    //        }
+    //
+    //        pros::delay(20);
+    //    }
 
     // autonomous();
     // return;
@@ -103,14 +137,6 @@ void opcontrol() {
     // intake::setDriverColorSortEnabled(false);
 
     // RobotSetPose(-46.471, 18.535, 0);
-    //   while (true) {
-    //       std::cout << std::format(
-    //         "{:.2f},{:.2f},{:.2f}",
-    //         model_manager.getPose().x.convert(in),
-    //         model_manager.getPose().y.convert(in),
-    //         model_manager.getPose().orientation.convert(deg)) << std::endl;
-    // pros::delay(1000);
-    //   }
 
     // RobotSetPose({ 49_in, -16.8_in, 200 * deg });
 

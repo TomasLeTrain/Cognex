@@ -19,14 +19,17 @@ std::unordered_map<std::string, std::function<void()>> auton_list = {
 
 	// L_AUTON(max_skills, "max skills")
 
-	L_AUTON(sunshine_quals, "quals")
-	L_AUTON(seven_ball, "seven ball")
+	
+	// L_AUTON(sunshine_quals, "quals")
+	// L_AUTON(seven_ball, "seven ball")
+	//
+	// L_AUTON(qual_match_first, "match first qual")
+	// L_AUTON(sunshine_fast_auton, "fast auton")
+	L_AUTON(awp, "awp")
+	// L_AUTON(sunshine_skills, "skills")
+	//
+	// L_AUTON(sunshine_elims, "elims")
 
-	L_AUTON(qual_match_first, "match first qual")
-	L_AUTON(sunshine_fast_auton, "fast auton")
-	L_AUTON(sunshine_awp, "awp")
-	L_AUTON(sunshine_skills, "skills")
-
-	L_AUTON(sunshine_elims, "elims")
+	L_AUTON(ninesix_skills, "skills")
 };
 // clang-format on

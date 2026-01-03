@@ -16,6 +16,7 @@
 #include "units/Vector2D.hpp"
 #include <cmath>
 
+// blocking
 void odom_diameter_tuning() {
     // units::Pose pose = { 0_in, 0_in };
     // model_manager.setPose(pose);
@@ -31,7 +32,7 @@ void odom_diameter_tuning() {
         //
         // auto vexmaps_pose = model_manager.getPose();
 
-        Length target_distance_in = 2_tile;
+        Length target_distance_in = 48_in;
 
         auto odom_to_diameter = [target_distance_in](double pos) -> Length {
             // const Length diameter = 2.0_in;
@@ -81,8 +82,8 @@ void odom_offset_tuning() {
     Time last_measurement_time = now();
 
     while (true) {
-        left_motors.move_voltage(-6000);
-        right_motors.move_voltage(6000);
+        left_motors.move_voltage(-12000 * pct);
+        right_motors.move_voltage(12000 * pct);
 
         // units::V2Position deltas = { forwards_tracker.getDelta(),
         //                              sideways_tracker.getDelta() };
@@ -207,10 +208,11 @@ void turn_pid_tuning() {
 }
 
 void drive_pid_tuning() {
-    Length target_distance = 48_in;
+    Length target_distance = 24_in;
     Length target_distance_delta = 12_in;
 
     double curr_kp = linear_pid.get_kp() / linear_pid.UKP;
+    double curr_ki = linear_pid.get_ki() / linear_pid.UKI;
     double curr_kd = linear_pid.get_kd() / linear_pid.UKD;
 
     Voltage curr_accel_slew = 1_volt;
@@ -218,6 +220,8 @@ void drive_pid_tuning() {
 
     double kp_delta = 0.05;
     double kd_delta = 0.05;
+    double ki_delta = 0.01;
+
     Voltage slew_delta = 0.025_volt;
     Number k_lat_delta = 0.01;
 
@@ -225,13 +229,16 @@ void drive_pid_tuning() {
 
     bool reversed = false;
 
-    units::Pose start_pose = { -24_in, -24_in, 0_stDeg };
+    // units::Pose start_pose = { -24_in, -24_in, 0_stDeg };
+    units::Pose start_pose = { 0_in, 0_in, 0_stDeg };
 
     RobotSetPose(start_pose);
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     while (true) {
+        RobotSetPose(0, 0, 0);
+
         std::cout << std::format("start is {:.3f} {:.3f}",
                                  RobotGetPose().x.convert(in),
                                  RobotGetPose().y.convert(in))
@@ -243,6 +250,7 @@ void drive_pid_tuning() {
             // RobotSetPose(2 * target_distance.convert(in), 0, 0);
             mb.moveTo(start_pose.x + target_distance, start_pose.y)
                 .drive_kp(curr_kp)
+                .drive_ki(curr_ki)
                 .drive_kd(curr_kd)
                 .drive_accelSlew(curr_accel_slew)
                 .k_lat(curr_k_lat)
@@ -252,6 +260,7 @@ void drive_pid_tuning() {
             // RobotSetPose(0, 0, 0);
             mb.moveTo(start_pose.x + target_distance, start_pose.y)
                 .drive_kp(curr_kp)
+                .drive_ki(curr_ki)
                 .drive_kd(curr_kd)
                 .k_lat(curr_k_lat)
                 .drive_accelSlew(curr_accel_slew) |
@@ -372,10 +381,13 @@ void drive_pid_tuning() {
                                              curr_k_lat.internal())
                               << std::endl;
                 } else {
-                    curr_accel_slew += slew_delta;
-                    std::cout << std::format("increased slew to {:.3f}",
-                                             curr_accel_slew.internal())
+                    curr_ki += ki_delta;
+                    std::cout << std::format("increased ki to {:.3f}", curr_ki)
                               << std::endl;
+                    // curr_accel_slew += slew_delta;
+                    // std::cout << std::format("increased slew to {:.3f}",
+                    //                          curr_accel_slew.internal())
+                    //           << std::endl;
                 }
             }
 
@@ -387,10 +399,13 @@ void drive_pid_tuning() {
                                              curr_k_lat.internal())
                               << std::endl;
                 } else {
-                    curr_accel_slew -= slew_delta;
-                    std::cout << std::format("decreased slew to {:.3f}",
-                                             curr_accel_slew.internal())
+                    curr_ki -= ki_delta;
+                    std::cout << std::format("decreased ki to {:.3f}", curr_ki)
                               << std::endl;
+                    // curr_accel_slew -= slew_delta;
+                    // std::cout << std::format("decreased slew to {:.3f}",
+                    //                          curr_accel_slew.internal())
+                    //           << std::endl;
                 }
             }
             // kp = 7

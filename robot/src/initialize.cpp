@@ -45,9 +45,9 @@ void initialize() {
         screen::health::update_init_notif_severity(imu_notif,
                                                    screen::health::succeed);
     }
-	
-	// make the imu return data as fast as possible?
-	// imu.set_data_rate(5);
+
+    // make the imu return data as fast as possible?
+    // imu.set_data_rate(5);
 
     // give time for screen to update
     pros::delay(50);
@@ -139,11 +139,17 @@ void initialize() {
                   { pf_motion_model.getPose(), 0.01 },
                   { pf_model.getPose(),        10   },
                   { tracker.getPosition(),     30   },
-                  { smoother_model.getPose(),  100  }
+                  // { smoother_model.getPose(),  80   },
+                  { model_manager.getPose(),   80  }
               };
 
               pf_model.setCustomParticles(particles);
               pf_model.setCustomPrediction(smoother_model.getPose());
+
+              pf_model.setCustomData(std::format(
+                "vel:{},{}",
+                model_manager.getLocalVelocityVector().x.convert(inps),
+                model_manager.getLocalVelocityVector().y.convert(inps)));
 
               pros::delay(10);
           }

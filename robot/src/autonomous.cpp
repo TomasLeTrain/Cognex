@@ -17,15 +17,15 @@ void testing_auton_func() {
     auto_side = field_side_t::left;
     auto_alliance = alliance_t::red;
 
-    // selected_auton = "awp";
+    selected_auton = "awp";
     // selected_auton = "quals";
     // selected_auton = "skills";
     // selected_auton = "fast auton";
     //
     // selected_auton = "match first qual";
-    selected_auton = "seven ball";
     // selected_auton = "elims";
 
+    // selected_auton = "skills";
 
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();

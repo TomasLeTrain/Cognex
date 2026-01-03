@@ -37,3 +37,57 @@ void DistanceSensorReset(int timeout = 150, double new_alpha = 0.8);
 void LaserResets(std::vector<vexmaps::DistanceSensorModel*> enabled_lasers,
                  bool x = true,
                  bool y = true);
+
+
+
+/**
+ * @brief creates function which returns true when robot is within threshold
+ * distance to target. Can be used for async/chain motions:
+ *
+ *
+ * @param target target position
+ * @param threshold distance between the robot's position and target within
+ * which it returns true.
+ *
+ * @b Example
+ * @code {.cpp}
+ * // queue up motions
+ * mb.turnTo(0, 0) | async;
+ * mb.moveTo(0, 0) | async;
+ *
+ * // wait until robot is within 4 inches of point (-24, 24)
+ * async.waitUntil(closeEnough({ -24_in, 24_in }, 4_in));
+ * // do something when close
+ * intake.outtake();
+ * // wait for all motions to finish
+ * async.wait();
+ * @endcode
+ */
+std::function<bool()> closeEnough(units::V2Position target, Length threshold);
+
+/**
+ * @brief creates function which returns true when robot is within threshold
+ * distance to target. Can be used for async/chain motions:
+ *
+ *
+ * @param target_x x coordinate of target position, in inches
+ * @param target_y y coordinate of target position, in inches
+ * @param threshold distance between the robot's position and target within
+ * which it returns true, in inches
+ *
+ * @b Example
+ * @code {.cpp}
+ * // queue up motions
+ * mb.turnTo(0, 0) | async;
+ * mb.moveTo(0, 0) | async;
+ *
+ * // wait until robot is within 4 inches of point (-24, 24)
+ * async.waitUntil(closeEnough(-24, 24, 4));
+ * // do something when close
+ * intake.outtake();
+ * // wait for all motions to finish
+ * async.wait();
+ * @endcode
+ */
+std::function<bool()>
+closeEnough(double target_x, double target_y, double threshold);

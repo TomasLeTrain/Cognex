@@ -33,7 +33,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { scoring_bottom,                       -100 },
 
     // { slow_scoring_middle,         40   },
-    { scoring_middle_bottom_balls,          127  },
+    { scoring_middle_bottom_balls,          100  },
     { scoring_middle_top_balls,             40   },
     { scoring_middle_top_balls_skills,      40   },
     // acts as only top balls, good for driver

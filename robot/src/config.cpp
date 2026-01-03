@@ -3,6 +3,7 @@
 //
 
 #include "globals.h"
+#include "units/Vector2D.hpp"
 #include "vexmaps/mcl/distance_model.hpp"
 
 using namespace blazing;
@@ -21,7 +22,8 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
+bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -55,13 +57,13 @@ pros::adi::DigitalOut odom_retract_piston('E', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(21);
+pros::Rotation forwards_odom_rotation(-5);
 pros::Rotation sideways_odom_rotation(7);
 
 // particle filter distance sensors
-pros::Distance front_distance(9);
+pros::Distance front_distance(8);
 pros::Distance back_distance(19);
-pros::Distance left_distance(8);
+pros::Distance left_distance(9);
 pros::Distance right_distance(20);
 
 // distance sensor offsets
@@ -104,14 +106,16 @@ double right_distance_scale_factor = 0.985454688793;
 // TODO:update
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
-    .diameter = 1.9654_in,
-    .offset = 0.1_in,
+    .diameter = 1.9881_in,
+    .offset = 0.0_in,
 };
 
 tracker_config_t sideways_tracker_config = {
-    .diameter = 1.98_in,
-    .offset = -2.85_in,
+    .diameter = 1.987_in,
+    .offset = -3.00_in,
 };
+
+units::V2Position cor_offsets = { 0.0_in, 0_in };
 
 /* drivetrain / pid configuration */
 
@@ -122,9 +126,32 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
 
 // units are in inches
 linear_pid_config_t linear_pid_config {
-    .kp = 6.3,
+    // .kp = 6.3,
+    // .ki = 0,
+    // .kd = 10.2,
+
+    // .kp = 7.65,
+    // .ki = 0,
+    // .kd = 9.5,
+
+	// good for 24
+    // .kp = 8.0,
+    // .ki = 0,
+    // .kd = 9.5,
+
+
+	// fast 24
+
+
+	// good for 36
+    .kp = 7.3,
     .ki = 0,
-    .kd = 10.2,
+    .kd = 9.5,
+	//
+	// good for 48
+    // .kp = 6.7,
+    // .ki = 0,
+    // .kd = 9.5,
 
     // linear_pid_config_t linear_pid_config { .kp = 4.5,
     //                                         .ki = 0,
@@ -138,7 +165,7 @@ angular_pid_config_t angular_pid_config {
     // .kp = 2.3,
     // .ki = 0,
     // .kd = 3.05,
-    .kp = 3.0, .ki = 0, .kd = 4.4, .windupRange = 14, .maxVoltage = 127,
+    .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
 };
 
 // LinearSlewController linear_slew(0.07_volt, 0.06_volt);
@@ -183,10 +210,11 @@ vexmaps::MotionModelConfig motion_model_config = {};
 vexmaps::PFConfiguration Pfconfig = {
     // .logging = false,
     // .particle_logging = false,
-    .logging = true && vexmaps_logging_enabled,
-    .particle_logging = true && vexmaps_logging_enabled,
+    .logging = vexmaps_logging_enabled,
+    .particle_logging = vexmaps_logging_enabled,
     //
-    .custom_particle_logging = true && vexmaps_logging_enabled,
+    .custom_particle_logging = custom_particling && vexmaps_logging_enabled,
+    .print_custom_data = vexmaps_logging_enabled
 };
 vexmaps::SmootherConfig smoother_config = {
     // for all parameters:
@@ -229,7 +257,7 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
     .detect_obstacles = true,
 
     // static constexpr bool logging = false;
-    .logging = true && vexmaps_logging_enabled
+    .logging = vexmaps_logging_enabled
 };
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
@@ -271,7 +299,8 @@ ArcOdomTracker tracker(
   // sideways trackers
   { &sideways_tracker },
   // imus
-  { &imu_tracker });
+  { &imu_tracker },
+  cor_offsets);
 
 // controller stuff
 PID<Length, Voltage> linear_pid(linear_pid_config.kp,
@@ -471,9 +500,13 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
                   horizontal_trackers,
                   vertical_trackers,
                   &imu,
-                  false); // use drivetrain -
-                          // can be left on false since it falls back to
-                          // drivetrain of no rotations are connected
+                  cor_offsets,
+                  false,
+                  // use drivetrain -
+                  // can be left on false since it falls back to
+                  // drivetrain of no rotations are connected
+
+                  false);
 
 DistanceSensorModel front_laser_model(&front_distance,
                                       front_distance_offsets,
