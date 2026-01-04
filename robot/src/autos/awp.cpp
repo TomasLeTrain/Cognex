@@ -144,10 +144,11 @@ void run_auton() {
     pros::delay(600);
     chain.exitAll();
 
+    pf_model.setDisabled(true);
+
     // mb.turnTo(-30.6, 23.6).reverse() | chain;
     mb.moveTo(-32, 23.6).reverse() | chain;
 
-    pf_model.setDisabled(true);
     mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
       // .direction(AngularDirection::LEFT)
       // .executeAfterMotion([] {
