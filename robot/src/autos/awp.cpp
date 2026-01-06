@@ -34,22 +34,25 @@ void run_auton() {
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
 
-    setSmootherAlphas(10 * smoother_config.alpha_x,
-                      10 * smoother_config.alpha_y);
+    // setSmootherAlphas(10 * smoother_config.alpha_x,
+    //                   10 * smoother_config.alpha_y);
+    setSmootherAlphas(1, 1);
 
     // printf("before set pose\n");
-    RobotSetPose(-46.57, -1.5, 90);
+    RobotSetPose(-46.57, -14, 90);
     // RobotSetPose(-62.4, 15.5 , angle);
 
-    // intake::setColorSortEnabled(true);
+    intake::setColorSortEnabled(false);
 
     intake::in();
 
-    mb.moveTo(-46.376, 7) | chain;
+    drivetrain.moveTank(1_volt, 1_volt);
+    pros::delay(300);
+    // mb.moveTo(-46.376, -5) | chain;
 
-    mb.moveTo(-46.376, -normal_match + 2.8_in)
+    mb.moveTo(-46.376, -normal_match + 2.5_in)
         // .drive_maxVolt(0.5_volt)
-        .drive_kp(linear_pid.get_kp() * 0.8)
+        .drive_kp(linear_pid.get_kp() * 1.0)
         .reverse() |
       chain;
     // chain.wait();
@@ -73,17 +76,25 @@ void run_auton() {
         // .timeout(1.1_sec)
         .k_lat(0.0) |
       async;
+
+    async.waitUntil(closeEnough({ -25_in, -long_goal }, 7.5_in));
+    intake::score_long();
+    pros::delay(300);
+    async.exitAll();
+    drivetrain.moveTank(-0.7_volt, -0.7_volt);
+    pros::delay(200);
+
     mb.arc(0, -1.0)
+        .reverse()
         .timeout(100_sec)
         .turn_errorTolerance(0_stDeg)
         .turn_largeErrorTolerance(0_stDeg)
         .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec) |
+        .turn_largeToleranceDuration(100_sec)
+        .turn_kp(angular_pid.get_kp() * 2)
+        .turn_kd(angular_pid.get_kd() * 0.5) |
       async;
-
-    async.waitUntil(closeEnough({ -25_in, -long_goal }, 7.5_in));
-    intake::score_long();
-    pros::delay(1000);
+    pros::delay(400);
     async.exitAll();
 
     matchloader::up();
@@ -103,17 +114,9 @@ void run_auton() {
     // matchloader::up();
     mb.moveTo(-1_tile - 2_in, 1_tile) | chain;
 
-    chain.waitUntil(closeEnough({ -1_tile - 2_in, -1_tile }, 10_in));
-    //    matchloader::down();
-    // pros::d
-    // chain.wait();
-
-    chain.waitUntil(closeEnough({ -1_tile - 2_in, 1_tile }, 10_in));
-    matchloader::down();
-    // chain.wait();
-
-    mb.moveTo(-47_in, long_goal - 5.5_in) | chain;
+    mb.moveTo(-47_in, long_goal - 6.5_in) | chain;
     mb.turnTo(0).reverse() | chain;
+	return;
 
     // go to final goal
     mb.moveTo(-25_in, long_goal).reverse() | chain;
@@ -124,16 +127,42 @@ void run_auton() {
     //     .turn_toleranceDuration(100_sec)
     //     .turn_largeToleranceDuration(100_sec) |
     //   chain;
+
+    chain.waitUntil(closeEnough({ -1_tile - 2_in, -1_tile }, 10_in));
+    //    matchloader::down();
+    // pros::d
+    // chain.wait();
+
+    chain.waitUntil(closeEnough({ -1_tile - 2_in, 1_tile }, 10_in));
+    matchloader::down();
+    // chain.wait();
+
     chain.waitUntil(closeEnough({ -24_in, long_goal }, 7.5_in));
     intake::score_long();
-    pros::delay(250);
-    chain.exitAll();
-    drivetrain.moveTank(-0.5_volt, -0.5_volt);
-	pros::delay(750);
+    pros::delay(300);
+    async.exitAll();
+    drivetrain.moveTank(-0.7_volt, -0.7_volt);
+    pros::delay(200);
 
-    intake::set(intake::intake_bottom_balls);
+    mb.arc(0, -1.0)
+        .reverse()
+        .timeout(100_sec)
+        .turn_errorTolerance(0_stDeg)
+        .turn_largeErrorTolerance(0_stDeg)
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .turn_kp(angular_pid.get_kp() * 2)
+        .turn_kd(angular_pid.get_kd() * 0.5) |
+      async;
+    pros::delay(400);
+    async.exitAll();
 
-    mb.turnTo(-60, normal_match) | chain;
+    mb.turnTo(-60, normal_match).executeAfterMotion([] {
+        pros::delay(350);
+
+        intake::set(intake::intake_bottom_balls);
+    }) |
+      chain;
     auto thingy2 = chain.getCurrentIndex();
     mb.moveTo(-60, normal_match) | chain;
     // chain.wait();

@@ -36,6 +36,7 @@
 //
 // H_AUTON(sunshine_elims)
 
+H_AUTON(easier_awp)
 H_AUTON(awp)
 H_AUTON(ninesix_skills)
 

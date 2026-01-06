@@ -16,8 +16,27 @@
 #include "tuning.h"
 
 void opcontrol() {
-    // RobotSetPose(-46.57, -1.5, 90);
-	//
+
+    // RobotSetPose(10, 10, 0);
+    //
+    // while (true) {
+    //     if (controller.get_digital_new_press(controls::A)) {
+    //         mb.arc(0, -1.0)
+    //             .timeout(100_sec)
+    //             .turn_errorTolerance(0_stDeg)
+    //             .turn_largeErrorTolerance(0_stDeg)
+    //             .turn_toleranceDuration(100_sec)
+    //             .turn_largeToleranceDuration(100_sec)
+    //             .turn_kp(angular_pid.get_kp() * 2)
+    //             .turn_kd(0) |
+    //           run;
+    //     }
+    //     pros::delay(10);
+    // }
+    // return;
+
+    // RobotSetPose(48, -48, 0);
+    //
     //   while (true) {
     //       std::cout << std::format(
     //         "{:.2f},{:.2f},{:.2f}",
@@ -26,8 +45,8 @@ void opcontrol() {
     //         model_manager.getPose().orientation.convert(deg)) << std::endl;
     // pros::delay(1000);
     //   }
-	//
-	//
+    //
+    //
     // autonomous();
     // turn_pid_tuning();
     // drive_pid_tuning();
@@ -81,6 +100,9 @@ void opcontrol() {
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
     base::init();
     odom_retract::retractOdom();
+
+    // while (true) {
+    // }
 
     // set screen in case its different
     // screen::setScreen(&screen::bouncing_dvd_screen::screen);

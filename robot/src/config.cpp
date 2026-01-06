@@ -30,7 +30,7 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 // clang-format on
 
 // inertial sensor
-vexmaps::ScaledIMU imu(17, (360.0 + 3.8) / 360.0);
+vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
 // vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
@@ -61,39 +61,33 @@ pros::Rotation forwards_odom_rotation(-5);
 pros::Rotation sideways_odom_rotation(7);
 
 // particle filter distance sensors
-pros::Distance front_distance(6);
+pros::Distance front_distance(4);
 pros::Distance back_distance(19);
 pros::Distance left_distance(9);
 pros::Distance right_distance(20);
 
+// cor + cor_offsets = geometric
+units::V2Position odom_cor_offsets = { 0.0_in, 0_in };
+
+// geometric -> cor
+units::V2Position dist_cor_offsets = { 0.5_in, 0_in };
+
+constexpr units::Pose distToCor(units::Pose dist_pose) {
+    return { dist_pose - dist_cor_offsets, dist_pose.orientation };
+}
+
 // distance sensor offsets
-units::Pose front_distance_offsets = { 3.5_in,
-                                       +(12.5_in / 2) - 1.2_in,
-                                       0_stDeg };
+units::Pose front_distance_offsets =
+  distToCor({ 3.5_in, +(12.5_in / 2) - 1.2_in, 0_stDeg });
 
-units::Pose left_distance_offsets = { 3.5_in + 0.625_in,
-                                      +(12.5_in / 2) - 1.2_in - 0.375_in,
-                                      90_stDeg };
+units::Pose left_distance_offsets = distToCor(
+  { 3.5_in + 0.625_in, +(12.5_in / 2) - 1.2_in - 0.375_in, 90_stDeg });
 
-units::Pose back_distance_offsets = { -(15.5_in / 2) + 1.0_in,
-                                      2.35_in,
-                                      180_stDeg };
+units::Pose back_distance_offsets =
+  distToCor({ -(15.5_in / 2) + 1.0_in, 2.35_in, 180_stDeg });
 
-units::Pose right_distance_offsets = { -0.7_in,
-                                       -(12.5_in / 2) + 2.23_in,
-                                       270_stDeg };
-
-// front from here was moved to front in new one as well
-// double front_distance_scale_factor = 0.985454688793;
-// double left_distance_scale_factor = 0.986105769705;
-// double back_distance_scale_factor = 0.97905795044;
-// double right_distance_scale_factor = 0.987332523721;
-
-// old    new
-// front -> right
-// back -> back
-// left -> front
-// new -> left
+units::Pose right_distance_offsets =
+  distToCor({ -0.7_in, -(12.5_in / 2) + 2.23_in, 270_stDeg });
 
 // TODO: update
 double front_distance_scale_factor = 0.986105769705;
@@ -103,19 +97,18 @@ double right_distance_scale_factor = 0.985454688793;
 
 /* vexmaps configuration */
 
-// TODO:update
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.9881_in,
+    // geometric is also 0
     .offset = 0.0_in,
 };
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.987_in,
+    // geometric are -2.5, meaning cor is 0.5_in forwards from geometric center
     .offset = -3.00_in,
 };
-
-units::V2Position cor_offsets = { 0.0_in, 0_in };
 
 /* drivetrain / pid configuration */
 
@@ -134,21 +127,19 @@ linear_pid_config_t linear_pid_config {
     // .ki = 0,
     // .kd = 9.5,
 
-	// good for 24
+    // good for 24
     // .kp = 8.0,
     // .ki = 0,
     // .kd = 9.5,
 
+    // fast 24
 
-	// fast 24
-
-
-	// good for 36
+    // good for 36
     .kp = 7.3,
     .ki = 0,
     .kd = 9.5,
-	//
-	// good for 48
+    //
+    // good for 48
     // .kp = 6.7,
     // .ki = 0,
     // .kd = 9.5,
@@ -210,12 +201,16 @@ vexmaps::MotionModelConfig motion_model_config = {};
 vexmaps::PFConfiguration Pfconfig = {
     // .logging = false,
     // .particle_logging = false,
+
     .logging = vexmaps_logging_enabled,
     .particle_logging = vexmaps_logging_enabled,
     //
     .custom_particle_logging = custom_particling && vexmaps_logging_enabled,
-    .print_custom_data = vexmaps_logging_enabled
+    .print_custom_data = vexmaps_logging_enabled,
+
+    .weightPredictionFactor = 0.9,
 };
+
 vexmaps::SmootherConfig smoother_config = {
     // for all parameters:
     // 0 = all model
@@ -300,7 +295,7 @@ ArcOdomTracker tracker(
   { &sideways_tracker },
   // imus
   { &imu_tracker },
-  cor_offsets);
+  odom_cor_offsets);
 
 // controller stuff
 PID<Length, Voltage> linear_pid(linear_pid_config.kp,
@@ -500,7 +495,7 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
                   horizontal_trackers,
                   vertical_trackers,
                   &imu,
-                  cor_offsets,
+                  odom_cor_offsets,
                   false,
                   // use drivetrain -
                   // can be left on false since it falls back to

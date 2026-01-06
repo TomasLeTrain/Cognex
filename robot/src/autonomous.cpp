@@ -17,7 +17,9 @@ void testing_auton_func() {
     auto_side = field_side_t::left;
     auto_alliance = alliance_t::red;
 
-    selected_auton = "awp";
+    // selected_auton = "awp";
+    selected_auton = "easier_awp";
+
     // selected_auton = "quals";
     // selected_auton = "skills";
     // selected_auton = "fast auton";
