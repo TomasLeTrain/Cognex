@@ -36,7 +36,8 @@ void run_auton() {
 
     // setSmootherAlphas(10 * smoother_config.alpha_x,
     //                   10 * smoother_config.alpha_y);
-    setSmootherAlphas(1, 1);
+    setSmootherAlphas(1,
+                      1);
 
     // printf("before set pose\n");
     RobotSetPose(-46.57, -14, 90);
@@ -116,7 +117,6 @@ void run_auton() {
 
     mb.moveTo(-47_in, long_goal - 6.5_in) | chain;
     mb.turnTo(0).reverse() | chain;
-	return;
 
     // go to final goal
     mb.moveTo(-25_in, long_goal).reverse() | chain;

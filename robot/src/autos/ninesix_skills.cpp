@@ -67,13 +67,17 @@ void run_auton() {
     units::V2Position centerBottomGoalSecond = { -12_in, -11_in };
 
     intake::setSkillsMiddleScoring(true);
+    intake::setColorSortEnabled(false);
+
+    setSmootherAlphas(0.5 * smoother_config.alpha_x,
+                      0.5 * smoother_config.alpha_y);
 
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
     wings::set(inactive);
 
-    RobotSetPose(-47.2, 14.9, 0);
+    RobotSetPose(-45.7, 15, 0);
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     // only intake bottom balls to save time
@@ -152,7 +156,6 @@ void run_auton() {
         .drive_backwardsAccelSlew(0.1_volt)
         .executeAfterMotion([] {
             intake::in();
-            intake::setColorSortEnabled(false);
             matchloader::down();
         }) |
       run;

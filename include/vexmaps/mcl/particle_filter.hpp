@@ -139,14 +139,14 @@ class ParticleFilter {
 
     void updateSensors() {
         // uses an approximate position using global delta
-        units::FPose approximate_pos = { getPose().x + globalPoseDelta.x,
-                                         getPose().y + globalPoseDelta.y,
-                                         current_angle };
+        units::FPose approximate_pose = { getPose().x + globalPoseDelta.x,
+                                          getPose().y + globalPoseDelta.y,
+                                          current_angle };
 
         // use reference model if possible
         if (reference_model != nullptr) {
             // TODO: does approximate_pos have global pose delta applied or not?
-            approximate_pos = reference_model->getPose();
+            approximate_pose = reference_model->getPose();
 
             auto motion_model_timestamp =
               motion_model->getLatestUpdateTimestamp();
@@ -156,13 +156,13 @@ class ParticleFilter {
             if (reference_model_timestamp < motion_model_timestamp) {
                 // motion model was updated after latest update from reference,
                 // meaning global delta has likely not been applied yet
-                approximate_pos += globalPoseDelta;
+                approximate_pose += globalPoseDelta;
             }
         }
 
         // perform the one time updates on the sensors
         for (Sensor* sensor : sensors) {
-            sensor->update(current_angle, approximate_pos);
+            sensor->update(current_angle, approximate_pose);
         }
     }
 
@@ -461,7 +461,7 @@ class ParticleFilter {
                              getPose().y + globalPoseDelta.y,
                              current_angle);
 
-			// log particles also
+            // log particles also
             if (PFConfig.logging) {
                 printf("start particles\n");
                 if (PFConfig.particle_logging) {

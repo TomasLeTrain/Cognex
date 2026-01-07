@@ -14,11 +14,12 @@
 // run if no auton is selected - useful for testing
 // NOTE: select the disabled auton if you don't want anything to run!!!
 void testing_auton_func() {
-    auto_side = field_side_t::left;
+    auto_side = field_side_t::right;
     auto_alliance = alliance_t::red;
 
     // selected_auton = "awp";
-    selected_auton = "easier_awp";
+    // selected_auton = "easier_awp";
+    selected_auton = "elims nineball split";
 
     // selected_auton = "quals";
     // selected_auton = "skills";
