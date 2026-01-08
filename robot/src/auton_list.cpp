@@ -21,7 +21,7 @@ std::unordered_map<std::string, std::function<void()>> auton_list = {
 
 	
 	// L_AUTON(sunshine_quals, "quals")
-	// L_AUTON(seven_ball, "seven ball")
+	L_AUTON(four_ball, "4 ball")
 	//
 	// L_AUTON(qual_match_first, "match first qual")
 	// L_AUTON(sunshine_fast_auton, "fast auton")

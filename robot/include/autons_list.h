@@ -22,7 +22,7 @@
 // H_AUTON(roboticon_skills)
 // H_AUTON(roboticon_quals)
 //
-// H_AUTON(seven_ball)
+H_AUTON(four_ball)
 //
 // H_AUTON(max_skills)
 //

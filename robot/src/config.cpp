@@ -222,9 +222,15 @@ vexmaps::SmootherConfig smoother_config = {
     // .alpha_y = 0.06,
     // .alpha_theta = 0.00,
 
+	// good without cook 
     .alpha_x = 0.04,
     .alpha_y = 0.04,
     .alpha_theta = 0.00,
+
+	// need to tune with new cook
+    // .alpha_x = 0.10,
+    // .alpha_y = 0.10,
+    // .alpha_theta = 0.00,
 
     // possible good values
     // .ang_vel_alpha = 0.02 / 300_degps,
