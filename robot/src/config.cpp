@@ -226,6 +226,15 @@ vexmaps::SmootherConfig smoother_config = {
     .alpha_y = 0.04,
     .alpha_theta = 0.00,
 
+    // possible good values
+    // .ang_vel_alpha = 0.02 / 300_degps,
+    // .theta_to_alpha = 0.01,
+    // .linear_vel_alpha = 0.01 / 70_inps,
+    //
+    .ang_vel_alpha = 0.0 / 300_degps,
+    .theta_to_alpha = 0.0,
+    .linear_vel_alpha = 0.0 / 70_inps,
+
     // used by pose_delta_measurement to estimate the pose
     .beta_x = 1,
     .beta_y = 1,
@@ -245,13 +254,13 @@ vexmaps::DistanceSensorConfig distance_sensor_config {
     .normalCoeff = 0.6,
     .mapCoeff = 0.25,
 
-    // static constexpr FLength maxDistanceDifference = 18_in;
     .maxDistanceDifference = 5_in,
     .maxOutDistanceDifference = 5_in,
 
+    .maxUsableDistance = 70_in,
+
     .detect_obstacles = true,
 
-    // static constexpr bool logging = false;
     .logging = vexmaps_logging_enabled
 };
 

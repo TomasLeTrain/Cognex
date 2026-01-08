@@ -694,7 +694,7 @@
                 "version": "0.0.3"
             },
             "vexmaps": {
-                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.16",
+                "location": "/home/tomas/.config/pros/templates/vexmaps@0.0.17",
                 "metadata": {
                     "origin": "local"
                 },
@@ -726,7 +726,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.16"
+                "version": "0.0.17"
             },
             "vexmath": {
                 "location": "/home/tomas/.config/pros/templates/vexmath@0.0.7",
