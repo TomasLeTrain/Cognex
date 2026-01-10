@@ -140,16 +140,20 @@ void initialize() {
                   { pf_model.getPose(),        10   },
                   { tracker.getPosition(),     30   },
                   // { smoother_model.getPose(),  80   },
-                  { model_manager.getPose(),   80  }
+                  { model_manager.getPose(),   80   }
               };
 
               pf_model.setCustomParticles(particles);
               pf_model.setCustomPrediction(smoother_model.getPose());
 
               pf_model.setCustomData(std::format(
-                "vel:{},{}",
+                "vel:{:.5f},{:.5f}\n"
+                "alphas:{:.5f},{:.5f}",
                 model_manager.getLocalVelocityVector().x.convert(inps),
-                model_manager.getLocalVelocityVector().y.convert(inps)));
+                model_manager.getLocalVelocityVector().y.convert(inps),
+                // model_manager.getAngularVelocity().convert(degps),
+                smoother_model.getAlphas().x,
+                smoother_model.getAlphas().y));
 
               pros::delay(10);
           }

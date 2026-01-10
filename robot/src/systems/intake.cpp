@@ -35,7 +35,8 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     // { slow_scoring_middle,         40   },
     { scoring_middle_bottom_balls,          100  },
     { scoring_middle_top_balls,             40   },
-    { scoring_middle_top_balls_skills,      40   },
+    { scoring_middle_top_balls_skills_fast, 80   },
+    { scoring_middle_top_balls_skills_slow, 30   },
     // acts as only top balls, good for driver
     { scoring_middle,                       40   },
 
@@ -47,6 +48,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
 
     { intake,                               127  },
     { intake_bottom_balls,                  127  },
+    { intake_bottom_top_backwards,          127  },
     { intake_top_balls,                     0    },
     { outtake,                              -127 },
     { outtake_bottom_balls,                 -127 },
@@ -59,9 +61,11 @@ std::map<intake_state_t, int> top_motor_speeds = {
     { scoring_bottom,                       -127 },
 
     // { slow_scoring_middle, 127  },
-    { scoring_middle_bottom_balls,          40   },
+    { scoring_middle_bottom_balls,          30   },
     { scoring_middle_top_balls,             -127 },
     { scoring_middle_top_balls_skills,      -100 },
+    { scoring_middle_top_balls_skills_fast, -100 },
+    { scoring_middle_top_balls_skills_slow, -100 },
     // acts as only top balls, good for driver
     { scoring_middle,                       -127 },
 
@@ -71,7 +75,7 @@ std::map<intake_state_t, int> top_motor_speeds = {
 
     { intake,                               127  },
     { intake_bottom_balls,                  0    },
-    { intake_top_balls,                     127  },
+    { intake_bottom_top_backwards,          -127 },
 
     { intake_disabled_open_middle,          0    },
     { outtake_bottom_balls,                 0    },
@@ -96,6 +100,8 @@ bool colorSortEnabled = true;
 bool driverColorSortEnabled = true;
 
 std::optional<Time> middle_active;
+std::optional<Time> long_active;
+Time last_ball_time;
 
 bool color_sort_one = false;
 
@@ -133,6 +139,12 @@ void set(intake_state_t new_intake_state) {
         if (!middle_active) middle_active = now();
     } else {
         middle_active = std::nullopt;
+    }
+
+    if (intake_state == scoring_long) {
+        if (!long_active) long_active = now();
+    } else {
+        long_active = std::nullopt;
     }
 }
 
@@ -226,13 +238,24 @@ void antiJam() {
     // wait for stuff to be available
     std::lock_guard lock(intake_mutex);
 
-    if (motorJammed(top_motor) && (intake_state == scoring_long)) {
+    if (motorJammed(top_motor) && (intake_state == scoring_long) &&
+        // waits a bit before using
+        timeoutDone(200_msec, *long_active)) {
         bottom_speed = bottom_motor_speeds[intake_state];
         top_speed = top_motor_speeds[intake_state];
 
         // bottom_motor.move(units::sgn(bottom_speed) * -127);
         top_motor.move(units::sgn(top_speed) * -127);
         pros::delay(200);
+    }
+
+    if (motorJammed(bottom_motor) &&
+        (intake_state == scoring_long || intake_state == intake)) {
+        bottom_speed = 0;
+        pros::delay(100);
+
+        bottom_speed = bottom_motor_speeds[intake_state];
+        pros::delay(500);
     }
 }
 
@@ -386,8 +409,7 @@ void colorSort() {
 // runs regardless of driver mode
 void hardwareUpdate() {
     // intake update
-    bottom_speed = bottom_motor_speeds[intake_state];
-    top_speed = top_motor_speeds[intake_state];
+    auto current_intake_state = intake_state;
 
     // only update motors if they are not being used elsewhere - waits for 2
     // millisecends to be able to use
@@ -411,22 +433,32 @@ void hardwareUpdate() {
             // if within first 400 msec then we are scoring top, otherwise
             // bottom
 
-            intake_state_t new_state;
-
             Time timeout_time = skills_middle_scoring ? 2_sec : 2_sec;
 
-            bool first_timeout = blazing::now() - *middle_active > timeout_time;
+            bool first_timeout = timeoutDone(timeout_time, *middle_active);
 
             if (skills_middle_scoring && !is_driver) {
-                new_state = first_timeout ? scoring_middle_top_balls :
-                                            scoring_middle_bottom_balls;
+                current_intake_state = first_timeout ?
+                                         scoring_middle_top_balls :
+                                         scoring_middle_bottom_balls;
             } else {
-                new_state = first_timeout ? scoring_middle_bottom_balls :
-                                            scoring_middle_top_balls;
+                current_intake_state = first_timeout ?
+                                         scoring_middle_bottom_balls :
+                                         scoring_middle_top_balls;
             }
+        }
 
-            bottom_speed = bottom_motor_speeds[new_state];
-            top_speed = top_motor_speeds[new_state];
+        if (current_intake_state == scoring_middle_bottom_balls) {
+            if (timeoutDone(200_msec, last_ball_time)) {
+                bottom_speed = bottom_motor_speeds[current_intake_state];
+                top_speed = top_motor_speeds[current_intake_state];
+            } else {
+                bottom_speed = 127;
+                top_speed = top_motor_speeds[current_intake_state];
+            }
+        } else {
+            bottom_speed = bottom_motor_speeds[current_intake_state];
+            top_speed = top_motor_speeds[current_intake_state];
         }
 
         bottom_motor.move(bottom_speed);
@@ -447,6 +479,10 @@ void update() {
 
     middle_detected_color = colorDetected(middle_intake_color_sensor);
     bottom_detected_color = colorDetected(bottom_intake_color_sensor);
+
+    if (middle_detected_color) {
+        last_ball_time = now();
+    }
 
     if (is_driver) {
         driverUpdate();

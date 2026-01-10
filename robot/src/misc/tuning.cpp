@@ -6,6 +6,7 @@
 #include "tuning.h"
 #include "autos.h"
 #include "blazing/utils.hpp"
+#include "globals.h"
 #include "globals/blazing_globals.h"
 #include "globals/config.h"
 #include "globals/device_globals.h"
@@ -13,6 +14,7 @@
 #include "pros/abstract_motor.hpp"
 #include "pros/misc.h"
 #include "screen/screen.h"
+#include "systems/matchloader.h"
 #include "units/Vector2D.hpp"
 #include <cmath>
 
@@ -133,16 +135,22 @@ void turn_pid_tuning() {
     double target_theta_delta = 45;
 
     double curr_kp = angular_pid.get_kp() / angular_pid.UKP;
+    double curr_ki = angular_pid.get_ki() / angular_pid.UKI;
     double curr_kd = angular_pid.get_kd() / angular_pid.UKD;
 
     double kp_delta = 0.05;
+    double ki_delta = 0.01;
     double kd_delta = 0.05;
 
     while (true) {
         RobotSetPose(0, 0, 0);
         auto start_time = from_msec(pros::millis());
 
-        mb.turnTo(target_theta).turn_kp(curr_kp).turn_kd(curr_kd) | run;
+        mb.turnTo(target_theta)
+            .turn_kp(curr_kp)
+            .turn_ki(curr_ki)
+            .turn_kd(curr_kd) |
+          run;
 
         auto end_time = from_msec(pros::millis());
 
@@ -177,6 +185,15 @@ void turn_pid_tuning() {
                           << std::endl;
             }
 
+            if (controller.get_digital_new_release(controls::DOWN)) {
+                curr_ki -= ki_delta;
+                std::cout << std::format("ki - to {}", curr_ki) << std::endl;
+            }
+            if (controller.get_digital_new_release(controls::UP)) {
+                curr_ki += ki_delta;
+                std::cout << std::format("ki + to {}", curr_ki) << std::endl;
+            }
+
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_L2)) {
                 curr_kp -= kp_delta;
@@ -202,6 +219,10 @@ void turn_pid_tuning() {
                 std::cout << std::format("increased kd to {:.3f}", curr_kd)
                           << std::endl;
             }
+            if (controller.get_digital_new_release(controls::X)) {
+                matchloader::set(!matchloader::get());
+            }
+
             pros::delay(10);
         }
     }
@@ -324,6 +345,7 @@ void drive_pid_tuning() {
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_X)) {
+
                 reversed = !reversed;
 
                 // turns around

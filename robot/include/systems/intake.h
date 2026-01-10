@@ -10,6 +10,7 @@ enum intake_state_t {
 
     intake,
     intake_bottom_balls,
+    intake_bottom_top_backwards,
     intake_top_balls,
     outtake_bottom_balls,
     outtake,
@@ -22,6 +23,9 @@ enum intake_state_t {
     scoring_middle,
     scoring_middle_top_balls,
     scoring_middle_top_balls_skills,
+    scoring_middle_top_balls_skills_fast,
+    scoring_middle_top_balls_skills_slow,
+
     scoring_middle_bottom_balls,
 
     scoring_bottom,

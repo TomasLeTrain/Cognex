@@ -18,8 +18,8 @@ void testing_auton_func() {
     auto_alliance = alliance_t::red;
 
     // selected_auton = "awp";
-    // selected_auton = "easier_awp";
-    selected_auton = "elims nineball split";
+    // selected_auton = "elims nineball split";
+    // selected_auton = "easier awp";
 
     // selected_auton = "quals";
     // selected_auton = "skills";
@@ -28,7 +28,7 @@ void testing_auton_func() {
     // selected_auton = "match first qual";
     // selected_auton = "elims";
 
-    // selected_auton = "skills";
+    selected_auton = "skills";
 
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();
@@ -45,12 +45,12 @@ void autonomous() {
     // screen::setScreen(&screen::bouncing_dvd_screen::screen);
 
     if (selected_auton != "") {
+        // sets dvd screen only if on match
+        screen::setScreen(&screen::bouncing_dvd_screen::screen);
+
         // the selected auton gets run
         auto selected_auton_function = auton_list[selected_auton];
         selected_auton_function();
-
-        // sets dvd screen only if on match
-        screen::setScreen(&screen::bouncing_dvd_screen::screen);
     } else {
         testing_auton_func();
     }

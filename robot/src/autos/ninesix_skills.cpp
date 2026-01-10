@@ -5,6 +5,7 @@
 #include "blazing/utils.hpp"
 #include "globals/blazing_globals.h"
 #include "globals/config.h"
+#include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
@@ -30,21 +31,10 @@ void run_auton() {
     // TODO: make distance autmatic
     auto make_machloader_point = [&](units::V2FPosition target,
                                      Length distance) -> units::V2FPosition {
-        auto difference = (target - RobotGetPose()).normalize() *
-                          (RobotGetPose().distanceTo(target) - distance);
-        ;
-        auto new_point = RobotGetPose() + difference;
+        auto target_angle = target.angleTo(RobotGetPose());
 
-        return new_point;
+        return target + distance * (RobotGetPose() - target).normalize();
     };
-
-    // auto closeEnough = [](units::V2Position target,
-    //                       Length threshold) -> std::function<bool()> {
-    //     return [target, threshold] -> bool {
-    //         return RobotGetPose().distanceTo(target) < threshold;
-    //     };
-    // };
-
     auto start_time = now();
 
     units::V2FPosition target_point;
@@ -69,8 +59,74 @@ void run_auton() {
     intake::setSkillsMiddleScoring(true);
     intake::setColorSortEnabled(false);
 
-    setSmootherAlphas(0.5 * smoother_config.alpha_x,
-                      0.5 * smoother_config.alpha_y);
+    auto matchload = [&](double sign_x,
+                         double sign_y,
+                         Time moveTimeout,
+                         Time matchloading_time,
+                         Length target_distance = 7.5_in,
+                         auto kp = linear_pid.get_kp() * 0.9,
+                         auto kd = linear_pid.get_kd() * 1.2) {
+        // turn to and go to matchloader
+        mb.turnTo(67.4_in * sign_x, normal_match * sign_y)
+            .executeBeforeMotion([] {
+                // pros::Task([] {
+                //     pros::delay(100);
+                matchloader::down();
+                // });
+            })
+            .turn_toleranceDuration(20_msec) |
+          chain;
+        chain.wait();
+
+        // auto thingy = chain.getCurrentIndex();
+
+        auto match_point =
+          make_machloader_point({ 67.4_in * sign_x, normal_match * sign_y },
+                                target_distance);
+
+        mb.moveTo(match_point.x, match_point.y)
+            .timeout(moveTimeout)
+            .drive_kp(kp)
+            .drive_kd(kd) |
+          chain;
+        auto motion_ind = chain.getCurrentIndex();
+
+        // chain.waitUntilIndex(thingy);
+        chain.waitUntil(closeEnough(match_point, 4_in));
+        if (motion_ind == chain.getFinishedIndex()) {
+            // motion timed out before this executed, means we likely won't
+            // matchload?
+        } else {
+            pros::delay(to_msec(matchloading_time));
+        }
+        chain.exitAll();
+        // matchloader::up();
+    };
+
+    auto score_long_goal = [&](double sign_x, double sign_y, Time score_time) {
+        // turn to goal, reversed
+        mb.turnTo(25_in * sign_x, long_goal * sign_y).reverse() | chain;
+        mb.moveTo(25_in * sign_x, long_goal * sign_y).reverse().k_lat(0.0) |
+          chain;
+
+        chain.waitUntil(
+          closeEnough({ 25_in * sign_x, long_goal * sign_y }, 7.5_in));
+        intake::score_long();
+        pros::delay(300);
+        chain.exitAll();
+
+        mb.boomerang(23_in * sign_x, long_goal * sign_y, sign_x == -1 ? 0 : 180)
+            .reverse()
+            .closeThreshold(100_in)
+            .timeout(100_sec)
+            .drive_toleranceDuration(100_sec)
+            .drive_largeToleranceDuration(100_sec)
+            .turn_kp(angular_pid.get_kp() * 2)
+            .turn_kd(angular_pid.get_kd() * 0.5) |
+          async;
+        pros::delay(to_msec(score_time - 300_msec));
+        async.exitAll();
+    };
 
     /* START AUTON */
 
@@ -83,106 +139,78 @@ void run_auton() {
     // only intake bottom balls to save time
     // intake::set(intake::intake_bottom_balls);
     intake::setColorSortEnabled(false);
-    // intake::setColorSortEnabled(true);
-    // auto_alliance = alliance_t::red;
-    // intake::in();
-    pros::delay(10);
     intake::set(intake::intake_bottom_balls);
 
-    // mb.moveTo(-25, 23.4).drive_maxVolt(0.7_volt).timeout(0.4_sec) | run;
-    //
-    mb.moveTo(-31.5, 19.4)
-      // .drive_maxVolt(0.3_volt)
-      | run;
-    // pros::delay(200);
-    // intake::set(intake::intake_disabled);
-    // mb.moveTo(-25.7, 23.4) | run;
+    mb.moveTo(-30.5, 19.4) | run;
 
-    // color sort balls here
-    // chain.waitUntil(closeEnough({ -25_in, 23.4_in }, 10_in));
-    // matchloader::down();
-    // pros::delay(300);
+    mb.arc(centerTopGoalFirst.x, centerTopGoalFirst.y, 0.7)
+        .turn_maxVolt(0.3_volt)
+        .direction(AngularDirection::RIGHT)
+        .executeBeforeMotion([] {
+            right_motors.set_brake_mode_all(pros::MotorBrake::brake);
+        })
+        .executeAfterMotion([] {
+            right_motors.set_brake_mode_all(pros::MotorBrake::hold);
+        }) |
+      run;
 
-    pf_model.setDisabled(true);
-    mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
-      // .direction(AngularDirection::LEFT)
-      // .executeAfterMotion([] {
-      //     // intake::set(intake::intake_disabled_open_middle);
-      // })
-      | run;
-    pf_model.setDisabled(false);
+    mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | run;
 
     mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
         .k_lat(0.3)
         .drive_maxVolt(0.45_volt)
         .executeBeforeMotion([] {
-            pros::Task([] {
-                matchloader::down();
-                pros::delay(240);
-                matchloader::up();
-            });
+            // pros::Task([] {
+            //     matchloader::down();
+            //     pros::delay(240);
+            //     matchloader::up();
+            // });
         }) |
       chain;
 
     chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
-    // controller.rumble(".");
-    // outtake slightly in case first ball is stuck
-    // intake::out();
-    // pros::delay(50);
-    // intake::set(intake::scoring_middle_bottom_balls);
     intake::out();
-    pros::delay(150);
+    pros::delay(200);
     intake::set(intake::scoring_middle_bottom_balls);
     chain.exitAll();
     drivetrain.moveTank(0.1_volt, 0.2_volt);
-    // start_time = now();
-    pros::delay(1400);
-    // pros::delay(5000);
 
-    // wait for 3 seconds or until it detects its gonna score a blue ball
-    // while (!timeoutDone(3000_msec, start_time) ||
-    //        intake::getMiddleDetectedColor() == alliance_t::blue) {
-    //     pros::delay(10);
-    // }
+    pros::delay(1200);
 
-    // exit any motions if the are somehow still executing
-    // matchloader::up();
-
-    // move back
-
-    mb.moveTo(-48, match1 - 0.7_in)
+    mb.moveTo(-48, match1 - 0.0_in)
         .reverse()
         .only_y(true)
-        .drive_backwardsAccelSlew(0.1_volt)
+        .drive_maxVolt(0.7_volt)
+        // .drive_toleranceDuration(20_msec)
         .executeAfterMotion([] {
             intake::in();
             matchloader::down();
         }) |
       run;
 
-    mb.turnTo(-70, match1) | chain;
-    mb.moveTo(-58.5, match1).drive_maxVolt(0.5_volt) | chain;
+    matchload(-1,
+              1,
+              1_sec,
+              2.0_sec,
+              7.5_in,
+              linear_pid.get_kp() * 0.9,
+              linear_pid.get_kd() * 1.2);
 
-    chain.waitUntil([] -> bool {
-        return RobotGetPose().x < -53_in;
-    });
-    pros::delay(1600);
-    chain.exitAll();
-
-    // mb.arc(330, -1.0).direction(AngularDirection::RIGHT).reverse() | run;
-
-    mb.moveTo(-25, 61.1)
+    mb.moveTo(-30, 60)
         .reverse()
         .executeAfterMotion([] {
             intake::set(intake::intake_disabled);
             matchloader::up();
         })
-        .drive_chainErrorTolerance(8_in)
+        .drive_chainErrorTolerance(7_in)
         .setChainTime(0_sec)
         .drive_minVolt(0.5_volt) |
       chain;
+
+    mb.turnTo(25, 60).reverse() | chain;
+
     // go to other side
-    mb.moveTo(25, 59)
+    mb.moveTo(25, 60)
         .reverse()
         .drive_chainErrorTolerance(7_in)
         .setChainTime(30_msec)
@@ -191,117 +219,26 @@ void run_auton() {
     // get on same y
     mb.moveTo(42, long_goal + 0.2_in).reverse().only_y(true) | chain;
 
-    // turn to goal, reversed
-    mb.turnTo(10_in, long_goal).reverse() | chain;
-    // chain.wait();
+    score_long_goal(1, 1, 2.5_sec);
 
-    // LaserResets({ &left_laser_model });
-
-    // go to goal, reversed
-    // mb.moveTo(24_in, long_goal + 0.0_in)
-    //     .reverse()
-    //     .timeout(1.4_sec)
-    //     .k_lat(0.0)
-    //     .closeThreshold(8_in)
-    //     .executeAfterMotion([] {
-    //         pros::delay(100);
-    //         drivetrain.moveTank(-0.0_volt, -0.15_volt);
-    //     })
-    //   // .only_x(true)
-    //   | async;
-
-    mb.moveTo(25_in, long_goal + 0.0_in).reverse()
-      // .timeout(1.4_sec)
-      // .k_lat(0.0)
-      // .closeThreshold(8_in)
-      // .executeAfterMotion([] {
-      //     pros::delay(100);
-      //     drivetrain.moveTank(-0.0_volt, -0.15_volt);
-      // })
-      // .only_x(true)
-      | chain;
-
-    chain.waitUntil(closeEnough({ 31_in, long_goal }, 3_in));
-
-    intake::score_long();
-
-    // wait for 2 seconds
-    pros::delay(500);
-    matchloader::down();
-    pros::delay(1900);
-
-    // exit any motions if the are somehow still executing
-    chain.exitAll();
-
-    // mb.moveTo(55, match2).drive_maxVolt(0.5_volt).executeAfterMotion([] {
-    //     intake::in();
-    // }) |
-    //   run;
-    mb.turnTo(46, match2 - 0.0_in) | run;
-    // mb.distanceAtHeading(31_in, RobotGetPose().angleTo({ 63_in, match2 }))
-    //     .drive_maxVolt(0.4_volt) |
-    //   chain;
-    mb.moveTo(58, match2 - 0.0_in)
-        .drive_maxVolt(0.4_volt)
-        .k_lat(0.4)
-        .closeThreshold(4_in) |
-      chain;
-
-    // let it score last one
-    pros::delay(300);
-    // outake a bit while going, in case something is stuck
-    intake::out();
-    pros::delay(200);
     intake::in();
+    matchload(1,
+              1,
+              1_sec,
+              2_sec,
+              7.5_in,
+              linear_pid.get_kp() * 0.7,
+              linear_pid.get_kd() * 1.0);
 
-    chain.wait();
-    // drivetrain.moveTank(0.1_volt, 0.1_volt);
-    // pros::delay(300);
-    // drivetrain.moveTank(0.05_volt, 0.05_volt);
-    // pros::delay(300);
-    // drivetrain.moveTank(0.0_volt, 0.0_volt);
-    pros::delay(1200);
-    // LaserResets({ &left_laser_model });
-
-    // go to goal to score again
-    // mb.turnTo(25_in, long_goal + 0.0_in).reverse() | chain;
-    mb.moveTo(25_in, long_goal + 0.0_in).reverse()
-      // .timeout(1.4_sec)
-      // .k_lat(0.3)
-      // changed today!
-      // .turn_kp(angular_pid.get_kp() * 0.5)
-      // .turn_kd(angular_pid.get_kd() * 0.5)
-      // .drive_backwardsAccelSlew(0.4_volt)
-      //
-
-      // .drive_backwardsAccelSlew(0.4_volt)
-      // .drive_maxVolt(0.7_volt)
-      //
-      // .closeThreshold(8_in)
-      // .executeAfterMotion([] {
-      //     pros::delay(100);
-      //     drivetrain.moveTank(-0.15_volt, -0.3_volt);
-      // })
-      // .only_x(true)
-      | chain;
-
-    chain.waitUntil(closeEnough({ 32_in, long_goal }, 4_in));
-
-    intake::score_long();
-
-    pros::delay(500);
+    score_long_goal(1, 1, 2.5_sec);
     matchloader::up();
-    pros::delay(1900);
-
-    // exit any motions if the are somehow still executing
-    chain.exitAll();
-
-    mb.boomerang(62, 19, 270).lead(0.3).drive_maxVolt(0.5_volt) | chain;
 
     // let it score last one
     intake::score_long();
 
-    chain.wait();
+    // go towards park
+    mb.boomerang(62, 19, 270).lead(0.3).drive_maxVolt(0.5_volt) | run;
+
     // now going for park
     intake::in();
 
@@ -317,11 +254,7 @@ void run_auton() {
 
     drivetrain.moveTank(0.2_volt, 0.25_volt);
     // move closer to the park slowly, also gives time for accurate start roll
-    // pros::delay(200);
 
-    // roll is hopefully accurate here
-    // double start_roll = imu.get_roll();
-    // std::cout << "start roll: " << start_roll << std::endl;
     pros::delay(400);
 
     // get over first part of park
@@ -354,10 +287,8 @@ void run_auton() {
     matchloader::up();
     // reset position to guarantee its not wrong at all
     LaserResets({ &back_laser_model, &left_laser_model });
-    // LaserResets({ &back_laser_model });
 
     mb.moveTo(31.5, -18.5).drive_maxVolt(0.5_volt) | run;
-    // intake::set(intake::intake_disabled);
     mb.moveTo(23, -23.4).drive_maxVolt(0.3_volt) | run;
     matchloader::up();
 
@@ -367,10 +298,7 @@ void run_auton() {
 
     // go to bottom goal
 
-    back_laser_model.disable();
-
     mb.turnTo(centerTopGoalSecond.x, centerTopGoalSecond.y) | run;
-    right_laser_model.disable();
     mb.moveTo(7.3, -6.6)
         .drive_maxVolt(0.3_volt)
         .closeThreshold(6_in)
@@ -386,72 +314,47 @@ void run_auton() {
         }) |
       async;
 
-    // mb.distanceAtHeading(20_in).timeout(1.1_sec) | run;
-    // pros::delay(10);
-
-    // mb.moveTo(centerTopGoalSecond.x, centerTopGoalSecond.y).k_lat(0.0) | run;
-
-    // chain.waitUntil(closeEnough({ 9_in, 9_in }, 3_in));
-
-    // intake::set(intake::scoring_middle);
-
-    // intake::out();
-    // pros::delay(150);
-
     async.waitUntil(closeEnough({ 8_in, -8_in }, 6_in));
 
     intake::set(intake::scoring_middle_bottom_balls);
-    pros::delay(1900);
-    intake::set(intake::scoring_middle_top_balls_skills);
-    // pros::delay(10000);
-    // pros::delay(4000);
 
     start_time = now();
-    while (!timeoutDone(2100_msec, start_time) &&
-           intake::getMiddleDetectedColor() != alliance_t::blue) {
+    bool bad_color = false;
+
+    while (true) {
+        bool timeout_done = timeoutDone(2000_msec, start_time);
+        bad_color = intake::getMiddleDetectedColor() == alliance_t::blue;
+        if (timeout_done || bad_color) break;
+
         pros::delay(10);
     }
+    intake::set(intake::scoring_middle_top_balls_skills_fast);
+    pros::delay(1300);
+    intake::set(intake::scoring_middle_top_balls_skills_slow);
+    pros::delay(800);
 
     // exit any motions if the are somehow still executing
     async.exitAll();
 
-    setSmootherAlphas(smoother_config.alpha_x * 2.0,
-                      smoother_config.alpha_y * 2.0);
-    // setMaxDistanceThresholdAll(10_in);
-    right_laser_model.enable();
-    back_laser_model.disable();
-
-    mb.moveTo(48, match3 - 0.4_in)
+    mb.moveTo(48, match3 - 1.4_in)
         .reverse()
-        // .drive_maxVolt(0.4_volt)
-        .drive_backwardsAccelSlew(0.05_volt)
-      // .executeBeforeMotion([] {
-      //     matchloader::down();
-      // })
-      | async;
+        .drive_backwardsAccelSlew(0.05_volt) |
+      async;
     pros::delay(400);
     intake::out();
-    // pros::delay(100);
-    // intake::in();
+
     async.wait();
-
-    // return;
-
-    resetSmootherConfig();
-    // resetMaxDistanceThresholdAll();
-
-    back_laser_model.enable();
 
     matchloader::down();
     intake::in();
 
-    // mb.turnTo(60, match3 + 0.0_in) | chain;
-    mb.turnTo(65, match3 + 0.0_in) | chain;
-    mb.moveTo(60.25, match3 + 0.0_in).drive_maxVolt(0.5_volt) | chain;
-    // mb.distanceAtHeading(12_in)
-    // mb.distanceAtHeading(13_in).drive_maxVolt(0.5_volt) | chain;
-    chain.wait();
-    pros::delay(1000);
+    matchload(1,
+              -1,
+              1_sec,
+              2_sec,
+              7.5_in,
+              linear_pid.get_kp() * 0.9,
+              linear_pid.get_kd() * 1.2);
 
     mb.moveTo(25, -60)
         .reverse()
@@ -468,119 +371,31 @@ void run_auton() {
         .reverse()
         .drive_chainErrorTolerance(7_in)
         .setChainTime(30_msec)
-        .drive_minVolt(0.2_volt)
-        .executeBeforeMotion([] {
-            // setMaxDistanceThresholdAll(10_in);
-            setSmootherAlphas(smoother_config.alpha_x * 2.0,
-                              smoother_config.alpha_y * 2.0);
-        }) |
+        .drive_minVolt(0.2_volt) |
       chain;
 
     // get on same y
-    mb.moveTo(-46, -long_goal - 1.3_in).reverse()
-      // .only_y(true)
-      // .executeBeforeMotion([] {
-      //       // LaserResets({ &right_laser_model });
-      //   })
-      | chain;
+    mb.moveTo(-46, -long_goal - 1.3_in).reverse() | chain;
 
-    // turn to goal, reversed
-    mb.turnTo(0_in, -long_goal).reverse().executeAfterMotion([] {
-        resetSmootherConfig();
-        resetMaxDistanceThresholdAll();
-    }) |
-      chain;
-    // chain.wait();
-
-    // go to goal, reversed
-    mb.moveTo(-25_in, -long_goal).reverse()
-      // .timeout(1.3_sec)
-      // .k_lat(0.0)
-      // .drive_maxVolt(0.8_volt)
-      //
-      // .closeThreshold(8_in)
-      // .executeAfterMotion([] {
-      //     drivetrain.moveTank(-0.3_volt, -0.1_volt);
-      // })
-      // .only_x(true)
-      | chain;
-    // wait until its close to goal
-    chain.waitUntil(closeEnough({ -32_in, -long_goal }, 4_in));
-
-    // drivetrain.moveTank(-0.1_volt, -0.1_volt);
-    intake::score_long();
-
-    // wait for 2 seconds
-    pros::delay(500);
-    matchloader::down();
-    pros::delay(2000);
-
-    // exit any motions if they are somehow still executing
-    chain.exitAll();
-
-    // drivetrain.moveTank(0.0_volt, 0.0_volt);
-    RobotSetPose({ -28.7_in, RobotGetPose().y, RobotGetPose().orientation });
-    // LaserResets({ &left_laser_model });
-
-    mb.turnTo(-58, match4 + 0_in) | run;
-    mb.moveTo(-58, match4 + 0_in).drive_maxVolt(0.5_volt) | chain;
-    // mb.distanceAtHeading(32_in, RobotGetPose().angleTo({ -80_in, match4 }))
-    //   .drive_maxVolt(0.5_volt) |
-    // chain;
-
-    pros::delay(500);
+    score_long_goal(-1, -1, 2.5_sec);
     intake::in();
-    chain.wait();
-    pros::delay(1100);
 
-    // LaserResets({ &left_laser_model });
+    matchload(-1,
+              -1,
+              1_sec,
+              2_sec,
+              7.5_in,
+              linear_pid.get_kp() * 0.5,
+              linear_pid.get_kd() * 0.8);
 
-    // mb.turnTo(0_in, current).reverse() | chain;
-    // mb.turnTo(0_stDeg).reverse() | chain;
-    mb.moveTo(-25_in, -long_goal - 0.0_in).reverse()
-      // .timeout(1.4_sec)
-      // .k_lat(0.0)
-
-      // changed today!
-      // .turn_kp(angular_pid.get_kp() * 0.5)
-      // .turn_kd(angular_pid.get_kd() * 0.5)
-      // .drive_backwardsAccelSlew(0.4_volt)
-      //
-
-      // .closeThreshold(6_in)
-      // .executeAfterMotion([] {
-      //     mb.arc(180, -0.8)
-      //         .timeout(100_sec)
-      //         .turn_errorTolerance(0_stDeg)
-      //         .turn_largeErrorTolerance(0_stDeg)
-      //         .turn_toleranceDuration(100_sec)
-      //         .turn_largeToleranceDuration(100_sec) |
-      //       async;
-      //     // drivetrain.moveTank(-0.3_volt, -0.0_volt);
-      // })
-      // .only_x(true)
-      // .drive_maxVolt(0.4_volt)
-      | chain;
-    chain.waitUntil(closeEnough({ -32_in, -long_goal }, 4_in));
-
-    intake::score_long();
-
-    pros::delay(1000);
+    score_long_goal(-1, -1, 2.5_sec);
     matchloader::up();
-    pros::delay(1200);
-
-    chain.exitAll();
-
-    // make sure new motion doesn't run
-    pros::delay(40);
-    async.exitAll();
 
     mb.boomerang(-62, -18, 90)
         .lead(0.3)
         .drive_maxVolt(0.5_volt)
         .drive_minVolt(0.3_volt)
         .drive_largeErrorTolerance(5_in)
-        // .halfcircleTolerance(10_in)
         .drive_toleranceDuration(0_sec) |
       run;
 

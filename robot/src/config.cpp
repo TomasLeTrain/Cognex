@@ -78,7 +78,7 @@ constexpr units::Pose distToCor(units::Pose dist_pose) {
 
 // distance sensor offsets
 units::Pose front_distance_offsets =
-  distToCor({ 3.5_in, +(12.5_in / 2) - 1.2_in, 0_stDeg });
+  distToCor({ 3_in, +(12.5_in / 2) - 3.0_in, 0_stDeg });
 
 units::Pose left_distance_offsets = distToCor(
   { 3.5_in + 0.625_in, +(12.5_in / 2) - 1.2_in - 0.375_in, 90_stDeg });
@@ -156,7 +156,7 @@ angular_pid_config_t angular_pid_config {
     // .kp = 2.3,
     // .ki = 0,
     // .kd = 3.05,
-    .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
+    .kp = 3.55, .ki = 0.96, .kd = 5.65, .windupRange = 15, .maxVoltage = 127,
 };
 
 // LinearSlewController linear_slew(0.07_volt, 0.06_volt);
@@ -222,24 +222,24 @@ vexmaps::SmootherConfig smoother_config = {
     // .alpha_y = 0.06,
     // .alpha_theta = 0.00,
 
-	// good without cook 
-    .alpha_x = 0.04,
-    .alpha_y = 0.04,
-    .alpha_theta = 0.00,
-
-	// need to tune with new cook
-    // .alpha_x = 0.10,
-    // .alpha_y = 0.10,
+    // good without cook
+    // .alpha_x = 0.04,
+    // .alpha_y = 0.04,
     // .alpha_theta = 0.00,
 
+    // need to tune with new cook
+    .alpha_x = 0.15,
+    .alpha_y = 0.15,
+    .alpha_theta = 0.00,
+
     // possible good values
-    // .ang_vel_alpha = 0.02 / 300_degps,
-    // .theta_to_alpha = 0.01,
-    // .linear_vel_alpha = 0.01 / 70_inps,
+    .ang_vel_alpha = 0.10 / 300_degps,
+    .theta_to_alpha = 0.07,
+    .linear_vel_alpha = 0.00 / 70_inps,
     //
-    .ang_vel_alpha = 0.0 / 300_degps,
-    .theta_to_alpha = 0.0,
-    .linear_vel_alpha = 0.0 / 70_inps,
+    // .ang_vel_alpha = 0.0 / 300_degps,
+    // .theta_to_alpha = 0.0,
+    // .linear_vel_alpha = 0.0 / 70_inps,
 
     // used by pose_delta_measurement to estimate the pose
     .beta_x = 1,

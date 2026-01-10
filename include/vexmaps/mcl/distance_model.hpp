@@ -41,6 +41,10 @@ class DistanceSensorModel : public Sensor {
     // is not super important (i.e. distance sensor resets)
     bool exit_without_new_measurement = false;
 
+    // used to block outdated measurements that can happen when distance sensors
+    // reading don't come in time
+    bool block_next_measurement = false;
+
     // when false, sensor is not used regardless of measurements
     bool enabled = true;
 
@@ -190,12 +194,31 @@ class DistanceSensorModel : public Sensor {
            // get new measurement, even if we measure the same distance.
            // In practice it works in the expected cases but it occasionally
            // doesn't (maybe a packet gets lost from the sensor?)
-           current_measurement.timestamp - s_last_measurement->timestamp >
-             DIST_POLLING_RATE);
+
+           false
+           // current_measurement.timestamp - s_last_measurement->timestamp >
+           //   DIST_POLLING_RATE
+           //
+          );
+
+        bool timed_out =
+          current_measurement.timestamp - s_last_measurement->timestamp >
+          DIST_POLLING_RATE;
+
+        if (timed_out && !has_new_measurement) {
+            block_next_measurement = true;
+        }
 
         // updated only on new measurement to keep last measurement timestamp
         // accurate
         if (has_new_measurement) s_last_measurement = current_measurement;
+
+        if (has_new_measurement && block_next_measurement) {
+            block_next_measurement = false;
+            // prevents from being used
+            has_new_measurement = false;
+        }
+
         return has_new_measurement;
     }
 

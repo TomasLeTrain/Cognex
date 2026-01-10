@@ -25,13 +25,6 @@ namespace sunshine_quals {
 void run_auton() {
     // do whatever you want here
 
-    auto closeEnough = [](units::V2Position target,
-                          Length threshold) -> std::function<bool()> {
-        return [target, threshold] -> bool {
-            return RobotGetPose().distanceTo(target) < threshold;
-        };
-    };
-
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
 
@@ -40,12 +33,18 @@ void run_auton() {
     units::V2Position centerTopGoalFirst = { -7.9_in, 7.4_in };
     units::V2Position centerBottomGoalFirst = { -11_in, -11_in };
 
+    auto make_machloader_point = [&](units::V2FPosition target,
+                                     Length distance) -> units::V2FPosition {
+        auto target_angle = target.angleTo(RobotGetPose());
+
+        return target + distance * (RobotGetPose() - target).normalize();
+        // return target + units::V2Position::fromPolar(target_angle, distance);
+    };
+
     bool bl =
       (auto_side == field_side_t::left || auto_side == field_side_t::unset);
 
     int l = bl ? 1 : -1;
-
-    double angle = bl ? 0 : 0;
 
     intake::setSkillsMiddleScoring(true);
 
@@ -56,7 +55,7 @@ void run_auton() {
     // pull wing up to avoid any collision with game objects (bad for cog?)
     wings::set(inactive);
 
-    RobotSetPose(-47.2, 14.9 * l, angle);
+    RobotSetPose(-47.2, 14.9 * l, 0);
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     // only intake bottom balls to save time
@@ -67,38 +66,38 @@ void run_auton() {
     if (bl) {
         mb.moveTo(-25.5, 23.4 * l) | async;
 
-        async.waitUntil(closeEnough({ -31.93_in, 18.784_in * l }, 5_in));
+        async.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 10_in));
         matchloader::down();
 
         async.wait();
 
-        pf_model.setDisabled(true);
-        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | run;
-        pf_model.setDisabled(false);
+        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | chain;
 
         mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
             .k_lat(0.3)
             .drive_maxVolt(0.5_volt)
             .executeBeforeMotion([] {
                 pros::Task([] {
-                    matchloader::down();
-                    pros::delay(200);
-                    matchloader::up();
+                    // matchloader::down();
+                    // pros::delay(200);
+                    // matchloader::up();
                 });
             }) |
           chain;
 
+        chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
+        intake::set(intake::scoring_middle_bottom_balls);
+        pros::delay(1000);
+        chain.exitAll();
     } else {
         mb.moveTo(-23.6, 23.6 * l) | async;
 
-        async.waitUntil(closeEnough({ -31.93_in, 18.784_in * l }, 5_in));
+        async.waitUntil(closeEnough({ -23.6_in, 23.6_in * l }, 10_in));
         matchloader::down();
 
         async.wait();
 
-        pf_model.setDisabled(true);
         mb.turnTo(centerBottomGoalFirst.x, centerBottomGoalFirst.y) | run;
-        pf_model.setDisabled(false);
 
         mb.moveTo(centerBottomGoalFirst.x, centerBottomGoalFirst.y)
             .k_lat(0.3)
@@ -113,15 +112,14 @@ void run_auton() {
 
         chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
         intake::score_bottom();
-        chain.wait();
         pros::delay(1000);
+        chain.exitAll();
     }
 
-    mb.moveTo(-48, match1 * l)
-        .reverse()
-        // .only_y(true)
-        .drive_backwardsAccelSlew(0.1_volt) |
-      run;
+    mb.moveTo(-48, match1 * l).reverse()
+      // .only_y(true)
+      // .drive_backwardsAccelSlew(0.1_volt)
+      | run;
     // its a run here, so we can do these things
     intake::in();
     intake::setColorSortEnabled(false);
