@@ -92,8 +92,8 @@ void run_auton() {
         .turn_largeErrorTolerance(0_stDeg)
         .turn_toleranceDuration(100_sec)
         .turn_largeToleranceDuration(100_sec)
-        .turn_kp(angular_pid.get_kp() * 2)
-        .turn_kd(angular_pid.get_kd() * 0.5) |
+        .turn_kp(turn_drive_pid.get_kp() * 2)
+        .turn_kd(turn_drive_pid.get_kd() * 0.5) |
       async;
     pros::delay(400);
     async.exitAll();
@@ -151,8 +151,8 @@ void run_auton() {
         .turn_largeErrorTolerance(0_stDeg)
         .turn_toleranceDuration(100_sec)
         .turn_largeToleranceDuration(100_sec)
-        .turn_kp(angular_pid.get_kp() * 2)
-        .turn_kd(angular_pid.get_kd() * 0.5) |
+        .turn_kp(turn_drive_pid.get_kp() * 2)
+        .turn_kd(turn_drive_pid.get_kd() * 0.5) |
       async;
     pros::delay(400);
     async.exitAll();

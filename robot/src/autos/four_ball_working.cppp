@@ -83,9 +83,8 @@ void run_auton() {
                 matchloader::down();
                 // });
             })
-            .turn_toleranceDuration(20_msec) |
-          run;
-        // | chain;
+          // .turn_toleranceDuration(20_msec)
+          | run;
         // chain.wait();
 
         // auto thingy = chain.getCurrentIndex();
@@ -132,8 +131,8 @@ void run_auton() {
             .timeout(100_sec)
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
-            .turn_kp(turn_drive_pid.get_kp() * 2)
-            .turn_kd(turn_drive_pid.get_kd() * 0.5) |
+            .turn_kp(angular_pid.get_kp() * 2)
+            .turn_kd(angular_pid.get_kd() * 0.5) |
           async;
         pros::delay(to_msec(score_time - 300_msec));
         async.exitAll();
@@ -154,13 +153,7 @@ void run_auton() {
     mb.moveTo(-48, match1 * l)
         // .reverse()
         .only_y(true)
-        .drive_kp(7.6)
-        .drive_kd(9.5)
-      // .kp = 8.0,
-      // .ki = 0,
-      // .kd = 9.5,
-      //
-      // .drive_maxVolt(0.6_volt)
+        .drive_maxVolt(0.6_volt)
       // .drive_backwardsAccelSlew(0.1_volt)
       | run;
 
@@ -180,7 +173,7 @@ void run_auton() {
     score_long_goal(-1, l, 1.0_sec);
 
     matchloader::up();
-    intake::score_long();
+	intake::score_long();
 
     if (winging) {
         if (bl) {
@@ -192,27 +185,8 @@ void run_auton() {
                 .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
                 .drive_toleranceDuration(100_sec)
                 .drive_largeToleranceDuration(100_sec)
-                // .timeout(100_sec) |
                 .timeout(100_sec) |
               chain;
-
-            // mb.boomerang(-9, 37, 340)
-            //     .reverse()
-            //     .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .drive_toleranceDuration(100_sec)
-            //     .drive_largeToleranceDuration(100_sec)
-            //     // .timeout(100_sec) |
-            //     .timeout(100_sec) |
-            //   chain;
-
-            // mb.turnTo(340)
-            //     .reverse()
-            //     // .turn_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .turn_toleranceDuration(100_sec)
-            //     .turn_largeToleranceDuration(100_sec)
-            //     // .timeout(100_sec) |
-            //     .timeout(100_sec) |
-            //   chain;
 
         } else {
             mb.moveTo(-35.737, -36.7) | chain;

@@ -28,7 +28,9 @@ extern ArcOdomTracker tracker;
 // controller stuff
 extern PID<Length, Voltage> linear_pid;
 
-extern PID<Angle, Voltage> angular_pid;
+extern PID<Angle, Voltage> turn_drive_pid;
+extern PID<Angle, Voltage> turn_heading_pid;
+extern PID<Angle, Voltage> matchloader_angular_pid;
 
 extern LinearSlewController linear_slew;
 extern AngularSlewController angular_slew;

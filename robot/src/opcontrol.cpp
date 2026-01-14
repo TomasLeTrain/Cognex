@@ -4,6 +4,7 @@
 #include "autos.h"
 #include "globals.h"
 #include "globals/blazing_globals.h"
+#include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "main.h"
 #include "screen/screen.h"
@@ -16,81 +17,20 @@
 #include "tuning.h"
 
 void opcontrol() {
-	// matchloader::init(false);
-	// turn_pid_tuning();
-	// return;
+    // autonomous();
+    // return;
+
+    // odom_offset_tuning();
+
+    // matchloader::init(false);
+    // turn_pid_tuning();
+    // return;
 
     // RobotSetPose(10, 10, 0);
-    //
-    // while (true) {
-    //     if (controller.get_digital_new_press(controls::A)) {
-    //         mb.arc(0, -1.0)
-    //             .timeout(100_sec)
-    //             .turn_errorTolerance(0_stDeg)
-    //             .turn_largeErrorTolerance(0_stDeg)
-    //             .turn_toleranceDuration(100_sec)
-    //             .turn_largeToleranceDuration(100_sec)
-    //             .turn_kp(angular_pid.get_kp() * 2)
-    //             .turn_kd(0) |
-    //           run;
-    //     }
-    //     pros::delay(10);
-    // }
-    // return;
-
-    // RobotSetPose(48, -48, 0);
-    //
-    //   while (true) {
-    //       std::cout << std::format(
-    //         "{:.2f},{:.2f},{:.2f}",
-    //         model_manager.getPose().x.convert(in),
-    //         model_manager.getPose().y.convert(in),
-    //         model_manager.getPose().orientation.convert(deg)) << std::endl;
-    // pros::delay(1000);
-    //   }
-    //
-    //
-    // autonomous();
-    // turn_pid_tuning();
-    // drive_pid_tuning();
-    //    return;
-
-    // initialize tasks for each subsystem
-    // odom_diameter_tuning();
-    // odom_offset_tuning();
-    // return;
-    // Time last_measurement_time = now();
-    //
-    //    while (true) {
-    //        left_motors.move_voltage(-12000 * 0.5);
-    //        right_motors.move_voltage(12000 * 0.5);
-    //
-    //        // units::V2Position deltas = { forwards_tracker.getDelta(),
-    //        //                              sideways_tracker.getDelta() };
-    //        // Angle delta_theta = imu_tracker.getDelta();
-    //        //
-    //        // units::V2Position offsets = deltas / to_stRad(delta_theta);
-    //
-    //        // gets offsets every 0.2 seconds
-    //        if (blazing::timeoutDone(0.2_sec, last_measurement_time)) {
-    //            std::cout << RobotGetPose().x.convert(in) << " "
-    //                      << RobotGetPose().y.convert(in) << std::endl;
-    //        }
-    //
-    //        pros::delay(20);
-    //    }
-
-    // autonomous();
-    // return;
-    // turn_pid_tuning();
-    // drive_pid_tuning();
-    // return;
-
-    // 90 turn:  2.6 3.35
-    // 135 turn: 2.6 3.95
-    // 180 turn: 2.6 4.45
 
     // cancel any auton motions that could be currently running
+
+    RobotSetPose(-48, 0, 0);
 
     intake::init(true);
     matchloader::init(true);
@@ -103,87 +43,4 @@ void opcontrol() {
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
     base::init();
     odom_retract::retractOdom();
-
-    // while (true) {
-    // }
-
-    // set screen in case its different
-    // screen::setScreen(&screen::bouncing_dvd_screen::screen);
-
-    // bool print_info = true;
-
-    // pros::Task smoother_task { [&] {
-    //     while (print_info) {
-    //         int start_time = pros::millis();
-    //         printf("start generation\nstart distances\nend distances\nstart "
-    //                "parti"
-    //                "cles"
-    //                "\n");
-    //
-    //         printf("%.1f %.1f %.1f\n",
-    //                pf_motion_model.getPose().x.convert(in),
-    //                pf_motion_model.getPose().y.convert(in),
-    //                0.0);
-    //         if (pf_model.getConfidence() != std::nullopt) {
-    //             printf("%.1f %.1f %.1f\n",
-    //                    pf_model.getPose().x.convert(in),
-    //                    pf_model.getPose().y.convert(in),
-    //                    5.0);
-    //         }
-    //         printf("%.1f %.1f %.1f\n",
-    //                smoother_model.getPose().x.convert(in),
-    //                smoother_model.getPose().y.convert(in),
-    //                10.0);
-    //
-    //         printf("end particles\ntotal weight: 0, time taken: 30000, "
-    //                "timestamp:"
-    //                " %d\n",
-    //                start_time);
-    //         printf("things done:1,1,0,%d\n", 16384);
-    //         printf("prediction:%.1f,%.1f,%.1f\n",
-    //                smoother_model.getPose().x.convert(in),
-    //                smoother_model.getPose().y.convert(in),
-    //                smoother_model.getPose().orientation.convert(deg));
-    //         printf("end generation\n");
-    //
-    //         pros::delay(10);
-    //     }
-    // } };
-
-    // RobotSetPose({ 2_tile, 2_tile, 90_stDeg });
-    // RobotSetPose(0, 0, 0);
-    // pros::delay(100);
-    // LaserResets({ &back_laser_model, &right_laser_model });
-
-    // odom_tuning();
-
-    // move odom up automatically
-
-    // intake::setDriverColorSortEnabled(false);
-
-    // RobotSetPose(-46.471, 18.535, 0);
-
-    // RobotSetPose({ 49_in, -16.8_in, 200 * deg });
-
-    // vexmaps::DistanceSensorConfig new_config = distance_sensor_config;
-    //
-    // new_config.maxDistanceDifference = 10_in;
-
-    // change front model to accept larger changes due to drift in wheels
-    // front_laser_model.setConfig(new_config);
-    // left_laser_model.setConfig(new_config);
-    // right_laser_model.setConfig(new_config);
-    // back_laser_model.setConfig(new_config);
-
-    // while (true) {
-    //     screen::health::set_console_text(
-    //       std::format("vexmaps forwards travel: {:.4f}_in\n"
-    //                   "pf model forwards travel: {:.4f}_in\n"
-    //                   "blazing forwards travel: {:.4f}_in\n",
-    //                   vexmaps_tracker.getForwardTravel().convert(in),
-    //                   pf_motion_model.getForwardTravel().convert(in),
-    //                   tracker.getForwardTravel().convert(in)));
-    //
-    //     pros::delay(50);
-    // }
 }

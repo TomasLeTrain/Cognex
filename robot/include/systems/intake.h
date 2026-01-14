@@ -7,6 +7,10 @@ namespace intake {
 enum intake_state_t {
     intake_disabled,
     intake_disabled_open_middle,
+    outtake_very_slow,
+    outtake_bottom_balls_open_middle,
+
+    score_bottom_slow,
 
     intake,
     intake_bottom_balls,
@@ -14,6 +18,7 @@ enum intake_state_t {
     intake_top_balls,
     outtake_bottom_balls,
     outtake,
+    outtake_open_middle,
 
     unjam,
 
@@ -22,11 +27,16 @@ enum intake_state_t {
 
     scoring_middle,
     scoring_middle_top_balls,
+    scoring_middle_first_ball,
     scoring_middle_top_balls_skills,
     scoring_middle_top_balls_skills_fast,
     scoring_middle_top_balls_skills_slow,
 
     scoring_middle_bottom_balls,
+    scoring_middle_bottom_balls_slow,
+
+    score_bottom_bottom_balls,
+    score_bottom_bottom_balls_slow,
 
     scoring_bottom,
     scoring_long,

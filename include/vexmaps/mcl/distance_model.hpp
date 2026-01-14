@@ -53,6 +53,9 @@ class DistanceSensorModel : public Sensor {
     const double randomUniformProbability = 1 / (2.54);
     double randomFactor;
 
+    // exit if no measurement, otherwise accept no matter what
+    bool distance_exit = false;
+
     // precomputed values
 
     // values used per particle evaluation - should all be floats
@@ -229,6 +232,7 @@ class DistanceSensorModel : public Sensor {
             // not available, just set exit to true
             exit_without_new_measurement = true;
             exit = true;
+			distance_exit = true;
             return;
         }
 
@@ -257,6 +261,8 @@ class DistanceSensorModel : public Sensor {
           || measured_distance > config.maxUsableDistance
           // or disabled
           || (!enabled);
+
+        distance_exit = !installed || measured_mm == 9999;
 
         // rotates offset and angle
         rotated_offsets = FrotatePose(offsets, angle);
@@ -633,7 +639,7 @@ class DistanceSensorModel : public Sensor {
     // measurements.
     // can be used for distance sensor resets
     std::optional<units::V2FPosition> getExpected() override {
-        if (exit_without_new_measurement) {
+        if (distance_exit) {
             return std::nullopt;
         }
 

@@ -17,7 +17,8 @@ void driveUpdate() {
     // float linear_minOutput = 10;
 
     float angular_deadband = 3;
-    float angular_curveGain = 1.019;
+    // float angular_curveGain = 1.019;
+    float angular_curveGain = 1.001;
     float angular_minOutput = 10;
 
     bool use_expo = true;

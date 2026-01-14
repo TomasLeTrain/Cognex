@@ -134,9 +134,9 @@ void turn_pid_tuning() {
     // by how much we can increase or decrease
     double target_theta_delta = 45;
 
-    double curr_kp = angular_pid.get_kp() / angular_pid.UKP;
-    double curr_ki = angular_pid.get_ki() / angular_pid.UKI;
-    double curr_kd = angular_pid.get_kd() / angular_pid.UKD;
+    double curr_kp = turn_drive_pid.get_kp() / turn_drive_pid.UKP;
+    double curr_ki = turn_drive_pid.get_ki() / turn_drive_pid.UKI;
+    double curr_kd = turn_drive_pid.get_kd() / turn_drive_pid.UKD;
 
     double kp_delta = 0.05;
     double ki_delta = 0.01;

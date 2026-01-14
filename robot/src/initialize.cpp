@@ -90,7 +90,10 @@ void initialize() {
 
     // default a timeout
     mb.setTurnToModifier([](auto turnTo) {
-        return turnTo.timeout(5_sec);
+        return turnTo
+          // speecifically uses turn heading pid instead of drive pid
+          .withAngularFeedbackController(turn_heading_pid)
+          .timeout(5_sec);
     });
 
     mb.setDistanceAtHeadingModifier([](auto distanceAtHeading) {

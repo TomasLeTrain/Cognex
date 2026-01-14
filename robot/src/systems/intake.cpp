@@ -33,8 +33,12 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { scoring_bottom,                       -100 },
 
     // { slow_scoring_middle,         40   },
-    { scoring_middle_bottom_balls,          100  },
+    { scoring_middle_bottom_balls,          90   },
+    { scoring_middle_bottom_balls_slow,     70   },
+
     { scoring_middle_top_balls,             40   },
+    { scoring_middle_first_ball,            127  },
+    { scoring_middle_top_balls_skills,      40   },
     { scoring_middle_top_balls_skills_fast, 80   },
     { scoring_middle_top_balls_skills_slow, 30   },
     // acts as only top balls, good for driver
@@ -51,9 +55,17 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { intake_bottom_top_backwards,          127  },
     { intake_top_balls,                     0    },
     { outtake,                              -127 },
+    { outtake_open_middle,                  -127 },
+
+    { score_bottom_bottom_balls,            -127 },
+    { score_bottom_bottom_balls_slow,       -70  },
+    { score_bottom_slow,                    -70  },
+
     { outtake_bottom_balls,                 -127 },
+    { outtake_bottom_balls_open_middle,     -127 },
 
     { unjam,                                -127 },
+    { outtake_very_slow,                    -40  },
 };
 
 std::map<intake_state_t, int> top_motor_speeds = {
@@ -62,7 +74,10 @@ std::map<intake_state_t, int> top_motor_speeds = {
 
     // { slow_scoring_middle, 127  },
     { scoring_middle_bottom_balls,          30   },
+    { scoring_middle_bottom_balls_slow,     20   },
+
     { scoring_middle_top_balls,             -127 },
+    { scoring_middle_first_ball,            0    },
     { scoring_middle_top_balls_skills,      -100 },
     { scoring_middle_top_balls_skills_fast, -100 },
     { scoring_middle_top_balls_skills_slow, -100 },
@@ -73,16 +88,23 @@ std::map<intake_state_t, int> top_motor_speeds = {
     { scoring_long_top_balls,               127  },
     { scoring_long_top_balls_outake_bottom, 127  },
 
+    { score_bottom_bottom_balls,            0    },
+    { score_bottom_bottom_balls_slow,       0    },
+    { score_bottom_slow,                    -127 },
+
     { intake,                               127  },
     { intake_bottom_balls,                  0    },
     { intake_bottom_top_backwards,          -127 },
 
     { intake_disabled_open_middle,          0    },
     { outtake_bottom_balls,                 0    },
+    { outtake_bottom_balls_open_middle,     0    },
 
     { outtake,                              -127 },
+    { outtake_open_middle,                  -127 },
 
     { unjam,                                -127 },
+    { outtake_very_slow,                    0    },
 };
 
 // speeds of the motors - can be positive or negative
@@ -206,9 +228,9 @@ std::optional<alliance_t> colorDetected(pros::Optical& sensor) {
 
     // intake senses something
     if (sensor.get_proximity() > 200) {
-        if (color_sensor_hue > 280 || color_sensor_hue < 100)
+        if (color_sensor_hue > 300 || color_sensor_hue < 80)
             result = alliance_t::red;
-        else if (color_sensor_hue > 120 && color_sensor_hue < 280)
+        else if (color_sensor_hue > 140 && color_sensor_hue < 260)
             result = alliance_t::blue;
     }
 
@@ -421,11 +443,17 @@ void hardwareUpdate() {
             passthrough :
             blocking);
         setMiddleIntakePistonState(
-          (intake_state == scoring_middle ||
+          (intake_state == intake_disabled_open_middle ||
            intake_state == scoring_middle_bottom_balls ||
            intake_state == scoring_middle_top_balls ||
-           intake_state == intake_disabled_open_middle ||
-           intake_state == scoring_middle_top_balls_skills) ?
+           intake_state == scoring_middle_first_ball ||
+           intake_state == scoring_middle_bottom_balls_slow ||
+           intake_state == scoring_middle_top_balls_skills ||
+           intake_state == scoring_middle_top_balls_skills_fast ||
+           intake_state == scoring_middle_top_balls_skills_slow ||
+			intake_state == outtake_bottom_balls_open_middle || 
+           intake_state == scoring_middle ||
+           intake_state == outtake_open_middle) ?
             passthrough :
             blocking);
 

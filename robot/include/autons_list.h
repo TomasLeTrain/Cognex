@@ -36,7 +36,10 @@ H_AUTON(four_ball)
 //
 // H_AUTON(sunshine_elims)
 
+H_AUTON(qual_match_first)
+H_AUTON(sunshine_quals)
 H_AUTON(easier_awp)
+H_AUTON(seven_ball)
 H_AUTON(awp)
 H_AUTON(ninesix_skills)
 H_AUTON(elims_nineball_split)

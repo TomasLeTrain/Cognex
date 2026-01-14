@@ -78,7 +78,7 @@ constexpr units::Pose distToCor(units::Pose dist_pose) {
 
 // distance sensor offsets
 units::Pose front_distance_offsets =
-  distToCor({ 3_in, +(12.5_in / 2) - 3.0_in, 0_stDeg });
+  distToCor({ 3.2_in, +(12.5_in / 2) - 0.75_in, 0_stDeg });
 
 units::Pose left_distance_offsets = distToCor(
   { 3.5_in + 0.625_in, +(12.5_in / 2) - 1.2_in - 0.375_in, 90_stDeg });
@@ -101,13 +101,13 @@ double right_distance_scale_factor = 0.985454688793;
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.9881_in,
     // geometric is also 0
-    .offset = 0.0_in,
+    .offset = 0.0804236_in,
 };
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.987_in,
     // geometric are -2.5, meaning cor is 0.5_in forwards from geometric center
-    .offset = -3.00_in,
+    .offset = -2.95_in,
 };
 
 /* drivetrain / pid configuration */
@@ -156,7 +156,45 @@ angular_pid_config_t angular_pid_config {
     // .kp = 2.3,
     // .ki = 0,
     // .kd = 3.05,
+
+    // pre ki ones
+    // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
+
+    // after ki ones - aggressive
+    // .kp = 3.55, .ki = 0.96, .kd = 5.65, .windupRange = 15, .maxVoltage = 127,
+    //
+    // same kp, lower kd a bit to reach endpoint better
+    .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
+};
+
+angular_pid_config_t turn_heading_pid_config {
+    // .kp = 2.3,
+    // .ki = 0,
+    // .kd = 3.05,
+
+    // pre ki ones
+    // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
+
+    // after ki ones - aggressive
     .kp = 3.55, .ki = 0.96, .kd = 5.65, .windupRange = 15, .maxVoltage = 127,
+    //
+    // same kp, lower kd a bit to reach endpoint better
+    // .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
+};
+
+angular_pid_config_t matchloader_angular_pid_config {
+    // .kp = 2.3,
+    // .ki = 0,
+    // .kd = 3.05,
+
+    // pre ki ones
+    // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
+
+    // after ki ones - aggressive
+    .kp = 3.55, .ki = 0.96, .kd = 5.65, .windupRange = 15, .maxVoltage = 127,
+    //
+    // same kp, lower kd a bit to reach endpoint better
+    // .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
 };
 
 // LinearSlewController linear_slew(0.07_volt, 0.06_volt);
@@ -227,14 +265,13 @@ vexmaps::SmootherConfig smoother_config = {
     // .alpha_y = 0.04,
     // .alpha_theta = 0.00,
 
-    // need to tune with new cook
     .alpha_x = 0.15,
     .alpha_y = 0.15,
     .alpha_theta = 0.00,
 
     // possible good values
     .ang_vel_alpha = 0.10 / 300_degps,
-    .theta_to_alpha = 0.07,
+    .theta_to_alpha = 0.08,
     .linear_vel_alpha = 0.00 / 70_inps,
     //
     // .ang_vel_alpha = 0.0 / 300_degps,
@@ -322,7 +359,7 @@ PID<Length, Voltage> linear_pid(linear_pid_config.kp,
                                 linear_pid_config.inputUnits,
                                 linear_pid_config.outputUnits);
 
-PID<Angle, Voltage> angular_pid(angular_pid_config.kp,
+PID<Angle, Voltage> turn_drive_pid(angular_pid_config.kp,
                                 angular_pid_config.ki,
                                 angular_pid_config.kd,
                                 angular_pid_config.windupRange,
@@ -331,8 +368,29 @@ PID<Angle, Voltage> angular_pid(angular_pid_config.kp,
                                 angular_pid_config.inputUnits,
                                 angular_pid_config.outputUnits);
 
+
+PID<Angle, Voltage>
+  turn_heading_pid(turn_heading_pid_config.kp,
+                          turn_heading_pid_config.ki,
+                          turn_heading_pid_config.kd,
+                          turn_heading_pid_config.windupRange,
+                          turn_heading_pid_config.maxVoltage,
+                          turn_heading_pid_config.timeUnits,
+                          turn_heading_pid_config.inputUnits,
+                          turn_heading_pid_config.outputUnits);
+
+PID<Angle, Voltage>
+  matchloader_angular_pid(matchloader_angular_pid_config.kp,
+                          matchloader_angular_pid_config.ki,
+                          matchloader_angular_pid_config.kd,
+                          matchloader_angular_pid_config.windupRange,
+                          matchloader_angular_pid_config.maxVoltage,
+                          matchloader_angular_pid_config.timeUnits,
+                          matchloader_angular_pid_config.inputUnits,
+                          matchloader_angular_pid_config.outputUnits);
+
 PIDLinearController linear_pid_controller(linear_pid);
-PIDAngularController angular_pid_controller(angular_pid);
+PIDAngularController angular_pid_controller(turn_drive_pid);
 
 blazing::lyfast::VelocityController
   velocity_controller((0.58345 - 0.05) * volt / mps,

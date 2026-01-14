@@ -110,19 +110,36 @@ void run_auton() {
 
     mb.moveTo(-26_in, (long_goal * l)).reverse() | chain;
 
-    mb.boomerang(-24_in, (match1 * l), 0)
-        .reverse()
-        .closeThreshold(30_in)
-        .drive_minVolt(0.2_volt)
-        .executeBeforeMotion([] {
-            // controller.rumble(".");
-        }) |
-      chain;
+    // mb.boomerang(-24_in, (match1 * l), 0)
+    //     .reverse()
+    //     .closeThreshold(30_in)
+    //     .drive_minVolt(0.2_volt)
+    //     .executeBeforeMotion([] {
+    //         // controller.rumble(".");
+    //     }) |
+    //   chain;
+    //
+    // chain.waitUntil(closeEnough({ -26_in, long_goal * l }, 5_in));
+    // intake::score_long();
+    // pros::delay(1100);
+    // chain.exitAll();
 
-    chain.waitUntil(closeEnough({ -26_in, long_goal * l }, 5_in));
-    intake::score_long();
-    pros::delay(1100);
-    chain.exitAll();
+	chain.waitUntil(closeEnough({ -25_in, long_goal * l  }, 7.5_in));
+	intake::score_long();
+	pros::delay(300);
+	chain.exitAll();
+
+    mb.boomerang(-23_in, long_goal * l, 0)
+        .reverse()
+        .closeThreshold(100_in)
+        .timeout(100_sec)
+        .drive_toleranceDuration(100_sec)
+        .drive_largeToleranceDuration(100_sec)
+        .turn_kp(turn_drive_pid.get_kp() * 2)
+        .turn_kd(turn_drive_pid.get_kd() * 0.5) |
+      async;
+    pros::delay(800);
+    async.exitAll();
 
     matchloader::down();
 

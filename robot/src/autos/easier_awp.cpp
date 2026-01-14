@@ -55,6 +55,7 @@ void run_auton() {
     intake::in();
 
     // drivetrain.moveTank(1_volt, 1_volt);
+    //
     mb.moveTo(-46.57, 5) | chain;
 
     mb.moveTo(-46.376, normal_match - 1.5_in)
@@ -99,6 +100,7 @@ void run_auton() {
 
     mb.moveTo(first_match_point.x, first_match_point.y)
         .timeout(0.8_sec)
+        .drive_maxVolt(0.55_volt)
         .drive_kp(linear_pid.get_kp() * 0.9)
         .drive_kd(linear_pid.get_kd() * 0.7) |
       chain;
@@ -110,13 +112,14 @@ void run_auton() {
         // motion timed out before this executed, means we likely won't
         // matchload?
     } else {
-        pros::delay(480);
+        pros::delay(580);
     }
     chain.exitAll();
     matchloader::up();
 
     mb.moveTo(-25_in, long_goal)
         .reverse()
+        .drive_maxVolt(0.6_volt)
         // .timeout(1.1_sec)
         .k_lat(0.0) |
       async;
@@ -129,7 +132,7 @@ void run_auton() {
 
     async.waitUntil(closeEnough({ -25_in, long_goal }, 7.5_in));
     intake::score_long();
-    pros::delay(300);
+    pros::delay(400);
     async.exitAll();
     // drivetrain.moveTank(-0.7_volt, -0.7_volt);
 
@@ -139,10 +142,10 @@ void run_auton() {
         .timeout(100_sec)
         .drive_toleranceDuration(100_sec)
         .drive_largeToleranceDuration(100_sec)
-        .turn_kp(angular_pid.get_kp() * 2)
-        .turn_kd(angular_pid.get_kd() * 0.5) |
+        .turn_kp(turn_drive_pid.get_kp() * 2)
+        .turn_kd(turn_drive_pid.get_kd() * 0.5) |
       async;
-    pros::delay(200);
+    pros::delay(100);
 
     // mb.arc(0, -1.0)
     //     .reverse()
@@ -164,7 +167,8 @@ void run_auton() {
     //   chain;
     mb.moveTo(-1_tile, 1_tile)
         .executeAfterMotion([] {
-            intake::set(intake::intake_bottom_balls);
+            // intake::set(intake::intake_bottom_balls);
+			intake::set(intake::intake_bottom_top_backwards);
         })
         .drive_minVolt(0.5_volt)
         .setChainTime(0_sec) |
@@ -188,8 +192,8 @@ void run_auton() {
     chain.waitUntil(closeEnough({ -1_tile, 1_tile }, 7_in));
     matchloader::down();
     chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
-    intake::set(intake::intake_bottom_top_backwards);
-    pros::delay(150);
+    intake::set(intake::intake_disabled_open_middle);
+    pros::delay(100);
     intake::set(intake::scoring_middle_bottom_balls);
     chain.exitAll();
     drivetrain.moveTank(0.1_volt, 0.1_volt);
@@ -262,6 +266,7 @@ void run_auton() {
     mb.turnTo(-25_in, -long_goal).reverse() | chain;
     mb.moveTo(-25_in, -long_goal)
         .reverse()
+        .drive_maxVolt(0.8_volt)
         // .timeout(1.1_sec)
         .k_lat(0.0) |
       chain;
@@ -270,23 +275,36 @@ void run_auton() {
     intake::score_long();
     pros::delay(300);
     chain.exitAll();
-    drivetrain.moveTank(-0.5_volt, -0.5_volt);
-    pros::delay(200);
+    // drivetrain.moveTank(-0.5_volt, -0.5_volt);
+    // pros::delay(200);
 
-    mb.arc(0, -1.0)
+    // mb.arc(0, -1.0)
+    //     .reverse()
+    //     .timeout(100_sec)
+    //     .turn_errorTolerance(0_stDeg)
+    //     .turn_largeErrorTolerance(0_stDeg)
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .turn_kp(angular_pid.get_kp() * 2)
+    //     .turn_kd(angular_pid.get_kd() * 0.75) |
+    //   async;
+    // pros::delay(400);
+    // async.exitAll();
+
+    mb.boomerang(-23_in, -long_goal, 0)
         .reverse()
+        .closeThreshold(100_in)
         .timeout(100_sec)
-        .turn_errorTolerance(0_stDeg)
-        .turn_largeErrorTolerance(0_stDeg)
-        .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec)
-        .turn_kp(angular_pid.get_kp() * 2)
-        .turn_kd(angular_pid.get_kd() * 0.75) |
+        .drive_toleranceDuration(100_sec)
+        .drive_largeToleranceDuration(100_sec)
+        .turn_kp(turn_drive_pid.get_kp() * 2)
+        .turn_kd(turn_drive_pid.get_kd() * 0.5) |
       async;
+
+    pros::delay(200);
+    matchloader::up();
     pros::delay(400);
     async.exitAll();
-
-    matchloader::up();
 }
 
 } // namespace easier_awp
