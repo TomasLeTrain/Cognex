@@ -181,6 +181,12 @@ class MotionBuilder {
           blazing::Arc(controllers, chassis, new_x, new_y, radius));
     }
 
+    [[nodiscard("motion won't be executed unless an executor is used!")]]
+    arcType arc(units::V2Position target_point, double radius = 1.0) {
+        return arcModifier(
+          blazing::Arc(controllers, chassis, target_point, radius));
+    }
+
     // boomerang
     [[nodiscard("motion won't be executed unless an executor is used!")]]
     boomerangType boomerang(units::Pose pose) {

@@ -31,12 +31,9 @@ void testing_auton_func() {
     // selected_auton = "elims";
     // selected_auton = "match first 7 split";
 	// selected_auton = "seven ball";
-    // selected_auton = "skills";
-
-
-
+    selected_auton = "skills";
 	
-	selected_auton = "seven split";
+	// selected_auton = "seven split";
 
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();

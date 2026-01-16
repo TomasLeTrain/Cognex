@@ -18,14 +18,20 @@
 
 void opcontrol() {
 
-	// goated linear pid:
-	// kp: 6.9
-	// ki: 0.3
-	// kd: 9.9
+    // goated linear pid:
+    // kp: 6.9
+    // ki: 0.3
+    // kd: 9.9
 
-	// turn_pid_tuning();
+    //    RobotSetPose(-48, -48, 180);
+    //
+    // intake::init(false);
+    // long_goal_tuning();
+    // return;
+
+    // turn_pid_tuning();
     // drive_pid_tuning();
-    return;
+    // return;
     // autonomous();
     // return;
 
@@ -43,14 +49,14 @@ void opcontrol() {
     matchloader::init(true);
     wings::init(true);
     odom_retract::init(true);
+    base::init();
 
     intake::setDriverColorSortEnabled(false);
 
     // no need to initialize in auto
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
-    // base::init();
 
-    // odom_retract::retractOdom();
+    odom_retract::retractOdom();
 
     // RobotSetPose(-48, -48, 180);
 

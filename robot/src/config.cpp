@@ -22,7 +22,7 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -384,16 +384,6 @@ PID<Angle, Voltage> turn_heading_pid(turn_heading_pid_config.kp,
                                      turn_heading_pid_config.timeUnits,
                                      turn_heading_pid_config.inputUnits,
                                      turn_heading_pid_config.outputUnits);
-
-PID<Angle, Voltage>
-  matchloader_angular_pid(matchloader_angular_pid_config.kp,
-                          matchloader_angular_pid_config.ki,
-                          matchloader_angular_pid_config.kd,
-                          matchloader_angular_pid_config.windupRange,
-                          matchloader_angular_pid_config.maxVoltage,
-                          matchloader_angular_pid_config.timeUnits,
-                          matchloader_angular_pid_config.inputUnits,
-                          matchloader_angular_pid_config.outputUnits);
 
 PIDLinearController linear_pid_controller(linear_pid);
 PIDAngularController angular_pid_controller(turn_drive_pid);

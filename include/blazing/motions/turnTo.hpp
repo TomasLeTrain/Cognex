@@ -310,6 +310,19 @@ class Arc : public turnTo<ControllersType,
         std::ignore = this->radius(radius);
     }
 
+    [[nodiscard("motion won't be executed unless run or async are used!")]]
+    Arc(ControllersType controllers,
+        Chassis<DrivetrainType, TrackerType, TolerancesType> chassis,
+        units::V2Position target_point,
+        double radius = 1.0)
+        : turnTo<ControllersType, DrivetrainType, TrackerType, TolerancesType>(
+            controllers,
+            chassis,
+            target_point) {
+        // set radius (avoids nodiscard warning)
+        std::ignore = this->radius(radius);
+    }
+
     Arc& getReference() override {
         return *this;
     }

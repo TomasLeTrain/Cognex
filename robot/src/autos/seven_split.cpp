@@ -107,9 +107,7 @@ void run_auton() {
 
         async.wait();
 
-        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
-            .withAngularFeedbackController(matchloader_angular_pid) |
-          chain;
+        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | chain;
 
         mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
             .k_lat(0.3)
@@ -194,11 +192,9 @@ void run_auton() {
     //   chain;
     // chain.wait();
 
-    mb.turnTo(180)
-        .executeBeforeMotion([] {
-            matchloader::down();
-        })
-        .withAngularFeedbackController(matchloader_angular_pid)
+    mb.turnTo(180).executeBeforeMotion([] {
+        matchloader::down();
+    })
       // .turn_toleranceDuration(20_msec)
       | run;
 

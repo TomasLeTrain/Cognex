@@ -28,13 +28,6 @@ namespace ninesix_skills {
 // you can add any variables / functions here
 
 void run_auton() {
-    // TODO: make distance autmatic
-    auto make_machloader_point = [&](units::V2FPosition target,
-                                     Length distance) -> units::V2FPosition {
-        auto target_angle = target.angleTo(RobotGetPose());
-
-        return target + distance * (RobotGetPose() - target).normalize();
-    };
     auto start_time = now();
 
     units::V2FPosition target_point;
@@ -59,75 +52,161 @@ void run_auton() {
     intake::setSkillsMiddleScoring(true);
     intake::setColorSortEnabled(false);
 
-    auto matchload = [&](double sign_x,
-                         double sign_y,
-                         Time moveTimeout,
-                         Time matchloading_time,
-                         Length target_distance = 7.5_in,
-                         auto kp = linear_pid.get_kp() * 0.9,
-                         auto kd = linear_pid.get_kd() * 1.2,
-                         Voltage max_volt = 1.0_volt) {
-        // turn to and go to matchloader
-        mb.turnTo(67.4_in * sign_x, normal_match * sign_y)
-            .executeBeforeMotion([] {
-                // pros::Task([] {
-                //     pros::delay(100);
-                matchloader::down();
-                // });
-            })
-          // .turn_toleranceDuration(20_msec)
-          | run;
-        // chain.wait();
-
-        // auto thingy = chain.getCurrentIndex();
-
-        auto match_point =
-          make_machloader_point({ 67.4_in * sign_x, normal_match * sign_y },
-                                target_distance);
-
-        mb.moveTo(match_point.x, match_point.y)
-            .timeout(moveTimeout)
-            .drive_maxVolt(max_volt)
-            .drive_kp(kp)
-            .drive_kd(kd) |
-          chain;
-        auto motion_ind = chain.getCurrentIndex();
-
-        // chain.waitUntilIndex(thingy);
-        chain.waitUntil(closeEnough(match_point, 4_in));
-        if (motion_ind == chain.getFinishedIndex()) {
-            // motion timed out before this executed, means we likely won't
-            // matchload?
-        } else {
-            pros::delay(to_msec(matchloading_time));
-        }
-        chain.exitAll();
-        // matchloader::up();
+    auto make_matchloader_point = [](double sign_x,
+                                     double sign_y) -> units::V2Position {
+        Length normal_match = 46.7_in;
+        return { 67.4_in * sign_x, normal_match * sign_y };
     };
 
-    auto score_long_goal = [&](double sign_x, double sign_y, Time score_time) {
-        // turn to goal, reversed
-        mb.turnTo(25_in * sign_x, long_goal * sign_y).reverse() | chain;
-        mb.moveTo(25_in * sign_x, long_goal * sign_y).reverse().k_lat(0.0) |
-          chain;
+    auto matchload = [make_matchloader_point](double sign_x,
+                                              double sign_y,
+                                              Time matchload_time) {
+        auto make_machloader_pose = [&](units::V2FPosition target,
+                                        Length distance) -> units::Pose {
+            // auto target_angle = target.angleTo(RobotGetPose());
+            auto final_point =
+              target + distance * (RobotGetPose() - target).normalize();
 
-        chain.waitUntil(
-          closeEnough({ 25_in * sign_x, long_goal * sign_y }, 7.5_in));
-        intake::score_long();
-        pros::delay(300);
-        chain.exitAll();
+            return units::Pose { final_point, final_point.angleTo(target) };
+        };
 
-        mb.boomerang(23_in * sign_x, long_goal * sign_y, sign_x == -1 ? 0 : 180)
-            .reverse()
-            .closeThreshold(100_in)
-            .timeout(100_sec)
+        Length normal_match = 46.7_in;
+        units::V2Position target_Point = make_matchloader_point(sign_x, sign_y);
+        Length target_dist = 7_in;
+
+        auto func = [&] -> units::Pose {
+            return make_machloader_pose(target_Point, target_dist);
+        };
+
+        // pull matchloader down regardless
+        matchloader::down();
+
+        mb.boomerang(func)
+            .timeout(3_sec)
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
-            .turn_kp(turn_drive_pid.get_kp() * 2)
-            .turn_kd(turn_drive_pid.get_kd() * 0.5) |
+            .drive_maxVolt(0.6_volt)
+            .k_lat(1.2)
+            .lead(0.9) |
           async;
-        pros::delay(to_msec(score_time - 300_msec));
+
+        Length slow_dist = 24_in;
+        async.waitUntil([&] -> bool {
+            return RobotGetPose().distanceTo(target_Point) < slow_dist;
+        });
+
         async.exitAll();
+
+        mb.boomerang(func)
+            .timeout(3_sec)
+            .drive_toleranceDuration(100_sec)
+            .drive_largeToleranceDuration(100_sec)
+            .drive_maxVolt(0.25_volt)
+            .drive_velocityTolerance(03_inps)
+            .drive_errorTolerance(10_in)
+            .drive_toleranceDuration(0_sec)
+            .k_lat(1.2)
+            .lead(0.9)
+            .executeAfterMotion([] {
+                pros::delay(10);
+                drivetrain.moveTank(0.25_volt, 0.25_volt);
+            }) |
+          async;
+
+        async.waitUntil([] -> bool {
+            return units::abs(model_manager.getLocalVelocityVector().x) <
+                   1_inps;
+        });
+        // here the robot is close to still, start matchloading
+
+        pros::delay(to_msec(matchload_time));
+
+        async.exitAll();
+    };
+
+    auto score_long_goal = [](double sign_x,
+                              double sign_y,
+                              Time score_time,
+                              bool from_matchloader = false) {
+        // turn to goal, reversed
+        // mb.turnTo(25_in * sign_x, long_goal * sign_y).reverse() |
+        // chain; mb.moveTo(25_in * sign_x, long_goal * sign_y)
+        //     .reverse()
+        //     .k_lat(0.0) |
+        //   chain;
+
+        Length long_goal = 47.1_in;
+        Length normal_match = 46.7_in;
+
+        units::Pose target_pose = { 26_in * sign_x,
+                                    long_goal * sign_y,
+                                    sign_x == -1 ? 0_stDeg : 180_stDeg };
+
+        units::Pose other_target_pose = { 24_in * sign_x,
+                                          long_goal * sign_y,
+                                          sign_x == -1 ? 0_stDeg : 180_stDeg };
+
+        if (from_matchloader)
+            mb.arc(target_pose, -1.3)
+                .reverse()
+                // .drive_chainErrorTolerance()
+                .setChainTime(0_sec)
+                .drive_minVolt(0.2_volt) |
+              chain;
+        else
+            mb.turnTo(target_pose).reverse().setChainTime(0_sec) | chain;
+
+        mb.boomerang(target_pose).reverse() | chain;
+
+        Length slow_dist = 12_in;
+        Length score_dist = 7.5_in;
+
+        chain.waitUntil([&] -> bool {
+            return RobotGetPose().distanceTo(target_pose) < slow_dist;
+        });
+
+        // exit current boomerang
+        chain.exitAll();
+
+        // go into new which is slower
+        mb.boomerang(target_pose)
+            .drive_maxVolt(0.5_volt)
+            .reverse()
+
+            .drive_toleranceDuration(100_sec)
+            .drive_largeToleranceDuration(100_sec)
+            // .drive_maxVolt(0.25_volt)
+            .drive_velocityTolerance(03_inps)
+            .drive_errorTolerance(6_in)
+            .drive_toleranceDuration(0_sec)
+            .setChainTime(0_sec)
+
+          // .closeThreshold(100_in)
+          // .timeout(5_sec)
+          // .drive_toleranceDuration(100_sec)
+          // .drive_largeToleranceDuration(100_sec)
+          // .turn_kp(turn_drive_pid.get_kp() * 2)
+          // .turn_kd(turn_drive_pid.get_kd() * 0.5)
+          | chain;
+
+        mb.boomerang(other_target_pose)
+            // .drive_maxVolt(0.3_volt)
+            .reverse()
+            .closeThreshold(100_in)
+            .timeout(5_sec)
+            .drive_toleranceDuration(100_sec)
+            .drive_largeToleranceDuration(100_sec)
+            .drive_ki(0)
+            .turn_kp(turn_drive_pid.get_kp() * 1.0)
+            .turn_kd(turn_drive_pid.get_kd() * 0.8) |
+          chain;
+
+        chain.waitUntil(closeEnough(target_pose, score_dist));
+        intake::score_long();
+        pros::delay(to_msec(score_time));
+        chain.exitAll();
+        // intake::set(intake::intake_disabled);
+        // drivetrain.moveTank(0_volt, 0_volt);
     };
 
     /* START AUTON */
@@ -139,30 +218,10 @@ void run_auton() {
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     // only intake bottom balls to save time
-    // intake::set(intake::intake_bottom_balls);
     intake::setColorSortEnabled(false);
-    // intake::set(intake::intake_bottom_balls);
     intake::set(intake::intake_bottom_top_backwards);
 
     mb.moveTo(-31.0, 19.4) | run;
-    // intake::set(intake::intake_disabled);
-    // mb.moveTo(-25.5, 19.4) | run;
-
-    // pros::delay(300);
-    // intake::set(intake::outtake_very_slow);
-    // mb.moveTo(-25.7, 23.4) | run;
-    // intake::set(intake::intake_disabled);
-
-    // mb.arc(centerTopGoalFirst.x, centerTopGoalFirst.y, 0.7)
-    //     .turn_maxVolt(0.3_volt)
-    //     .direction(AngularDirection::RIGHT)
-    //     .executeBeforeMotion([] {
-    //         right_motors.set_brake_mode_all(pros::MotorBrake::brake);
-    //     })
-    //     .executeAfterMotion([] {
-    //         right_motors.set_brake_mode_all(pros::MotorBrake::hold);
-    //     }) |
-    //   run;
 
     mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | run;
 
@@ -174,23 +233,11 @@ void run_auton() {
         .executeBeforeMotion([] {
             pros::Task([] {
                 matchloader::down();
-                pros::delay(390);
+                pros::delay(450);
                 matchloader::up();
             });
         }) |
       chain;
-
-    // mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
-    //     .k_lat(0.3)
-    //     .drive_maxVolt(0.35_volt)
-    //     .executeBeforeMotion([] {
-    //         pros::Task([] {
-    //             matchloader::down();
-    //             pros::delay(310);
-    //             matchloader::up();
-    //         });
-    //     }) |
-    //   chain;
 
     chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
     intake::set(intake::outtake_open_middle);
@@ -221,13 +268,8 @@ void run_auton() {
         }) |
       run;
 
-    matchload(-1,
-              1,
-              1_sec,
-              2.0_sec,
-              7.5_in,
-              linear_pid.get_kp() * 0.9,
-              linear_pid.get_kd() * 1.2);
+    mb.turnTo(make_matchloader_point(-1, 1)) | run;
+    matchload(-1, 1, 2.5_sec);
 
     mb.moveTo(-27, 59.5)
         .reverse()
@@ -274,14 +316,7 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(1,
-              1,
-              1.4_sec,
-              2.4_sec,
-              7.25_in,
-              linear_pid.get_kp() * 0.8,
-              linear_pid.get_kd() * 1.0,
-              0.7_volt);
+    matchload(1, 1, 2.5_sec);
 
     score_long_goal(1, 1, 3.0_sec);
     matchloader::up();
@@ -334,11 +369,12 @@ void run_auton() {
     odom_retract::lowerOdom();
     pros::delay(200);
 
-    // the threshold for distance is still pretty big as localization has to be pretty good
-      //
-      // explode center balls
-      // matchloader::down();
-      drivetrain.moveTank(-0.4_volt, -0.4_volt);
+    // the threshold for distance is still pretty big as localization has to be
+    // pretty good
+    //
+    // explode center balls
+    // matchloader::down();
+    drivetrain.moveTank(-0.4_volt, -0.4_volt);
     pros::delay(100);
     mb.turnTo(180) | run;
     matchloader::up();
@@ -414,24 +450,8 @@ void run_auton() {
 
     pros::delay(100);
 
-    matchload(1,
-              -1,
-              1_sec,
-              2_sec,
-              7.5_in,
-              linear_pid.get_kp() * 0.9,
-              linear_pid.get_kd() * 1.2);
-
-    // mb.moveTo(25, -60)
-    //     .reverse()
-    //     .executeAfterMotion([] {
-    //         intake::set(intake::intake_disabled);
-    //         matchloader::up();
-    //     })
-    //     .drive_chainErrorTolerance(8_in)
-    //     .setChainTime(0_sec)
-    //     .drive_minVolt(0.5_volt) |
-    //   chain;
+    mb.turnTo(make_matchloader_point(1, -1)) | run;
+    matchload(1, -1, 2.5_sec);
 
     mb.moveTo(27, -59.5)
         .reverse()
@@ -468,14 +488,7 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(-1,
-              -1,
-              2.3_sec,
-              2.5_sec,
-              7.15_in,
-              linear_pid.get_kp() * 1.0,
-              linear_pid.get_kd() * 1.0,
-              0.5_volt);
+    matchload(-1, -1, 2.5_sec);
 
     score_long_goal(-1, -1, 2.5_sec);
     matchloader::up();
@@ -490,17 +503,32 @@ void run_auton() {
 
     horizontal_tracker.setDisabled(true);
     odom_retract::retractOdom();
-    pros::delay(300);
+    // pros::delay(300);
 
     intake::in();
-    //
-    drivetrain.moveTank(0.6_volt, 0.65_volt);
-    pros::delay(700);
-    drivetrain.moveTank(0.4_volt, 0.5_volt);
-    pros::delay(210);
 
-    // stop the robot
-    drivetrain.moveTank(0.0_volt, 0.0_volt);
+    drivetrain.moveTank(0.2_volt, 0.25_volt);
+    // move closer to the park slowly, also gives time for accurate start roll
+
+    pros::delay(400);
+
+    //
+    // drivetrain.moveTank(0.6_volt, 0.65_volt);
+    // pros::delay(700);
+    // drivetrain.moveTank(0.4_volt, 0.5_volt);
+    // pros::delay(210);
+    //
+    // // stop the robot
+    // drivetrain.moveTank(0.0_volt, 0.0_volt);
+
+
+    drivetrain.moveTank(0.53_volt, 0.63_volt);
+    pros::delay(300);
+    drivetrain.moveTank(0.4_volt, 0.5_volt);
+    pros::delay(600);
+    // drivetrain.moveTank(0.2_volt, 0.3_volt);
+    // pros::delay(800);
+    drivetrain.moveTank(0_volt, 0_volt);
 }
 
 } // namespace ninesix_skills

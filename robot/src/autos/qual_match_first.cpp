@@ -257,9 +257,7 @@ void run_auton() {
 
         async.wait();
 
-        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
-            .withAngularFeedbackController(matchloader_angular_pid) |
-          chain;
+        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | chain;
 
         mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
             .k_lat(0.3)
