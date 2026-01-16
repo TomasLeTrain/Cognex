@@ -17,6 +17,15 @@
 #include "tuning.h"
 
 void opcontrol() {
+
+	// goated linear pid:
+	// kp: 6.9
+	// ki: 0.3
+	// kd: 9.9
+
+	// turn_pid_tuning();
+    // drive_pid_tuning();
+    return;
     // autonomous();
     // return;
 
@@ -30,8 +39,6 @@ void opcontrol() {
 
     // cancel any auton motions that could be currently running
 
-    RobotSetPose(-48, 0, 0);
-
     intake::init(true);
     matchloader::init(true);
     wings::init(true);
@@ -41,6 +48,12 @@ void opcontrol() {
 
     // no need to initialize in auto
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
-    base::init();
-    odom_retract::retractOdom();
+    // base::init();
+
+    // odom_retract::retractOdom();
+
+    // RobotSetPose(-48, -48, 180);
+
+    // matchloadTuning();
+    // long_goal_tuning();
 }

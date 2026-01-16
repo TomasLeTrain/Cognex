@@ -22,14 +22,14 @@ void set(piston_state_t new_wings_state) {
 // code that should run during driver
 void driverUpdate() {
     // update states based on driver input
-    bool toggle_piston_retract =
-      controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A);
-    if (toggle_piston_retract) {
-        if (odom_retract_state == active)
-            set(inactive);
-        else
-            set(active);
-    }
+    // bool toggle_piston_retract =
+    //   controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A);
+    // if (toggle_piston_retract) {
+    //     if (odom_retract_state == active)
+    //         set(inactive);
+    //     else
+    //         set(active);
+    // }
 }
 
 // code that should run during autonomous - should be based on extra state

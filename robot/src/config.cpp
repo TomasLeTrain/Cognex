@@ -22,7 +22,7 @@ int8_t right_front = -13;
 int8_t right_middle = 14;
 int8_t right_back = 12;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -132,13 +132,21 @@ linear_pid_config_t linear_pid_config {
     // .ki = 0,
     // .kd = 9.5,
 
-    // fast 24
+    // retuned to be goated at all distances
+    .kp = 6.9,
+    .ki = 0.3,
+    .kd = 9.9,
+
+    // good for 36, not good for others
+    // .kp = 7.3,
+    // .ki = 0,
+    // .kd = 9.5,
 
     // good for 36
-    .kp = 7.3,
-    .ki = 0,
-    .kd = 9.5,
-    //
+    // .kp = 7.3,
+    // .ki = 0,
+    // .kd = 9.5,
+    // //
     // good for 48
     // .kp = 6.7,
     // .ki = 0,
@@ -176,7 +184,7 @@ angular_pid_config_t turn_heading_pid_config {
     // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
 
     // after ki ones - aggressive
-    .kp = 3.55, .ki = 0.96, .kd = 5.65, .windupRange = 15, .maxVoltage = 127,
+    .kp = 3.50, .ki = 0.17, .kd = 6.0, .windupRange = 45, .maxVoltage = 127,
     //
     // same kp, lower kd a bit to reach endpoint better
     // .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
@@ -191,7 +199,7 @@ angular_pid_config_t matchloader_angular_pid_config {
     // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
 
     // after ki ones - aggressive
-    .kp = 3.55, .ki = 0.96, .kd = 5.65, .windupRange = 15, .maxVoltage = 127,
+    .kp = 3.50, .ki = 0.17, .kd = 6.0, .windupRange = 45, .maxVoltage = 127,
     //
     // same kp, lower kd a bit to reach endpoint better
     // .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
@@ -265,13 +273,13 @@ vexmaps::SmootherConfig smoother_config = {
     // .alpha_y = 0.04,
     // .alpha_theta = 0.00,
 
-    .alpha_x = 0.15,
-    .alpha_y = 0.15,
+    .alpha_x = 0.16,
+    .alpha_y = 0.16,
     .alpha_theta = 0.00,
 
     // possible good values
     .ang_vel_alpha = 0.10 / 300_degps,
-    .theta_to_alpha = 0.08,
+    .theta_to_alpha = 0.09,
     .linear_vel_alpha = 0.00 / 70_inps,
     //
     // .ang_vel_alpha = 0.0 / 300_degps,
@@ -360,24 +368,22 @@ PID<Length, Voltage> linear_pid(linear_pid_config.kp,
                                 linear_pid_config.outputUnits);
 
 PID<Angle, Voltage> turn_drive_pid(angular_pid_config.kp,
-                                angular_pid_config.ki,
-                                angular_pid_config.kd,
-                                angular_pid_config.windupRange,
-                                angular_pid_config.maxVoltage,
-                                angular_pid_config.timeUnits,
-                                angular_pid_config.inputUnits,
-                                angular_pid_config.outputUnits);
+                                   angular_pid_config.ki,
+                                   angular_pid_config.kd,
+                                   angular_pid_config.windupRange,
+                                   angular_pid_config.maxVoltage,
+                                   angular_pid_config.timeUnits,
+                                   angular_pid_config.inputUnits,
+                                   angular_pid_config.outputUnits);
 
-
-PID<Angle, Voltage>
-  turn_heading_pid(turn_heading_pid_config.kp,
-                          turn_heading_pid_config.ki,
-                          turn_heading_pid_config.kd,
-                          turn_heading_pid_config.windupRange,
-                          turn_heading_pid_config.maxVoltage,
-                          turn_heading_pid_config.timeUnits,
-                          turn_heading_pid_config.inputUnits,
-                          turn_heading_pid_config.outputUnits);
+PID<Angle, Voltage> turn_heading_pid(turn_heading_pid_config.kp,
+                                     turn_heading_pid_config.ki,
+                                     turn_heading_pid_config.kd,
+                                     turn_heading_pid_config.windupRange,
+                                     turn_heading_pid_config.maxVoltage,
+                                     turn_heading_pid_config.timeUnits,
+                                     turn_heading_pid_config.inputUnits,
+                                     turn_heading_pid_config.outputUnits);
 
 PID<Angle, Voltage>
   matchloader_angular_pid(matchloader_angular_pid_config.kp,
