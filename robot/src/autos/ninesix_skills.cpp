@@ -58,13 +58,9 @@ void run_auton() {
         return { 67.4_in * sign_x, normal_match * sign_y };
     };
 
-    auto matchload = [](double sign_x, double sign_y, Time matchload_time) {
-        auto make_matchloader_point = [](double sign_x,
-                                         double sign_y) -> units::V2Position {
-            Length normal_match = 46.7_in;
-            return { 67.4_in * sign_x, normal_match * sign_y };
-        };
-
+    auto matchload = [make_matchloader_point](double sign_x,
+                                              double sign_y,
+                                              Time matchload_time) {
         auto make_machloader_pose = [&](units::V2FPosition target,
                                         Length distance) -> units::Pose {
             // auto target_angle = target.angleTo(RobotGetPose());
@@ -74,17 +70,13 @@ void run_auton() {
             return units::Pose { final_point, final_point.angleTo(target) };
         };
 
-        std::cout << "about to make matchloader point!" << std::endl;
-
-        units::V2Position target_point = make_matchloader_point(sign_x, sign_y);
+        Length normal_match = 46.7_in;
+        units::V2Position target_Point = make_matchloader_point(sign_x, sign_y);
         Length target_dist = 7_in;
 
         auto func = [&] -> units::Pose {
-            return make_machloader_pose(target_point, target_dist);
+            return make_machloader_pose(target_Point, target_dist);
         };
-
-        std::cout << "target point:" << target_point.x.convert(in) << " "
-                  << target_point.y.convert(in) << std::endl;
 
         // pull matchloader down regardless
         matchloader::down();
@@ -100,7 +92,7 @@ void run_auton() {
 
         Length slow_dist = 24_in;
         async.waitUntil([&] -> bool {
-            return RobotGetPose().distanceTo(target_point) < slow_dist;
+            return RobotGetPose().distanceTo(target_Point) < slow_dist;
         });
 
         async.exitAll();
@@ -254,11 +246,9 @@ void run_auton() {
     pros::delay(100);
     intake::set(intake::scoring_middle_bottom_balls_slow);
     chain.exitAll();
-
     drivetrain.moveTank(0.07_volt, 0.07_volt);
 
     pros::delay(1600);
-    // pros::delay(10000);
 
     mb.moveTo(-48, match1 - 0.0_in)
         .reverse()
@@ -278,17 +268,8 @@ void run_auton() {
         }) |
       run;
 
-    std::cout << "right before matchload!" << std::endl;
-    auto curr_make_point = make_matchloader_point(-1, 1);
-    std::cout << "make point was: " << curr_make_point.x.convert(in) << " "
-              << curr_make_point.y.convert(in) << std::endl;
-
-    mb.turnTo(curr_make_point) | run;
-    std::cout << "right after turn!" << std::endl;
-
+    mb.turnTo(make_matchloader_point(-1, 1)) | run;
     matchload(-1, 1, 2.5_sec);
-
-    std::cout << "right after matchload!" << std::endl;
 
     mb.moveTo(-27, 59.5)
         .reverse()
@@ -337,7 +318,7 @@ void run_auton() {
 
     matchload(1, 1, 2.5_sec);
 
-    score_long_goal(1, 1, 3.0_sec, true);
+    score_long_goal(1, 1, 3.0_sec);
     matchloader::up();
 
     // let it score last one
@@ -509,7 +490,7 @@ void run_auton() {
 
     matchload(-1, -1, 2.5_sec);
 
-    score_long_goal(-1, -1, 2.5_sec, true);
+    score_long_goal(-1, -1, 2.5_sec);
     matchloader::up();
 
     mb.boomerang(-62, -18, 90)
@@ -539,6 +520,7 @@ void run_auton() {
     //
     // // stop the robot
     // drivetrain.moveTank(0.0_volt, 0.0_volt);
+
 
     drivetrain.moveTank(0.53_volt, 0.63_volt);
     pros::delay(300);
