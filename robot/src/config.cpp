@@ -55,6 +55,8 @@ pros::adi::DigitalOut wings_piston('C', false);
 pros::adi::DigitalOut matchloader_piston('A', false);
 pros::adi::DigitalOut odom_retract_piston('E', false);
 
+pros::adi::DigitalOut bottom_goal_piston('G', false);
+
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
 pros::Rotation forwards_odom_rotation(-5);

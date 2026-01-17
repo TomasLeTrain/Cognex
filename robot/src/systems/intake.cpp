@@ -25,6 +25,13 @@ void setSkillsMiddleScoring(bool enabled) {
     skills_middle_scoring = enabled;
 }
 
+// antijam variables
+Time curr_bottom_motor_unjam_time = 0_sec;
+Time curr_top_motor_unjam_time = 0_sec;
+
+Time last_bottom_motor_unjam_time = 0_sec;
+Time last_top_motor_unjam_time = 0_sec;
+
 intake_state_t intake_state = intake_disabled;
 
 std::map<intake_state_t, int> bottom_motor_speeds = {
@@ -260,24 +267,75 @@ void antiJam() {
     // wait for stuff to be available
     std::lock_guard lock(intake_mutex);
 
-    if (motorJammed(top_motor) && (intake_state == scoring_long) &&
-        // waits a bit before using
-        timeoutDone(200_msec, *long_active)) {
-        bottom_speed = bottom_motor_speeds[intake_state];
-        top_speed = top_motor_speeds[intake_state];
+    Time bottom_motor_timeout = 100_msec;
+    Time top_motor_timeout = 100_msec;
 
-        // bottom_motor.move(units::sgn(bottom_speed) * -127);
-        top_motor.move(units::sgn(top_speed) * -127);
-        pros::delay(200);
+    // prevents constant antijam by having it only apply every 500 msec
+    Time repetitive_bottom_motor_timeout = 500_msec;
+
+    // prevents antijam while hood goes up
+    // Time initial_top_motor_timeout = 200_msec;
+    Time initial_top_motor_timeout = 200_msec;
+
+    bool top_jammed = motorJammed(top_motor);
+    bool bottom_jammed = motorJammed(bottom_motor);
+
+    if (top_jammed) {
+        last_top_motor_unjam_time = curr_top_motor_unjam_time;
+        curr_top_motor_unjam_time = now();
     }
 
-    if (motorJammed(bottom_motor) &&
-        (intake_state == scoring_long || intake_state == intake)) {
-        bottom_speed = 0;
-        pros::delay(100);
+    if (bottom_jammed &&
+        // only updates if we have waited long enough since last
+        timeoutDone(repetitive_bottom_motor_timeout,
+                    last_bottom_motor_unjam_time)) {
+        last_bottom_motor_unjam_time = curr_bottom_motor_unjam_time;
+        curr_bottom_motor_unjam_time = now();
+    }
 
-        bottom_speed = bottom_motor_speeds[intake_state];
-        pros::delay(500);
+    // std::lock_guard lock(intake_mutex);
+
+    while (true) {
+        // here either top or bottom should be jammed
+        int curr_bottom_speed = bottom_motor_speeds[intake_state];
+        int curr_top_speed = top_motor_speeds[intake_state];
+
+        // true if we are not unjamming anymore
+        bool unjaming_bottom_done =
+          // either we are not moving the motor at all
+          curr_bottom_speed == 0 ||
+          // or we are done antijamming
+          timeoutDone(bottom_motor_timeout, last_bottom_motor_unjam_time);
+
+        bool unjaming_top_done =
+          // either we are not in the correct intake state
+          // (intake_state != scoring_long) ||
+
+          // not active if intaking
+          (intake_state == intake || intake_state == intake_bottom_balls ||
+           intake_state == intake_bottom_top_backwards ||
+           intake_state == intake_top_balls) ||
+
+          // or we have not finished initial timeout
+          (!timeoutDone(initial_top_motor_timeout, *long_active)) ||
+          // or we are done antijamming
+          timeoutDone(top_motor_timeout, last_top_motor_unjam_time);
+
+        // if both are done we have nothing left to do
+        if (unjaming_bottom_done && unjaming_top_done) {
+            break;
+        }
+
+        // antijamming top
+        if (top_jammed) curr_top_speed = units::sgn(top_speed) * -127;
+
+        // antijamming bottom
+        if (bottom_jammed) curr_bottom_speed = 0;
+
+        top_motor.move(curr_top_speed);
+        bottom_motor.move(curr_bottom_speed);
+
+        pros::delay(10);
     }
 }
 
@@ -401,7 +459,8 @@ void colorSort() {
 
             // delay some time to throw out ball
             pros::delay(100);
-            // give slight time to take back ball that could have been taken out
+            // give slight time to take back ball that could have been taken
+            // out
             setMiddleIntakePistonState(blocking);
             bottom_motor.move(-100);
             top_motor.move(0);
@@ -451,7 +510,7 @@ void hardwareUpdate() {
            intake_state == scoring_middle_top_balls_skills ||
            intake_state == scoring_middle_top_balls_skills_fast ||
            intake_state == scoring_middle_top_balls_skills_slow ||
-			intake_state == outtake_bottom_balls_open_middle || 
+           intake_state == outtake_bottom_balls_open_middle ||
            intake_state == scoring_middle ||
            intake_state == outtake_open_middle) ?
             passthrough :
@@ -540,14 +599,14 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    pros::Task antijam_task(
-      [] {
-          while (true) {
-              antiJam();
-              pros::delay(10);
-          }
-      },
-      "antijam");
+    // pros::Task antijam_task(
+    //   [] {
+    //       while (true) {
+    //           antiJam();
+    //           pros::delay(10);
+    //       }
+    //   },
+    //   "antijam");
 
     pros::Task colorsort_task(
       [] {
@@ -590,5 +649,4 @@ void score_middle() {
 void score_bottom() {
     set(scoring_bottom);
 }
-
 }; // namespace intake
