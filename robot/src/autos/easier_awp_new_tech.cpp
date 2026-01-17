@@ -7,65 +7,28 @@
 #include "apis.h"
 //
 #include "autos.h"
-#include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/blazing_globals.h"
+#include "globals/config.h"
 #include "globals/device_globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
+#include "units/Vector2D.hpp"
 #include <iostream>
 
 // do not do anything outside here!
 
-namespace four_ball {
+namespace easier_awp_new_tech {
 
 // you can add any variables / functions here
 
 void run_auton() {
-    // do whatever you want here
-
-    auto make_machloader_point = [&](units::V2FPosition target,
-                                     Length distance) -> units::V2FPosition {
-        auto target_angle = target.angleTo(RobotGetPose());
-
-        return target + distance * (RobotGetPose() - target).normalize();
-    };
-
-    bool winging = true;
-    bool fast_wing = false;
-    Voltage slow_wing_speed = 0.5_volt;
-
-    auto start_time = now();
-
-    units::V2FPosition target_point;
-
-    intake::in();
+    units::V2Position centerTopGoalFirst = { -8.2_in, 7.4_in };
 
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
-
-    Length match1 = normal_match;
-    Length match2 = normal_match;
-    Length match3 = -normal_match;
-    Length match4 = -normal_match;
-
-    units::V2Position centerBallOne = { -24_in, 24_in };
-
-    units::V2Position centerTopGoalFirst = { -7.9_in, 7.4_in };
-    // units::V2Position centerBottomGoalFirst = { -10.3_in, -11_in };
-    units::V2Position centerBottomGoalFirst = { -12.4_in, -13.4_in };
-
-    alliance_t opposite_alliance =
-      auto_alliance == alliance_t::red ? alliance_t::blue : alliance_t::red;
-
-    bool bl =
-      (auto_side == field_side_t::left || auto_side == field_side_t::unset);
-
-    int l = bl ? 1 : -1;
-
-    double angle = bl ? 90 : 270;
 
     auto make_matchloader_point = [](double sign_x,
                                      double sign_y) -> units::V2Position {
@@ -231,86 +194,90 @@ void run_auton() {
         // drivetrain.moveTank(0_volt, 0_volt);
     };
 
-    intake::setSkillsMiddleScoring(true);
+    RobotSetPose(-46.57, 14, 270);
+
     intake::setColorSortEnabled(false);
 
-    /* START AUTON */
-
-    // pull wing up to avoid any collision with game objects (bad for cog?)
-    wings::set(inactive);
-
-    RobotSetPose(-48.2, 16.3 * l, angle);
-
-    drivetrain.setBrakeMode(pros::MotorBrake::hold);
-
-    mb.moveTo(-48, (match1 - 0.1_in) * l) | run;
-
-    // its a run here, so we can do these things
     intake::in();
+
+    mb.moveTo(-46.57, 5) | chain;
+
+    mb.moveTo(-46.376, normal_match).reverse() | chain;
+    chain.wait();
+
     // turn to and go to matchloader
     matchloader::down();
-    mb.turnTo(make_matchloader_point(-1, l)).turn_toleranceDuration(25_msec) |
+    mb.turnTo(make_matchloader_point(-1, 1)).turn_toleranceDuration(25_msec) |
       run;
 
-    matchload(-1, l, 0.30_sec);
-    score_long_goal(-1, l, 1_sec, true);
+    matchload(-1, 1, 0.30_sec);
+    score_long_goal(-1, 1, 1_sec, true);
 
     matchloader::up();
 
-    matchloader::up();
-    intake::score_long();
+    mb.moveTo(-1_tile, 1_tile)
+        .executeAfterMotion([] {
+            // intake::set(intake::intake_bottom_balls);
+            intake::set(intake::intake_bottom_top_backwards);
+        })
+        .drive_minVolt(0.5_volt)
+        .setChainTime(0_sec) |
+      chain;
 
-    if (winging) {
-        if (bl) {
-            mb.moveTo(-35.737, 37.1) | chain;
-            mb.turnTo(0).reverse() | chain;
-            wings::down();
-            mb.boomerang(-8.0, 37, 0)
-                .reverse()
-                .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-                .drive_toleranceDuration(100_sec)
-                .drive_largeToleranceDuration(100_sec)
-                // .timeout(100_sec) |
-                .timeout(100_sec) |
-              chain;
+    mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | chain;
 
-            // mb.boomerang(-9, 37, 340)
-            //     .reverse()
-            //     .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .drive_toleranceDuration(100_sec)
-            //     .drive_largeToleranceDuration(100_sec)
-            //     // .timeout(100_sec) |
-            //     .timeout(100_sec) |
-            //   chain;
+    mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
+        .k_lat(0.3)
+        .drive_maxVolt(0.5_volt)
+        .drive_kp(linear_pid.get_kp() * 0.7)
+        .executeBeforeMotion([] {
+            pros::Task([] {
+                matchloader::down();
+                pros::delay(220);
+                matchloader::up();
+            });
+        }) |
+      chain;
 
-            // mb.turnTo(340)
-            //     .reverse()
-            //     // .turn_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .turn_toleranceDuration(100_sec)
-            //     .turn_largeToleranceDuration(100_sec)
-            //     // .timeout(100_sec) |
-            //     .timeout(100_sec) |
-            //   chain;
+    chain.waitUntil(closeEnough({ -1_tile, 1_tile }, 7_in));
+    matchloader::down();
+    chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
+    intake::set(intake::intake_disabled_open_middle);
+    pros::delay(100);
+    intake::set(intake::scoring_middle_bottom_balls_awp);
+    chain.exitAll();
+    drivetrain.moveTank(0.1_volt, 0.1_volt);
 
-        } else {
-            mb.moveTo(-35.737, -36.7) | chain;
-            mb.turnTo(0) | chain;
-            wings::down();
-            // mb.moveTo(-9, -37.2)
-            //     .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .drive_toleranceDuration(100_sec)
-            //     .drive_largeToleranceDuration(100_sec)
-            //     .timeout(100_sec) |
-            //   run;
+    pros::delay(1100);
 
-            mb.boomerang(-8.6, -37.2, 0)
-                .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-                .drive_toleranceDuration(10.500_sec)
-                .drive_largeToleranceDuration(100_sec)
-                .timeout(100_sec) |
-              chain;
-        }
-    }
+    drivetrain.moveTank(-1_volt, -1_volt);
+    pros::delay(200);
+
+    // mb.moveTo(-1_tile - 2_in, 0).drive_maxVolt(0.5_volt) | chain;
+
+    // matchloader::up();
+    mb.moveTo(-1_tile + 1.5_in, -1_tile).executeBeforeMotion([] {
+        pros::Task([] {
+            pros::delay(200);
+            intake::in();
+        });
+    }) |
+      chain;
+    chain.waitUntil(closeEnough({ -1_tile + 1.5_in, -1_tile }, 11.75_in));
+    matchloader::down();
+    chain.wait();
+
+    // turn to and go to matchloader
+    mb.turnTo(-48_in, -normal_match) | chain;
+    mb.moveTo(-48_in, -normal_match) | chain;
+    chain.wait();
+
+    // turn to and go to matchloader
+    mb.turnTo(make_matchloader_point(-1, -1)).turn_toleranceDuration(25_msec) |
+      run;
+
+    matchload(-1, -1, 0.30_sec);
+    score_long_goal(-1, -1, 4_sec, true);
 }
 
-} // namespace four_ball
+} // namespace easier_awp_new_tech

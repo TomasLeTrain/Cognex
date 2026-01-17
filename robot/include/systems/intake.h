@@ -38,12 +38,15 @@ enum intake_state_t {
     score_bottom_bottom_balls,
     score_bottom_bottom_balls_slow,
 
+    scoring_bottom_driver,
     scoring_bottom,
     scoring_long,
 
     // scores on long but only scores top balls
     scoring_long_top_balls,
     scoring_long_top_balls_outake_bottom,
+
+    scoring_middle_bottom_balls_awp,
 };
 
 enum intake_piston_state_t {
@@ -51,6 +54,11 @@ enum intake_piston_state_t {
     blocking,
     // allows balls to go through it
     passthrough
+};
+
+enum bottom_intake_piston_state_t {
+    up,
+    down
 };
 
 /**

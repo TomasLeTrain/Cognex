@@ -38,9 +38,11 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     // only different one
     { slow_scoring_bottom,                  -60  },
     { scoring_bottom,                       -100 },
+    { scoring_bottom_driver,                -100 },
 
     // { slow_scoring_middle,         40   },
     { scoring_middle_bottom_balls,          90   },
+    { scoring_middle_bottom_balls_awp,      85   },
     { scoring_middle_bottom_balls_slow,     70   },
 
     { scoring_middle_top_balls,             40   },
@@ -65,8 +67,8 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { outtake_open_middle,                  -127 },
 
     { score_bottom_bottom_balls,            -127 },
-    { score_bottom_bottom_balls_slow,       -70  },
-    { score_bottom_slow,                    -70  },
+    { score_bottom_bottom_balls_slow,       -65  },
+    { score_bottom_slow,                    -60  },
 
     { outtake_bottom_balls,                 -127 },
     { outtake_bottom_balls_open_middle,     -127 },
@@ -78,9 +80,11 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
 std::map<intake_state_t, int> top_motor_speeds = {
     { slow_scoring_bottom,                  -100 },
     { scoring_bottom,                       -127 },
+    { scoring_bottom_driver,                -127 },
 
     // { slow_scoring_middle, 127  },
     { scoring_middle_bottom_balls,          30   },
+    { scoring_middle_bottom_balls_awp,      27   },
     { scoring_middle_bottom_balls_slow,     20   },
 
     { scoring_middle_top_balls,             -127 },
@@ -137,6 +141,7 @@ bool color_sort_one = false;
 // intake piston stuff
 intake_piston_state_t top_intake_piston_state;
 intake_piston_state_t middle_intake_piston_state;
+bottom_intake_piston_state_t bottom_intake_piston_state;
 
 // updates state as well as piston
 void setTopIntakePistonState(intake_piston_state_t intake_piston_state) {
@@ -151,6 +156,14 @@ void setMiddleIntakePistonState(intake_piston_state_t intake_piston_state) {
 
     // bottom piston in allows passthrough when not actuated
     middle_intake_piston.set_value(middle_intake_piston_state == blocking);
+}
+
+void setBottomIntakePistonState(
+  bottom_intake_piston_state_t intake_piston_state) {
+    bottom_intake_piston_state = intake_piston_state;
+
+    // bottom piston in allows passthrough when not actuated
+    bottom_intake_piston.set_value(bottom_intake_piston_state == up);
 }
 
 std::optional<alliance_t> getMiddleDetectedColor() {
@@ -214,7 +227,7 @@ void driverUpdate() {
     }
 
     else if (scoreBottomHeight) {
-        set(intake_state_t::scoring_bottom);
+        set(intake_state_t::scoring_bottom_driver);
     }
 
     else if (scoreLong) {
@@ -501,6 +514,7 @@ void hardwareUpdate() {
            intake_state == scoring_long_top_balls_outake_bottom) ?
             passthrough :
             blocking);
+
         setMiddleIntakePistonState(
           (intake_state == intake_disabled_open_middle ||
            intake_state == scoring_middle_bottom_balls ||
@@ -511,10 +525,20 @@ void hardwareUpdate() {
            intake_state == scoring_middle_top_balls_skills_fast ||
            intake_state == scoring_middle_top_balls_skills_slow ||
            intake_state == outtake_bottom_balls_open_middle ||
+           intake_state == scoring_middle_bottom_balls_awp ||
            intake_state == scoring_middle ||
            intake_state == outtake_open_middle) ?
             passthrough :
             blocking);
+
+        setBottomIntakePistonState(
+          (intake_state == scoring_bottom ||
+           intake_state == scoring_bottom_driver ||
+           intake_state == score_bottom_bottom_balls_slow ||
+
+           intake_state == slow_scoring_bottom) ?
+            up :
+            down);
 
         if (middle_active) {
             // if within first 400 msec then we are scoring top, otherwise
@@ -599,14 +623,14 @@ void init(bool gdriver) {
 
     // run any code here that should only occur once
 
-    // pros::Task antijam_task(
-    //   [] {
-    //       while (true) {
-    //           antiJam();
-    //           pros::delay(10);
-    //       }
-    //   },
-    //   "antijam");
+    pros::Task antijam_task(
+      [] {
+          while (true) {
+              antiJam();
+              pros::delay(10);
+          }
+      },
+      "antijam");
 
     pros::Task colorsort_task(
       [] {

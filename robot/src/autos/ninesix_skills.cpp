@@ -318,7 +318,7 @@ void run_auton() {
 
     matchload(1, 1, 2.5_sec);
 
-    score_long_goal(1, 1, 3.0_sec);
+    score_long_goal(1, 1, 3.0_sec, true);
     matchloader::up();
 
     // let it score last one
@@ -480,6 +480,13 @@ void run_auton() {
     score_long_goal(-1, -1, 2.5_sec);
     // intake::in();
 
+    // manually add 3 degrees to orientation
+    RobotSetPose({ RobotGetPose().x,
+                   RobotGetPose().y,
+                   RobotGetPose().orientation + 3_stDeg });
+
+    pros::delay(20);
+
     pros::Task([] {
         // allow last balls to score
         pros::delay(150);
@@ -490,7 +497,7 @@ void run_auton() {
 
     matchload(-1, -1, 2.5_sec);
 
-    score_long_goal(-1, -1, 2.5_sec);
+    score_long_goal(-1, -1, 2.5_sec, true);
     matchloader::up();
 
     mb.boomerang(-62, -18, 90)
@@ -521,11 +528,10 @@ void run_auton() {
     // // stop the robot
     // drivetrain.moveTank(0.0_volt, 0.0_volt);
 
-
     drivetrain.moveTank(0.53_volt, 0.63_volt);
     pros::delay(300);
     drivetrain.moveTank(0.4_volt, 0.5_volt);
-    pros::delay(600);
+    pros::delay(430);
     // drivetrain.moveTank(0.2_volt, 0.3_volt);
     // pros::delay(800);
     drivetrain.moveTank(0_volt, 0_volt);
