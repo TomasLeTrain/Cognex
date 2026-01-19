@@ -262,7 +262,7 @@ void run_auton() {
 
     if (winging) {
         if (bl) {
-            mb.moveTo(-35.737, 37.1) | chain;
+            mb.moveTo(-35.737, 37.3) | chain;
             mb.turnTo(0).reverse() | chain;
             wings::down();
             mb.boomerang(-8.0, 37, 0)

@@ -67,7 +67,7 @@ std::map<intake_state_t, int> bottom_motor_speeds = {
     { outtake_open_middle,                  -127 },
 
     { score_bottom_bottom_balls,            -127 },
-    { score_bottom_bottom_balls_slow,       -65  },
+    { score_bottom_bottom_balls_slow,       -80  },
     { score_bottom_slow,                    -60  },
 
     { outtake_bottom_balls,                 -127 },
@@ -85,7 +85,7 @@ std::map<intake_state_t, int> top_motor_speeds = {
     // { slow_scoring_middle, 127  },
     { scoring_middle_bottom_balls,          30   },
     { scoring_middle_bottom_balls_awp,      27   },
-    { scoring_middle_bottom_balls_slow,     20   },
+    { scoring_middle_bottom_balls_slow,     -20   },
 
     { scoring_middle_top_balls,             -127 },
     { scoring_middle_first_ball,            0    },
@@ -317,6 +317,7 @@ void antiJam() {
         bool unjaming_bottom_done =
           // either we are not moving the motor at all
           curr_bottom_speed == 0 ||
+
           // or we are done antijamming
           timeoutDone(bottom_motor_timeout, last_bottom_motor_unjam_time);
 
@@ -324,13 +325,34 @@ void antiJam() {
           // either we are not in the correct intake state
           // (intake_state != scoring_long) ||
 
-          // not active if intaking
+          // disable if intaking
           (intake_state == intake || intake_state == intake_bottom_balls ||
            intake_state == intake_bottom_top_backwards ||
-           intake_state == intake_top_balls) ||
+           intake_state == intake_top_balls ||
+
+           // also disable for scoring in middle
+           intake_state == scoring_middle_bottom_balls ||
+           // intake_state == scoring_middle_top_balls ||
+           intake_state == scoring_middle_first_ball ||
+           intake_state == scoring_middle_bottom_balls_slow ||
+           // intake_state == scoring_middle_top_balls_skills ||
+           // intake_state == scoring_middle_top_balls_skills_fast ||
+           // intake_state == scoring_middle_top_balls_skills_slow ||
+           intake_state == scoring_middle_bottom_balls_awp ||
+           intake_state == scoring_middle
+           // intake_state == scoring_middle_bottom_balls ||
+           // intake_state == scoring_middle ||
+           // intake_state == scoring_middle_top_balls ||
+           // intake_state == scoring_middle_top_balls_skills ||
+           // intake_state == scoring_middle_top_balls_skills_fast ||
+           // intake_state == scoring_middle_top_balls_skills_slow ||
+           // intake_state == scoring_middle_bottom_balls_awp
+           ) ||
 
           // or we have not finished initial timeout
-          (!timeoutDone(initial_top_motor_timeout, *long_active)) ||
+          (long_active.has_value() &&
+           !timeoutDone(initial_top_motor_timeout, *long_active)) ||
+
           // or we are done antijamming
           timeoutDone(top_motor_timeout, last_top_motor_unjam_time);
 

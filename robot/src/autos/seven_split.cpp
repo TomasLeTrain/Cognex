@@ -130,17 +130,24 @@ void run_auton() {
                                     long_goal * sign_y,
                                     sign_x == -1 ? 0_stDeg : 180_stDeg };
 
-        units::Pose other_target_pose = { 24_in * sign_x,
+        units::Pose other_target_pose = { 23_in * sign_x,
                                           long_goal * sign_y,
                                           sign_x == -1 ? 0_stDeg : 180_stDeg };
 
         if (from_matchloader)
-            mb.arc(target_pose, -1.3)
-                .reverse()
-                // .drive_chainErrorTolerance()
-                .setChainTime(0_sec)
-                .drive_minVolt(0.2_volt) |
-              chain;
+            // mb.arc(target_pose, -1.3)
+            //     .reverse()
+            //     // .drive_chainErrorTolerance()
+            //     // .setChainTime(0_sec)
+            //   // .drive_minVolt(0.1_volt)
+            //   | chain;
+
+            mb.turnTo(target_pose).reverse() | run;
+        // mb.arc(target_pose, -1.0).reverse()
+        //   // .drive_chainErrorTolerance()
+        //   // .setChainTime(0_sec)
+        //   // .drive_minVolt(0.1_volt)
+        //   | run;
         else
             mb.turnTo(target_pose).reverse().setChainTime(0_sec) | chain;
 
@@ -271,15 +278,17 @@ void run_auton() {
                 // });
             }) |
           chain;
-        mb.turnTo(0, 0) | run;
+        mb.turnTo(40) | run;
 
         chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
+        intake::set(intake::score_bottom_bottom_balls);
+        pros::delay(300);
         intake::set(intake::score_bottom_bottom_balls_slow);
-        pros::delay(1300);
+        pros::delay(1100);
         chain.exitAll();
     }
 
-    mb.moveTo(-48, match1 * l).reverse() | run;
+    mb.moveTo(-47, (match1 + 1.0_in) * l).reverse() | run;
 
     // its a run here, so we can do these things
     intake::in();
@@ -288,8 +297,9 @@ void run_auton() {
 
     // turn to and go to matchloader
     matchloader::down();
-    mb.turnTo(make_matchloader_point(-1, l)).turn_toleranceDuration(25_msec) |
-      run;
+    mb.turnTo(make_matchloader_point(-1, l))
+      // .turn_toleranceDuration(25_msec)
+      | run;
 
     matchload(-1, l, 0.30_sec);
     score_long_goal(-1, l, 2_sec, true);

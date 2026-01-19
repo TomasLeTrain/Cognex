@@ -200,14 +200,18 @@ void run_auton() {
 
     intake::in();
 
-    mb.moveTo(-46.57, 5) | chain;
+    bool pushing = true;
 
-    mb.moveTo(-46.376, normal_match).reverse() | chain;
+    if (pushing) mb.moveTo(-46.57, 4.7).timeout(1.2_sec) | chain;
+
+    mb.moveTo(-46.376, normal_match).reverse().timeout(1.3_sec) | chain;
     chain.wait();
 
     // turn to and go to matchloader
     matchloader::down();
-    mb.turnTo(make_matchloader_point(-1, 1)).turn_toleranceDuration(25_msec) |
+    mb.turnTo(make_matchloader_point(-1, 1))
+        .turn_toleranceDuration(25_msec)
+        .timeout(0.8_sec) |
       run;
 
     matchload(-1, 1, 0.30_sec);
