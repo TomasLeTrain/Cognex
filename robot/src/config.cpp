@@ -30,7 +30,8 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 // clang-format on
 
 // inertial sensor
-vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
+// vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
+vexmaps::ScaledIMU imu(17, (360.0 + 3) / 360.0);
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
 // vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
@@ -54,6 +55,8 @@ pros::adi::DigitalOut wings_piston('C', false);
 
 pros::adi::DigitalOut matchloader_piston('A', false);
 pros::adi::DigitalOut odom_retract_piston('E', false);
+
+pros::adi::DigitalOut bottom_intake_piston('G', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);

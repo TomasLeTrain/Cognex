@@ -32,6 +32,7 @@ extern pros::adi::DigitalOut middle_intake_piston;
 extern pros::adi::DigitalOut matchloader_piston;
 extern pros::adi::DigitalOut wings_piston;
 extern pros::adi::DigitalOut odom_retract_piston;
+extern pros::adi::DigitalOut bottom_intake_piston;
 
 // odom rotation sensors
 extern pros::Rotation sideways_odom_rotation;

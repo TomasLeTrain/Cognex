@@ -81,6 +81,9 @@ void run_auton() {
         // pull matchloader down regardless
         matchloader::down();
 
+        // don't unjam when matchloading
+        intake::setBottomUnjamDisabled(true);
+
         mb.boomerang(func)
             .timeout(3_sec)
             .drive_toleranceDuration(100_sec)
@@ -122,6 +125,9 @@ void run_auton() {
         pros::delay(to_msec(matchload_time));
 
         async.exitAll();
+
+        // set unjam back
+        intake::setBottomUnjamDisabled(false);
     };
 
     auto score_long_goal = [](double sign_x,
@@ -318,7 +324,7 @@ void run_auton() {
 
     matchload(1, 1, 2.5_sec);
 
-    score_long_goal(1, 1, 3.0_sec);
+    score_long_goal(1, 1, 3.0_sec, true);
     matchloader::up();
 
     // let it score last one
@@ -399,7 +405,7 @@ void run_auton() {
         .executeBeforeMotion([] {
             pros::Task([] {
                 matchloader::down();
-                pros::delay(500);
+                pros::delay(390);
                 matchloader::up();
             });
         })
@@ -408,7 +414,7 @@ void run_auton() {
         }) |
       async;
 
-    async.waitUntil(closeEnough({ 8_in, -8_in }, 6_in));
+    async.waitUntil(closeEnough({ 8_in, -8_in }, 6.6_in));
 
     // intake::set(intake::scoring_middle_bottom_balls);
     intake::set(intake::outtake_bottom_balls_open_middle);
@@ -450,8 +456,21 @@ void run_auton() {
 
     pros::delay(100);
 
+    // manually add 3 degrees to orientation
+    RobotSetPose({ RobotGetPose().x,
+                   RobotGetPose().y,
+                   RobotGetPose().orientation + 2_stDeg });
+    pros::delay(30);
+
     mb.turnTo(make_matchloader_point(1, -1)) | run;
+
     matchload(1, -1, 2.5_sec);
+
+    // manually add 3 degrees to orientation
+    // RobotSetPose({ RobotGetPose().x,
+    //                RobotGetPose().y,
+    //                RobotGetPose().orientation - 2_stDeg });
+    // pros::delay(30);
 
     mb.moveTo(27, -59.5)
         .reverse()
@@ -464,10 +483,10 @@ void run_auton() {
         .drive_maxVolt(0.5_volt) |
       chain;
 
-    mb.turnTo(-25, -59).reverse() | chain;
+    mb.turnTo(-25, -60).reverse() | chain;
 
     // go to other side
-    mb.moveTo(-25, -59)
+    mb.moveTo(-25, -60)
         .reverse()
         .drive_chainErrorTolerance(7_in)
         .setChainTime(30_msec)
@@ -475,10 +494,18 @@ void run_auton() {
       chain;
 
     // get on same y
-    mb.moveTo(-46, -long_goal - 1.3_in).reverse() | chain;
+    // mb.moveTo(-46, -long_goal - 1.0_in).reverse() | chain;
+    mb.moveTo(-42, -long_goal - 0.3_in).reverse().only_y(true) | chain;
 
     score_long_goal(-1, -1, 2.5_sec);
     // intake::in();
+
+    // manually add 3 degrees to orientation
+    RobotSetPose({ RobotGetPose().x,
+                   RobotGetPose().y,
+                   RobotGetPose().orientation + 1_stDeg });
+
+    pros::delay(20);
 
     pros::Task([] {
         // allow last balls to score
@@ -490,8 +517,12 @@ void run_auton() {
 
     matchload(-1, -1, 2.5_sec);
 
-    score_long_goal(-1, -1, 2.5_sec);
-    matchloader::up();
+    pros::Task([] {
+        pros::delay(350);
+        matchloader::up();
+    });
+
+    score_long_goal(-1, -1, 2.5_sec, true);
 
     mb.boomerang(-62, -18, 90)
         .lead(0.3)
@@ -521,11 +552,10 @@ void run_auton() {
     // // stop the robot
     // drivetrain.moveTank(0.0_volt, 0.0_volt);
 
-
     drivetrain.moveTank(0.53_volt, 0.63_volt);
     pros::delay(300);
     drivetrain.moveTank(0.4_volt, 0.5_volt);
-    pros::delay(600);
+    pros::delay(530);
     // drivetrain.moveTank(0.2_volt, 0.3_volt);
     // pros::delay(800);
     drivetrain.moveTank(0_volt, 0_volt);

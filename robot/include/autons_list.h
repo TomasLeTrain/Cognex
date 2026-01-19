@@ -43,6 +43,7 @@ H_AUTON(seven_ball)
 H_AUTON(awp)
 H_AUTON(ninesix_skills)
 H_AUTON(elims_nineball_split)
+H_AUTON(easier_awp_new_tech)
 
 // special disabled auton that does nothing
 namespace disabled_auton {
