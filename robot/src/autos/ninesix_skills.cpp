@@ -25,9 +25,20 @@ namespace ninesix_skills {
 // void first_matchloader_mp();
 // void chained_first_matchloader(Length match1);
 
-// you can add any variables / functions here
+void pre_auton() {
+    // set the robot state to match expectations
+    // done in case driver or such is run before auto
+    wings::up();
+    odom_retract::lowerOdom();
+    matchloader::up();
+
+    drivetrain.setBrakeMode(pros::MotorBrake::hold);
+}
 
 void run_auton() {
+    // runs before anything else
+    pre_auton();
+
     auto start_time = now();
 
     units::V2FPosition target_point;

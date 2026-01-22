@@ -49,7 +49,6 @@ void opcontrol() {
     matchloader::init(true);
     wings::init(true);
     odom_retract::init(true);
-    base::init();
 
     intake::setDriverColorSortEnabled(false);
 
@@ -62,4 +61,12 @@ void opcontrol() {
 
     // matchloadTuning();
     // long_goal_tuning();
+	//
+
+    // runs exclusively inside opcontrol to guarantee it does not interfer with
+    // autos (stopped automatically when not in driver mode)
+    while (true) {
+        base::driveUpdate();
+        pros::delay(10);
+    }
 }

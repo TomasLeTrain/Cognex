@@ -19,7 +19,13 @@ namespace intake {
 bool is_driver = false;
 bool tasks_active = false;
 
+bool bottom_unjam_disabled = false;
+
 bool skills_middle_scoring = false;
+
+void setBottomUnjamDisabled(bool disabled) {
+    bottom_unjam_disabled = disabled;
+}
 
 void setSkillsMiddleScoring(bool enabled) {
     skills_middle_scoring = enabled;
@@ -85,7 +91,7 @@ std::map<intake_state_t, int> top_motor_speeds = {
     // { slow_scoring_middle, 127  },
     { scoring_middle_bottom_balls,          30   },
     { scoring_middle_bottom_balls_awp,      27   },
-    { scoring_middle_bottom_balls_slow,     -20   },
+    { scoring_middle_bottom_balls_slow,     -20  },
 
     { scoring_middle_top_balls,             -127 },
     { scoring_middle_first_ball,            0    },
@@ -315,16 +321,16 @@ void antiJam() {
 
         // true if we are not unjamming anymore
         bool unjaming_bottom_done =
+		  // either unjamming is disabled
+          bottom_unjam_disabled ||
           // either we are not moving the motor at all
           curr_bottom_speed == 0 ||
-
           // or we are done antijamming
           timeoutDone(bottom_motor_timeout, last_bottom_motor_unjam_time);
 
         bool unjaming_top_done =
           // either we are not in the correct intake state
           // (intake_state != scoring_long) ||
-
           // disable if intaking
           (intake_state == intake || intake_state == intake_bottom_balls ||
            intake_state == intake_bottom_top_backwards ||

@@ -8,6 +8,7 @@
 
 namespace base {
 bool started = false;
+bool is_driver = false;
 
 void driveUpdate() {
     // get left y and right x positions
@@ -60,16 +61,22 @@ void driveUpdate() {
     right_motors.move(rightPower);
 }
 
-void init() {
-    if (started) return;
-
-    pros::Task drivebase_task([] {
-        while (true) {
-            driveUpdate();
-            pros::delay(10);
-        }
-    });
-
-    started = true;
-}
+// void update() {
+//     if (is_driver) driveUpdate();
+// }
+//
+// void init(bool driver) {
+//     is_driver = driver;
+//
+//     if (started) return;
+//
+//     pros::Task drivebase_task([] {
+//         while (true) {
+//             update();
+//             pros::delay(10);
+//         }
+//     });
+//
+//     started = true;
+// }
 } // namespace base

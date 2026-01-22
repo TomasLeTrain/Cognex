@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "main.h"
 #include "screen/screen.h"
+#include "systems/drivetrain.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 #include "systems/odom_retract.h"
@@ -35,7 +36,7 @@ void testing_auton_func() {
     // selected_auton = "4 ball";
     //
     selected_auton = "easier awp";
-	//
+    //
     // selected_auton = "match first 7 split";
 
     // selected_auton = "seven split";

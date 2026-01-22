@@ -13,6 +13,7 @@
 #include "globals/device_globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include <iostream>
@@ -21,10 +22,19 @@
 
 namespace awp {
 
-// you can add any variables / functions here
+void pre_auton() {
+    // set the robot state to match expectations
+    // done in case driver or such is run before auto
+    wings::up();
+    odom_retract::lowerOdom();
+    matchloader::up();
+
+    drivetrain.setBrakeMode(pros::MotorBrake::hold);
+}
 
 void run_auton() {
-    // do whatever you want here
+    // runs before anything else
+    pre_auton();
 
     bool bl =
       (auto_side == field_side_t::left || auto_side == field_side_t::unset);
@@ -36,8 +46,7 @@ void run_auton() {
 
     // setSmootherAlphas(10 * smoother_config.alpha_x,
     //                   10 * smoother_config.alpha_y);
-    setSmootherAlphas(1,
-                      1);
+    setSmootherAlphas(1, 1);
 
     // printf("before set pose\n");
     RobotSetPose(-46.57, -14, 90);

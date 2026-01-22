@@ -13,18 +13,28 @@
 #include "globals/device_globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include <iostream>
 
-// do not do anything outside here!
-
 namespace easier_awp_new_tech {
 
-// you can add any variables / functions here
+void pre_auton() {
+    // set the robot state to match expectations
+    // done in case driver or such is run before auto
+    wings::up();
+    odom_retract::lowerOdom();
+    matchloader::up();
+
+    drivetrain.setBrakeMode(pros::MotorBrake::hold);
+}
 
 void run_auton() {
+    // runs before anything else
+    pre_auton();
+
     units::V2Position centerTopGoalFirst = { -8.2_in, 7.4_in };
 
     Length long_goal = 47.1_in;

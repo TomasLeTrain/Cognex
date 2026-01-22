@@ -13,6 +13,7 @@
 #include "globals/device_globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include <iostream>
@@ -21,10 +22,19 @@
 
 namespace four_ball {
 
-// you can add any variables / functions here
+void pre_auton() {
+    // set the robot state to match expectations
+    // done in case driver or such is run before auto
+    wings::up();
+    odom_retract::lowerOdom();
+    matchloader::up();
+
+    drivetrain.setBrakeMode(pros::MotorBrake::hold);
+}
 
 void run_auton() {
-    // do whatever you want here
+    // runs before anything else
+    pre_auton();
 
     auto make_machloader_point = [&](units::V2FPosition target,
                                      Length distance) -> units::V2FPosition {
@@ -158,7 +168,6 @@ void run_auton() {
         //   chain;
 
         Length long_goal = 47.1_in;
-        Length normal_match = 46.7_in;
 
         units::Pose target_pose = { 26_in * sign_x,
                                     long_goal * sign_y,

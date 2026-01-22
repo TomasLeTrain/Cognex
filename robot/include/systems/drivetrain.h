@@ -2,5 +2,5 @@
 
 namespace base {
 void driveUpdate();
-void init();
-}
+// void init(bool driver);
+} // namespace base

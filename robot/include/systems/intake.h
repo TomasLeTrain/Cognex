@@ -107,5 +107,6 @@ void score_middle();
 void score_bottom();
 
 void setSkillsMiddleScoring(bool enabled);
+void setBottomUnjamDisabled(bool disabled);
 
 } // namespace intake

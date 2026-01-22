@@ -13,19 +13,27 @@
 #include "globals/device_globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include <iostream>
 
-// do not do anything outside here!
-
 namespace easier_awp {
 
-// you can add any variables / functions here
+void pre_auton() {
+    // set the robot state to match expectations
+    // done in case driver or such is run before auto
+    wings::up();
+    odom_retract::lowerOdom();
+    matchloader::up();
+
+    drivetrain.setBrakeMode(pros::MotorBrake::hold);
+}
 
 void run_auton() {
-    // do whatever you want here
+    // runs before anything else
+    pre_auton();
 
     // makes point with some specified distance from the target, facing the
     // current robot position
@@ -168,7 +176,7 @@ void run_auton() {
     mb.moveTo(-1_tile, 1_tile)
         .executeAfterMotion([] {
             // intake::set(intake::intake_bottom_balls);
-			intake::set(intake::intake_bottom_top_backwards);
+            intake::set(intake::intake_bottom_top_backwards);
         })
         .drive_minVolt(0.5_volt)
         .setChainTime(0_sec) |

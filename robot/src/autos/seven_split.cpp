@@ -12,6 +12,7 @@
 #include "globals/device_globals.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
+#include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include <iostream>
@@ -20,9 +21,20 @@
 
 namespace sunshine_quals {
 
-// you can add any variables / functions here
+void pre_auton() {
+    // set the robot state to match expectations
+    // done in case driver or such is run before auto
+    wings::up();
+    odom_retract::lowerOdom();
+    matchloader::up();
+
+    drivetrain.setBrakeMode(pros::MotorBrake::hold);
+}
 
 void run_auton() {
+    // runs before anything else
+    pre_auton();
+
     // do whatever you want here
 
     Length long_goal = 47.1_in;
