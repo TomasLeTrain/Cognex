@@ -13,6 +13,7 @@
 #include "systems/matchloader.h"
 #include "systems/odom_retract.h"
 #include "systems/piston.h"
+#include "systems/sysid.h"
 #include "systems/wings.h"
 #include "tuning.h"
 
@@ -45,6 +46,9 @@ void opcontrol() {
 
     // cancel any auton motions that could be currently running
 
+    // linear_ka_kp_ki_tuner();
+    // create_accel_data({ 0.5_volt, 0.5_volt, 2_sec }, "Linear");
+
     intake::init(true);
     matchloader::init(true);
     wings::init(true);
@@ -61,7 +65,7 @@ void opcontrol() {
 
     // matchloadTuning();
     // long_goal_tuning();
-	//
+    //
 
     // runs exclusively inside opcontrol to guarantee it does not interfer with
     // autos (stopped automatically when not in driver mode)

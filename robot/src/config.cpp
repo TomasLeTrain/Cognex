@@ -3,6 +3,7 @@
 //
 
 #include "globals.h"
+#include "lyfast/vel_controller.hpp"
 #include "units/Vector2D.hpp"
 #include "vexmaps/mcl/distance_model.hpp"
 
@@ -329,7 +330,10 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 //
 //
 // blazing stuff - can keep alone
-DifferentialDrivetrain drivetrain(&left_motors, &right_motors);
+DifferentialDrivetrain drivetrain(&left_motors,
+                                  &right_motors,
+                                  drivetrain_config.wheel_diameter,
+                                  drivetrain_config.rpm);
 
 ForwardsTracker left_motor_tracker(&left_motors,
                                    -drivetrain_config.track_width / 2,
@@ -391,15 +395,66 @@ PID<Angle, Voltage> turn_heading_pid(turn_heading_pid_config.kp,
 PIDLinearController linear_pid_controller(linear_pid);
 PIDAngularController angular_pid_controller(turn_drive_pid);
 
-blazing::lyfast::VelocityController
-  velocity_controller((0.58345 - 0.05) * volt / mps,
-                      0.00297879 * volt / mps2,
-                      0.107902 * volt / radps,
-                      0.0107677 * volt / radps2,
-                      0.0041 * volt);
+blazing::lyfast::VelocityController linear_velocity_controller(
+  lyfast::VelocityControllerParams {
+    // custom accel
+    .left_Kv = 0.426161 * volt / mps,
+    .left_Ka = 0.08 * volt / mps2,
+    .left_Ks = 0.0481902 * volt,
+    .left_Kp = 0.934514846239 * volt / mps,
+    .left_Ki = 4.58736473058 * volt / m,
 
-lyfast::VelocityFeedforward<blazing::lyfast::VelocityController>
-  controller_velocity_controller(velocity_controller);
+    .right_Kv = 0.425642 * volt / mps,
+    .right_Ka = 0.081 * volt / mps2,
+    .right_Ks = 0.0499037 * volt,
+    .right_Kp = 0.940127699096 * volt / mps,
+    .right_Ki = 4.65515950473 * volt / m,
+  },
+  drivetrain_config.track_width,
+  drivetrain);
+
+blazing::lyfast::VelocityController angular_velocity_controller(
+  lyfast::VelocityControllerParams {
+    // desmos constants
+    .left_Kv = 0.451918 * volt / mps,
+    .left_Ka = 0.1457828 * volt / mps2,
+    .left_Ks = 0.0922515 * volt,
+    .left_Kp = 0.9984206 * volt / mps,
+    .left_Ki = 3.457622 * volt / m,
+
+    .right_Kv = 0.477938 * volt / mps,
+    .right_Ka = 0.132789 * volt / mps2,
+    .right_Ks = 0.0824404 * volt,
+    .right_Kp = 1.054508 * volt / mps,
+    .right_Ki = 4.24337 * volt / m,
+  },
+  drivetrain_config.track_width,
+  drivetrain);
+
+lyfast::LinearAngularVelocityController vel_controller {
+    linear_velocity_controller,
+    angular_velocity_controller
+};
+
+PID<Length, LinearVelocity> linear_vel_pid(0.5,
+                                           0.0,
+                                           3.6,
+                                           7,
+                                           // std::nullopt,
+                                           70,
+                                           50_msec,
+                                           1_in,
+                                           1_inps);
+
+CascadedControllers<decltype(linear_vel_pid),
+                    decltype(vel_controller),
+                    Length,
+                    LinearVelocity,
+                    Voltage>
+  linear_control(linear_vel_pid, vel_controller);
+
+lyfast::VelocityFeedforward<decltype(vel_controller)>
+  controller_velocity_controller(vel_controller);
 
 Controllers<decltype(linear_pid_controller),
             decltype(angular_pid_controller),

@@ -2,84 +2,324 @@
 
 #include "blazing/controllers/controllers.hpp"
 #include "blazing/controllers/feedforward/feedforward.hpp"
+#include "blazing/drivetrains/differential.hpp"
 #include "blazing/utils.hpp"
 #include "pros/motors.hpp"
 #include "units/Angle.hpp"
+#include "units/Vector2D.hpp"
 #include "units/units.hpp"
 
 namespace blazing {
 namespace lyfast {
 
+// voltage is assumed to be in the range [0,1]
+
+// u = Ks * sgn(v) + Kv * v + Ka * a;
+using KsUnits = Voltage;
+using KvUnits = Divided<Voltage, LinearVelocity>;
+using KaUnits = Divided<Voltage, LinearAcceleration>;
+
+using FKsUnits = FVoltage;
+using FKvUnits = Divided<FVoltage, FLinearVelocity>;
+using FKaUnits = Divided<FVoltage, FLinearAcceleration>;
+
+template<typename T>
+struct SimpleVelocityControllerParams {
+    Divided<Voltage, T> Kv;
+    Divided<Voltage, Divided<T, Time>> Ka;
+    Voltage Ks;
+    Divided<Voltage, T> Kp { 0 };
+    Divided<Voltage, Multiplied<T, Time>> Ki { 0 };
+};
+
 struct VelocityControllerParams {
-    Divided<Voltage, LinearVelocity> ff_linear_vel;
-    Divided<Voltage, LinearAcceleration> ff_linear_accel;
-    Divided<Voltage, AngularVelocity> ff_angular_vel;
-    Divided<Voltage, AngularAcceleration> ff_angular_accel;
-    Voltage K_s;
+    KvUnits left_Kv;
+    KaUnits left_Ka;
+    KsUnits left_Ks;
+    Divided<Voltage, LinearVelocity> left_Kp { 0 };
+    Divided<Voltage, Length> left_Ki { 0 };
+
+    KvUnits right_Kv;
+    KaUnits right_Ka;
+    KsUnits right_Ks;
+    Divided<Voltage, LinearVelocity> right_Kp { 0 };
+    Divided<Voltage, Length> right_Ki { 0 };
+
+    // construct both sides with equal gains
+    static VelocityControllerParams
+    fromSimple(SimpleVelocityControllerParams<LinearVelocity> params) {
+        return { .left_Kv = params.Kv,
+                 .left_Ka = params.Ka,
+                 .left_Ks = params.Ks,
+                 .left_Kp = params.Kp,
+                 .left_Ki = params.Ki,
+                 .right_Kv = params.Kv,
+                 .right_Ka = params.Ka,
+                 .right_Ks = params.Ks,
+                 .right_Kp = params.Kp,
+                 .right_Ki = params.Ki };
+    }
+};
+
+template<typename T>
+class SimpleVelocityController {
+    SimpleVelocityControllerParams<T> m_params;
+
+    std::optional<T> last_speed = std::nullopt;
+
+    Multiplied<T, Time> integral = 0_in;
+    Multiplied<T, Time> right_integral = 0_in;
+
+    std::optional<T> last_error = std::nullopt;
+
+  public:
+    Voltage update(T measurement, T target, Time duration) {
+        LinearAcceleration target_accel =
+          (target -
+           // combines measurement and last_speeds
+           last_speed.value_or(T(0))) /
+          duration;
+
+        LinearVelocity error = target - measurement;
+
+        integral += error * duration;
+
+        if (last_error && units::sgn(error) != units::sgn(*last_error)) {
+            integral = Length { 0 };
+        }
+
+        Voltage result {
+            // kv
+            target * m_params.Kv +
+              // ka
+              target_accel * m_params.Ka +
+              // ks
+              units::sgn(target) * m_params.Ks +
+              // kp
+              m_params.Kp * error +
+              // ki
+              m_params.Ki * integral,
+        };
+
+        last_speed = { target };
+        last_error = error;
+
+        return result;
+    }
+
+    Voltage update(T target, Time duration) {
+        LinearAcceleration target_accel =
+          (target -
+           // combines measurement and last_speeds
+           last_speed.value_or(T(0))) /
+          duration;
+
+        Voltage result { // kv
+                         target * m_params.Kv +
+                         // ka
+                         target_accel * m_params.Ka +
+                         // ks
+                         units::sgn(target) * m_params.Ks
+        };
+
+        last_speed = { target };
+
+        return result;
+    }
+
+    SimpleVelocityControllerParams<T> getParams() {
+        return m_params;
+    }
+
+    SimpleVelocityController(SimpleVelocityControllerParams<T> params)
+        : m_params(params) {}
 };
 
 class VelocityController {
     VelocityControllerParams m_params;
 
-    std::optional<DifferentialSpeeds> last_speeds = std::nullopt;
+    SimpleVelocityController<LinearVelocity> left_controller;
+    SimpleVelocityController<LinearVelocity> right_controller;
+
+    Length m_track_width;
+
+    DifferentialDrivetrain& drivetrain;
 
   public:
-    DifferentialVoltages update(DifferentialSpeeds target, Time duration) {
-        LinearAcceleration linear_acceleration =
-          (target.linear_velocity -
-           last_speeds
-             // if no last speeds then we assume zero acceleration
-             .value_or(target)
-             .linear_velocity) /
-          duration;
-        AngularAcceleration angular_acceleration =
-          (target.angular_velocity -
-           last_speeds
-             // if no last speeds then we assume zero acceleration
-             .value_or(target)
-             .angular_velocity) /
-          duration;
-        ;
+    LeftRightVoltages update(LeftRightSpeeds measurement,
+                             DifferentialSpeeds target,
+                             Time duration) {
+        LinearVelocity target_left_vel =
+          target.linear_velocity -
+          (target.angular_velocity / rad) * (m_track_width / 2);
+        LinearVelocity target_right_vel =
+          target.linear_velocity +
+          (target.angular_velocity / rad) * (m_track_width / 2);
 
-        Voltage uLinear = target.linear_velocity * m_params.ff_linear_vel +
-                          linear_acceleration * m_params.ff_linear_accel;
-        Voltage uAngular = target.angular_velocity * m_params.ff_angular_vel +
-                           angular_acceleration * m_params.ff_angular_accel;
+        auto left_voltage = left_controller.update(measurement.left_vel,
+                                                   target_left_vel,
+                                                   duration);
+        auto right_voltage = right_controller.update(measurement.right_vel,
+                                                     target_right_vel,
+                                                     duration);
 
-        DifferentialVoltages result;
-
-        result.left_voltage = uLinear - uAngular;
-        result.right_voltage = uLinear + uAngular;
-
-        result.left_voltage += units::sgn(result.left_voltage) * m_params.K_s;
-        result.right_voltage += units::sgn(result.right_voltage) * m_params.K_s;
-
-        last_speeds = target;
+        LeftRightVoltages result = { left_voltage, right_voltage };
 
         return result;
+    }
+
+    LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
+        // fall back to using specified drivetrain
+        return update(drivetrain.getDrivetrainVelocities(), target, duration);
+
+        // LinearVelocity target_left_vel =
+        //   target.linear_velocity -
+        //   (target.angular_velocity / rad) * (m_track_width / 2);
+        // LinearVelocity target_right_vel =
+        //   target.linear_velocity +
+        //   (target.angular_velocity / rad) * (m_track_width / 2);
+        //
+        // auto left_voltage = left_controller.update(target_left_vel,
+        // duration); auto right_voltage =
+        //   right_controller.update(target_right_vel, duration);
+        //
+        // LeftRightVoltages result = { left_voltage, right_voltage };
+        //
+        // return result;
+    }
+
+    // allows using as only a linear feedforward
+    Voltage update(LinearVelocity target, Time duration) {
+        auto left_right_voltages =
+          update(DifferentialSpeeds { target, 0_radps }, duration);
+        return (left_right_voltages.right_voltage +
+                left_right_voltages.left_voltage) /
+               2.0;
+    }
+
+    // allows using as only a linear feedback with only linear component
+    Voltage
+    update(LeftRightSpeeds measurement, LinearVelocity target, Time duration) {
+        auto left_right_voltages =
+          update(measurement, DifferentialSpeeds { target, 0_radps }, duration);
+        return (left_right_voltages.right_voltage +
+                left_right_voltages.left_voltage) /
+               2.0;
+    }
+
+    // allows using as only an angular feedforward
+    Voltage update(AngularVelocity target, Time duration) {
+        auto left_right_voltages =
+          update(DifferentialSpeeds { 0_inps, target }, duration);
+
+        return (left_right_voltages.right_voltage -
+                left_right_voltages.left_voltage) /
+               2.0;
+    }
+
+    // allows using as vel feedback with only angular component
+    Voltage
+    update(LeftRightSpeeds measurement, AngularVelocity target, Time duration) {
+        auto left_right_voltages =
+          update(measurement, DifferentialSpeeds { 0_inps, target }, duration);
+
+        return (left_right_voltages.right_voltage -
+                left_right_voltages.left_voltage) /
+               2.0;
     }
 
     VelocityControllerParams getParams() {
         return m_params;
     }
 
-    VelocityController(Divided<Voltage, LinearVelocity> ff_linear_vel,
-                       Divided<Voltage, LinearAcceleration> ff_linear_accel,
-                       Divided<Voltage, AngularVelocity> ff_angular_vel,
-                       Divided<Voltage, AngularAcceleration> ff_angular_accel,
-                       Voltage K_s)
-        : m_params(ff_linear_vel,
-                   ff_linear_accel,
-                   ff_angular_vel,
-                   ff_angular_accel,
-                   K_s) {}
+    VelocityController(VelocityControllerParams params,
+                       Length track_width,
+                       DifferentialDrivetrain& drivetrain)
+        : m_params(params),
+          left_controller({
+            .Kv = this->m_params.left_Kv,
+            .Ka = this->m_params.left_Ka,
+            .Ks = this->m_params.left_Ks,
+            .Kp = this->m_params.left_Kp,
+            .Ki = this->m_params.left_Ki,
+          }),
+          right_controller({
+            .Kv = this->m_params.right_Kv,
+            .Ka = this->m_params.right_Ka,
+            .Ks = this->m_params.right_Ks,
+            .Kp = this->m_params.right_Kp,
+            .Ki = this->m_params.right_Ki,
+          }),
+          m_track_width(track_width),
+          drivetrain(drivetrain) {}
 
-    VelocityController(VelocityControllerParams params)
-        : m_params(params) {}
+    VelocityController(SimpleVelocityControllerParams<LinearVelocity> params,
+                       Length track_width,
+                       DifferentialDrivetrain& drivetrain)
+        : m_params(VelocityControllerParams::fromSimple(params)),
+          left_controller(params),
+          right_controller(params),
+          m_track_width(track_width),
+          drivetrain(drivetrain) {}
+};
+
+class LinearAngularVelocityController {
+    VelocityController linear_controller;
+    VelocityController angular_controller;
+
+  public:
+    LeftRightVoltages update(LeftRightSpeeds measurement,
+                             DifferentialSpeeds target,
+                             Time duration) {
+        Voltage linear = linear_controller.update(measurement,
+                                                  target.linear_velocity,
+                                                  duration);
+        Voltage angular = angular_controller.update(measurement,
+                                                    target.angular_velocity,
+                                                    duration);
+
+        return LeftRightVoltages { linear - angular, linear + angular };
+    }
+
+    LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
+        Voltage linear =
+          linear_controller.update(target.linear_velocity, duration);
+        Voltage angular =
+          angular_controller.update(target.angular_velocity, duration);
+
+        return LeftRightVoltages { linear - angular, linear + angular };
+    }
+
+    // allows using as only a linear feedforward
+    Voltage update(LinearVelocity target, Time duration) {
+        return linear_controller.update(target, duration);
+    }
+
+    // allows using as linear feedback with measurement
+    Voltage
+    update(LeftRightSpeeds measurement, LinearVelocity target, Time duration) {
+        return linear_controller.update(measurement, target, duration);
+    }
+
+    // allows using as only an angular feedforward
+    Voltage update(AngularVelocity target, Time duration) {
+        return angular_controller.update(target, duration);
+    }
+
+    // allows using as angular feedback with measurement
+    Voltage
+    update(LeftRightSpeeds measurement, AngularVelocity target, Time duration) {
+        return angular_controller.update(measurement, target, duration);
+    }
+
+    LinearAngularVelocityController(VelocityController linear_controller,
+                                    VelocityController angular_controller)
+        : linear_controller(linear_controller),
+          angular_controller(angular_controller) {}
 };
 
 template<typename Controller>
-    requires Feedforward<Controller, DifferentialSpeeds, DifferentialVoltages>
+    requires Feedforward<Controller, DifferentialSpeeds, LeftRightVoltages>
 struct VelocityFeedforward : virtual ControllerBase {
   public:
     Controller velocity_feedforward;
@@ -90,8 +330,8 @@ struct VelocityFeedforward : virtual ControllerBase {
     // creates a copy of the controller with different linear feedback
     // controller
     template<typename Self>
-    Self with_linear_feedback(this Self&& self,
-                              Controller new_velocity_feedforward) {
+    Self with_velocity_feedforward(this Self&& self,
+                                   Controller new_velocity_feedforward) {
         Self new_self = self;
         new_self.velocity_feedforward = new_velocity_feedforward;
         return new_self;
@@ -101,6 +341,30 @@ struct VelocityFeedforward : virtual ControllerBase {
 template<typename Controller>
 concept hasVelocityFeedforward =
   requires(Controller controller) { controller.velocity_feedforward; };
+
+template<typename Controller>
+    requires Feedback<Controller, DifferentialSpeeds, LeftRightVoltages>
+struct VelocityFeedback : virtual ControllerBase {
+  public:
+    Controller velocity_feedback;
+
+    VelocityFeedback(Controller velocity_feedforward_controller)
+        : velocity_feedback(velocity_feedforward_controller) {}
+
+    // creates a copy of the controller with different linear feedback
+    // controller
+    template<typename Self>
+    Self with_velocity_feedback(this Self&& self,
+                                Controller new_velocity_feedback) {
+        Self new_self = self;
+        new_self.velocity_feedback = new_velocity_feedback;
+        return new_self;
+    }
+};
+
+template<typename Controller>
+concept hasVelocityFeedback =
+  requires(Controller controller) { controller.velocity_feedback; };
 
 } // namespace lyfast
 } // namespace blazing

@@ -41,9 +41,19 @@ extern AngularVoltageClampController angular_voltage_constraints;
 extern PIDLinearController linear_pid_controller;
 extern PIDAngularController angular_pid_controller;
 
-// velocity control stuff
-extern blazing::lyfast::VelocityController velocity_controller;
-extern lyfast::VelocityFeedforward<decltype(velocity_controller)>
+extern blazing::lyfast::VelocityController linear_velocity_controller;
+extern blazing::lyfast::VelocityController angular_velocity_controller;
+extern lyfast::LinearAngularVelocityController vel_controller;
+extern PID<Length, LinearVelocity> linear_vel_pid;
+
+extern CascadedControllers<decltype(linear_vel_pid),
+                           decltype(vel_controller),
+                           Length,
+                           LinearVelocity,
+                           Voltage>
+  linear_control;
+
+extern lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller;
 
 extern Controllers<decltype(linear_pid_controller),
