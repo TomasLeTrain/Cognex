@@ -33,6 +33,8 @@ void pre_auton() {
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
+
+    intake::setAutonColorSort(false);
 }
 
 void run_auton() {
@@ -239,9 +241,6 @@ void run_auton() {
         // drivetrain.moveTank(0_volt, 0_volt);
     };
 
-    intake::setSkillsMiddleScoring(true);
-    intake::setColorSortEnabled(false);
-
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
@@ -265,7 +264,7 @@ void run_auton() {
 
     matchloader::up();
 
-    intake::set(intake::intake_bottom_balls);
+    intake::in();
 
     if (bl) {
         mb.moveTo(-23.5, 23.4 * l).drive_maxVolt(0.45_volt) | async;
@@ -290,10 +289,8 @@ void run_auton() {
           chain;
 
         chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
-        intake::set(intake::outtake_open_middle);
-        pros::delay(100);
-        intake::set(intake::scoring_middle_bottom_balls_slow);
-        pros::delay(1400);
+        intake::score_middle();
+        pros::delay(1500);
         chain.exitAll();
     } else {
         mb.moveTo(-23.6, 23.6 * l) | async;
@@ -318,8 +315,9 @@ void run_auton() {
         mb.turnTo(0, 0) | run;
 
         chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
-        intake::set(intake::score_bottom_slow);
-        pros::delay(1300);
+        // score but with slightly less power
+        intake::score_bottom(-0.3);
+        pros::delay(1400);
         chain.exitAll();
     }
 }

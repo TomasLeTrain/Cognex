@@ -29,6 +29,7 @@ void pre_auton() {
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
+    intake::setAutonColorSort(false);
 }
 
 void run_auton() {
@@ -230,7 +231,6 @@ void run_auton() {
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     // only intake bottom balls to save time
-    intake::setColorSortEnabled(false);
     intake::in();
 
     mb.moveTo(-23.5, 21.4 * l).drive_maxVolt(0.45_volt) | chain;

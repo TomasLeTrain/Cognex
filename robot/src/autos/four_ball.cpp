@@ -30,6 +30,8 @@ void pre_auton() {
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
+
+    intake::setAutonColorSort(false);
 }
 
 void run_auton() {
@@ -240,17 +242,12 @@ void run_auton() {
         // drivetrain.moveTank(0_volt, 0_volt);
     };
 
-    intake::setSkillsMiddleScoring(true);
-    intake::setColorSortEnabled(false);
 
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
-    wings::set(inactive);
-
     RobotSetPose(-48.2, 16.3 * l, angle);
 
-    drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     mb.moveTo(-48, (match1 - 0.1_in) * l) | run;
 

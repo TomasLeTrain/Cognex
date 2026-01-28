@@ -28,6 +28,8 @@ void pre_auton() {
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
+
+    intake::setAutonColorSort(false);
 }
 
 void run_auton() {
@@ -59,15 +61,11 @@ void run_auton() {
     Voltage slow_wing_speed = 0.5_volt;
 
     intake::in();
-    intake::setColorSortEnabled(false);
 
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
-    wings::up();
-
     RobotSetPose(-45.7, 15 * l, 0);
-    drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     // if (!bl) {
     //     LaserResets({
@@ -82,10 +80,7 @@ void run_auton() {
     //                          RobotGetPose().orientation.convert(deg))
     //           << std::endl;
 
-    // only intake bottom balls to save time
-    intake::setColorSortEnabled(false);
-    // pros::delay(10);
-    intake::set(intake::intake_bottom_balls);
+    intake::in();
 
     mb.moveTo(-24.3, 23.4 * l).drive_maxVolt(0.5_volt) | chain;
 
@@ -132,10 +127,10 @@ void run_auton() {
     // pros::delay(1100);
     // chain.exitAll();
 
-	chain.waitUntil(closeEnough({ -25_in, long_goal * l  }, 7.5_in));
-	intake::score_long();
-	pros::delay(300);
-	chain.exitAll();
+    chain.waitUntil(closeEnough({ -25_in, long_goal * l }, 7.5_in));
+    intake::score_long();
+    pros::delay(300);
+    chain.exitAll();
 
     mb.boomerang(-23_in, long_goal * l, 0)
         .reverse()

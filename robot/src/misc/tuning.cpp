@@ -621,7 +621,7 @@ void long_goal_tuning() {
                 intake::score_long();
                 pros::delay(to_msec(score_time));
                 chain.exitAll();
-                intake::set(intake::intake_disabled);
+                intake::motors_disabled();
                 drivetrain.moveTank(0_volt, 0_volt);
             };
 

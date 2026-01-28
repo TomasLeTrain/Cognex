@@ -30,6 +30,8 @@ void pre_auton() {
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
+
+    intake::setAutonColorSort(false);
 }
 
 void run_auton() {
@@ -51,8 +53,6 @@ void run_auton() {
     // printf("before set pose\n");
     RobotSetPose(-46.57, -14, 90);
     // RobotSetPose(-62.4, 15.5 , angle);
-
-    intake::setColorSortEnabled(false);
 
     intake::in();
 
@@ -169,7 +169,7 @@ void run_auton() {
     mb.turnTo(-60, normal_match).executeAfterMotion([] {
         pros::delay(350);
 
-        intake::set(intake::intake_bottom_balls);
+        intake::in();
     }) |
       chain;
     auto thingy2 = chain.getCurrentIndex();
@@ -193,7 +193,6 @@ void run_auton() {
       //     // intake::set(intake::intake_disabled_open_middle);
       // })
       | chain;
-    // pf_model.setDisabled(false);
 
     mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
         .k_lat(0.3)
@@ -210,7 +209,9 @@ void run_auton() {
     chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
     intake::out();
     pros::delay(200);
-    intake::set(intake::scoring_middle_bottom_balls);
+
+    intake::score_middle();
+
     chain.exitAll();
     drivetrain.moveTank(0.1_volt, 0.2_volt);
     // start_time = now();

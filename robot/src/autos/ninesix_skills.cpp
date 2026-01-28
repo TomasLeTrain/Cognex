@@ -33,6 +33,8 @@ void pre_auton() {
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
+
+    intake::setAutonColorSort(false);
 }
 
 void run_auton() {
@@ -60,8 +62,7 @@ void run_auton() {
     units::V2Position centerBottomGoalFirst = { 12_in, 12_in };
     units::V2Position centerBottomGoalSecond = { -12_in, -11_in };
 
-    intake::setSkillsMiddleScoring(true);
-    intake::setColorSortEnabled(false);
+    intake::setAutonColorSort(false);
 
     auto make_matchloader_point = [](double sign_x,
                                      double sign_y) -> units::V2Position {
@@ -93,7 +94,7 @@ void run_auton() {
         matchloader::down();
 
         // don't unjam when matchloading
-        intake::setBottomUnjamDisabled(true);
+        intake::bottom::set_antijam(false);
 
         mb.boomerang(func)
             .timeout(3_sec)
@@ -137,8 +138,8 @@ void run_auton() {
 
         async.exitAll();
 
-        // set unjam back
-        intake::setBottomUnjamDisabled(false);
+        // don't unjam when matchloading
+        intake::bottom::set_antijam(true);
     };
 
     auto score_long_goal = [](double sign_x,
@@ -227,16 +228,9 @@ void run_auton() {
     };
 
     /* START AUTON */
-
-    // pull wing up to avoid any collision with game objects (bad for cog?)
-    wings::set(inactive);
-
     RobotSetPose(-45.7, 15, 0);
-    drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
-    // only intake bottom balls to save time
-    intake::setColorSortEnabled(false);
-    intake::set(intake::intake_bottom_top_backwards);
+    intake::in();
 
     mb.moveTo(-31.0, 19.4) | run;
 
@@ -257,17 +251,13 @@ void run_auton() {
       chain;
 
     chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
-    intake::set(intake::outtake_open_middle);
-    pros::delay(150);
-    intake::set(intake::scoring_middle_bottom_balls);
-    pros::delay(100);
-    intake::set(intake::scoring_middle_bottom_balls_slow);
+    intake::score_middle();
     chain.exitAll();
     drivetrain.moveTank(0.07_volt, 0.07_volt);
 
     pros::delay(1600);
 
-    mb.moveTo(-48, match1 - 0.0_in)
+    mb.moveTo(-48, match1)
         .reverse()
         .only_y(true)
         .drive_maxVolt(0.7_volt)
@@ -291,7 +281,7 @@ void run_auton() {
     mb.moveTo(-27, 59.5)
         .reverse()
         .executeAfterMotion([] {
-            intake::set(intake::intake_disabled);
+            intake::motors_disabled();
             matchloader::up();
         })
         .drive_chainErrorTolerance(8_in)
@@ -428,31 +418,26 @@ void run_auton() {
     async.waitUntil(closeEnough({ 8_in, -8_in }, 6.6_in));
 
     // intake::set(intake::scoring_middle_bottom_balls);
-    intake::set(intake::outtake_bottom_balls_open_middle);
-    pros::delay(100);
-    intake::set(intake::scoring_middle_bottom_balls);
-    pros::delay(300);
-    intake::set(intake::scoring_middle_bottom_balls_slow);
+    // intake::score_middle();
 
-    start_time = now();
-    bool bad_color = false;
+    // start_time = now();
+    // bool bad_color = false;
+    //
+    // while (true) {
+    //     bool timeout_done = timeoutDone(2900_msec, start_time);
+    //     // bad_color = intake::getMiddleDetectedColor() == alliance_t::blue;
+    //     if (timeout_done || bad_color) break;
+    //
+    //     pros::delay(10);
+    // }
 
-    while (true) {
-        bool timeout_done = timeoutDone(2900_msec, start_time);
-        bad_color = intake::getMiddleDetectedColor() == alliance_t::blue;
-        if (timeout_done || bad_color) break;
-
-        pros::delay(10);
-    }
-
-    intake::set(intake::scoring_middle_top_balls_skills_fast);
-    pros::delay(800);
-    intake::set(intake::scoring_middle_top_balls_skills);
-    pros::delay(1200);
+    intake::score_middle();
+    pros::delay(3000);
 
     // exit any motions if the are somehow still executing
     async.exitAll();
 
+    // ????????
     mb.moveTo(48, match3 - 1.7_in)
         .reverse()
         .drive_backwardsAccelSlew(0.05_volt) |
@@ -468,9 +453,9 @@ void run_auton() {
     pros::delay(100);
 
     // manually add 3 degrees to orientation
-    RobotSetPose({ RobotGetPose().x,
-                   RobotGetPose().y,
-                   RobotGetPose().orientation + 2_stDeg });
+    // RobotSetPose({ RobotGetPose().x,
+    //                RobotGetPose().y,
+    //                RobotGetPose().orientation + 2_stDeg });
     pros::delay(30);
 
     mb.turnTo(make_matchloader_point(1, -1)) | run;
@@ -486,7 +471,7 @@ void run_auton() {
     mb.moveTo(27, -59.5)
         .reverse()
         .executeAfterMotion([] {
-            intake::set(intake::intake_disabled);
+			intake::motors_disabled();
             matchloader::up();
         })
         .drive_chainErrorTolerance(8_in)
@@ -512,9 +497,9 @@ void run_auton() {
     // intake::in();
 
     // manually add 3 degrees to orientation
-    RobotSetPose({ RobotGetPose().x,
-                   RobotGetPose().y,
-                   RobotGetPose().orientation + 1_stDeg });
+    // RobotSetPose({ RobotGetPose().x,
+    //                RobotGetPose().y,
+    //                RobotGetPose().orientation + 1_stDeg });
 
     pros::delay(20);
 

@@ -29,6 +29,8 @@ void pre_auton() {
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
+
+    intake::setAutonColorSort(false);
 }
 
 void run_auton() {
@@ -57,8 +59,6 @@ void run_auton() {
     // printf("before set pose\n");
     RobotSetPose(-46.57, 14, 270);
     // RobotSetPose(-62.4, 15.5 , angle);
-
-    intake::setColorSortEnabled(false);
 
     intake::in();
 
@@ -175,8 +175,7 @@ void run_auton() {
     //   chain;
     mb.moveTo(-1_tile, 1_tile)
         .executeAfterMotion([] {
-            // intake::set(intake::intake_bottom_balls);
-            intake::set(intake::intake_bottom_top_backwards);
+            intake::in();
         })
         .drive_minVolt(0.5_volt)
         .setChainTime(0_sec) |
@@ -200,9 +199,7 @@ void run_auton() {
     chain.waitUntil(closeEnough({ -1_tile, 1_tile }, 7_in));
     matchloader::down();
     chain.waitUntil(closeEnough({ -8_in, 8_in }, 5.5_in));
-    intake::set(intake::intake_disabled_open_middle);
-    pros::delay(100);
-    intake::set(intake::scoring_middle_bottom_balls);
+    intake::score_middle();
     chain.exitAll();
     drivetrain.moveTank(0.1_volt, 0.1_volt);
 
