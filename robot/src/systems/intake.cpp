@@ -660,14 +660,14 @@ void init(bool gdriver) {
       },
       "antijam");
 
-    pros::Task colorsort_task(
-      [] {
-          while (true) {
-              colorSort();
-              pros::delay(10);
-          }
-      },
-      "colorsort");
+    // pros::Task colorsort_task(
+    //   [] {
+    //       while (true) {
+    //           colorSort();
+    //           pros::delay(10);
+    //       }
+    //   },
+    //   "colorsort");
 
     pros::Task main_intake_task(
       [] {
