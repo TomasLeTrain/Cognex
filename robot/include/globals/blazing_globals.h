@@ -6,6 +6,7 @@
 #include "globals/config.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
+#include "lyfast/vel_controller.hpp"
 
 using namespace blazing;
 
@@ -41,9 +42,9 @@ extern AngularVoltageClampController angular_voltage_constraints;
 extern PIDLinearController linear_pid_controller;
 extern PIDAngularController angular_pid_controller;
 
-extern blazing::lyfast::VelocityController linear_velocity_controller;
-extern blazing::lyfast::VelocityController angular_velocity_controller;
-extern lyfast::LinearAngularVelocityController vel_controller;
+extern blazing::lyfast::DifferentialVelocityController linear_velocity_controller;
+extern blazing::lyfast::DifferentialVelocityController angular_velocity_controller;
+extern lyfast::ArcadeVelocityController vel_controller;
 extern PID<Length, LinearVelocity> linear_vel_pid;
 
 extern CascadedControllers<decltype(linear_vel_pid),

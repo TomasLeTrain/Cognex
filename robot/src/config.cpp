@@ -395,7 +395,7 @@ PID<Angle, Voltage> turn_heading_pid(turn_heading_pid_config.kp,
 PIDLinearController linear_pid_controller(linear_pid);
 PIDAngularController angular_pid_controller(turn_drive_pid);
 
-blazing::lyfast::VelocityController linear_velocity_controller(
+blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
     // custom accel
     // .left_Kv = 0.426161 * volt / mps,
@@ -429,7 +429,7 @@ blazing::lyfast::VelocityController linear_velocity_controller(
   drivetrain_config.track_width,
   drivetrain);
 
-blazing::lyfast::VelocityController angular_velocity_controller(
+blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
     // desmos constants
     .left_Kv = 0.451918 * volt / mps,
@@ -447,10 +447,10 @@ blazing::lyfast::VelocityController angular_velocity_controller(
   drivetrain_config.track_width,
   drivetrain);
 
-lyfast::LinearAngularVelocityController vel_controller {
-    linear_velocity_controller,
-    angular_velocity_controller
-};
+lyfast::ArcadeVelocityController vel_controller { linear_velocity_controller,
+                                                  angular_velocity_controller,
+                                                  drivetrain_config.track_width,
+                                                  drivetrain };
 
 PID<Length, LinearVelocity> linear_vel_pid(0.5,
                                            0.0,
