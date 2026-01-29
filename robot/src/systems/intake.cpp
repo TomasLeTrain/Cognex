@@ -67,7 +67,7 @@ void set_bottom(bottom_state_t bottom_state) {
 void update() {
     std::lock_guard lock(mutex);
     top_intake_piston.set_value(top == blocking);
-    middle_intake_piston.set_value(middle == aligned_middle);
+    middle_intake_piston.set_value(middle == aligned_top);
     bottom_intake_piston.set_value(bottom == up);
 }
 

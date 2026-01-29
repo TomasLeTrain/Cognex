@@ -15,15 +15,15 @@ using namespace vexmaps;
 // clang-format off
 // motor groups
 
-int8_t left_front = 3;
-int8_t left_middle = -1;
-int8_t left_back = -15;
+int8_t left_front = 15;
+int8_t left_middle = -14;
+int8_t left_back = -12;
 
-int8_t right_front = -13;
-int8_t right_middle = 14;
-int8_t right_back = 12;
+int8_t right_front = -17;
+int8_t right_middle = 16;
+int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -32,7 +32,7 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 
 // inertial sensor
 // vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
-vexmaps::ScaledIMU imu(17, (360.0 + 3) / 360.0);
+vexmaps::ScaledIMU imu(11, (360.0 + 3) / 360.0);
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
 // vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
@@ -41,34 +41,34 @@ vexmaps::ScaledIMU imu(17, (360.0 + 3) / 360.0);
 // pros::Motor top_motor(-1);
 
 // disable for testing
-pros::Motor bottom_motor(-16);
-pros::Motor top_motor(-18);
+pros::Motor bottom_motor(-5);
+pros::Motor top_motor(-9);
 
-pros::Optical middle_intake_color_sensor(10);
+pros::Optical middle_intake_color_sensor(6);
 pros::Optical bottom_intake_color_sensor(21);
 
 // pistons
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
-pros::adi::DigitalOut top_intake_piston('B', false);
-pros::adi::DigitalOut middle_intake_piston('D', true);
+pros::adi::DigitalOut top_intake_piston('D', false);
+pros::adi::DigitalOut middle_intake_piston('E', false);
 pros::adi::DigitalOut wings_piston('C', false);
 
-pros::adi::DigitalOut matchloader_piston('A', false);
-pros::adi::DigitalOut odom_retract_piston('E', false);
+pros::adi::DigitalOut matchloader_piston('H', false);
+pros::adi::DigitalOut odom_retract_piston('G', false);
 
-pros::adi::DigitalOut bottom_intake_piston('G', false);
+pros::adi::DigitalOut bottom_intake_piston('F', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(-5);
-pros::Rotation sideways_odom_rotation(7);
+pros::Rotation forwards_odom_rotation(-13);
+pros::Rotation sideways_odom_rotation(18);
 
 // particle filter distance sensors
 pros::Distance front_distance(4);
-pros::Distance back_distance(19);
-pros::Distance left_distance(9);
-pros::Distance right_distance(20);
+pros::Distance back_distance(8);
+pros::Distance left_distance(2);
+pros::Distance right_distance(7);
 
 // cor + cor_offsets = geometric
 units::V2Position odom_cor_offsets = { 0.0_in, 0_in };
@@ -398,17 +398,33 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 blazing::lyfast::VelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
     // custom accel
-    .left_Kv = 0.426161 * volt / mps,
-    .left_Ka = 0.08 * volt / mps2,
-    .left_Ks = 0.0481902 * volt,
-    .left_Kp = 0.934514846239 * volt / mps,
-    .left_Ki = 4.58736473058 * volt / m,
+    // .left_Kv = 0.426161 * volt / mps,
+    // .left_Ka = 0.08 * volt / mps2,
+    // .left_Ks = 0.0481902 * volt,
+    // .left_Kp = 0.934514846239 * volt / mps,
+    // .left_Ki = 4.58736473058 * volt / m,
+    //
+    // .right_Kv = 0.425642 * volt / mps,
+    // .right_Ka = 0.081 * volt / mps2,
+    // .right_Ks = 0.0499037 * volt,
+    // .right_Kp = 0.940127699096 * volt / mps,
+    // .right_Ki = 4.65515950473 * volt / m,
 
-    .right_Kv = 0.425642 * volt / mps,
-    .right_Ka = 0.081 * volt / mps2,
-    .right_Ks = 0.0499037 * volt,
-    .right_Kp = 0.940127699096 * volt / mps,
-    .right_Ki = 4.65515950473 * volt / m,
+    .left_Kv = 0.710047 * volt / mps,
+    .left_Ka = 2.94054 * volt / mps2,
+    .left_Ks = 0.0627854 * volt,
+
+    // lambda factor: 0.6
+    .left_Kp = 0.866009 * volt / mps,
+    .left_Ki = 0.153027 * volt / m,
+
+    .right_Kv = 0.44865 * volt / mps,
+    .right_Ka = 1.19249 * volt / mps2,
+    .right_Ks = 0.078962 * volt,
+    // lambda factor: 0.6
+    .right_Kp = 0.762867 * volt / mps,
+    .right_Ki = 0.292817 * volt / m,
+
   },
   drivetrain_config.track_width,
   drivetrain);

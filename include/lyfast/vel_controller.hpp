@@ -74,13 +74,12 @@ class SimpleVelocityController {
 
   public:
     Voltage update(T measurement, T target, Time duration) {
-        LinearAcceleration target_accel =
-          (target -
-           // combines measurement and last_speeds
-           last_speed.value_or(T(0))) /
-          duration;
+        Divided<T, Time> target_accel = (target -
+                                         // combines measurement and last_speeds
+                                         last_speed.value_or(T(0))) /
+                                        duration;
 
-        LinearVelocity error = target - measurement;
+        T error = target - measurement;
 
         integral += error * duration;
 
@@ -171,21 +170,6 @@ class VelocityController {
     LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
         // fall back to using specified drivetrain
         return update(drivetrain.getDrivetrainVelocities(), target, duration);
-
-        // LinearVelocity target_left_vel =
-        //   target.linear_velocity -
-        //   (target.angular_velocity / rad) * (m_track_width / 2);
-        // LinearVelocity target_right_vel =
-        //   target.linear_velocity +
-        //   (target.angular_velocity / rad) * (m_track_width / 2);
-        //
-        // auto left_voltage = left_controller.update(target_left_vel,
-        // duration); auto right_voltage =
-        //   right_controller.update(target_right_vel, duration);
-        //
-        // LeftRightVoltages result = { left_voltage, right_voltage };
-        //
-        // return result;
     }
 
     // allows using as only a linear feedforward

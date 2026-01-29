@@ -31,12 +31,15 @@ void linear_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
                            double lambda_factor = 0.6,
                            Time accel_time = 2_sec,
                            Time delta_time = 10_msec);
+
 void angular_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
                             double lambda_factor = 0.6,
                             Time accel_time = 2_sec,
                             Time delta_time = 10_msec);
+
 void linear_kv_ks_tuner(Time delta_time = 10_msec);
 void angular_kv_ks_tuner(Time delta_time = 10_msec);
+
 void linear_raw_ka_tuner(blazing::lyfast::KvUnits left_Kv,
                          blazing::lyfast::KsUnits left_Ks,
                          blazing::lyfast::KvUnits right_Kv,
