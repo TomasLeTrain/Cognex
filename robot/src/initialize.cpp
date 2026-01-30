@@ -113,6 +113,36 @@ void initialize() {
         return boomerang.k_lat(0.15 * rad / m, true).timeout(5_sec);
         // .customAngularLinearFunc(angular_linear_func);
     });
+
+    // velocity mb
+    mb_vel.setTurnToModifier([](auto turnTo) {
+        return turnTo
+          .velocity_based(true)
+          // speecifically uses turn heading pid instead of drive pid
+          .withAngularFeedbackController(turn_heading_pid)
+          .timeout(5_sec);
+    });
+
+    mb_vel.setDistanceAtHeadingModifier([](auto distanceAtHeading) {
+        return distanceAtHeading.velocity_based(true).timeout(5_sec);
+    });
+
+    mb_vel.setMoveToModifier([](auto moveTo) {
+        // return moveTo.customAngularLinearFunc(angular_linear_func);
+        return moveTo.velocity_based(true).k_lat(0.15 * rad / m).timeout(3_sec);
+        // return moveTo.timeout(3_sec);
+        // .customAngularLinearFunc(angular_linear_func);
+    });
+
+    mb_vel.setBoomerangModifier([](auto boomerang) {
+        // return boomerang.customAngularLinearFunc(angular_linear_func);
+        // return boomerang.k_lat();
+        return boomerang.velocity_based(true)
+          .k_lat(0.15 * rad / m, true)
+          .timeout(5_sec);
+        // .customAngularLinearFunc(angular_linear_func);
+    });
+
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
                                                screen::health::succeed);
 

@@ -2,8 +2,11 @@
 #include "apis.h"
 //
 
+#include "blazing/controllers/controllers.hpp"
+#include "blazing/controllers/slew.hpp"
 #include "globals.h"
 #include "lyfast/vel_controller.hpp"
+#include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include "vexmaps/mcl/distance_model.hpp"
 
@@ -50,7 +53,7 @@ pros::Optical bottom_intake_color_sensor(21);
 // pistons
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
-pros::adi::DigitalOut top_intake_piston('D', false);
+pros::adi::DigitalOut gate_intake_piston('D', true);
 pros::adi::DigitalOut middle_intake_piston('E', false);
 pros::adi::DigitalOut wings_piston('C', false);
 
@@ -74,7 +77,7 @@ pros::Distance right_distance(7);
 units::V2Position odom_cor_offsets = { 0.0_in, 0_in };
 
 // geometric -> cor
-units::V2Position dist_cor_offsets = { 0.5_in, 0_in };
+units::V2Position dist_cor_offsets = { 0.0_in, 0_in };
 
 constexpr units::Pose distToCor(units::Pose dist_pose) {
     return { dist_pose - dist_cor_offsets, dist_pose.orientation };
@@ -82,16 +85,16 @@ constexpr units::Pose distToCor(units::Pose dist_pose) {
 
 // distance sensor offsets
 units::Pose front_distance_offsets =
-  distToCor({ 3.2_in, +(12.5_in / 2) - 0.75_in, 0_stDeg });
+  distToCor({ 4_in, +(12.5_in / 2) - 2.25_in, 0_stDeg });
 
-units::Pose left_distance_offsets = distToCor(
-  { 3.5_in + 0.625_in, +(12.5_in / 2) - 1.2_in - 0.375_in, 90_stDeg });
+units::Pose left_distance_offsets =
+  distToCor({ 1.25_in, +(12.5_in / 2) - 2.25_in, 90_stDeg });
 
 units::Pose back_distance_offsets =
-  distToCor({ -(15.5_in / 2) + 1.0_in, 2.35_in, 180_stDeg });
+  distToCor({ -2_in, -(12.5_in / 2) + 3_in, 180_stDeg });
 
 units::Pose right_distance_offsets =
-  distToCor({ -0.7_in, -(12.5_in / 2) + 2.23_in, 270_stDeg });
+  distToCor({ 1.25_in, -(12.5_in / 2) + 2.25_in, 270_stDeg });
 
 // TODO: update
 double front_distance_scale_factor = 0.986105769705;
@@ -452,6 +455,10 @@ lyfast::ArcadeVelocityController vel_controller { linear_velocity_controller,
                                                   drivetrain_config.track_width,
                                                   drivetrain };
 
+lyfast::VelocityFeedforward<decltype(vel_controller)>
+  controller_velocity_controller(vel_controller);
+
+// linear velocity stuff
 PID<Length, LinearVelocity> linear_vel_pid(0.5,
                                            0.0,
                                            3.6,
@@ -462,21 +469,45 @@ PID<Length, LinearVelocity> linear_vel_pid(0.5,
                                            1_in,
                                            1_inps);
 
-CascadedControllers<decltype(linear_vel_pid),
-                    decltype(vel_controller),
-                    Length,
-                    LinearVelocity,
-                    Voltage>
-  linear_control(linear_vel_pid, vel_controller);
+PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
 
-lyfast::VelocityFeedforward<decltype(vel_controller)>
-  controller_velocity_controller(vel_controller);
+LinearVelocitySlewController linear_vel_slew_controller {};
+LinearVelocityClampController linear_vel_clamp_controller {};
+
+// end linear velocity stuff //
+
+// start angular velocity stuff
+PID<Angle, AngularVelocity> angular_vel_pid(0.5,
+                                            0.0,
+                                            3.6,
+                                            7,
+                                            // std::nullopt,
+                                            70,
+                                            50_msec,
+                                            1_stDeg,
+                                            1_degps);
+
+PIDAngularVelocityController angular_vel_pid_controller(angular_vel_pid);
+
+AngularVelocitySlewController angular_vel_slew_controller {};
+AngularVelocityClampController angular_vel_clamp_controller {};
+
+// end angular velocity stuff //
 
 Controllers<decltype(linear_pid_controller),
             decltype(angular_pid_controller),
             decltype(controller_velocity_controller),
             decltype(linear_slew),
             decltype(angular_slew),
+
+            decltype(linear_vel_pid_controller),
+            decltype(linear_vel_slew_controller),
+            decltype(linear_vel_clamp_controller),
+
+            decltype(angular_vel_pid_controller),
+            decltype(angular_vel_slew_controller),
+            decltype(angular_vel_clamp_controller),
+
             decltype(linear_voltage_constraints),
             decltype(angular_voltage_constraints)>
   controllers(
@@ -488,6 +519,16 @@ Controllers<decltype(linear_pid_controller),
     // slew controllers
     linear_slew,
     angular_slew,
+
+    // linear velocity controllers
+    linear_vel_pid_controller,
+    linear_vel_slew_controller,
+    linear_vel_clamp_controller,
+
+    // angular velocity controllers
+    angular_vel_pid_controller,
+    angular_vel_slew_controller,
+    angular_vel_clamp_controller,
 
     // voltage constraints controllers
     // (included just so they can be set per motion)
@@ -696,6 +737,9 @@ Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
   mb(vexmaps_chassis, controllers);
+
+MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
+  mb_vel(vexmaps_chassis, controllers);
 
 // MotionBuilder<decltype(blazing_chassis), decltype(controllers)>
 //   mb(blazing_chassis, controllers);

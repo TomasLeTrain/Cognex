@@ -169,12 +169,6 @@ void manual_mp_test() {
 }
 
 void opcontrol() {
-
-    // goated linear pid:
-    // kp: 6.9
-    // ki: 0.3
-    // kd: 9.9
-
     //    RobotSetPose(-48, -48, 180);
     //
     // intake::init(false);
@@ -189,9 +183,11 @@ void opcontrol() {
 
     // odom_offset_tuning();
 
+	// linear_kv_ks_tuner();
     linear_ka_kp_ki_tuner();
-    manual_mp_test();
-    return;
+	return;
+    // manual_mp_test();
+    // return;
 
     // matchloader::init(false);
     // turn_pid_tuning();

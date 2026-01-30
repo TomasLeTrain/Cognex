@@ -109,8 +109,9 @@ struct LinearVelocityFeedbackController : virtual ControllerBase {
     // creates a copy of the controller with different linear feedback
     // controller
     template<typename Self>
-    Self with_linear_feedback(this Self&& self,
-                              Controller new_linear_velocity_feedback) {
+    Self
+    with_linear_velocity_feedback(this Self&& self,
+                                  Controller new_linear_velocity_feedback) {
         Self new_self = self;
         new_self.linear_velocity_feedback = new_linear_velocity_feedback;
         return new_self;
@@ -129,8 +130,9 @@ struct AngularVelocityFeedbackController : virtual ControllerBase {
     // creates a copy of the controller with different angular feedback
     // controller
     template<typename Self>
-    Self with_angular_feedback(this Self&& self,
-                               Controller new_angular_velocity_feedback) {
+    Self
+    with_angular_velocity_feedback(this Self&& self,
+                                   Controller new_angular_velocity_feedback) {
         Self new_self = self;
         new_self.angular_velocity_feedback = new_angular_velocity_feedback;
         return new_self;

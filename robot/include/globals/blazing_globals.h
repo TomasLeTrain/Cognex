@@ -3,6 +3,8 @@
 #include "apis.h"
 //
 #include "auton_globals.h"
+#include "blazing/controllers/clamp.hpp"
+#include "blazing/controllers/controllers.hpp"
 #include "globals/config.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
@@ -42,26 +44,39 @@ extern AngularVoltageClampController angular_voltage_constraints;
 extern PIDLinearController linear_pid_controller;
 extern PIDAngularController angular_pid_controller;
 
-extern blazing::lyfast::DifferentialVelocityController linear_velocity_controller;
-extern blazing::lyfast::DifferentialVelocityController angular_velocity_controller;
+extern blazing::lyfast::DifferentialVelocityController
+  linear_velocity_controller;
+extern blazing::lyfast::DifferentialVelocityController
+  angular_velocity_controller;
 extern lyfast::ArcadeVelocityController vel_controller;
-extern PID<Length, LinearVelocity> linear_vel_pid;
-
-extern CascadedControllers<decltype(linear_vel_pid),
-                           decltype(vel_controller),
-                           Length,
-                           LinearVelocity,
-                           Voltage>
-  linear_control;
 
 extern lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller;
+
+extern PID<Length, LinearVelocity> linear_vel_pid;
+extern PIDLinearVelocityController linear_vel_pid_controller;
+extern LinearVelocitySlewController linear_vel_slew_controller;
+extern LinearVelocityClampController linear_vel_clamp_controller;
+
+extern PID<Angle, AngularVelocity> angular_vel_pid;
+extern PIDAngularVelocityController angular_vel_pid_controller;
+extern AngularVelocitySlewController angular_vel_slew_controller;
+extern AngularVelocityClampController angular_vel_clamp_controller;
 
 extern Controllers<decltype(linear_pid_controller),
                    decltype(angular_pid_controller),
                    decltype(controller_velocity_controller),
                    decltype(linear_slew),
                    decltype(angular_slew),
+
+                   decltype(linear_vel_pid_controller),
+                   decltype(linear_vel_slew_controller),
+                   decltype(linear_vel_clamp_controller),
+
+                   decltype(angular_vel_pid_controller),
+                   decltype(angular_vel_slew_controller),
+                   decltype(angular_vel_clamp_controller),
+
                    decltype(linear_voltage_constraints),
                    decltype(angular_voltage_constraints)>
   controllers;
@@ -125,6 +140,7 @@ extern Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 // extern MotionBuilder<decltype(blazing_chassis), decltype(controllers)> mb;
 extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)> mb;
+extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)> mb_vel;
 
 extern ChainedExecutor chain;
 
