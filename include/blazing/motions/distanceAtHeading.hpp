@@ -211,7 +211,7 @@ class distanceAtHeading
                 LinearVelocity linear_vel =
                   this->controllers.linear_velocity_feedback.update(
                     -linear_error,
-                    0_stRad,
+                    0_in,
                     delta_time);
 
                 AngularVelocity angular_vel =
@@ -224,7 +224,7 @@ class distanceAtHeading
                     linear_vel =
                       this->controllers.linear_velocity_clamp.apply(linear_vel);
                 }
-                if constexpr (hasAngularVoltageClamp<ControllersType>) {
+                if constexpr (hasAngularVelocityClamp<ControllersType>) {
                     angular_vel =
                       this->controllers.angular_velocity_clamp.apply(
                         angular_vel);

@@ -138,7 +138,7 @@ void initialize() {
           turnTo
             .velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
-            // .withAngularFeedbackController(turn_heading_pid)
+            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
             .timeout(5_sec));
     });
 

@@ -64,6 +64,8 @@ extern LinearVelocityClampController linear_vel_clamp_controller;
 
 // start angular velocity stuff //
 extern PID<Angle, AngularVelocity> angular_vel_pid;
+extern PID<Angle, AngularVelocity> turn_heading_vel_pid;
+
 extern PIDAngularVelocityController angular_vel_pid_controller;
 
 extern AngularVelocitySlewController angular_vel_slew_controller;
@@ -72,21 +74,21 @@ extern AngularVelocityClampController angular_vel_clamp_controller;
 // end angular velocity stuff //
 
 extern Controllers<decltype(linear_pid_controller),
-            decltype(angular_pid_controller),
-            decltype(controller_velocity_controller),
-            decltype(linear_slew),
-            decltype(angular_slew),
+                   decltype(angular_pid_controller),
+                   decltype(controller_velocity_controller),
+                   decltype(linear_slew),
+                   decltype(angular_slew),
 
-            decltype(linear_vel_pid_controller),
-            decltype(linear_vel_slew_controller),
-            decltype(linear_vel_clamp_controller),
+                   decltype(linear_vel_pid_controller),
+                   decltype(linear_vel_slew_controller),
+                   decltype(linear_vel_clamp_controller),
 
-            decltype(angular_vel_pid_controller),
-            decltype(angular_vel_slew_controller),
-            decltype(angular_vel_clamp_controller),
+                   decltype(angular_vel_pid_controller),
+                   decltype(angular_vel_slew_controller),
+                   decltype(angular_vel_clamp_controller),
 
-            decltype(linear_voltage_constraints),
-            decltype(angular_voltage_constraints)>
+                   decltype(linear_voltage_constraints),
+                   decltype(angular_voltage_constraints)>
   controllers;
 
 // normal tolerances
