@@ -280,7 +280,7 @@ class AngularMotion {
         requires std::derived_from<typename Derived::controllersType,
                                    PIDAngularController>
     {
-        ThisDerived->controllers.angular_feedback.set_maxVoltage(maxVoltage);
+        ThisDerived->controllers.angular_feedback.set_maxOutput(maxVoltage);
         return DerivedReturnType;
     }
 
@@ -393,29 +393,93 @@ class AngularMotion {
 
     // velocity pid changers
     motionChangerT turn_vel_kp(T kp) {
-        ThisDerived->controllers.angular_feedback.controller1.set_kp(kp);
+        ThisDerived->controllers.angular_velocity_feedback.set_kp(kp);
         return DerivedReturnType;
     }
 
     motionChangerT turn_vel_ki(T ki) {
-        ThisDerived->controllers.angular_feedback.controller1.set_ki(ki);
+        ThisDerived->controllers.angular_velocity_feedback.set_ki(ki);
         return DerivedReturnType;
     }
 
     motionChangerT turn_vel_kd(T kd) {
-        ThisDerived->controllers.angular_feedback.controller1.set_kd(kd);
+        ThisDerived->controllers.angular_velocity_feedback.set_kd(kd);
         return DerivedReturnType;
     }
 
     motionChangerT turn_vel_windupRange(T windupRange) {
-        ThisDerived->controllers.angular_feedback.controller1.set_windupRange(
+        ThisDerived->controllers.angular_velocity_feedback.set_windupRange(
           windupRange);
         return DerivedReturnType;
     }
 
-    motionChangerT turn_vel_PIDmaxVolt(T maxVoltage) {
-        ThisDerived->controllers.angular_feedback.controller1.set_maxVoltage(
+    motionChangerT turn_vel_PIDmaxVel(T maxVoltage) {
+        ThisDerived->controllers.angular_velocity_feedback.set_maxOutput(
           maxVoltage);
+        return DerivedReturnType;
+    }
+
+    // Angular Velocity constraints
+    motionChangerTU turn_vel_minMaxVel(T minVelocity, U maxVelocity)
+        requires std::derived_from<typename Derived::controllersType,
+                                   AngularVelocityClampController>
+    {
+        ThisDerived->controllers.angular_velocity_clamp.setMin(maxVelocity);
+        ThisDerived->controllers.angular_velocity_clamp.setMax(maxVelocity);
+        return DerivedReturnType;
+    }
+
+    motionChangerT turn_vel_minVel(T minVelocity)
+        requires std::derived_from<typename Derived::controllersType,
+                                   AngularVelocityClampController>
+    {
+        ThisDerived->controllers.angular_velocity_clamp.setMin(minVelocity);
+        return DerivedReturnType;
+    }
+
+    motionChangerT turn_vel_maxVel(T maxVelocity)
+        requires std::derived_from<typename Derived::controllersType,
+                                   AngularVelocityClampController>
+    {
+        ThisDerived->controllers.angular_velocity_clamp.setMax(maxVelocity);
+        return DerivedReturnType;
+    }
+
+    // Angular slew changers
+    motionChangerT turn_vel_slew(AngularSlewController new_slew)
+        requires hasAngularVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.angular_velocity_slew = new_slew;
+        return DerivedReturnType;
+    }
+
+    motionChangerT turn_vel_accelSlew(T accelSlew)
+        requires hasAngularVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.angular_velocity_slew.set_accel(accelSlew);
+        return DerivedReturnType;
+    }
+
+    motionChangerT turn_vel_backwardsAccelSlew(T backwardsAccelSlew)
+        requires hasAngularVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.angular_velocity_slew.set_backwards_accel(
+          backwardsAccelSlew);
+        return DerivedReturnType;
+    }
+
+    motionChangerT turn_vel_backwardsDecelSlew(T backwardsDecelSlew)
+        requires hasAngularVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.angular_velocity_slew.set_backwards_decel(
+          backwardsDecelSlew);
+        return DerivedReturnType;
+    }
+
+    motionChangerT turn_vel_decelSlew(T decelSlew)
+        requires hasAngularVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.angular_velocity_slew.set_decel(decelSlew);
         return DerivedReturnType;
     }
 };
@@ -461,7 +525,7 @@ class LinearMotion {
         requires std::derived_from<typename Derived::controllersType,
                                    PIDLinearController>
     {
-        ThisDerived->controllers.linear_feedback.set_maxVoltage(maxVoltage);
+        ThisDerived->controllers.linear_feedback.set_maxOutput(maxVoltage);
         return DerivedReturnType;
     }
 
@@ -572,29 +636,93 @@ class LinearMotion {
 
     // velocity pid changers
     motionChangerT drive_vel_kp(T kp) {
-        ThisDerived->controllers.linear_feedback.controller1.set_kp(kp);
+        ThisDerived->controllers.linear_velocity_feedback.set_kp(kp);
         return DerivedReturnType;
     }
 
     motionChangerT drive_vel_ki(T ki) {
-        ThisDerived->controllers.linear_feedback.controller1.set_ki(ki);
+        ThisDerived->controllers.linear_velocity_feedback.set_ki(ki);
         return DerivedReturnType;
     }
 
     motionChangerT drive_vel_kd(T kd) {
-        ThisDerived->controllers.linear_feedback.controller1.set_kd(kd);
+        ThisDerived->controllers.linear_velocity_feedback.set_kd(kd);
         return DerivedReturnType;
     }
 
     motionChangerT drive_vel_windupRange(T windupRange) {
-        ThisDerived->controllers.linear_feedback.controller1.set_windupRange(
+        ThisDerived->controllers.linear_velocity_feedback.set_windupRange(
           windupRange);
         return DerivedReturnType;
     }
 
     motionChangerT drive_vel_PIDmaxVolt(T maxVoltage) {
-        ThisDerived->controllers.linear_feedback.controller1.set_maxVoltage(
+        ThisDerived->controllers.linear_velocity_feedback.set_maxOutput(
           maxVoltage);
+        return DerivedReturnType;
+    }
+
+    // linear Velocity constraints
+    motionChangerTU drive_vel_minMaxVolt(T minVelocity, U maxVelocity)
+        requires std::derived_from<typename Derived::controllersType,
+                                   LinearVelocityClampController>
+    {
+        ThisDerived->controllers.linear_velocity_clamp.setMin(maxVelocity);
+        ThisDerived->controllers.linear_velocity_clamp.setMax(maxVelocity);
+        return DerivedReturnType;
+    }
+
+    motionChangerT drive_vel_minVolt(T minVelocity)
+        requires std::derived_from<typename Derived::controllersType,
+                                   LinearVelocityClampController>
+    {
+        ThisDerived->controllers.linear_velocity_clamp.setMin(minVelocity);
+        return DerivedReturnType;
+    }
+
+    motionChangerT drive_vel_maxVolt(T maxVelocity)
+        requires std::derived_from<typename Derived::controllersType,
+                                   LinearVelocityClampController>
+    {
+        ThisDerived->controllers.linear_velocity_clamp.setMax(maxVelocity);
+        return DerivedReturnType;
+    }
+
+    // linear slew changers
+    motionChangerT drive_vel_slew(LinearSlewController new_slew)
+        requires hasLinearVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.linear_velocity_slew = new_slew;
+        return DerivedReturnType;
+    }
+
+    motionChangerT drive_vel_accelSlew(T accelSlew)
+        requires hasLinearVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.linear_velocity_slew.set_accel(accelSlew);
+        return DerivedReturnType;
+    }
+
+    motionChangerT drive_vel_backwardsAccelSlew(T backwardsAccelSlew)
+        requires hasLinearVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.linear_velocity_slew.set_backwards_accel(
+          backwardsAccelSlew);
+        return DerivedReturnType;
+    }
+
+    motionChangerT drive_vel_backwardsDecelSlew(T backwardsDecelSlew)
+        requires hasLinearVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.linear_velocity_slew.set_backwards_decel(
+          backwardsDecelSlew);
+        return DerivedReturnType;
+    }
+
+    motionChangerT drive_vel_decelSlew(T decelSlew)
+        requires hasLinearVelocitySlew<typename Derived::controllersType>
+    {
+        ThisDerived->controllers.linear_velocity_slew.set_decel(decelSlew);
         return DerivedReturnType;
     }
 };

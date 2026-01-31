@@ -96,7 +96,6 @@ units::Pose back_distance_offsets =
 units::Pose right_distance_offsets =
   distToCor({ 1.25_in, -(12.5_in / 2) + 2.25_in, 270_stDeg });
 
-// TODO: update
 double front_distance_scale_factor = 0.973792726538;
 Length front_distance_scale_offset = 0.796476972035_in;
 
@@ -451,39 +450,39 @@ lyfast::ArcadeVelocityController vel_controller { linear_velocity_controller,
 lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller(vel_controller);
 
-// linear velocity stuff
-// PID<Length, LinearVelocity> linear_vel_pid(0.5,
-//                                            0.0,
-//                                            3.6,
-//                                            7,
-//                                            // std::nullopt,
-//                                            70,
-//                                            50_msec,
-//                                            1_in,
-//                                            1_inps);
-//
-// PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
-//
-// LinearVelocitySlewController linear_vel_slew_controller {};
-// LinearVelocityClampController linear_vel_clamp_controller {};
+// linear velocity stuff //
+PID<Length, LinearVelocity> linear_vel_pid(0.5,
+                                           0.0,
+                                           3.6,
+                                           7,
+                                           // std::nullopt,
+                                           70,
+                                           50_msec,
+                                           1_in,
+                                           1_inps);
+
+PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
+
+LinearVelocitySlewController linear_vel_slew_controller {};
+LinearVelocityClampController linear_vel_clamp_controller {};
 
 // end linear velocity stuff //
 
-// start angular velocity stuff
-// PID<Angle, AngularVelocity> angular_vel_pid(0.5,
-//                                             0.0,
-//                                             3.6,
-//                                             7,
-//                                             // std::nullopt,
-//                                             70,
-//                                             50_msec,
-//                                             1_stDeg,
-//                                             1_degps);
-//
-// PIDAngularVelocityController angular_vel_pid_controller(angular_vel_pid);
-//
-// AngularVelocitySlewController angular_vel_slew_controller {};
-// AngularVelocityClampController angular_vel_clamp_controller {};
+// start angular velocity stuff //
+PID<Angle, AngularVelocity> angular_vel_pid(0.5,
+                                            0.0,
+                                            3.6,
+                                            7,
+                                            // std::nullopt,
+                                            70,
+                                            50_msec,
+                                            1_stDeg,
+                                            1_degps);
+
+PIDAngularVelocityController angular_vel_pid_controller(angular_vel_pid);
+
+AngularVelocitySlewController angular_vel_slew_controller {};
+AngularVelocityClampController angular_vel_clamp_controller {};
 
 // end angular velocity stuff //
 
@@ -493,13 +492,13 @@ Controllers<decltype(linear_pid_controller),
             decltype(linear_slew),
             decltype(angular_slew),
 
-            // decltype(linear_vel_pid_controller),
-            // decltype(linear_vel_slew_controller),
-            // decltype(linear_vel_clamp_controller),
+            decltype(linear_vel_pid_controller),
+            decltype(linear_vel_slew_controller),
+            decltype(linear_vel_clamp_controller),
 
-            // decltype(angular_vel_pid_controller),
-            // decltype(angular_vel_slew_controller),
-            // decltype(angular_vel_clamp_controller),
+            decltype(angular_vel_pid_controller),
+            decltype(angular_vel_slew_controller),
+            decltype(angular_vel_clamp_controller),
 
             decltype(linear_voltage_constraints),
             decltype(angular_voltage_constraints)>
@@ -514,14 +513,14 @@ Controllers<decltype(linear_pid_controller),
     angular_slew,
 
     // linear velocity controllers
-    // linear_vel_pid_controller,
-    // linear_vel_slew_controller,
-    // linear_vel_clamp_controller,
-    //
-    // // angular velocity controllers
-    // angular_vel_pid_controller,
-    // angular_vel_slew_controller,
-    // angular_vel_clamp_controller,
+    linear_vel_pid_controller,
+    linear_vel_slew_controller,
+    linear_vel_clamp_controller,
+
+    // angular velocity controllers
+    angular_vel_pid_controller,
+    angular_vel_slew_controller,
+    angular_vel_clamp_controller,
 
     // voltage constraints controllers
     // (included just so they can be set per motion)

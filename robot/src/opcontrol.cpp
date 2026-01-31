@@ -18,8 +18,8 @@
 #include "tuning.h"
 
 void opcontrol() {
-	autonomous();
-	return;
+    // autonomous();
+    // return;
 
     // RobotSetPose(-48, -24, 0);
 

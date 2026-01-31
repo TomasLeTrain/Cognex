@@ -25,9 +25,6 @@ namespace easier_awp {
 void pre_auton() {
     // set the robot state to match expectations
     // done in case driver or such is run before auto
-
-    std::cout << "pre auton" << std::endl;
-
     wings::up();
     odom_retract::lowerOdom();
     matchloader::up();
@@ -35,13 +32,11 @@ void pre_auton() {
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
     intake::setAutonColorSort(false);
-    std::cout << "finisehde pre auton" << std::endl;
 }
 
 void run_auton() {
     // runs before anything else
     pre_auton();
-    std::cout << "after pre a uto auton" << std::endl;
 
     units::V2Position centerTopGoalFirst = { -8.2_in, 7.4_in };
 
@@ -54,20 +49,9 @@ void run_auton() {
         return { 67.4_in * sign_x, normal_match * sign_y };
     };
 
-    auto make_machloader_pose = [](units::V2FPosition target,
-                                   Length distance) -> units::Pose {
-        // auto target_angle = target.angleTo(RobotGetPose());
-        auto final_point =
-          target + distance * (RobotGetPose() - target).normalize();
-
-        return units::Pose { final_point, final_point.angleTo(target) };
-    };
-
     auto matchload = [make_matchloader_point](double sign_x,
                                               double sign_y,
                                               Time matchload_time) {
-        std::cout << "matchload func" << std::endl;
-
         auto make_machloader_pose = [](units::V2FPosition target,
                                        Length distance) -> units::Pose {
             // auto target_angle = target.angleTo(RobotGetPose());
@@ -84,12 +68,10 @@ void run_auton() {
         auto func = [&] -> units::Pose {
             return make_machloader_pose(target_Point, target_dist);
         };
-        std::cout << "func" << std::endl;
 
         // pull matchloader down regardless
         matchloader::down();
 
-        std::cout << "before boom" << std::endl;
         mb.boomerang(func)
             .timeout(3_sec)
             .drive_toleranceDuration(100_sec)
@@ -104,9 +86,7 @@ void run_auton() {
         });
 
         async.exitAll();
-        std::cout << "after boom" << std::endl;
 
-        std::cout << "before boom 2" << std::endl;
         mb.boomerang(func)
             .timeout(3_sec)
             .drive_toleranceDuration(100_sec)
@@ -118,12 +98,10 @@ void run_auton() {
             .k_lat(1.2)
             .lead(0.9)
             .executeAfterMotion([] {
-                std::cout << "doing silly stuff" << std::endl;
                 pros::delay(10);
                 drivetrain.moveTank(0.25_volt, 0.25_volt);
             }) |
           async;
-        std::cout << "after boom 2" << std::endl;
 
         Length match_timer_length_thresh = 11_in;
 
@@ -141,7 +119,6 @@ void run_auton() {
         pros::delay(to_msec(matchload_time));
 
         async.exitAll();
-        std::cout << "finished this too" << std::endl;
     };
 
     auto score_long_goal = [](double sign_x,
@@ -232,51 +209,35 @@ void run_auton() {
         // intake::set(intake::intake_disabled);
         // drivetrain.moveTank(0_volt, 0_volt);
     };
-    // std::cout << "start auton"  << std::endl;
 
     // start auton
     RobotSetPose(-46.57, -14, 90);
-    // std::cout << "after pose"  << std::endl;
 
     intake::in();
-    // std::cout << "intake in"  << std::endl;
 
     bool pushing = false;
 
     if (pushing) mb.moveTo(-46.57, -4.7).timeout(1.2_sec) | chain;
-    // std::cout << "pusing"  << std::endl;
 
     mb.moveTo(-46.376, -normal_match).reverse().timeout(1.3_sec) | chain;
     chain.wait();
-    // std::cout << "aiting"  << std::endl;
 
     // turn to and go to matchloader
-    // std::cout << "mathcloader down"  << std::endl;
-    pros::delay(200);
     matchloader::down();
-    // std::cout << "schedule turn"  << std::endl;
-    pros::delay(200);
     mb.turnTo(make_matchloader_point(-1, -1))
         .turn_toleranceDuration(25_msec)
         .timeout(0.8_sec) |
       async;
-    std::cout << "scheduled turn" << std::endl;
-    // pros::delay(200);
     async.wait();
-    std::cout << "wait for turn"  << std::endl;
-    //    std::cout << "got after turn" << std::endl;
-    // pros::delay(200);
 
+    // pros::delay(50);
     matchload(-1, -1, 0.3_sec);
-    score_long_goal(-1, -1, 1.0_sec, true);
-
-	std::cout << "got thorough thoise" << std::endl;
+    score_long_goal(-1, -1, 1_sec, true);
 
     matchloader::up();
 
     mb.moveTo(-1_tile, -1_tile)
         .executeAfterMotion([] {
-            // intake::set(intake::intake_bottom_balls);
             intake::in();
         })
         .drive_minVolt(0.5_volt)
@@ -284,12 +245,9 @@ void run_auton() {
       chain;
 
     mb.moveTo(-1_tile, 1_tile).executeAfterMotion([] {
-        // intake::set(intake::intake_bottom_balls);
         intake::in();
-    })
-      // .drive_minVolt(0.5_volt)
-      // .setChainTime(0_sec)
-      | chain;
+    }) |
+      chain;
 
     mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y).reverse() | chain;
 
@@ -322,23 +280,9 @@ void run_auton() {
     mb.turnTo(make_matchloader_point(-1, 1)).turn_toleranceDuration(25_msec) |
       run;
 
-    mb.boomerang(make_machloader_pose(make_matchloader_point(-1, 1), 8.5_in))
-        .timeout(1_sec)
-        .drive_toleranceDuration(100_sec)
-        .drive_largeToleranceDuration(100_sec)
-        .k_lat(1.2)
-        .lead(0.9) |
-      async;
-    async.wait();
-    pros::delay(100);
-
-    mb.turnTo(-25_in, long_goal).reverse() | async;
-    mb.moveTo(-25_in, long_goal).drive_maxVolt(0.5_volt).reverse() | async;
-
-    async.waitUntil(closeEnough({ -24_in, long_goal }, 7.5_in));
-    intake::score_long();
-    pros::delay(to_msec(1_sec));
-    async.exitAll();
+    // pros::delay(50);
+    matchload(-1, 1, 0.3_sec);
+    score_long_goal(-1, 1, 1_sec, true);
 }
 
 } // namespace easier_awp
