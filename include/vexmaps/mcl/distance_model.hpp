@@ -23,6 +23,7 @@ class DistanceSensorModel : public Sensor {
     pros::Distance* distance_sensor;
     units::Pose offsets;
     double m_distance_scale_factor;
+    Length m_distance_scale_offset { 0 };
     std::string name;
 
     DistanceSensorConfig config;
@@ -108,12 +109,14 @@ class DistanceSensorModel : public Sensor {
     DistanceSensorModel(pros::Distance* distance_sensor,
                         units::Pose offsets,
                         double distance_scale_factor,
+                        Length distance_scale_offset,
                         std::string name,
                         DistanceSensorConfig config,
                         MapReader<>* map_reader = nullptr)
         : distance_sensor(distance_sensor),
           offsets(offsets),
           m_distance_scale_factor(distance_scale_factor),
+          m_distance_scale_offset(distance_scale_offset),
           name(name),
           config(config),
           map_reader(map_reader) {
@@ -232,7 +235,7 @@ class DistanceSensorModel : public Sensor {
             // not available, just set exit to true
             exit_without_new_measurement = true;
             exit = true;
-			distance_exit = true;
+            distance_exit = true;
             return;
         }
 
@@ -248,6 +251,7 @@ class DistanceSensorModel : public Sensor {
         // need a scaling factor)
         if (measured_distance > 200_mm) {
             measured_distance *= m_distance_scale_factor;
+            measured_distance += m_distance_scale_offset;
         }
 
         f_measured_distance = measured_distance.internal();

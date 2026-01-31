@@ -67,7 +67,7 @@ void set_bottom(bottom_state_t bottom_state) {
 void update() {
     std::lock_guard lock(mutex);
     gate_intake_piston.set_value(top == passthrough);
-    middle_intake_piston.set_value(middle == aligned_middle);
+    middle_intake_piston.set_value(middle == aligned_top);
     bottom_intake_piston.set_value(bottom == up);
 }
 
@@ -124,7 +124,7 @@ namespace bottom {
 pros::Mutex mutex;
 
 Voltage pct;
-bool antijam_active = false;
+bool antijam_active = true;
 
 // amount of time we antijam
 Time antijam_timeout = 100_msec;
@@ -187,7 +187,7 @@ namespace top {
 pros::Mutex mutex;
 
 Voltage pct;
-bool antijam_active = false;
+bool antijam_active = true;
 
 // latest time since we started scoring
 // used to stop antijam from running for the first 200_msec of scoring
@@ -304,6 +304,7 @@ void set_antijam(bool bottom_active, bool top_active) {
 // only pauses motors, does not change piston states
 void motors_disabled() {
     set_pct(0.0);
+    top::set_scoring(false);
 }
 
 void in() {
@@ -312,6 +313,7 @@ void in() {
     pistons::gate_blocked();
     pistons::intake_down();
     pistons::align_top();
+    top::set_scoring(false);
 }
 
 void intake_middle_balls(float bottom_speed, float top_speed) {
@@ -320,6 +322,7 @@ void intake_middle_balls(float bottom_speed, float top_speed) {
     pistons::gate_blocked();
     pistons::intake_down();
     pistons::align_top();
+    top::set_scoring(false);
 }
 
 void out() {
@@ -423,7 +426,6 @@ void init(bool driver) {
     };
 
     setup_color_sensor(middle_intake_color_sensor);
-    setup_color_sensor(bottom_intake_color_sensor);
 
     // don't make another task
     if (tasks_active) return;

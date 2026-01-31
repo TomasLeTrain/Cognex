@@ -135,9 +135,9 @@ void turn_pid_tuning() {
     // by how much we can increase or decrease
     double target_theta_delta = 44;
 
-    double curr_kp = turn_heading_pid.get_kp() / turn_drive_pid.UKP;
-    double curr_ki = turn_heading_pid.get_ki() / turn_drive_pid.UKI;
-    double curr_kd = turn_heading_pid.get_kd() / turn_drive_pid.UKD;
+    double curr_kp = turn_heading_pid.get_kp() / turn_heading_pid.UKP;
+    double curr_ki = turn_heading_pid.get_ki() / turn_heading_pid.UKI;
+    double curr_kd = turn_heading_pid.get_kd() / turn_heading_pid.UKD;
 
     double kp_delta = 0.05;
     double ki_delta = 0.01;
@@ -260,7 +260,10 @@ void drive_pid_tuning() {
 
     while (true) {
         drivetrain.setBrakeMode(pros::MotorBrake::hold);
-        RobotSetPose(0, 0, 0);
+		if(!reversed)
+			RobotSetPose(0, 0, 0);
+		else
+			RobotSetPose(0, 0, 180);
 
         std::cout << std::format("start is {:.3f} {:.3f}",
                                  RobotGetPose().x.convert(in),
@@ -348,14 +351,14 @@ void drive_pid_tuning() {
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_X)) {
 
-                reversed = !reversed;
-
                 // turns around
                 if (reversed) {
                     mb.turnTo(0) | async;
                 } else {
                     mb.turnTo(180) | async;
                 }
+
+                reversed = !reversed;
             }
 
             if (controller.get_digital_new_release(

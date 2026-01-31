@@ -274,9 +274,10 @@ void run_auton() {
 
         async.wait();
 
-        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y) | chain;
+        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y).reverse() | chain;
 
         mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
+            .reverse()
             .k_lat(0.3)
             .drive_maxVolt(0.5_volt)
             .executeBeforeMotion([] {
