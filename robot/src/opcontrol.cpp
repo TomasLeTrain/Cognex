@@ -18,6 +18,9 @@
 #include "tuning.h"
 
 void opcontrol() {
+	autonomous();
+	return;
+
     // RobotSetPose(-48, -24, 0);
 
     // todo list:
@@ -27,8 +30,8 @@ void opcontrol() {
     // 7. autos
 
     // turn_pid_tuning();
-    drive_pid_tuning();
-    return;
+    // drive_pid_tuning();
+    // return;
 
     //
     // turn_pid_tuning();

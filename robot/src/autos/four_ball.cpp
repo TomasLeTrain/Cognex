@@ -242,12 +242,10 @@ void run_auton() {
         // drivetrain.moveTank(0_volt, 0_volt);
     };
 
-
     /* START AUTON */
 
     // pull wing up to avoid any collision with game objects (bad for cog?)
     RobotSetPose(-48.2, 16.3 * l, angle);
-
 
     mb.moveTo(-48, (match1 - 0.1_in) * l) | run;
 

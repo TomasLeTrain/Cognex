@@ -26,7 +26,7 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -53,7 +53,7 @@ pros::Optical bottom_intake_color_sensor(21);
 // pistons
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
-pros::adi::DigitalOut gate_intake_piston('D', true);
+pros::adi::DigitalOut gate_intake_piston('D', false);
 pros::adi::DigitalOut middle_intake_piston('E', false);
 pros::adi::DigitalOut wings_piston('C', false);
 
