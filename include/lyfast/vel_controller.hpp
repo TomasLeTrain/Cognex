@@ -94,7 +94,6 @@ class SimpleVelocityController {
     std::optional<T> last_speed = std::nullopt;
 
     Multiplied<T, Time> integral = 0_in;
-    Multiplied<T, Time> right_integral = 0_in;
 
     std::optional<T> last_error = std::nullopt;
 
@@ -116,7 +115,8 @@ class SimpleVelocityController {
             integral += error * duration;
 
         if (last_error && units::sgn(error) != units::sgn(*last_error)) {
-            integral = Length { 0 };
+            double tbh_factor = 0.8;
+            integral *= tbh_factor;
         }
 
         Voltage result {

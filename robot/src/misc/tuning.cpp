@@ -454,12 +454,12 @@ void drive_vel_pid_tuning() {
     double curr_ki = linear_vel_pid.get_ki() / linear_vel_pid.UKI;
     double curr_kd = linear_vel_pid.get_kd() / linear_vel_pid.UKD;
 
-    LinearAcceleration curr_accel_slew = 40_inps2;
+    LinearAcceleration curr_accel_slew = 150_inps2;
     Number curr_k_lat = 0.0;
 
-    double kp_delta = 0.05;
-    double kd_delta = 0.05;
-    double ki_delta = 0.05;
+    double kp_delta = 0.1;
+    double ki_delta = 0.1;
+    double kd_delta = 0.5;
 
     LinearAcceleration slew_delta = 5_inps2;
     Number k_lat_delta = 0.01;
@@ -491,23 +491,39 @@ void drive_vel_pid_tuning() {
 
         if (reversed) {
             // RobotSetPose(2 * target_distance.convert(in), 0, 0);
-            mb.moveTo(start_pose.x + target_distance, start_pose.y)
+            mb_vel.moveTo(start_pose.x + target_distance, start_pose.y)
                 .drive_vel_kp(curr_kp)
                 .drive_vel_ki(curr_ki)
                 .drive_vel_kd(curr_kd)
                 .drive_vel_accelSlew(curr_accel_slew)
+
+                .turn_vel_kp(0)
+                .turn_vel_ki(0)
+                .turn_vel_kd(0)
+
                 .k_lat(curr_k_lat)
-                .reverse() |
+                .reverse()
+                .closeThreshold(7_in) |
               run;
         } else {
             // RobotSetPose(0, 0, 0);
-            mb.moveTo(start_pose.x + target_distance, start_pose.y)
+            mb_vel.moveTo(start_pose.x + target_distance, start_pose.y)
                 .drive_vel_kp(curr_kp)
                 .drive_vel_ki(curr_ki)
                 .drive_vel_kd(curr_kd)
                 .drive_vel_accelSlew(curr_accel_slew)
-                .k_lat(curr_k_lat) |
-              run;
+
+                .turn_vel_kp(0)
+                .turn_vel_ki(0)
+                .turn_vel_kd(0)
+                .timeout(3_sec)
+                .drive_errorTolerance(0_in)
+
+                .k_lat(curr_k_lat)
+                .closeThreshold(7_in) |
+              async;
+
+            async.wait();
         }
 
         auto end_time = from_msec(pros::millis());
@@ -555,11 +571,15 @@ void drive_vel_pid_tuning() {
                   pros::E_CONTROLLER_DIGITAL_B)) {
                 if (reversed) {
                     mb.moveTo(start_pose.x, start_pose.y)
+                        .closeThreshold(7_in)
                         .drive_maxVolt(0.6_volt) |
+
                       async;
                 } else {
                     mb.moveTo(start_pose.x, start_pose.y)
                         .drive_maxVolt(0.6_volt)
+
+                        .closeThreshold(7_in)
                         .reverse() |
                       async;
                 }
@@ -625,13 +645,14 @@ void drive_vel_pid_tuning() {
                                              curr_k_lat.internal())
                               << std::endl;
                 } else {
-                    curr_ki += ki_delta;
-                    std::cout << std::format("increased ki to {:.3f}", curr_ki)
-                              << std::endl;
-                    // curr_accel_slew += slew_delta;
-                    // std::cout << std::format("increased slew to {:.3f}",
-                    //                          curr_accel_slew.internal())
+                    // curr_ki += ki_delta;
+                    // std::cout << std::format("increased ki to {:.3f}",
+                    // curr_ki)
                     //           << std::endl;
+                    curr_accel_slew += slew_delta;
+                    std::cout << std::format("increased slew to {:.3f}",
+                                             curr_accel_slew.internal())
+                              << std::endl;
                 }
             }
 
@@ -643,13 +664,14 @@ void drive_vel_pid_tuning() {
                                              curr_k_lat.internal())
                               << std::endl;
                 } else {
-                    curr_ki -= ki_delta;
-                    std::cout << std::format("decreased ki to {:.3f}", curr_ki)
-                              << std::endl;
-                    // curr_accel_slew -= slew_delta;
-                    // std::cout << std::format("decreased slew to {:.3f}",
-                    //                          curr_accel_slew.internal())
+                    // curr_ki -= ki_delta;
+                    // std::cout << std::format("decreased ki to {:.3f}",
+                    // curr_ki)
                     //           << std::endl;
+                    curr_accel_slew -= slew_delta;
+                    std::cout << std::format("decreased slew to {:.3f}",
+                                             curr_accel_slew.internal())
+                              << std::endl;
                 }
             }
             // kp = 7
@@ -662,7 +684,7 @@ void drive_vel_pid_tuning() {
     }
 }
 
-void turn_pid_vel_tuning() {
+void turn_vel_pid_tuning() {
     double target_theta = 90;
     // by how much we can increase or decrease
     double target_theta_delta = 44;
@@ -671,15 +693,15 @@ void turn_pid_vel_tuning() {
     double curr_ki = turn_heading_vel_pid.get_ki() / turn_heading_vel_pid.UKI;
     double curr_kd = turn_heading_vel_pid.get_kd() / turn_heading_vel_pid.UKD;
 
-    double kp_delta = 0.05;
-    double ki_delta = 0.01;
-    double kd_delta = 0.05;
+    double kp_delta = 0.25;
+    double ki_delta = 0.5;
+    double kd_delta = 0.5;
 
     while (true) {
         RobotSetPose(0, 0, 0);
         auto start_time = from_msec(pros::millis());
 
-        mb.turnTo(target_theta)
+        mb_vel.turnTo(target_theta)
             .turn_vel_kp(curr_kp)
             .turn_vel_ki(curr_ki)
             .turn_vel_kd(curr_kd) |

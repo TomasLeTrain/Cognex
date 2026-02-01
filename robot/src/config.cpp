@@ -229,9 +229,29 @@ tolerances_config_t<Length> linear_tolerances_config {
 };
 
 tolerances_config_t<Angle> angular_tolerances_config {
-    .duration = 200_msec,
-    .error = { 8_stDeg },
-    .velocity = { 400_degps },
+    // good for voltage turns
+    // .duration = 200_msec,
+    // .error = { 8_stDeg },
+    // .velocity = { 400_degps },
+    //
+    // .large_duration = 1_sec,
+    // .large_error = { 15_stDeg },
+    // .large_velocity = { 300_degps },
+    //
+    // .chain_duration = 1_sec,
+    // .chain_error = { 20_stDeg },
+
+    .duration = 20_msec,
+    .error = { 1_stDeg },
+    .velocity = { 400_radps },
+
+    // lcoked
+    // increased kp to 19.500
+    // increased kd to 23.500
+
+    // locked
+    // increased kp to 16.000
+    // increased kd to 15.000
 
     .large_duration = 1_sec,
     .large_error = { 15_stDeg },
@@ -393,22 +413,27 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
     .left_Kv = 0.420125 * volt / mps,
-    .left_Ka = 0.0993342796199 * volt / mps2,
+    .left_Ka = 0.00993342796199 * volt / mps2,
+    //
+    // .left_Ka = 0.0493342796199 * volt / mps2,
     .left_Ks = 0.0819155 * volt,
 
-    .left_Kp = 0.889545654916 * volt / mps,
-    .left_Ki = 4.38127010499 * volt / m,
-    // .left_Kp = 0 * volt / mps,
-    // .left_Ki = 0 * volt / m,
+    // .left_Kp = 0.889545654916 * volt / mps,
+    // .left_Kp = 0.389545654916 * volt / mps,
+    // .left_Ki = 4.38127010499 * volt / m,
+    .left_Kp = 0 * volt / mps,
+    .left_Ki = 0 * volt / m,
 
     .right_Kv = 0.422079 * volt / mps,
-    .right_Ka = 0.102029924383 * volt / mps2,
+    .right_Ka = 0.0102029924383 * volt / mps2,
+    // .right_Ka = 0.042029924383 * volt / mps2,
     .right_Ks = 0.0861917 * volt,
 
     // .right_Kp = 0 * volt / mps,
     // .right_Ki = 0 * volt / m,
-    .right_Kp = 0.899099337151 * volt / mps,
-    .right_Ki = 4.3576312795 * volt / m,
+    // .right_Kp = 0.899099337151 * volt / mps,
+    // .right_Kp = 0.399099337151 * volt / mps,
+    // .right_Ki = 4.3576312795 * volt / m,
 
   },
   drivetrain_config.track_width,
@@ -416,23 +441,37 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 
 blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
-    .left_Kv = 0.420125 * volt / mps,
-    .left_Ka = 0.0993342796199 * volt / mps2,
-    .left_Ks = 0.0819155 * volt,
 
-    .left_Kp = 0.889545654916 * volt / mps,
-    .left_Ki = 4.38127010499 * volt / m,
+    .left_Kv = 0.471609 * volt / mps,
+    .left_Ka = 0.0986881348841 * volt / mps2,
+    .left_Ks = 0.08 * volt,
+
+    // lambda 0.6
+    .left_Kp = 0.915472273416 * volt / mps,
+    .left_Ki = 5.09538143189 * volt / m,
     // .left_Kp = 0 * volt / mps,
     // .left_Ki = 0 * volt / m,
 
-    .right_Kv = 0.422079 * volt / mps,
-    .right_Ka = 0.102029924383 * volt / mps2,
-    .right_Ks = 0.0861917 * volt,
+    .right_Kv = 0.475 * volt / mps,
+    .right_Ka = 0.10128620282 * volt / mps2,
+    .right_Ks = 0.08 * volt,
 
     // .right_Kp = 0 * volt / mps,
     // .right_Ki = 0 * volt / m,
-    .right_Kp = 0.899099337151 * volt / mps,
-    .right_Ki = 4.3576312795 * volt / m,
+    .right_Kp = 0.968620056451 * volt / mps,
+    .right_Ki = 5.5578634857 * volt / m,
+
+    // trial 1
+    // .left_Ka = 0.144799 * volt / mps2,
+    // lambda factor: 0.6
+    // .left_Kp = 0.879286 * volt / mps,
+    // .left_Ki = 3.20367 * volt / m,
+    //
+    // .right_Ka = 0.233737 * volt / mps2,
+    // // lambda factor: 0.6
+    // .right_Kp = 0.84414 * volt / mps,
+    // .right_Ki = 1.82916 * volt / m,
+
   },
   drivetrain_config.track_width,
   drivetrain);
@@ -446,7 +485,7 @@ lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller(vel_controller);
 
 // linear velocity stuff
-PID<Length, LinearVelocity> linear_vel_pid(4,
+PID<Length, LinearVelocity> linear_vel_pid(3,
                                            0.0,
                                            0.0,
                                            7,
@@ -463,26 +502,18 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 
 // end linear velocity stuff //
 
-// start angular velocity stuff
-PID<Angle, AngularVelocity> angular_vel_pid(0.5,
-                                            0.0,
-                                            3.6,
-                                            7,
-                                            // std::nullopt,
-                                            70,
-                                            50_msec,
-                                            1_stDeg,
-                                            1_degps);
-
-PID<Angle, AngularVelocity> turn_heading_vel_pid(0.5,
+PID<Angle, AngularVelocity> turn_heading_vel_pid(19.500,
                                                  0.0,
-                                                 3.6,
+                                                 23.500,
                                                  7,
-                                                 // std::nullopt,
-                                                 70,
+                                                 std::nullopt,
+                                                 // 70,
                                                  50_msec,
-                                                 1_stDeg,
-                                                 1_degps);
+                                                 1_stRad,
+                                                 1_radps);
+
+// start angular velocity stuff
+PID<Angle, AngularVelocity> angular_vel_pid(turn_heading_vel_pid);
 
 PIDAngularVelocityController angular_vel_pid_controller(angular_vel_pid);
 
