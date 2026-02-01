@@ -66,19 +66,19 @@ void set_bottom(bottom_state_t bottom_state) {
 
 void update() {
     std::lock_guard lock(mutex);
-    top_intake_piston.set_value(top == blocking);
-    middle_intake_piston.set_value(middle == aligned_top);
+    gate_intake_piston.set_value(top == passthrough);
+    middle_intake_piston.set_value(middle == aligned_middle);
     bottom_intake_piston.set_value(bottom == up);
 }
 
 // sets the top scoring to be blocked
-void scoring_blocked() {
+void gate_blocked() {
     set_top(blocking);
 }
 
 // sets the top scoring to be passthrough
-void scoring_passthrough() {
-    set_top(blocking);
+void gate_scoring() {
+    set_top(passthrough);
 }
 
 void align_top() {
@@ -99,22 +99,22 @@ void intake_down() {
 
 // helper functions for various configurations
 void blocked_top_aligned() {
-    scoring_blocked();
+    gate_blocked();
     align_top();
 }
 
 void blocked_middle_aligned() {
-    scoring_blocked();
+    gate_blocked();
     align_middle();
 }
 
 void score_top_aligned() {
-    scoring_passthrough();
+    gate_scoring();
     align_top();
 }
 
 void score_middle_aligned() {
-    scoring_passthrough();
+    gate_scoring();
     align_middle();
 }
 
@@ -124,7 +124,7 @@ namespace bottom {
 pros::Mutex mutex;
 
 Voltage pct;
-bool antijam_active = false;
+bool antijam_active = true;
 
 // amount of time we antijam
 Time antijam_timeout = 100_msec;
@@ -187,7 +187,7 @@ namespace top {
 pros::Mutex mutex;
 
 Voltage pct;
-bool antijam_active = false;
+bool antijam_active = true;
 
 // latest time since we started scoring
 // used to stop antijam from running for the first 200_msec of scoring
@@ -304,27 +304,31 @@ void set_antijam(bool bottom_active, bool top_active) {
 // only pauses motors, does not change piston states
 void motors_disabled() {
     set_pct(0.0);
+    top::set_scoring(false);
 }
 
 void in() {
     set_pct(1.0);
     // does not set alignment
-    pistons::scoring_blocked();
+    pistons::gate_blocked();
     pistons::intake_down();
+    pistons::align_top();
+    top::set_scoring(false);
 }
 
 void intake_middle_balls(float bottom_speed, float top_speed) {
     set_pct(bottom_speed, top_speed);
 
-    // does not set alignment
-    pistons::scoring_blocked();
+    pistons::gate_blocked();
     pistons::intake_down();
+    pistons::align_top();
+    top::set_scoring(false);
 }
 
 void out() {
     set_pct(-1.0);
     // does not set alignment
-    pistons::scoring_blocked();
+    pistons::gate_blocked();
     pistons::intake_down();
     top::set_scoring(false);
 }
@@ -382,11 +386,13 @@ void update() {
         color_sort_driver = false;
     }
 
-    else if (unjam)
+    else if (unjam) {
         out();
+    }
 
-    else if (driver_intake)
+    else if (driver_intake) {
         in();
+    }
 
     else if (score_middle_height) {
         score_middle();
@@ -400,6 +406,8 @@ void update() {
         score_long();
     } else {
         motors_disabled();
+        pistons::gate_blocked();
+        pistons::intake_down();
     }
 }
 } // namespace driver
@@ -418,7 +426,6 @@ void init(bool driver) {
     };
 
     setup_color_sensor(middle_intake_color_sensor);
-    setup_color_sensor(bottom_intake_color_sensor);
 
     // don't make another task
     if (tasks_active) return;

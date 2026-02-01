@@ -25,11 +25,8 @@ std::unordered_map<std::string, std::function<void()>> auton_list = {
 	//
 	// L_AUTON(qual_match_first, "match first qual")
 	// L_AUTON(sunshine_fast_auton, "fast auton")
-	L_AUTON(awp, "awp")
 	L_AUTON(elims_nineball_split, "elims nineball split")
-	L_AUTON(easier_awp, "OLD easier awp")
-	L_AUTON(easier_awp_new_tech, "easier awp")
-
+	L_AUTON(easier_awp, "easier awp")
 
 	L_AUTON(sunshine_quals, "seven split")
 	L_AUTON(qual_match_first, "match first 7 split")

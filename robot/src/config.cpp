@@ -2,8 +2,11 @@
 #include "apis.h"
 //
 
+#include "blazing/controllers/controllers.hpp"
+#include "blazing/controllers/slew.hpp"
 #include "globals.h"
 #include "lyfast/vel_controller.hpp"
+#include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include "vexmaps/mcl/distance_model.hpp"
 
@@ -32,7 +35,7 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 
 // inertial sensor
 // vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
-vexmaps::ScaledIMU imu(11, (360.0 + 3) / 360.0);
+vexmaps::ScaledIMU imu(11, 361.568120941 / 360.0);
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
 // vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
@@ -50,7 +53,7 @@ pros::Optical bottom_intake_color_sensor(21);
 // pistons
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
-pros::adi::DigitalOut top_intake_piston('D', false);
+pros::adi::DigitalOut gate_intake_piston('D', false);
 pros::adi::DigitalOut middle_intake_piston('E', false);
 pros::adi::DigitalOut wings_piston('C', false);
 
@@ -67,7 +70,7 @@ pros::Rotation sideways_odom_rotation(18);
 // particle filter distance sensors
 pros::Distance front_distance(4);
 pros::Distance back_distance(8);
-pros::Distance left_distance(2);
+pros::Distance left_distance(3);
 pros::Distance right_distance(7);
 
 // cor + cor_offsets = geometric
@@ -82,36 +85,42 @@ constexpr units::Pose distToCor(units::Pose dist_pose) {
 
 // distance sensor offsets
 units::Pose front_distance_offsets =
-  distToCor({ 3.2_in, +(12.5_in / 2) - 0.75_in, 0_stDeg });
+  distToCor({ 4_in, +(12.5_in / 2) - 2.25_in, 0_stDeg });
 
-units::Pose left_distance_offsets = distToCor(
-  { 3.5_in + 0.625_in, +(12.5_in / 2) - 1.2_in - 0.375_in, 90_stDeg });
+units::Pose left_distance_offsets =
+  distToCor({ 1.25_in, +(12.5_in / 2) - 2.25_in, 90_stDeg });
 
 units::Pose back_distance_offsets =
-  distToCor({ -(15.5_in / 2) + 1.0_in, 2.35_in, 180_stDeg });
+  distToCor({ -2_in, -(12.5_in / 2) + 3_in, 180_stDeg });
 
 units::Pose right_distance_offsets =
-  distToCor({ -0.7_in, -(12.5_in / 2) + 2.23_in, 270_stDeg });
+  distToCor({ 1.25_in, -(12.5_in / 2) + 2.25_in, 270_stDeg });
 
-// TODO: update
-double front_distance_scale_factor = 0.986105769705;
-double left_distance_scale_factor = 0.985;
-double back_distance_scale_factor = 0.97905795044;
-double right_distance_scale_factor = 0.985454688793;
+double front_distance_scale_factor = 0.973792726538;
+Length front_distance_scale_offset = 0.796476972035_in;
+
+double left_distance_scale_factor = 0.980664086761;
+Length left_distance_scale_offset = 0.124681158364_in;
+
+double back_distance_scale_factor = 0.98606683626;
+Length back_distance_scale_offset = -0.32142368218_in;
+
+double right_distance_scale_factor = 0.979427538911;
+Length right_distance_scale_offset = -0.184835902564_in;
 
 /* vexmaps configuration */
 
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
-    .diameter = 1.9881_in,
+    .diameter = 1.991_in,
     // geometric is also 0
-    .offset = 0.0804236_in,
+    .offset = -0.08_in,
 };
 
 tracker_config_t sideways_tracker_config = {
-    .diameter = 1.987_in,
+    .diameter = 1.991_in,
     // geometric are -2.5, meaning cor is 0.5_in forwards from geometric center
-    .offset = -2.95_in,
+    .offset = -3.0_in,
 };
 
 /* drivetrain / pid configuration */
@@ -138,7 +147,7 @@ linear_pid_config_t linear_pid_config {
 
     // retuned to be goated at all distances
     .kp = 6.9,
-    .ki = 0.3,
+    .ki = 0.1,
     .kd = 9.9,
 
     // good for 36, not good for others
@@ -160,38 +169,24 @@ linear_pid_config_t linear_pid_config {
     //                                         .ki = 0,
     //                                         .kd = 3.6,
     .windupRange = 7,
-    .maxVoltage = 127
+    .maxVoltage = 100
 };
 
 // units are in degrees
 angular_pid_config_t angular_pid_config {
-    // .kp = 2.3,
-    // .ki = 0,
-    // .kd = 3.05,
-
-    // pre ki ones
-    // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
-
-    // after ki ones - aggressive
-    // .kp = 3.55, .ki = 0.96, .kd = 5.65, .windupRange = 15, .maxVoltage = 127,
-    //
-    // same kp, lower kd a bit to reach endpoint better
-    .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
+    .kp = 3.15,
+    .ki = 0,
+    .kd = 5.3,
+    .windupRange = 14,
+    .maxVoltage = 127,
 };
 
 angular_pid_config_t turn_heading_pid_config {
-    // .kp = 2.3,
-    // .ki = 0,
-    // .kd = 3.05,
-
-    // pre ki ones
-    // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
-
-    // after ki ones - aggressive
-    .kp = 3.50, .ki = 0.17, .kd = 6.0, .windupRange = 45, .maxVoltage = 127,
-    //
-    // same kp, lower kd a bit to reach endpoint better
-    // .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
+    .kp = 3.50,
+    .ki = 0.06,
+    .kd = 6.3,
+    .windupRange = 45,
+    .maxVoltage = 127,
 };
 
 angular_pid_config_t matchloader_angular_pid_config {
@@ -210,7 +205,7 @@ angular_pid_config_t matchloader_angular_pid_config {
 };
 
 // LinearSlewController linear_slew(0.07_volt, 0.06_volt);
-LinearSlewController linear_slew {};
+LinearSlewController linear_slew { std::nullopt, 0.2_volt };
 // AngularSlewController angular_slew(0.8_volt);
 AngularSlewController angular_slew {};
 
@@ -234,9 +229,29 @@ tolerances_config_t<Length> linear_tolerances_config {
 };
 
 tolerances_config_t<Angle> angular_tolerances_config {
-    .duration = 200_msec,
-    .error = { 8_stDeg },
-    .velocity = { 400_degps },
+    // good for voltage turns
+    // .duration = 200_msec,
+    // .error = { 8_stDeg },
+    // .velocity = { 400_degps },
+    //
+    // .large_duration = 1_sec,
+    // .large_error = { 15_stDeg },
+    // .large_velocity = { 300_degps },
+    //
+    // .chain_duration = 1_sec,
+    // .chain_error = { 20_stDeg },
+
+    .duration = 20_msec,
+    .error = { 1_stDeg },
+    .velocity = { 400_radps },
+
+    // lcoked
+    // increased kp to 19.500
+    // increased kd to 23.500
+
+    // locked
+    // increased kp to 16.000
+    // increased kd to 15.000
 
     .large_duration = 1_sec,
     .large_error = { 15_stDeg },
@@ -397,33 +412,28 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 
 blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
-    // custom accel
-    // .left_Kv = 0.426161 * volt / mps,
-    // .left_Ka = 0.08 * volt / mps2,
-    // .left_Ks = 0.0481902 * volt,
-    // .left_Kp = 0.934514846239 * volt / mps,
-    // .left_Ki = 4.58736473058 * volt / m,
+    .left_Kv = 0.420125 * volt / mps,
+    .left_Ka = 0.00993342796199 * volt / mps2,
     //
-    // .right_Kv = 0.425642 * volt / mps,
-    // .right_Ka = 0.081 * volt / mps2,
-    // .right_Ks = 0.0499037 * volt,
-    // .right_Kp = 0.940127699096 * volt / mps,
-    // .right_Ki = 4.65515950473 * volt / m,
+    // .left_Ka = 0.0493342796199 * volt / mps2,
+    .left_Ks = 0.0819155 * volt,
 
-    .left_Kv = 0.710047 * volt / mps,
-    .left_Ka = 2.94054 * volt / mps2,
-    .left_Ks = 0.0627854 * volt,
+    // .left_Kp = 0.889545654916 * volt / mps,
+    // .left_Kp = 0.389545654916 * volt / mps,
+    // .left_Ki = 4.38127010499 * volt / m,
+    .left_Kp = 0 * volt / mps,
+    .left_Ki = 0 * volt / m,
 
-    // lambda factor: 0.6
-    .left_Kp = 0.866009 * volt / mps,
-    .left_Ki = 0.153027 * volt / m,
+    .right_Kv = 0.422079 * volt / mps,
+    .right_Ka = 0.0102029924383 * volt / mps2,
+    // .right_Ka = 0.042029924383 * volt / mps2,
+    .right_Ks = 0.0861917 * volt,
 
-    .right_Kv = 0.44865 * volt / mps,
-    .right_Ka = 1.19249 * volt / mps2,
-    .right_Ks = 0.078962 * volt,
-    // lambda factor: 0.6
-    .right_Kp = 0.762867 * volt / mps,
-    .right_Ki = 0.292817 * volt / m,
+    // .right_Kp = 0 * volt / mps,
+    // .right_Ki = 0 * volt / m,
+    // .right_Kp = 0.899099337151 * volt / mps,
+    // .right_Kp = 0.399099337151 * volt / mps,
+    // .right_Ki = 4.3576312795 * volt / m,
 
   },
   drivetrain_config.track_width,
@@ -431,18 +441,37 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 
 blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
-    // desmos constants
-    .left_Kv = 0.451918 * volt / mps,
-    .left_Ka = 0.1457828 * volt / mps2,
-    .left_Ks = 0.0922515 * volt,
-    .left_Kp = 0.9984206 * volt / mps,
-    .left_Ki = 3.457622 * volt / m,
 
-    .right_Kv = 0.477938 * volt / mps,
-    .right_Ka = 0.132789 * volt / mps2,
-    .right_Ks = 0.0824404 * volt,
-    .right_Kp = 1.054508 * volt / mps,
-    .right_Ki = 4.24337 * volt / m,
+    .left_Kv = 0.471609 * volt / mps,
+    .left_Ka = 0.0986881348841 * volt / mps2,
+    .left_Ks = 0.08 * volt,
+
+    // lambda 0.6
+    .left_Kp = 0.915472273416 * volt / mps,
+    .left_Ki = 5.09538143189 * volt / m,
+    // .left_Kp = 0 * volt / mps,
+    // .left_Ki = 0 * volt / m,
+
+    .right_Kv = 0.475 * volt / mps,
+    .right_Ka = 0.10128620282 * volt / mps2,
+    .right_Ks = 0.08 * volt,
+
+    // .right_Kp = 0 * volt / mps,
+    // .right_Ki = 0 * volt / m,
+    .right_Kp = 0.968620056451 * volt / mps,
+    .right_Ki = 5.5578634857 * volt / m,
+
+    // trial 1
+    // .left_Ka = 0.144799 * volt / mps2,
+    // lambda factor: 0.6
+    // .left_Kp = 0.879286 * volt / mps,
+    // .left_Ki = 3.20367 * volt / m,
+    //
+    // .right_Ka = 0.233737 * volt / mps2,
+    // // lambda factor: 0.6
+    // .right_Kp = 0.84414 * volt / mps,
+    // .right_Ki = 1.82916 * volt / m,
+
   },
   drivetrain_config.track_width,
   drivetrain);
@@ -452,9 +481,13 @@ lyfast::ArcadeVelocityController vel_controller { linear_velocity_controller,
                                                   drivetrain_config.track_width,
                                                   drivetrain };
 
-PID<Length, LinearVelocity> linear_vel_pid(0.5,
+lyfast::VelocityFeedforward<decltype(vel_controller)>
+  controller_velocity_controller(vel_controller);
+
+// linear velocity stuff
+PID<Length, LinearVelocity> linear_vel_pid(3,
                                            0.0,
-                                           3.6,
+                                           0.0,
                                            7,
                                            // std::nullopt,
                                            70,
@@ -462,21 +495,47 @@ PID<Length, LinearVelocity> linear_vel_pid(0.5,
                                            1_in,
                                            1_inps);
 
-CascadedControllers<decltype(linear_vel_pid),
-                    decltype(vel_controller),
-                    Length,
-                    LinearVelocity,
-                    Voltage>
-  linear_control(linear_vel_pid, vel_controller);
+PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
 
-lyfast::VelocityFeedforward<decltype(vel_controller)>
-  controller_velocity_controller(vel_controller);
+LinearVelocitySlewController linear_vel_slew_controller { 150_inps2 };
+LinearVelocityClampController linear_vel_clamp_controller {};
+
+// end linear velocity stuff //
+
+PID<Angle, AngularVelocity> turn_heading_vel_pid(19.500,
+                                                 0.0,
+                                                 23.500,
+                                                 7,
+                                                 std::nullopt,
+                                                 // 70,
+                                                 50_msec,
+                                                 1_stRad,
+                                                 1_radps);
+
+// start angular velocity stuff
+PID<Angle, AngularVelocity> angular_vel_pid(turn_heading_vel_pid);
+
+PIDAngularVelocityController angular_vel_pid_controller(angular_vel_pid);
+
+AngularVelocitySlewController angular_vel_slew_controller {};
+AngularVelocityClampController angular_vel_clamp_controller {};
+
+// end angular velocity stuff //
 
 Controllers<decltype(linear_pid_controller),
             decltype(angular_pid_controller),
             decltype(controller_velocity_controller),
             decltype(linear_slew),
             decltype(angular_slew),
+
+            decltype(linear_vel_pid_controller),
+            decltype(linear_vel_slew_controller),
+            decltype(linear_vel_clamp_controller),
+
+            decltype(angular_vel_pid_controller),
+            decltype(angular_vel_slew_controller),
+            decltype(angular_vel_clamp_controller),
+
             decltype(linear_voltage_constraints),
             decltype(angular_voltage_constraints)>
   controllers(
@@ -488,6 +547,16 @@ Controllers<decltype(linear_pid_controller),
     // slew controllers
     linear_slew,
     angular_slew,
+
+    // linear velocity controllers
+    linear_vel_pid_controller,
+    linear_vel_slew_controller,
+    linear_vel_clamp_controller,
+
+    // angular velocity controllers
+    angular_vel_pid_controller,
+    angular_vel_slew_controller,
+    angular_vel_clamp_controller,
 
     // voltage constraints controllers
     // (included just so they can be set per motion)
@@ -649,21 +718,25 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
 DistanceSensorModel front_laser_model(&front_distance,
                                       front_distance_offsets,
                                       front_distance_scale_factor,
+                                      front_distance_scale_offset,
                                       "front",
                                       distance_sensor_config);
 DistanceSensorModel left_laser_model(&left_distance,
                                      left_distance_offsets,
                                      left_distance_scale_factor,
+                                     left_distance_scale_offset,
                                      "left",
                                      distance_sensor_config);
 DistanceSensorModel back_laser_model(&back_distance,
                                      back_distance_offsets,
                                      back_distance_scale_factor,
+                                     back_distance_scale_offset,
                                      "back",
                                      distance_sensor_config);
 DistanceSensorModel right_laser_model(&right_distance,
                                       right_distance_offsets,
                                       right_distance_scale_factor,
+                                      right_distance_scale_offset,
                                       "right",
                                       distance_sensor_config);
 
@@ -696,6 +769,9 @@ Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
   mb(vexmaps_chassis, controllers);
+
+MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
+  mb_vel(vexmaps_chassis, controllers);
 
 // MotionBuilder<decltype(blazing_chassis), decltype(controllers)>
 //   mb(blazing_chassis, controllers);

@@ -82,6 +82,7 @@ void run_auton() {
 
     intake::in();
 
+    mb.moveTo(-24.3, 23.4 * l).drive_maxVolt(0.5_volt).k_lat(0.5) | run;
     mb.moveTo(-24.3, 23.4 * l).drive_maxVolt(0.5_volt) | chain;
 
     mb.turnTo(-10, 36 * l) | chain;

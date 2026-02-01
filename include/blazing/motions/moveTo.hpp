@@ -14,6 +14,7 @@
 #include "units/Pose.hpp"
 #include "units/Vector2D.hpp"
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <optional>
 #include <variant>
@@ -34,12 +35,17 @@ template<typename ControllersType,
                ArcadeDrivetrain<DrivetrainType> &&
                hasAngularFeedback<ControllersType> &&
                hasLinearFeedback<ControllersType>
-class moveTo : public Motion<ControllersType,
-                             DrivetrainType,
-                             TrackerType,
-                             TolerancesType>,
-               public LinearMotion,
-               public AngularMotion {
+class moveTo
+    : public Motion<
+        ControllersType,
+        DrivetrainType,
+        TrackerType,
+        TolerancesType,
+        moveTo<ControllersType, DrivetrainType, TrackerType, TolerancesType>>,
+      public LinearMotion<
+        moveTo<ControllersType, DrivetrainType, TrackerType, TolerancesType>>,
+      public AngularMotion<
+        moveTo<ControllersType, DrivetrainType, TrackerType, TolerancesType>> {
   private:
     using point_func_t = std::function<units::V2Position()>;
     std::variant<units::V2Position, point_func_t> target;
@@ -187,7 +193,7 @@ class moveTo : public Motion<ControllersType,
                 LinearVelocity linear_vel =
                   this->controllers.linear_velocity_feedback.update(
                     -linear_error,
-                    0_stRad,
+                    0_in,
                     delta_time);
 
                 AngularVelocity angular_vel =
@@ -221,7 +227,7 @@ class moveTo : public Motion<ControllersType,
                     linear_vel =
                       this->controllers.linear_velocity_clamp.apply(linear_vel);
                 }
-                if constexpr (hasAngularVoltageClamp<ControllersType>) {
+                if constexpr (hasAngularVelocityClamp<ControllersType>) {
                     angular_vel =
                       this->controllers.angular_velocity_clamp.apply(
                         angular_vel);
@@ -247,6 +253,22 @@ class moveTo : public Motion<ControllersType,
                                                                 delta_time);
 
                 // TODO: apply voltage clamp/slew? probably not
+                auto [left_vel, right_vel] =
+                  this->drivetrain.getDrivetrainVelocities();
+
+                auto [actual_volt_left, actual_volt_right] =
+                  this->drivetrain.getDrivetrainVoltages();
+
+                std::cout << std::fixed;
+                std::cout << std::setprecision(5);
+                std::cout
+                  << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
+                  << linear_error.internal() << " " << linear_vel.internal()
+                  << " " << angular_vel.internal() << " " << left_vel.internal()
+                  << " " << right_vel.internal() << " "
+                  << left_voltage.internal() << " " << right_voltage.internal()
+                  << " " << actual_volt_left.internal() << " "
+                  << actual_volt_right.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 
@@ -254,7 +276,8 @@ class moveTo : public Motion<ControllersType,
                 return result;
             } else {
                 // assert to warn user?
-                // assert("want to use velocity but don't have requirements!");
+                // assert("want to use velocity but don't have
+                // requirements!");
             }
         }
 
@@ -283,9 +306,9 @@ class moveTo : public Motion<ControllersType,
         // here the robot would attempt to move backwards, when instead the
         // robot should turn around until it should start moving towards the
         // target
-        // the reason that this is done to linear_output and not linear_error is
-        // because otherwise linear_error would be zero and tolerances would
-        // trigger
+        // the reason that this is done to linear_output and not
+        // linear_error is because otherwise linear_error would be zero and
+        // tolerances would trigger
         if (!state.close && lin_multiplier < 0) {
             linear_output = 0_volt;
         }
@@ -341,9 +364,14 @@ class moveTo : public Motion<ControllersType,
     moveTo(ControllersType controllers,
            Chassis<DrivetrainType, TrackerType, TolerancesType> chassis,
            units::V2Position point)
-        : Motion<ControllersType, DrivetrainType, TrackerType, TolerancesType>(
-            controllers,
-            chassis),
+        : Motion<ControllersType,
+                 DrivetrainType,
+                 TrackerType,
+                 TolerancesType,
+                 moveTo<ControllersType,
+                        DrivetrainType,
+                        TrackerType,
+                        TolerancesType>>(controllers, chassis),
           target(point) {}
 
     [[nodiscard("motion won't be executed unless run or async are used!")]]
@@ -351,43 +379,47 @@ class moveTo : public Motion<ControllersType,
            Chassis<DrivetrainType, TrackerType, TolerancesType> chassis,
            Length x,
            Length y)
-        : Motion<ControllersType, DrivetrainType, TrackerType, TolerancesType>(
-            controllers,
-            chassis),
+        : Motion<ControllersType,
+                 DrivetrainType,
+                 TrackerType,
+                 TolerancesType,
+                 moveTo<ControllersType,
+                        DrivetrainType,
+                        TrackerType,
+                        TolerancesType>>(controllers, chassis),
           target(units::V2Position(x, y)) {}
 
     [[nodiscard("motion won't be executed unless run or async are used!")]]
     moveTo(ControllersType controllers,
            Chassis<DrivetrainType, TrackerType, TolerancesType> chassis,
            point_func_t point_func)
-        : Motion<ControllersType, DrivetrainType, TrackerType, TolerancesType>(
-            controllers,
-            chassis),
+        : Motion<ControllersType,
+                 DrivetrainType,
+                 TrackerType,
+                 TolerancesType,
+                 moveTo<ControllersType,
+                        DrivetrainType,
+                        TrackerType,
+                        TolerancesType>>(controllers, chassis),
           target(point_func) {}
-
-    moveTo& getReference() {
-        return *this;
-    }
 
     // changer methods
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto reverse() {
+    motionChangerMsg moveTo& reverse() {
         this->reversed = true;
 
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto overturn(Voltage max_overturn_output = 1_volt) {
+    motionChangerMsg moveTo& overturn(Voltage max_overturn_output = 1_volt) {
         this->max_overturn_output = max_overturn_output;
 
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto k_lat(std::optional<std::variant<Divided<Angle, Length>, double, int>>
-                 k_lat = std::nullopt) {
+    motionChangerMsg moveTo& k_lat(
+      std::optional<std::variant<Divided<Angle, Length>, double, int>> k_lat =
+        std::nullopt) {
         if (!k_lat)
             this->m_k_lat = std::nullopt;
         else {
@@ -401,48 +433,42 @@ class moveTo : public Motion<ControllersType,
             }
         }
 
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto closeThreshold(Length threshold) {
+    motionChangerMsg moveTo& closeThreshold(Length threshold) {
         this->close_threshold = threshold;
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto customAngularLinearFunc(
+    motionChangerMsg moveTo& customAngularLinearFunc(
       std::function<double(Angle)> custom_angular_linear_func) {
         angular_linear_func = custom_angular_linear_func;
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto timeout(Time timeout) {
+    motionChangerMsg moveTo& timeout(Time timeout) {
         this->m_timeout = timeout;
 
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto only_x(bool only_x) {
+    motionChangerMsg moveTo& only_x(bool only_x) {
         this->m_only_x = only_x;
 
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto only_y(bool only_y) {
+    motionChangerMsg moveTo& only_y(bool only_y) {
         this->m_only_y = only_y;
 
-        return this->getReference();
+        return *this;
     }
 
-    [[nodiscard("motion won't be executed unless an executor is used!")]]
-    auto velocity_based(bool velocity_based) {
+    motionChangerMsg moveTo& velocity_based(bool velocity_based) {
         this->m_velocity_based = velocity_based;
 
-        return this->getReference();
+        return *this;
     }
 };
 } // namespace blazing

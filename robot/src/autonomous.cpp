@@ -41,16 +41,21 @@ void testing_auton_func() {
 
     // selected_auton = "seven split";
 
+    std::cout << "calling selected auto" << std::endl;
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();
 }
 
 void autonomous() {
+    std::cout << "called ato" << std::endl;
+
     // initialize subsystems
     intake::init(false);
     matchloader::init(false);
     wings::init(false);
     odom_retract::init(false);
+
+    std::cout << "init everything" << std::endl;
 
     // change to W screen
     // screen::setScreen(&screen::bouncing_dvd_screen::screen);
@@ -63,6 +68,7 @@ void autonomous() {
         auto selected_auton_function = auton_list[selected_auton];
         selected_auton_function();
     } else {
+        std::cout << "callign testin" << std::endl;
         testing_auton_func();
     }
 }
