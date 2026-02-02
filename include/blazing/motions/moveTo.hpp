@@ -72,7 +72,13 @@ class moveTo
 
   public:
     int getLoopDelayTime() override {
-        return 10;
+        // if controlling velocity we don't need to capture the velocity
+        // dynamics as much, idea is it makes the system more stable if small
+        // disturbances from kd don't affect the program that much
+        if (m_velocity_based)
+            return 35;
+        else
+            return 10;
     }
 
     std::optional<motionExecutionResult> execute() override {
@@ -252,6 +258,23 @@ class moveTo
                                                                 delta_time);
 
                 // TODO: apply voltage clamp/slew? probably not
+
+                auto [left_vel, right_vel] =
+                  this->drivetrain.getDrivetrainVelocities();
+                auto [actual_volt_left, actual_volt_right] =
+                  this->drivetrain.getDrivetrainVoltages();
+
+                std::cout << std::fixed;
+                std::cout << std::setprecision(5);
+
+                std::cout
+                  << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
+                  << linear_error.internal() << " " << linear_vel.internal()
+                  << " " << angular_vel.internal() << " " << left_vel.internal()
+                  << " " << right_vel.internal() << " "
+                  << left_voltage.internal() << " " << right_voltage.internal()
+                  << " " << actual_volt_left.internal() << " "
+                  << actual_volt_right.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 

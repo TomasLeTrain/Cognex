@@ -454,12 +454,12 @@ void drive_vel_pid_tuning() {
     double curr_ki = linear_vel_pid.get_ki() / linear_vel_pid.UKI;
     double curr_kd = linear_vel_pid.get_kd() / linear_vel_pid.UKD;
 
-    LinearAcceleration curr_accel_slew = 150_inps2;
+    LinearAcceleration curr_accel_slew = 100_mps2;
     Number curr_k_lat = 0.0;
 
     double kp_delta = 0.1;
-    double ki_delta = 0.1;
-    double kd_delta = 0.5;
+    double ki_delta = 0.01;
+    double kd_delta = 0.1;
 
     LinearAcceleration slew_delta = 5_inps2;
     Number k_lat_delta = 0.01;
@@ -640,15 +640,15 @@ void drive_vel_pid_tuning() {
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_UP)) {
                 if (k_lat_config_active) {
-                    curr_k_lat += k_lat_delta;
-                    std::cout << std::format("increased klat to {:.3f}",
-                                             curr_k_lat.internal())
+                    // curr_k_lat += k_lat_delta;
+                    // std::cout << std::format("increased klat to {:.3f}",
+                    //                          curr_k_lat.internal())
+                    //           << std::endl;
+                    curr_ki += ki_delta;
+                    std::cout << std::format("increased ki to {:.3f}", curr_ki)
                               << std::endl;
                 } else {
-                    // curr_ki += ki_delta;
-                    // std::cout << std::format("increased ki to {:.3f}",
-                    // curr_ki)
-                    //           << std::endl;
+
                     curr_accel_slew += slew_delta;
                     std::cout << std::format("increased slew to {:.3f}",
                                              curr_accel_slew.internal())
@@ -659,15 +659,14 @@ void drive_vel_pid_tuning() {
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_DOWN)) {
                 if (k_lat_config_active) {
-                    curr_k_lat -= k_lat_delta;
-                    std::cout << std::format("decreased klat to {:.3f}",
-                                             curr_k_lat.internal())
+                    // curr_k_lat -= k_lat_delta;
+                    // std::cout << std::format("decreased klat to {:.3f}",
+                    //                          curr_k_lat.internal())
+                    //           << std::endl;
+                    curr_ki -= ki_delta;
+                    std::cout << std::format("decreased ki to {:.3f}", curr_ki)
                               << std::endl;
                 } else {
-                    // curr_ki -= ki_delta;
-                    // std::cout << std::format("decreased ki to {:.3f}",
-                    // curr_ki)
-                    //           << std::endl;
                     curr_accel_slew -= slew_delta;
                     std::cout << std::format("decreased slew to {:.3f}",
                                              curr_accel_slew.internal())

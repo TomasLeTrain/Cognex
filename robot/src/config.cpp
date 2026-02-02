@@ -413,24 +413,60 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
     .left_Kv = 0.420125 * volt / mps,
-    .left_Ka = 0.000993342796199 * volt / mps2,
+
+    // length kp and ka term create a feedback loop intenuating noise
+    // .left_Ka = 0.07 * volt / mps2,
+
+    .left_Ka = 0.02 * volt / mps2,
+
     //
     // .left_Ka = 0.0493342796199 * volt / mps2,
-    .left_Ks = 0.0819155 * volt,
+    // .left_Ks = 0.0819155 * volt,
+    .left_Ks = 0.0619155 * volt,
+
+    // 0.42 = 1 / K
+    // 0.07 = T / K
+    // 0.07 * K = T
+    // T = 0.166666666667
+    // K = 1 / 0.42
+    //
+    // Kp = Kv / lamda_factor = 0.42 / 0.55 = 0.763636363636
+    // Ki = Kp / T = 0.763636363636 / 0.166666666667 = 4.58181818181
+
+    // .left_Kp = 0.763636363636 * volt / mps,
+    // .left_Ki = 4.58181818181 * volt / m,
+
+    .left_Kp = 0.0 * volt / mps,
+    // .left_Ki = 4.58181818181 * volt / m,
+    // .left_Ki = 1.58181818181 * volt / m,
+    .left_Ki = 0.0 * volt / m,
 
     // .left_Kp = 0.889545654916 * volt / mps,
     // .left_Kp = 0.389545654916 * volt / mps,
     // .left_Ki = 4.38127010499 * volt / m,
-    .left_Kp = 0 * volt / mps,
-    .left_Ki = 0 * volt / m,
+
+    // .left_Kp = 0 * volt / mps,
+    // .left_Ki = 0 * volt / m,
 
     .right_Kv = 0.422079 * volt / mps,
-    .right_Ka = 0.00102029924383 * volt / mps2,
-    // .right_Ka = 0.042029924383 * volt / mps2,
-    .right_Ks = 0.0861917 * volt,
+    // .right_Ka = 0.00102029924383 * volt / mps2,
+    // .right_Ka = 0.07 * volt / mps2,
 
-    .right_Kp = 0 * volt / mps,
-    .right_Ki = 0 * volt / m,
+    .right_Ka = 0.02 * volt / mps2,
+
+    // .right_Ka = 0.042029924383 * volt / mps2,
+    // .right_Ks = 0.0861917 * volt,
+    .right_Ks = 0.0661917 * volt,
+
+    // .right_Kp = 0.763636363636 * volt / mps,
+    // .right_Ki = 4.58181818181 * volt / m,
+    .right_Kp = 0.0 * volt / mps,
+    // .right_Ki = 4.58181818181 * volt / m,
+    // .right_Ki = 1.58181818181 * volt / m,
+    .right_Ki = 0.0 * volt / m,
+
+    // .right_Kp = 0 * volt / mps,
+    // .right_Ki = 0 * volt / m,
     // .right_Kp = 0.899099337151 * volt / mps,
     // .right_Kp = 0.399099337151 * volt / mps,
     // .right_Ki = 4.3576312795 * volt / m,
@@ -485,15 +521,27 @@ lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller(vel_controller);
 
 // linear velocity stuff
-PID<Length, LinearVelocity> linear_vel_pid(3,
+PID<Length, LinearVelocity> linear_vel_pid(6.6,
                                            0.0,
-                                           0.0,
+                                           11.4,
                                            7,
                                            // std::nullopt,
-                                           70,
+                                           100,
                                            50_msec,
                                            1_in,
                                            1_inps);
+
+// goated, not as aggressive:
+// kp to 3.900
+// kd to 2.500
+//
+// still keeps a lot of contact with the ground:
+// kp to 4.300
+// kd to 3.000
+//
+// aggressive but kinda good lowkey:
+// kp to 6.600
+// kd to 11.400
 
 PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
 
