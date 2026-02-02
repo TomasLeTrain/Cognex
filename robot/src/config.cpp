@@ -413,7 +413,7 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
     .left_Kv = 0.420125 * volt / mps,
-    .left_Ka = 0.00993342796199 * volt / mps2,
+    .left_Ka = 0.000993342796199 * volt / mps2,
     //
     // .left_Ka = 0.0493342796199 * volt / mps2,
     .left_Ks = 0.0819155 * volt,
@@ -425,12 +425,12 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
     .left_Ki = 0 * volt / m,
 
     .right_Kv = 0.422079 * volt / mps,
-    .right_Ka = 0.0102029924383 * volt / mps2,
+    .right_Ka = 0.00102029924383 * volt / mps2,
     // .right_Ka = 0.042029924383 * volt / mps2,
     .right_Ks = 0.0861917 * volt,
 
-    // .right_Kp = 0 * volt / mps,
-    // .right_Ki = 0 * volt / m,
+    .right_Kp = 0 * volt / mps,
+    .right_Ki = 0 * volt / m,
     // .right_Kp = 0.899099337151 * volt / mps,
     // .right_Kp = 0.399099337151 * volt / mps,
     // .right_Ki = 4.3576312795 * volt / m,

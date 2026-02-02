@@ -14,7 +14,6 @@
 #include "units/Pose.hpp"
 #include "units/Vector2D.hpp"
 #include <functional>
-#include <iomanip>
 #include <iostream>
 #include <optional>
 #include <variant>
@@ -253,22 +252,6 @@ class moveTo
                                                                 delta_time);
 
                 // TODO: apply voltage clamp/slew? probably not
-                auto [left_vel, right_vel] =
-                  this->drivetrain.getDrivetrainVelocities();
-
-                auto [actual_volt_left, actual_volt_right] =
-                  this->drivetrain.getDrivetrainVoltages();
-
-                std::cout << std::fixed;
-                std::cout << std::setprecision(5);
-                std::cout
-                  << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
-                  << linear_error.internal() << " " << linear_vel.internal()
-                  << " " << angular_vel.internal() << " " << left_vel.internal()
-                  << " " << right_vel.internal() << " "
-                  << left_voltage.internal() << " " << right_voltage.internal()
-                  << " " << actual_volt_left.internal() << " "
-                  << actual_volt_right.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 
@@ -276,8 +259,7 @@ class moveTo
                 return result;
             } else {
                 // assert to warn user?
-                // assert("want to use velocity but don't have
-                // requirements!");
+                // assert("want to use velocity but don't have requirements!");
             }
         }
 
@@ -306,9 +288,9 @@ class moveTo
         // here the robot would attempt to move backwards, when instead the
         // robot should turn around until it should start moving towards the
         // target
-        // the reason that this is done to linear_output and not
-        // linear_error is because otherwise linear_error would be zero and
-        // tolerances would trigger
+        // the reason that this is done to linear_output and not linear_error is
+        // because otherwise linear_error would be zero and tolerances would
+        // trigger
         if (!state.close && lin_multiplier < 0) {
             linear_output = 0_volt;
         }
