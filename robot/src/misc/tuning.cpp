@@ -535,16 +535,24 @@ void drive_vel_pid_tuning() {
           units::V2Position(start_pose.x + target_distance, start_pose.y) -
           curr_pose;
 
+        auto local_error_vec = error_vec.rotatedBy(-curr_pose.orientation);
+
         auto total_error = error_vec.magnitude();
         auto forwards_error = error_vec.x;
         auto sideways_error = error_vec.y;
 
+        std::cout << std::format("final error: {:.3f}, x: {:.3f}, y: {:.3f}",
+                                 total_error.convert(in),
+                                 forwards_error.convert(in),
+                                 sideways_error.convert(in))
+                  << std::endl;
+
         std::cout
           << std::format(
-               "final error: {:.3f}, forwards: {:.3f}, sideways: {:.3f}",
-               total_error.convert(in),
-               forwards_error.convert(in),
-               sideways_error.convert(in))
+               "final local error: {:.3f}, forwards: {:.3f}, sideways: {:.3f}",
+               local_error_vec.magnitude().convert(in),
+               local_error_vec.x.convert(in),
+               local_error_vec.y.convert(in))
           << std::endl;
 
         std::cout << std::format("position: {:.3f} {:.3f} {:.3f}",

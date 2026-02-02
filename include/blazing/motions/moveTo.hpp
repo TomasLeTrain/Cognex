@@ -24,6 +24,7 @@ struct MoveToState {
     std::optional<Time> last_time;
     Time start_time;
     std::optional<Angle> locked_heading;
+    std::optional<std::pair<DifferentialSpeeds, Time>> last_vel_update;
 };
 
 template<typename ControllersType,
@@ -52,7 +53,7 @@ class moveTo
     // moveTo-specific properties
     std::optional<Time> m_timeout = std::nullopt;
     bool reversed = false;
-    Length close_threshold = 4_in;
+    Length close_threshold = 7_in;
     std::optional<Voltage> max_overturn_output = std::nullopt;
 
     std::optional<Divided<Angle, Length>> m_k_lat = std::nullopt;
@@ -75,18 +76,22 @@ class moveTo
         // if controlling velocity we don't need to capture the velocity
         // dynamics as much, idea is it makes the system more stable if small
         // disturbances from kd don't affect the program that much
-        if (m_velocity_based)
-            return 35;
-        else
-            return 10;
+        // if (m_velocity_based)
+        //     return 35;
+        // else
+        //     return 10;
+        return 10;
     }
 
     std::optional<motionExecutionResult> execute() override {
         if (!m_state.has_value()) {
-            m_state = { .close = false,
-                        .last_time = now(),
-                        .start_time = now(),
-                        .locked_heading = std::nullopt };
+            m_state = {
+                .close = false,
+                .last_time = now(),
+                .start_time = now(),
+                .locked_heading = std::nullopt,
+                .last_vel_update = std::nullopt,
+            };
             // done to prevent values like delta_time being 0
             return std::nullopt;
         }
@@ -109,8 +114,17 @@ class moveTo
                               // or a function returning a point
                               std::get<point_func_t>(target)();
 
+        // components of local error vector
+        auto [forward_error, crosstrack_error] =
+          (target_point - position).rotatedBy(-heading);
+
         Length linear_error = [&] -> Length {
             double reverse_multiplier = reversed ? -1.0 : 1.0;
+
+            // use forward error when settling
+            if (state.close) {
+                return units::abs(forward_error) * reverse_multiplier;
+            }
 
             if (m_only_x) {
                 return units::abs(target_point.x - position.x) *
@@ -151,6 +165,7 @@ class moveTo
         linear_error *= signed_sgn(lin_multiplier);
 
         this->tolerances.linearErrorToleranceUpdate(linear_error);
+
         this->tolerances.linearVelocityToleranceUpdate(
           this->tracker.getLinearVelocity());
         // TODO: does half circle exit make sense here?
@@ -250,11 +265,27 @@ class moveTo
                                                                     delta_time);
                 }
 
-                DifferentialSpeeds target { linear_vel, angular_vel };
+                DifferentialSpeeds current_target { linear_vel, angular_vel };
+
+                // no last update, update now
+                if (!state.last_vel_update.has_value()) {
+                    state.last_vel_update = { current_target, now() };
+                } else {
+                    Time outer_pid_time = 30_msec;
+                    // enough time has passed since last one, update
+
+                    if (timeoutDone(outer_pid_time,
+                                    state.last_vel_update->second)) {
+                        state.last_vel_update = { current_target, now() };
+                    }
+                }
+
+                DifferentialSpeeds applied_target =
+                  state.last_vel_update->first;
 
                 // pass velocities into feedforward
                 auto [left_voltage, right_voltage] =
-                  this->controllers.velocity_feedforward.update(target,
+                  this->controllers.velocity_feedforward.update(applied_target,
                                                                 delta_time);
 
                 // TODO: apply voltage clamp/slew? probably not
@@ -269,9 +300,10 @@ class moveTo
 
                 std::cout
                   << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
-                  << linear_error.internal() << " " << linear_vel.internal()
-                  << " " << angular_vel.internal() << " " << left_vel.internal()
-                  << " " << right_vel.internal() << " "
+                  << linear_error.internal() << " "
+                  << applied_target.linear_velocity.internal() << " "
+                  << applied_target.angular_velocity.internal() << " "
+                  << left_vel.internal() << " " << right_vel.internal() << " "
                   << left_voltage.internal() << " " << right_voltage.internal()
                   << " " << actual_volt_left.internal() << " "
                   << actual_volt_right.internal() << std::endl;
