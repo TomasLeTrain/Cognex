@@ -148,8 +148,10 @@ void initialize() {
 
     mb_vel.setMoveToModifier([](auto&& moveTo) {
         // return moveTo.customAngularLinearFunc(angular_linear_func);
-        return std::move(
-          moveTo.velocity_based(true).k_lat(0.15 * rad / m).timeout(3_sec));
+        return std::move(moveTo.customAngularLinearFunc(angular_linear_func)
+                           .velocity_based(true)
+                           .k_lat(0.15 * rad / m)
+                           .timeout(3_sec));
         // return moveTo.timeout(3_sec);
         // .customAngularLinearFunc(angular_linear_func);
     });

@@ -24,7 +24,6 @@ struct MoveToState {
     std::optional<Time> last_time;
     Time start_time;
     std::optional<Angle> locked_heading;
-    std::optional<std::pair<DifferentialSpeeds, Time>> last_vel_update;
 };
 
 template<typename ControllersType,
@@ -73,15 +72,7 @@ class moveTo
 
   public:
     int getLoopDelayTime() override {
-        // if controlling velocity we don't need to capture the velocity
-        // dynamics as much, idea is it makes the system more stable if small
-        // disturbances from kd don't affect the program that much
-        // if (m_velocity_based)
-        //     return 35;
-        // else
-        //     return 10;
         return 10;
-        // return 10;
     }
 
     std::optional<motionExecutionResult> execute() override {
@@ -91,7 +82,6 @@ class moveTo
                 .last_time = now(),
                 .start_time = now(),
                 .locked_heading = std::nullopt,
-                .last_vel_update = std::nullopt,
             };
             // done to prevent values like delta_time being 0
             return std::nullopt;
@@ -266,27 +256,11 @@ class moveTo
                                                                     delta_time);
                 }
 
-                DifferentialSpeeds current_target { linear_vel, angular_vel };
-
-                // no last update, update now
-                // if (!state.last_vel_update.has_value()) {
-                state.last_vel_update = { current_target, now() };
-                // } else {
-                //     Time outer_pid_time = 30_msec;
-                //     // enough time has passed since last one, update
-                //
-                //     if (timeoutDone(outer_pid_time,
-                //                     state.last_vel_update->second)) {
-                //         state.last_vel_update = { current_target, now() };
-                //     }
-                // }
-
-                DifferentialSpeeds applied_target =
-                  state.last_vel_update->first;
+                DifferentialSpeeds target { linear_vel, angular_vel };
 
                 // pass velocities into feedforward
                 auto [left_voltage, right_voltage] =
-                  this->controllers.velocity_feedforward.update(applied_target,
+                  this->controllers.velocity_feedforward.update(target,
                                                                 delta_time);
 
                 // TODO: apply voltage clamp/slew? probably not
@@ -296,18 +270,20 @@ class moveTo
                 auto [actual_volt_left, actual_volt_right] =
                   this->drivetrain.getDrivetrainVoltages();
 
-                // std::cout << std::fixed;
-                // std::cout << std::setprecision(5);
-                //
-                // std::cout
-                //   << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
-                //   << linear_error.internal() << " "
-                //   << applied_target.linear_velocity.internal() << " "
-                //   << applied_target.angular_velocity.internal() << " "
-                //   << left_vel.internal() << " " << right_vel.internal() << " "
-                //   << left_voltage.internal() << " " << right_voltage.internal()
-                //   << " " << actual_volt_left.internal() << " "
-                //   << actual_volt_right.internal() << std::endl;
+                std::cout << std::fixed;
+                std::cout << std::setprecision(5);
+
+                std::cout
+                  <<
+                  "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
+                  << linear_error.internal() << " "
+                  << target.linear_velocity.internal() << " "
+                  << target.angular_velocity.internal() << " "
+                  << left_vel.internal() << " " << right_vel.internal() << " "
+                  << left_voltage.internal() << " " <<
+                  right_voltage.internal()
+                  << " " << actual_volt_left.internal() << " "
+                  << actual_volt_right.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 

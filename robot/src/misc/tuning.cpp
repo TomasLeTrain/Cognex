@@ -472,7 +472,7 @@ void drive_vel_pid_tuning() {
     double curr_ki = linear_vel_pid.get_ki() / linear_vel_pid.UKI;
     double curr_kd = linear_vel_pid.get_kd() / linear_vel_pid.UKD;
 
-    LinearAcceleration curr_accel_slew = 100_mps2;
+    LinearAcceleration curr_accel_slew = 1000_mps2;
     Number curr_k_lat = 0.0;
 
     double kp_delta = 0.1;
@@ -481,6 +481,8 @@ void drive_vel_pid_tuning() {
 
     LinearAcceleration slew_delta = 5_inps2;
     Number k_lat_delta = 0.01;
+
+    Length target_lateral_distance = 10_in;
 
     bool k_lat_config_active = false;
 
@@ -515,9 +517,9 @@ void drive_vel_pid_tuning() {
                 .drive_vel_kd(curr_kd)
                 .drive_vel_accelSlew(curr_accel_slew)
 
-                .turn_vel_kp(0)
-                .turn_vel_ki(0)
-                .turn_vel_kd(0)
+                // .turn_vel_kp(0)
+                // .turn_vel_ki(0)
+                // .turn_vel_kd(0)
 
                 .k_lat(curr_k_lat)
                 .reverse()
@@ -525,16 +527,18 @@ void drive_vel_pid_tuning() {
               | run;
         } else {
             // RobotSetPose(0, 0, 0);
-            mb_vel.moveTo(start_pose.x + target_distance, start_pose.y)
+            mb_vel
+                .moveTo(start_pose.x + target_distance,
+                        start_pose.y + target_lateral_distance)
                 .drive_vel_kp(curr_kp)
                 .drive_vel_ki(curr_ki)
                 .drive_vel_kd(curr_kd)
                 .drive_vel_accelSlew(curr_accel_slew)
 
-                .turn_vel_kp(0)
-                .turn_vel_ki(0)
-                .turn_vel_kd(0)
-                .timeout(3_sec)
+                // .turn_vel_kp(0)
+                // .turn_vel_ki(0)
+                // .turn_vel_kd(0)
+                .timeout(3.3_sec)
                 // .drive_errorTolerance(0_in)
 
                 .k_lat(curr_k_lat)
@@ -550,7 +554,8 @@ void drive_vel_pid_tuning() {
 
         auto curr_pose = RobotGetPose();
         auto error_vec =
-          units::V2Position(start_pose.x + target_distance, start_pose.y) -
+          units::V2Position(start_pose.x + target_distance,
+                            start_pose.y + target_lateral_distance) -
           curr_pose;
 
         auto local_error_vec = error_vec.rotatedBy(-curr_pose.orientation);
@@ -666,13 +671,13 @@ void drive_vel_pid_tuning() {
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_UP)) {
                 if (k_lat_config_active) {
-                    // curr_k_lat += k_lat_delta;
-                    // std::cout << std::format("increased klat to {:.3f}",
-                    //                          curr_k_lat.internal())
-                    //           << std::endl;
-                    curr_ki += ki_delta;
-                    std::cout << std::format("increased ki to {:.3f}", curr_ki)
+                    curr_k_lat += k_lat_delta;
+                    std::cout << std::format("increased klat to {:.3f}",
+                                             curr_k_lat.internal())
                               << std::endl;
+                    // curr_ki += ki_delta;
+                    // std::cout << std::format("increased ki to {:.3f}", curr_ki)
+                    //           << std::endl;
                 } else {
 
                     curr_accel_slew += slew_delta;
@@ -685,13 +690,13 @@ void drive_vel_pid_tuning() {
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_DOWN)) {
                 if (k_lat_config_active) {
-                    // curr_k_lat -= k_lat_delta;
-                    // std::cout << std::format("decreased klat to {:.3f}",
-                    //                          curr_k_lat.internal())
-                    //           << std::endl;
-                    curr_ki -= ki_delta;
-                    std::cout << std::format("decreased ki to {:.3f}", curr_ki)
+                    curr_k_lat -= k_lat_delta;
+                    std::cout << std::format("decreased klat to {:.3f}",
+                                             curr_k_lat.internal())
                               << std::endl;
+                    // curr_ki -= ki_delta;
+                    // std::cout << std::format("decreased ki to {:.3f}", curr_ki)
+                    //           << std::endl;
                 } else {
                     curr_accel_slew -= slew_delta;
                     std::cout << std::format("decreased slew to {:.3f}",

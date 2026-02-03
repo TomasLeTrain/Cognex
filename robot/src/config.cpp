@@ -485,9 +485,22 @@ LinearVelocitySlewController linear_vel_slew_controller {};
 LinearVelocityClampController linear_vel_clamp_controller {};
 
 // end linear velocity stuff //
+//
+// used for seeking motions
+// PID<Angle, AngularVelocity> linear_heading_vel_pid(19.700,
+//                                                  // 0.01,
+//                                                  1.35,
+//                                                  23.500,
+//                                                  to_stRad(10_stDeg),
+//                                                  std::nullopt,
+//                                                  // 70,
+//                                                  50_msec,
+//                                                  1_stRad,
+//                                                  1_radps);
 
-PID<Angle, AngularVelocity> turn_heading_vel_pid(19.500,
-                                                 0.01,
+PID<Angle, AngularVelocity> turn_heading_vel_pid(19.700,
+                                                 // 0.01,
+                                                 1.35,
                                                  23.500,
                                                  to_stRad(10_stDeg),
                                                  std::nullopt,
