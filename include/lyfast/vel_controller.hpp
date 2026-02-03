@@ -199,6 +199,7 @@ class DifferentialVelocityController {
     SimpleVelocityController<LinearVelocity> left_controller;
     SimpleVelocityController<LinearVelocity> right_controller;
 
+    LinearVelocity m_max_velocity;
     Length m_track_width;
     DifferentialDrivetrain& drivetrain;
 
@@ -209,9 +210,8 @@ class DifferentialVelocityController {
         Length track_radius = m_track_width / 2.0;
 
         // desaturate target first
-        target = desaturateDifferentialSpeeds(target,
-                                              m_track_width,
-                                              drivetrain.getMaxVelocity());
+        target =
+          desaturateDifferentialSpeeds(target, m_track_width, m_max_velocity);
 
         LinearVelocity target_left_vel =
           target.linear_velocity -
@@ -290,6 +290,7 @@ class DifferentialVelocityController {
     }
 
     DifferentialVelocityController(VelocityControllerParams params,
+                                   LinearVelocity max_velocity,
                                    Length track_width,
                                    DifferentialDrivetrain& drivetrain)
         : m_params(params),
@@ -307,16 +308,20 @@ class DifferentialVelocityController {
             .Ki = this->m_params.right_Ki,
             .max_output = this->m_params.right_max_output,
           }),
+          m_max_velocity(max_velocity),
           m_track_width(track_width),
           drivetrain(drivetrain) {}
 
     DifferentialVelocityController(
       SimpleVelocityControllerParams<LinearVelocity> params,
+      LinearVelocity max_velocity,
       Length track_width,
       DifferentialDrivetrain& drivetrain)
         : m_params(VelocityControllerParams::fromSimple(params)),
           left_controller(params),
           right_controller(params),
+
+          m_max_velocity(max_velocity),
           m_track_width(track_width),
           drivetrain(drivetrain) {}
 };
@@ -325,6 +330,7 @@ class ArcadeVelocityController {
     DifferentialVelocityController linear_controller;
     DifferentialVelocityController angular_controller;
 
+    LinearVelocity m_max_velocity;
     Length m_track_width;
     DifferentialDrivetrain& drivetrain;
 
@@ -345,9 +351,8 @@ class ArcadeVelocityController {
     LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
         Length track_radius = m_track_width / 2.0;
 
-        target = desaturateDifferentialSpeeds(target,
-                                              m_track_width,
-                                              drivetrain.getMaxVelocity());
+        target =
+          desaturateDifferentialSpeeds(target, m_track_width, m_max_velocity);
 
         LeftRightVoltages linear = linear_controller.update(target, duration);
         LeftRightVoltages angular = angular_controller.update(target, duration);
@@ -403,10 +408,12 @@ class ArcadeVelocityController {
 
     ArcadeVelocityController(DifferentialVelocityController linear_controller,
                              DifferentialVelocityController angular_controller,
+                             LinearVelocity max_velocity,
                              Length track_width,
                              DifferentialDrivetrain& drivetrain)
         : linear_controller(linear_controller),
           angular_controller(angular_controller),
+          m_max_velocity(max_velocity),
           m_track_width(track_width),
           drivetrain(drivetrain) {}
 };

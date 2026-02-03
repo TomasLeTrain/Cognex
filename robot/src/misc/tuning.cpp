@@ -279,6 +279,11 @@ void drive_pid_tuning() {
                 .drive_kp(curr_kp)
                 .drive_ki(curr_ki)
                 .drive_kd(curr_kd)
+
+                .turn_kp(0)
+                .turn_ki(0)
+                .turn_kd(0)
+
                 .drive_accelSlew(curr_accel_slew)
                 .k_lat(curr_k_lat)
                 .reverse() |
@@ -289,6 +294,11 @@ void drive_pid_tuning() {
                 .drive_kp(curr_kp)
                 .drive_ki(curr_ki)
                 .drive_kd(curr_kd)
+
+                .turn_kp(0)
+                .turn_ki(0)
+                .turn_kd(0)
+
                 .k_lat(curr_k_lat)
                 .drive_accelSlew(curr_accel_slew) |
               run;
@@ -303,16 +313,24 @@ void drive_pid_tuning() {
           units::V2Position(start_pose.x + target_distance, start_pose.y) -
           curr_pose;
 
+        auto local_error_vec = error_vec.rotatedBy(-curr_pose.orientation);
+
         auto total_error = error_vec.magnitude();
         auto forwards_error = error_vec.x;
         auto sideways_error = error_vec.y;
 
+        std::cout << std::format("final error: {:.3f}, x: {:.3f}, y: {:.3f}",
+                                 total_error.convert(in),
+                                 forwards_error.convert(in),
+                                 sideways_error.convert(in))
+                  << std::endl;
+
         std::cout
           << std::format(
-               "final error: {:.3f}, forwards: {:.3f}, sideways: {:.3f}",
-               total_error.convert(in),
-               forwards_error.convert(in),
-               sideways_error.convert(in))
+               "final local error: {:.3f}, forwards: {:.3f}, sideways: {:.3f}",
+               local_error_vec.magnitude().convert(in),
+               local_error_vec.x.convert(in),
+               local_error_vec.y.convert(in))
           << std::endl;
 
         std::cout << std::format("position: {:.3f} {:.3f} {:.3f}",
@@ -503,8 +521,8 @@ void drive_vel_pid_tuning() {
 
                 .k_lat(curr_k_lat)
                 .reverse()
-                .closeThreshold(7_in) |
-              run;
+              // .closeThreshold(7_in)
+              | run;
         } else {
             // RobotSetPose(0, 0, 0);
             mb_vel.moveTo(start_pose.x + target_distance, start_pose.y)
@@ -517,11 +535,11 @@ void drive_vel_pid_tuning() {
                 .turn_vel_ki(0)
                 .turn_vel_kd(0)
                 .timeout(3_sec)
-                .drive_errorTolerance(0_in)
+                // .drive_errorTolerance(0_in)
 
                 .k_lat(curr_k_lat)
-                .closeThreshold(7_in) |
-              async;
+              // .closeThreshold(7_in)
+              | async;
 
             async.wait();
         }
@@ -700,9 +718,9 @@ void turn_vel_pid_tuning() {
     double curr_ki = turn_heading_vel_pid.get_ki() / turn_heading_vel_pid.UKI;
     double curr_kd = turn_heading_vel_pid.get_kd() / turn_heading_vel_pid.UKD;
 
-    double kp_delta = 0.25;
-    double ki_delta = 0.5;
-    double kd_delta = 0.5;
+    double kp_delta = 0.15;
+    double ki_delta = 0.01;
+    double kd_delta = 0.25;
 
     while (true) {
         RobotSetPose(0, 0, 0);

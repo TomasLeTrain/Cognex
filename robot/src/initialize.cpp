@@ -129,8 +129,8 @@ void initialize() {
         // .customAngularLinearFunc(angular_linear_func);
     });
 
-    std::cout << "vel modifiers" << std::endl;
-    pros::delay(100);
+    // std::cout << "vel modifiers" << std::endl;
+    pros::delay(50);
 
     // velocity mb
     mb_vel.setTurnToModifier([](auto&& turnTo) {
@@ -178,20 +178,20 @@ void initialize() {
     screen::health::add_init_notif("finished initialize!",
                                    screen::health::succeed);
 
-    std::cout << "set pf reference :" << &smoother_model << std::endl;
-    pros::delay(100);
+    // std::cout << "set pf reference :" << &smoother_model << std::endl;
+    pros::delay(50);
 
     // sets reference for mcl
     pf_model.setReferenceModel(&smoother_model);
 
-    std::cout << "rumble" << std::endl;
-    pros::delay(100);
+    // std::cout << "rumble" << std::endl;
+    pros::delay(50);
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 
-    std::cout << "make pf thingy" << std::endl;
-    pros::delay(100);
+    // std::cout << "make pf thingy" << std::endl;
+    pros::delay(50);
 
     // taks to update custom particles in mcl logging
     pros::Task(

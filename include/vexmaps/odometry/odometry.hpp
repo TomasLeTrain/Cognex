@@ -246,7 +246,8 @@ class OdometryModel : public LocalizationModel {
         // angular_velocity =
         //   (angle_delta + last_angle_delta) / (getTaskDeltaTime() * 2);
 
-        angular_velocity = imu->get_gyro_rate().y * degps;
+		// specific to z down orientation
+        angular_velocity = -imu->get_gyro_rate().z * degps;
 
         // update last- variables
         last_pose = pose;

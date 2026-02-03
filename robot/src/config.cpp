@@ -132,42 +132,16 @@ drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
 
 // units are in inches
 linear_pid_config_t linear_pid_config {
-    // .kp = 6.3,
-    // .ki = 0,
-    // .kd = 10.2,
 
-    // .kp = 7.65,
-    // .ki = 0,
-    // .kd = 9.5,
+    // good for max voltage 100
+    // .kp = 7.5,
+    // .ki = 0.0,
+    // .kd = 10.3,
 
-    // good for 24
-    // .kp = 8.0,
-    // .ki = 0,
-    // .kd = 9.5,
+    .kp = 7.5,
+    .ki = 0.0,
+    .kd = 10.3,
 
-    // retuned to be goated at all distances
-    .kp = 6.9,
-    .ki = 0.1,
-    .kd = 9.9,
-
-    // good for 36, not good for others
-    // .kp = 7.3,
-    // .ki = 0,
-    // .kd = 9.5,
-
-    // good for 36
-    // .kp = 7.3,
-    // .ki = 0,
-    // .kd = 9.5,
-    // //
-    // good for 48
-    // .kp = 6.7,
-    // .ki = 0,
-    // .kd = 9.5,
-
-    // linear_pid_config_t linear_pid_config { .kp = 4.5,
-    //                                         .ki = 0,
-    //                                         .kd = 3.6,
     .windupRange = 7,
     .maxVoltage = 100
 };
@@ -216,12 +190,12 @@ AngularVoltageClampController angular_voltage_constraints;
 
 // tolerances
 tolerances_config_t<Length> linear_tolerances_config {
-    .duration = 200_msec,
-    .error { 3_in },
+    .duration = 100_msec,
+    .error { 0.7_in },
     .velocity { 400_inps },
 
-    .large_duration = 1_sec,
-    .large_error { 5_in },
+    .large_duration = 1.2_sec,
+    .large_error { 3_in },
     .large_velocity { 400_inps },
 
     .chain_duration = 1_sec,
@@ -244,14 +218,6 @@ tolerances_config_t<Angle> angular_tolerances_config {
     .duration = 20_msec,
     .error = { 1_stDeg },
     .velocity = { 400_radps },
-
-    // lcoked
-    // increased kp to 19.500
-    // increased kd to 23.500
-
-    // locked
-    // increased kp to 16.000
-    // increased kd to 15.000
 
     .large_duration = 1_sec,
     .large_error = { 15_stDeg },
@@ -415,61 +381,51 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
     .left_Kv = 0.420125 * volt / mps,
 
     // length kp and ka term create a feedback loop intenuating noise
-    .left_Ka = 0.02 * volt / mps2,
+    // .left_Ka = 0.02 * volt / mps2,
+    .left_Ka = 0.0 * volt / mps2,
     .left_Ks = 0.0619155 * volt,
 
-    .left_Kp = 0.763636363636 * volt / mps,
+    .left_Kp = 0.0 * volt / mps,
     .left_Ki = 0.0 * volt / m,
 
     .right_Kv = 0.422079 * volt / mps,
-    .right_Ka = 0.02 * volt / mps2,
+    // .right_Ka = 0.02 * volt / mps2,
+    .right_Ka = 0.0 * volt / mps2,
     .right_Ks = 0.0661917 * volt,
 
-    .right_Kp = 0.763636363636 * volt / mps,
+    .right_Kp = 0.0 * volt / mps,
     .right_Ki = 0.0 * volt / m,
   },
+  100_inps,
   drivetrain_config.track_width,
   drivetrain);
 
+// goated for turning
 blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
 
     .left_Kv = 0.471609 * volt / mps,
-    .left_Ka = 0.0986881348841 * volt / mps2,
+    .left_Ka = 0.00986881348841 * volt / mps2,
     .left_Ks = 0.08 * volt,
 
     // lambda 0.6
     .left_Kp = 0.915472273416 * volt / mps,
     .left_Ki = 5.09538143189 * volt / m,
-    // .left_Kp = 0 * volt / mps,
-    // .left_Ki = 0 * volt / m,
 
     .right_Kv = 0.475 * volt / mps,
-    .right_Ka = 0.10128620282 * volt / mps2,
+    .right_Ka = 0.010128620282 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
-    // .right_Kp = 0 * volt / mps,
-    // .right_Ki = 0 * volt / m,
     .right_Kp = 0.968620056451 * volt / mps,
     .right_Ki = 5.5578634857 * volt / m,
-
-    // trial 1
-    // .left_Ka = 0.144799 * volt / mps2,
-    // lambda factor: 0.6
-    // .left_Kp = 0.879286 * volt / mps,
-    // .left_Ki = 3.20367 * volt / m,
-    //
-    // .right_Ka = 0.233737 * volt / mps2,
-    // // lambda factor: 0.6
-    // .right_Kp = 0.84414 * volt / mps,
-    // .right_Ki = 1.82916 * volt / m,
-
   },
+  100_inps,
   drivetrain_config.track_width,
   drivetrain);
 
 lyfast::ArcadeVelocityController vel_controller { linear_velocity_controller,
                                                   angular_velocity_controller,
+                                                  100_inps,
                                                   drivetrain_config.track_width,
                                                   drivetrain };
 
@@ -477,15 +433,27 @@ lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller(vel_controller);
 
 // linear velocity stuff
-PID<Length, LinearVelocity> linear_vel_pid(4.1,
+PID<Length, LinearVelocity> linear_vel_pid(6.600,
                                            0.0,
-                                           0.09,
+                                           11.400,
                                            7,
                                            // std::nullopt,
                                            100,
                                            50_msec,
                                            1_in,
                                            1_inps);
+//
+// good for 24 and 36 inches, saves 200 msec compred to using 72 (too slow)
+// kp to 4.400
+// kd to 5.100
+
+// good for 48 inches:
+// kp to 4.200
+// kd to 5.800
+
+// good for 72 inches, saves 200 msec compred to using 24 (too fast)
+// kp to 4.200
+// kd to 5.500
 
 // goated, not as aggressive:
 // kp to 3.900
@@ -513,15 +481,15 @@ PID<Length, LinearVelocity> linear_vel_pid(4.1,
 
 PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
 
-LinearVelocitySlewController linear_vel_slew_controller { 150_inps2 };
+LinearVelocitySlewController linear_vel_slew_controller {};
 LinearVelocityClampController linear_vel_clamp_controller {};
 
 // end linear velocity stuff //
 
 PID<Angle, AngularVelocity> turn_heading_vel_pid(19.500,
-                                                 0.0,
+                                                 0.01,
                                                  23.500,
-                                                 7,
+                                                 to_stRad(10_stDeg),
                                                  std::nullopt,
                                                  // 70,
                                                  50_msec,
