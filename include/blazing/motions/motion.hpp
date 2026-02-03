@@ -227,6 +227,18 @@ class Motion : public MotionBase {
         return DerivedReturnType;
     }
 
+    // required to be the same type as original controller
+    motionChangerT withVelocityFeedforwardController(T new_controllers) {
+        this->controllers.set_velocity_feedforward(new_controllers);
+        return DerivedReturnType;
+    }
+
+    // required to be the same type as original controller
+    motionChangerT withVelocityFeedbackController(T new_controllers) {
+        this->controllers.set_velocity_feedfback(new_controllers);
+        return DerivedReturnType;
+    }
+
     void start_motion_callback() override {
         // before motion should be blocking - prereq to the motion executing
 

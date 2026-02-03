@@ -45,7 +45,10 @@ class DifferentialDrivetrain : public ChainableDrivetrain {
         voltages = { left_voltage, right_voltage };
 
         // return if not doing hardware action
-        if (!enabled) return;
+        if (!enabled) {
+            std::cout << "not enabled! " << pros::millis() << std::endl;
+            return;
+        }
 
         if (left_motors != nullptr && right_motors != nullptr) {
             left_motors->move_voltage(to_mvolt(12 * left_voltage));

@@ -32,10 +32,11 @@ class PID {
     KD_t<Input, Output> m_kd;
 
     std::optional<Input> m_windupRange;
-
     std::optional<Output> m_maxOutput;
+    std::optional<double> m_derivative_alpha;
 
     std::optional<Input> previousError;
+    std::optional<Divided<Input, Time>> last_applied_derivative;
     Multiplied<Input, Time> integral = Multiplied<Input, Time>(0);
 
     std::optional<Time> previousTime = std::nullopt;
@@ -45,18 +46,21 @@ class PID {
         KI_t<Input, Output> ki,
         KD_t<Input, Output> kd,
         std::optional<Input> windupRange = std::nullopt,
-        std::optional<Output> maxVoltage = std::nullopt)
+        std::optional<Output> maxVoltage = std::nullopt,
+        std::optional<double> derivative_alpha = std::nullopt)
         : m_kp(kp),
           m_ki(ki),
           m_kd(kd),
           m_windupRange(windupRange),
-          m_maxOutput(maxVoltage) {}
+          m_maxOutput(maxVoltage),
+          m_derivative_alpha(derivative_alpha) {}
 
     PID(double kp,
         double ki,
         double kd,
         std::optional<double> windupRange = std::nullopt,
         std::optional<double> maxVoltage = std::nullopt,
+        std::optional<double> derivative_alpha = std::nullopt,
         Time timeUnits = 1_sec,
         Input inputUnits = Input(1),
         Output outputUnits = Output(1))
@@ -76,7 +80,8 @@ class PID {
           m_maxOutput(
             maxVoltage.transform([outputUnits](double maxVoltage) -> Output {
                 return maxVoltage * outputUnits;
-            })) {}
+            })),
+          m_derivative_alpha(derivative_alpha) {}
 
     // motions don't call this since they always copy the object,
     // however any other usage does need to call it
@@ -90,24 +95,41 @@ class PID {
 
         if (!previousError) previousError = error;
 
-        const Divided<Input, Time> derivative =
+        const Divided<Input, Time> curr_derivative =
           (dt != 0_sec) ? (error - *previousError) / dt :
                           Divided<Input, Time>(0);
 
+        Divided<Input, Time> applied_derivative = curr_derivative;
+
+        if (m_derivative_alpha && last_applied_derivative) {
+            // use low pass filter if wanted
+            applied_derivative =
+              curr_derivative * m_derivative_alpha.value() +
+              *last_applied_derivative * (1 - m_derivative_alpha.value());
+        }
+        last_applied_derivative = applied_derivative;
+
+        auto current_integral = integral;
+
         if (previousError)
             // use trapezoidal approximation if previous is available
-            integral += (error + *previousError) * dt * 0.5;
+            current_integral += (error + *previousError) * dt * 0.5;
         else
             // use Riemann sum approximation
-            integral += error * dt;
+            current_integral += error * dt;
 
         previousError = error;
 
-        // sign flip reset. If the sign of error changes, set the integral to 0
-        if (units::sgn(error) != units::sgn(*previousError))
-            integral = Multiplied<Input, Time>(0);
+        // sign flip reset. If the sign of error changes, set the integral
+        // to 0
+        if (units::sgn(error) != units::sgn(*previousError)) {
+            current_integral = Multiplied<Input, Time>(0);
+            // probably want to update integral regardless of saturation
+            integral = current_integral;
+        }
 
-        // anti windup range. Unless error is small enough, set the integral to
+        // anti windup range. Unless error is small enough, set the integral
+        // to
         // 0
         if (m_windupRange
               .transform([error](Input windupRange) {
@@ -116,11 +138,23 @@ class PID {
               .value_or(false))
             integral = Multiplied<Input, Time>(0);
 
-        Output result = error * m_kp + integral * m_ki + derivative * m_kd;
+        Output result =
+          error * m_kp + integral * m_ki + applied_derivative * m_kd;
 
-        if (m_maxOutput) {
-            result = units::clamp(result, -(*m_maxOutput), *m_maxOutput);
+        if (
+          // no max output defined
+          !m_maxOutput ||
+          // or not saturating
+          units::abs(result) < *m_maxOutput ||
+          // or saturation does not add windup
+          units::sgn(error) != units::sgn(result)) {
+            // all conditions for saturation were not met, update integral
+            integral = current_integral;
         }
+
+        // clamp result
+        if (m_maxOutput)
+            result = units::clamp(result, -(*m_maxOutput), *m_maxOutput);
 
         return result;
     }
@@ -190,6 +224,10 @@ class PID {
           [outputUnits = this->m_outputUnits](auto maxOutput) -> Output {
               return maxOutput * outputUnits;
           });
+    }
+
+    void set_derivativeAlpha(std::optional<double> derivative_alpha) {
+        m_derivative_alpha = derivative_alpha;
     }
 };
 } // namespace blazing

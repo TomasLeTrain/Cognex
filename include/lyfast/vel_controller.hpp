@@ -9,6 +9,7 @@
 #include "units/Vector2D.hpp"
 #include "units/units.hpp"
 #include <cmath>
+#include <functional>
 #include <ios>
 
 namespace blazing {
@@ -201,7 +202,7 @@ class DifferentialVelocityController {
 
     LinearVelocity m_max_velocity;
     Length m_track_width;
-    DifferentialDrivetrain& drivetrain;
+    std::reference_wrapper<DifferentialDrivetrain> drivetrain;
 
   public:
     LeftRightVoltages update(LeftRightSpeeds measurement,
@@ -234,7 +235,9 @@ class DifferentialVelocityController {
 
     LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
         // fall back to using specified drivetrain
-        return update(drivetrain.getDrivetrainVelocities(), target, duration);
+        return update(drivetrain.get().getDrivetrainVelocities(),
+                      target,
+                      duration);
     }
 
     // allows using as only a linear feedforward
@@ -289,10 +292,11 @@ class DifferentialVelocityController {
         return m_params;
     }
 
-    DifferentialVelocityController(VelocityControllerParams params,
-                                   LinearVelocity max_velocity,
-                                   Length track_width,
-                                   DifferentialDrivetrain& drivetrain)
+    DifferentialVelocityController(
+      VelocityControllerParams params,
+      LinearVelocity max_velocity,
+      Length track_width,
+      std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : m_params(params),
           left_controller({ .Kv = this->m_params.left_Kv,
                             .Ka = this->m_params.left_Ka,
@@ -316,7 +320,7 @@ class DifferentialVelocityController {
       SimpleVelocityControllerParams<LinearVelocity> params,
       LinearVelocity max_velocity,
       Length track_width,
-      DifferentialDrivetrain& drivetrain)
+      std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : m_params(VelocityControllerParams::fromSimple(params)),
           left_controller(params),
           right_controller(params),
@@ -332,7 +336,7 @@ class ArcadeVelocityController {
 
     LinearVelocity m_max_velocity;
     Length m_track_width;
-    DifferentialDrivetrain& drivetrain;
+    std::reference_wrapper<DifferentialDrivetrain> drivetrain;
 
   public:
     LeftRightVoltages update(LeftRightSpeeds measurement,
@@ -406,11 +410,12 @@ class ArcadeVelocityController {
         return angular_controller.update(measurement, target, duration);
     }
 
-    ArcadeVelocityController(DifferentialVelocityController linear_controller,
-                             DifferentialVelocityController angular_controller,
-                             LinearVelocity max_velocity,
-                             Length track_width,
-                             DifferentialDrivetrain& drivetrain)
+    ArcadeVelocityController(
+      DifferentialVelocityController linear_controller,
+      DifferentialVelocityController angular_controller,
+      LinearVelocity max_velocity,
+      Length track_width,
+      std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : linear_controller(linear_controller),
           angular_controller(angular_controller),
           m_max_velocity(max_velocity),
@@ -429,12 +434,8 @@ struct VelocityFeedforward : virtual ControllerBase {
 
     // creates a copy of the controller with different linear feedback
     // controller
-    template<typename Self>
-    Self with_velocity_feedforward(this Self&& self,
-                                   Controller new_velocity_feedforward) {
-        Self new_self = self;
-        new_self.velocity_feedforward = new_velocity_feedforward;
-        return new_self;
+    void set_velocity_feedforward(Controller new_velocity_feedforward) {
+        this->velocity_feedforward = new_velocity_feedforward;
     }
 };
 
@@ -453,12 +454,8 @@ struct VelocityFeedback : virtual ControllerBase {
 
     // creates a copy of the controller with different linear feedback
     // controller
-    template<typename Self>
-    Self with_velocity_feedback(this Self&& self,
-                                Controller new_velocity_feedback) {
-        Self new_self = self;
-        new_self.velocity_feedback = new_velocity_feedback;
-        return new_self;
+    void set_velocity_feedback(Controller new_velocity_feedback) {
+        this->velocity_feedback = new_velocity_feedback;
     }
 };
 

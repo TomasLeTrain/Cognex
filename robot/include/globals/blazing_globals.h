@@ -48,6 +48,10 @@ extern blazing::lyfast::DifferentialVelocityController
   linear_velocity_controller;
 extern blazing::lyfast::DifferentialVelocityController
   angular_velocity_controller;
+
+// used exclusively for turning
+extern lyfast::ArcadeVelocityController turn_vel_controller;
+
 extern lyfast::ArcadeVelocityController vel_controller;
 
 extern lyfast::VelocityFeedforward<decltype(vel_controller)>

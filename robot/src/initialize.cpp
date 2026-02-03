@@ -2,6 +2,7 @@
 //
 
 #include "globals.h"
+#include "globals/blazing_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "health_daemon.h"
 #include "main.h"
@@ -138,7 +139,8 @@ void initialize() {
           turnTo
             .velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // .withVelocityFeedforwardController(turn_vel_controller)
             .timeout(5_sec));
     });
 
@@ -148,7 +150,8 @@ void initialize() {
 
     mb_vel.setMoveToModifier([](auto&& moveTo) {
         // return moveTo.customAngularLinearFunc(angular_linear_func);
-        return std::move(moveTo.customAngularLinearFunc(angular_linear_func)
+        return std::move(moveTo
+                           // .customAngularLinearFunc(angular_linear_func)
                            .velocity_based(true)
                            .k_lat(0.15 * rad / m)
                            .timeout(3_sec));

@@ -19,6 +19,9 @@ struct linear_pid_config_t {
     double kd;
     std::optional<double> windupRange = std::nullopt;
     std::optional<double> maxVoltage = 127;
+    // same as trusting fully
+    std::optional<double> derivative_alpha = std::nullopt;
+
     Time timeUnits = 50_msec;
     Length inputUnits = 1_in;
     Voltage outputUnits = Voltage(1.0 / 127.0);
@@ -30,6 +33,8 @@ struct angular_pid_config_t {
     double kd;
     std::optional<double> windupRange = std::nullopt;
     std::optional<double> maxVoltage = 127;
+    // same as trusting fully
+    std::optional<double> derivative_alpha = std::nullopt;
     Time timeUnits = 50_msec;
     Angle inputUnits = 1_stDeg;
     Voltage outputUnits = Voltage(1.0 / 127.0);
@@ -83,7 +88,6 @@ extern vexmaps::PFConfiguration Pfconfig;
 extern vexmaps::SmootherConfig smoother_config;
 
 extern vexmaps::DistanceSensorConfig distance_sensor_config;
-
 
 // header only configs
 

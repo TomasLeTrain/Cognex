@@ -45,8 +45,8 @@ void opcontrol() {
     // 48 - 1.02
     // 72 - 1.4
 
-    // turn_vel_pid_tuning();
-	drive_vel_pid_tuning();
+    turn_vel_pid_tuning();
+	// drive_vel_pid_tuning();
  	return;
 
     // drive_pid_tuning();

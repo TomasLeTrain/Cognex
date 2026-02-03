@@ -280,9 +280,9 @@ void drive_pid_tuning() {
                 .drive_ki(curr_ki)
                 .drive_kd(curr_kd)
 
-                .turn_kp(0)
-                .turn_ki(0)
-                .turn_kd(0)
+                // .turn_kp(0)
+                // .turn_ki(0)
+                // .turn_kd(0)
 
                 .drive_accelSlew(curr_accel_slew)
                 .k_lat(curr_k_lat)
@@ -295,9 +295,9 @@ void drive_pid_tuning() {
                 .drive_ki(curr_ki)
                 .drive_kd(curr_kd)
 
-                .turn_kp(0)
-                .turn_ki(0)
-                .turn_kd(0)
+                // .turn_kp(0)
+                // .turn_ki(0)
+                // .turn_kd(0)
 
                 .k_lat(curr_k_lat)
                 .drive_accelSlew(curr_accel_slew) |
@@ -482,7 +482,7 @@ void drive_vel_pid_tuning() {
     LinearAcceleration slew_delta = 5_inps2;
     Number k_lat_delta = 0.01;
 
-    Length target_lateral_distance = 10_in;
+    Length target_lateral_distance = 24_in;
 
     bool k_lat_config_active = false;
 
