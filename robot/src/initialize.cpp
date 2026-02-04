@@ -51,7 +51,7 @@ void initialize() {
     // imu.set_data_rate(5);
 
     // give time for screen to update
-    pros::delay(50);
+    // pros::delay(50);
 
     int init_models_notif =
       screen::health::add_init_notif("initializing models");
@@ -63,25 +63,25 @@ void initialize() {
                                                screen::health::succeed);
 
     // give time for screen to update
-    pros::delay(50);
+    // pros::delay(50);
 
     int init_executors_notif =
       screen::health::add_init_notif("initializing executors");
-    pros::delay(50);
+    // pros::delay(50);
 
     // needed for async/chain motions to run
     async.init();
     chain.init();
 
-    pros::delay(50);
+    // pros::delay(50);
 
     screen::health::update_init_notif_severity(init_executors_notif,
                                                screen::health::succeed);
-    pros::delay(50);
+    // pros::delay(50);
 
     int init_tracker_notif =
       screen::health::add_init_notif("initializing tracker");
-    pros::delay(50);
+    // pros::delay(50);
 
     // blazing tracker task
     pros::Task(
@@ -101,37 +101,38 @@ void initialize() {
     int init_motion_defaults_notif =
       screen::health::add_init_notif("initializing motion defaults");
 
-    pros::delay(50);
+    // pros::delay(50);
 
     // default a timeout
-    mb.setTurnToModifier([](auto&& turnTo) {
-        return std::move(
-          turnTo
-            // speecifically uses turn heading pid instead of drive pid
-            .withAngularFeedbackController(turn_heading_pid)
-            .timeout(5_sec));
-    });
+    // mb.setTurnToModifier([](auto&& turnTo) {
+    //     return std::move(
+    //       turnTo
+    //         // speecifically uses turn heading pid instead of drive pid
+    //         .withAngularFeedbackController(turn_heading_pid)
+    //         .timeout(5_sec));
+    // });
 
-    mb.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
-        return std::move(distanceAtHeading.timeout(5_sec));
-    });
-
-    mb.setMoveToModifier([](auto&& moveTo) {
-        // return moveTo.customAngularLinearFunc(angular_linear_func);
-        return std::move(moveTo.k_lat(0.15 * rad / m).timeout(3_sec));
-        // return moveTo.timeout(3_sec);
-        // .customAngularLinearFunc(angular_linear_func);
-    });
-
-    mb.setBoomerangModifier([](auto&& boomerang) {
-        // return boomerang.customAngularLinearFunc(angular_linear_func);
-        // return boomerang.k_lat();
-        return std::move(boomerang.k_lat(0.15 * rad / m, true).timeout(5_sec));
-        // .customAngularLinearFunc(angular_linear_func);
-    });
+    // mb.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
+    //     return std::move(distanceAtHeading.timeout(5_sec));
+    // });
+    //
+    // mb.setMoveToModifier([](auto&& moveTo) {
+    //     // return moveTo.customAngularLinearFunc(angular_linear_func);
+    //     return std::move(moveTo.k_lat(0.15 * rad / m).timeout(3_sec));
+    //     // return moveTo.timeout(3_sec);
+    //     // .customAngularLinearFunc(angular_linear_func);
+    // });
+    //
+    // mb.setBoomerangModifier([](auto&& boomerang) {
+    //     // return boomerang.customAngularLinearFunc(angular_linear_func);
+    //     // return boomerang.k_lat();
+    //     return std::move(boomerang.k_lat(0.15 * rad / m,
+    //     true).timeout(5_sec));
+    //     // .customAngularLinearFunc(angular_linear_func);
+    // });
 
     // std::cout << "vel modifiers" << std::endl;
-    pros::delay(50);
+    // pros::delay(50);
 
     // velocity mb
     mb_vel.setTurnToModifier([](auto&& turnTo) {
@@ -139,9 +140,9 @@ void initialize() {
           turnTo
             .velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
-            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            // .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(5_sec));
+            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            .withVelocityFeedforwardController(turn_vel_controller)
+            .timeout(3_sec));
     });
 
     mb_vel.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
@@ -149,23 +150,40 @@ void initialize() {
     });
 
     mb_vel.setMoveToModifier([](auto&& moveTo) {
-        // return moveTo.customAngularLinearFunc(angular_linear_func);
-        return std::move(moveTo
-                           // .customAngularLinearFunc(angular_linear_func)
-                           .velocity_based(true)
-                           .k_lat(0.15 * rad / m)
-                           .timeout(3_sec));
-        // return moveTo.timeout(3_sec);
-        // .customAngularLinearFunc(angular_linear_func);
+        return std::move(
+          moveTo.velocity_based(true).k_lat(0.15 * rad / m).timeout(3_sec));
     });
 
     mb_vel.setBoomerangModifier([](auto&& boomerang) {
-        // return boomerang.customAngularLinearFunc(angular_linear_func);
-        // return boomerang.k_lat();
         return std::move(boomerang.velocity_based(true)
                            .k_lat(0.15 * rad / m, true)
                            .timeout(5_sec));
-        // .customAngularLinearFunc(angular_linear_func);
+    });
+
+    // actually vel but just set them to change all autos
+    mb.setTurnToModifier([](auto&& turnTo) {
+        return std::move(
+          turnTo
+            .velocity_based(true)
+            // speecifically uses turn heading pid instead of drive pid
+            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            .withVelocityFeedforwardController(turn_vel_controller)
+            .timeout(3_sec));
+    });
+    //
+    mb.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
+        return std::move(distanceAtHeading.velocity_based(true).timeout(5_sec));
+    });
+
+    mb.setMoveToModifier([](auto&& moveTo) {
+        return std::move(
+          moveTo.velocity_based(true).k_lat(0.15 * rad / m).timeout(3_sec));
+    });
+
+    mb.setBoomerangModifier([](auto&& boomerang) {
+        return std::move(boomerang.velocity_based(true)
+                           .k_lat(0.15 * rad / m, true)
+                           .timeout(5_sec));
     });
 
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
@@ -184,19 +202,19 @@ void initialize() {
                                    screen::health::succeed);
 
     // std::cout << "set pf reference :" << &smoother_model << std::endl;
-    pros::delay(50);
+    // pros::delay(50);
 
     // sets reference for mcl
     pf_model.setReferenceModel(&smoother_model);
 
     // std::cout << "rumble" << std::endl;
-    pros::delay(50);
+    // pros::delay(50);
 
     // initialize was performed
     pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 
     // std::cout << "make pf thingy" << std::endl;
-    pros::delay(50);
+    // pros::delay(50);
 
     // taks to update custom particles in mcl logging
     pros::Task(

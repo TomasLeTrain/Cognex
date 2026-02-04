@@ -27,7 +27,7 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -192,7 +192,8 @@ AngularVoltageClampController angular_voltage_constraints;
 // tolerances
 tolerances_config_t<Length> linear_tolerances_config {
     .duration = 100_msec,
-    .error { 0.7_in },
+    // .error { 0.7_in },
+    .error { 1.0_in },
     .velocity { 400_inps },
 
     .large_duration = 1.2_sec,
@@ -216,11 +217,21 @@ tolerances_config_t<Angle> angular_tolerances_config {
     // .chain_duration = 1_sec,
     // .chain_error = { 20_stDeg },
 
-    .duration = 20_msec,
-    .error = { 1_stDeg },
-    .velocity = { 400_radps },
+    // good for tuning
+    // .duration = 30_msec,
+    // .error = { 1_stDeg },
+    // .velocity = { 20_degps },
 
-    .large_duration = 1_sec,
+    .duration = 40_msec,
+    .error = { 2_stDeg },
+    // .velocity = { 60_degps },
+    .velocity = { 100_degps },
+
+    // .duration = 30_msec,
+    // .error = { 1.2_stDeg },
+    // .velocity = { 20_degps },
+    //
+    .large_duration = 100_sec,
     .large_error = { 15_stDeg },
     .large_velocity = { 300_degps },
 
@@ -265,7 +276,7 @@ vexmaps::SmootherConfig smoother_config = {
 
     // possible good values
     .ang_vel_alpha = 0.10 / 300_degps,
-    .theta_to_alpha = 0.09,
+    .theta_to_alpha = 0.03,
     .linear_vel_alpha = 0.00 / 70_inps,
     //
     // .ang_vel_alpha = 0.0 / 300_degps,
@@ -409,8 +420,9 @@ blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
 
     .left_Kv = 0.471609 * volt / mps,
-    // .left_Ka = 0.00986881348841 * volt / mps2,
-    .left_Ka = 0.0 * volt / mps2,
+    // ka kinda useful turns
+    .left_Ka = 0.00986881348841 * volt / mps2,
+    // .left_Ka = 0.0 * volt / mps2,
     .left_Ks = 0.08 * volt,
 
     // lambda 0.6
@@ -420,8 +432,9 @@ blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
     .left_Ki = 0.0 * volt / m,
 
     .right_Kv = 0.475 * volt / mps,
-    // .right_Ka = 0.010128620282 * volt / mps2,
-    .right_Ka = 0.0 * volt / mps2,
+    // ka kinda useful turns
+    .right_Ka = 0.010128620282 * volt / mps2,
+    // .right_Ka = 0.0 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
     // .right_Kp = 0.968620056451 * volt / mps,
@@ -468,33 +481,34 @@ lyfast::ArcadeVelocityController turn_vel_controller {
 };
 // --- turning vel stuff --- //
 
-lyfast::ArcadeVelocityController vel_controller {
-    linear_velocity_controller,
-    // TODO: temporary for debugging
-    diff_turn_vel_controller,
-    100_inps,
-    // angular_velocity_controller,
-    // 70_inps,
-    drivetrain_config.track_width,
-    std::ref(drivetrain)
-};
+lyfast::ArcadeVelocityController vel_controller { linear_velocity_controller,
+                                                  angular_velocity_controller,
+                                                  70_inps,
+                                                  drivetrain_config.track_width,
+                                                  std::ref(drivetrain) };
 
 lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller(vel_controller);
 
 // linear velocity stuff
 PID<Length, LinearVelocity>
-  linear_vel_pid(6.600,
+  linear_vel_pid(4.700,
                  0.0,
-                 11.400,
+                 // 7.000,
+                 7.300,
                  7,
                  // std::nullopt,
-                 60,
+                 70,
                  // use new measurements with 70% confidence
                  0.7,
                  50_msec,
                  1_in,
                  1_inps);
+
+//
+// increased kp to 4.400
+// increased kd to 7.200
+
 //
 // good for 24 and 36 inches, saves 200 msec compred to using 72 (too slow)
 // kp to 4.400
@@ -540,10 +554,10 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 // end linear velocity stuff //
 //
 // used for seeking motions
-PID<Angle, AngularVelocity> linear_angular_vel_pid(11.900,
+PID<Angle, AngularVelocity> linear_angular_vel_pid(15.400,
                                                    // 0.01,
-                                                   0.0,
-                                                   14.50,
+                                                   1.1,
+                                                   17,
                                                    to_stRad(10_stDeg),
                                                    // restrict max vel
                                                    70,
@@ -553,10 +567,10 @@ PID<Angle, AngularVelocity> linear_angular_vel_pid(11.900,
                                                    1_radps);
 
 // used only for turning
-PID<Angle, AngularVelocity> turn_heading_vel_pid(19.700,
+PID<Angle, AngularVelocity> turn_heading_vel_pid(19.000,
                                                  // 0.01,
-                                                 1.35,
-                                                 23.500,
+                                                 0.0,
+                                                 23.800,
                                                  to_stRad(10_stDeg),
                                                  std::nullopt,
                                                  // 70,
@@ -565,8 +579,22 @@ PID<Angle, AngularVelocity> turn_heading_vel_pid(19.700,
                                                  1_stRad,
                                                  1_radps);
 
+// less ki, pretty good:
+// increased kp to 20.750
+// ki - 1.1
+// increased kd to 23.500
+//
+// single oscilation, good with antiwindup range of 20 deg
+// decreased kp to 20.750
+// increased kp to 20.900
+// decreased kd to 25.000
+// increased kd to 25.250
+// ki - to 0.5499999999999994
+// ki + to 0.5599999999999994
+
 // start angular velocity stuff
-// PIDAngularVelocityController angular_vel_pid_controller(linear_angular_vel_pid);
+// PIDAngularVelocityController
+// angular_vel_pid_controller(linear_angular_vel_pid);
 PIDAngularVelocityController angular_vel_pid_controller(turn_heading_vel_pid);
 
 AngularVelocitySlewController angular_vel_slew_controller {};

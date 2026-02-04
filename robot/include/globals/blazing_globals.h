@@ -67,7 +67,7 @@ extern LinearVelocityClampController linear_vel_clamp_controller;
 // end linear velocity stuff //
 
 // start angular velocity stuff //
-extern PID<Angle, AngularVelocity> angular_vel_pid;
+extern PID<Angle, AngularVelocity> linear_angular_vel_pid;
 extern PID<Angle, AngularVelocity> turn_heading_vel_pid;
 
 extern PIDAngularVelocityController angular_vel_pid_controller;

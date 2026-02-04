@@ -118,37 +118,50 @@ class PID {
             // use Riemann sum approximation
             current_integral += error * dt;
 
-        previousError = error;
-
         // sign flip reset. If the sign of error changes, set the integral
         // to 0
         if (units::sgn(error) != units::sgn(*previousError)) {
             current_integral = Multiplied<Input, Time>(0);
-            // probably want to update integral regardless of saturation
+            current_integral += error * dt;
+
+            // update integral regardless of saturation
             integral = current_integral;
         }
+
+        previousError = error;
 
         // anti windup range. Unless error is small enough, set the integral
         // to
         // 0
-        if (m_windupRange
-              .transform([error](Input windupRange) {
-                  return units::abs(error) > windupRange;
-              })
-              .value_or(false))
-            integral = Multiplied<Input, Time>(0);
+        bool within_antiwindup_range =
+          m_windupRange
+            .transform([error](Input windupRange) {
+                return units::abs(error) <= windupRange;
+            })
+            .value_or(true);
+
+        // outside of windup range should be zero
+        if (!within_antiwindup_range) {
+            current_integral = Multiplied<Input, Time>(0);
+            // update integral regardless of saturation
+            integral = current_integral;
+        }
 
         Output result =
-          error * m_kp + integral * m_ki + applied_derivative * m_kd;
+          error * m_kp + current_integral * m_ki + applied_derivative * m_kd;
 
         if (
-          // no max output defined
-          !m_maxOutput ||
-          // or not saturating
-          units::abs(result) < *m_maxOutput ||
-          // or saturation does not add windup
-          units::sgn(error) != units::sgn(result)) {
-            // all conditions for saturation were not met, update integral
+          // only apply saturation control if within windup range
+          within_antiwindup_range &&
+          // and max output defined
+          m_maxOutput &&
+          // and is saturating
+          units::abs(result) >= *m_maxOutput &&
+          // and saturation would be adding windup
+          units::sgn(error) == units::sgn(result)) {
+            // all conditions for saturation were met, don't update integral
+        } else {
+            // not saturating, update integral
             integral = current_integral;
         }
 

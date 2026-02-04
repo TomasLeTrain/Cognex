@@ -219,23 +219,26 @@ class turnToBase : public Motion<ControllersType,
 
                 // TODO: apply voltage clamp/slew? probably not
 
-                std::cout << std::fixed;
-                std::cout << std::setprecision(5);
-
-                auto [left_vel, right_vel] =
-                  this->drivetrain.getDrivetrainVelocities();
-                auto [actual_volt_left, actual_volt_right] =
-                  this->drivetrain.getDrivetrainVoltages();
-
-                std::cout
-                  << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
-                  << angular_error.internal() << " "
-                  << target.linear_velocity.internal() << " "
-                  << target.angular_velocity.internal() << " "
-                  << left_vel.internal() << " " << right_vel.internal() << " "
-                  << left_voltage.internal() << " " << right_voltage.internal()
-                  << " " << actual_volt_left.internal() << " "
-                  << actual_volt_right.internal() << std::endl;
+                // std::cout << std::fixed;
+                // std::cout << std::setprecision(5);
+                //
+                // auto [left_vel, right_vel] =
+                //   this->drivetrain.getDrivetrainVelocities();
+                // auto [actual_volt_left, actual_volt_right] =
+                //   this->drivetrain.getDrivetrainVoltages();
+                //
+                // std::cout
+                //   <<
+                //   "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r: "
+                //   << angular_error.internal() << " "
+                //   << target.linear_velocity.internal() << " "
+                //   << target.angular_velocity.internal() << " "
+                //   << left_vel.internal() << " " << right_vel.internal() << "
+                //   "
+                //   << left_voltage.internal() << " " <<
+                //   right_voltage.internal()
+                //   << " " << actual_volt_left.internal() << " "
+                //   << actual_volt_right.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 

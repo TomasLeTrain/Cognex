@@ -153,7 +153,7 @@ void run_auton() {
         // else
         mb.turnTo(target_pose).reverse().setChainTime(0_sec) | chain;
 
-        mb.boomerang(target_pose).reverse() | chain;
+        mb_vel.boomerang(target_pose).reverse() | chain;
 
         Length slow_dist = 12_in;
         Length score_dist = 7.5_in;
@@ -170,7 +170,8 @@ void run_auton() {
         pros::delay(20);
 
         // go into new which is slower
-        mb.boomerang(target_pose)
+        mb_vel
+            .boomerang(target_pose)
             // .drive_maxVolt(0.4_volt)
             .reverse()
 
@@ -236,6 +237,8 @@ void run_auton() {
 
     matchloader::up();
 
+    mb.turnTo(-1_tile, -1_tile).radius(-1.2) | chain;
+
     mb.moveTo(-1_tile, -1_tile)
         .executeAfterMotion([] {
             intake::in();
@@ -254,7 +257,8 @@ void run_auton() {
     mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
         .reverse()
         .k_lat(0.3)
-        .drive_maxVolt(0.5_volt)
+        // .drive_maxVolt(0.5_volt)
+        .drive_vel_maxVolt(40_inps)
       // .drive_kp(linear_pid.get_kp() * 0.7)
       | chain;
 
@@ -273,12 +277,11 @@ void run_auton() {
     intake::in();
 
     // turn to and go to matchloader
-    mb.moveTo(-48_in, normal_match - 0.5_in).closeThreshold(7_in) | chain;
+    mb.moveTo(-48_in, normal_match - 0.5_in) | chain;
     chain.wait();
 
     // turn to and go to matchloader
-    mb.turnTo(make_matchloader_point(-1, 1)).turn_toleranceDuration(25_msec) |
-      run;
+    mb.turnTo(make_matchloader_point(-1, 1)) | run;
 
     // pros::delay(50);
     matchload(-1, 1, 0.3_sec);

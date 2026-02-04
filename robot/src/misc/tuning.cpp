@@ -482,7 +482,8 @@ void drive_vel_pid_tuning() {
     LinearAcceleration slew_delta = 5_inps2;
     Number k_lat_delta = 0.01;
 
-    Length target_lateral_distance = 24_in;
+    // Length target_lateral_distance = 24_in;
+    Length target_lateral_distance = 0_in;
 
     bool k_lat_config_active = false;
 
@@ -543,10 +544,10 @@ void drive_vel_pid_tuning() {
 
                 .k_lat(curr_k_lat)
               // .closeThreshold(7_in)
-              | async;
-
-            async.wait();
+              | run;
         }
+
+        controller.rumble(".");
 
         auto end_time = from_msec(pros::millis());
 
@@ -676,7 +677,8 @@ void drive_vel_pid_tuning() {
                                              curr_k_lat.internal())
                               << std::endl;
                     // curr_ki += ki_delta;
-                    // std::cout << std::format("increased ki to {:.3f}", curr_ki)
+                    // std::cout << std::format("increased ki to {:.3f}",
+                    // curr_ki)
                     //           << std::endl;
                 } else {
 
@@ -695,7 +697,8 @@ void drive_vel_pid_tuning() {
                                              curr_k_lat.internal())
                               << std::endl;
                     // curr_ki -= ki_delta;
-                    // std::cout << std::format("decreased ki to {:.3f}", curr_ki)
+                    // std::cout << std::format("decreased ki to {:.3f}",
+                    // curr_ki)
                     //           << std::endl;
                 } else {
                     curr_accel_slew -= slew_delta;
@@ -728,14 +731,18 @@ void turn_vel_pid_tuning() {
     double kd_delta = 0.25;
 
     while (true) {
+        matchloader::down();
+
         RobotSetPose(0, 0, 0);
         auto start_time = from_msec(pros::millis());
 
         mb_vel.turnTo(target_theta)
             .turn_vel_kp(curr_kp)
             .turn_vel_ki(curr_ki)
-            .turn_vel_kd(curr_kd) |
+            .turn_vel_kd(curr_kd)
+            .timeout(5_sec) |
           run;
+        controller.rumble(".");
 
         auto end_time = from_msec(pros::millis());
 
