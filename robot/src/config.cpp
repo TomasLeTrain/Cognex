@@ -367,6 +367,15 @@ PID<Length, Voltage> linear_pid(linear_pid_config.kp,
                                 linear_pid_config.timeUnits,
                                 linear_pid_config.inputUnits,
                                 linear_pid_config.outputUnits);
+PID<Length, Voltage> lateral_pid(4.0,
+                                 0.0,
+                                 0.0,
+                                 7, // antiwindup range
+                                 127, // max vel
+                                 std::nullopt, // derivative_alpha
+                                 50_msec,
+                                 1_in,
+                                 Voltage(1.0 / 127.0));
 
 PID<Angle, Voltage> turn_drive_pid(angular_pid_config.kp,
                                    angular_pid_config.ki,
@@ -554,17 +563,26 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 // end linear velocity stuff //
 //
 // used for seeking motions
-PID<Angle, AngularVelocity> linear_angular_vel_pid(15.400,
-                                                   // 0.01,
-                                                   1.1,
-                                                   17,
-                                                   to_stRad(10_stDeg),
-                                                   // restrict max vel
-                                                   70,
-                                                   std::nullopt,
-                                                   50_msec,
-                                                   1_stRad,
-                                                   1_radps);
+PID<Length, AngularVelocity> lateral_vel_pid(1.00,
+                                             0.0,
+                                             0.0,
+                                             std::nullopt, // anti windup range
+                                             std::nullopt, // max vel
+                                             0.7, // derivative
+                                             50_msec,
+                                             1_in,
+                                             1_radps);
+
+PID<Angle, AngularVelocity>
+  linear_angular_vel_pid(15.400,
+                         1.1,
+                         17,
+                         to_stRad(10_stDeg), // windup range
+                         70, // restrict max vel
+                         std::nullopt, // derivative alpha
+                         50_msec,
+                         1_stRad,
+                         1_radps);
 
 // used only for turning
 PID<Angle, AngularVelocity> turn_heading_vel_pid(19.000,
@@ -600,6 +618,10 @@ PIDAngularVelocityController angular_vel_pid_controller(turn_heading_vel_pid);
 AngularVelocitySlewController angular_vel_slew_controller {};
 AngularVelocityClampController angular_vel_clamp_controller {};
 
+// lateral controllers
+LateralVelocityFeedbackController lateral_vel_controller(lateral_vel_pid);
+LateralFeedbackController lateral_controller(lateral_pid);
+
 // end angular velocity stuff //
 
 Controllers<decltype(linear_pid_controller),
@@ -615,6 +637,10 @@ Controllers<decltype(linear_pid_controller),
             decltype(angular_vel_pid_controller),
             decltype(angular_vel_slew_controller),
             decltype(angular_vel_clamp_controller),
+
+            // lateral controllers
+            decltype(lateral_vel_controller),
+            decltype(lateral_controller),
 
             decltype(linear_voltage_constraints),
             decltype(angular_voltage_constraints)>
@@ -637,6 +663,10 @@ Controllers<decltype(linear_pid_controller),
     angular_vel_pid_controller,
     angular_vel_slew_controller,
     angular_vel_clamp_controller,
+
+    // lateral controllers
+    lateral_controller,
+    lateral_vel_controller,
 
     // voltage constraints controllers
     // (included just so they can be set per motion)

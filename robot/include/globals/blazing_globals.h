@@ -9,6 +9,7 @@
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "lyfast/vel_controller.hpp"
+#include "units/Angle.hpp"
 
 using namespace blazing;
 
@@ -75,6 +76,10 @@ extern PIDAngularVelocityController angular_vel_pid_controller;
 extern AngularVelocitySlewController angular_vel_slew_controller;
 extern AngularVelocityClampController angular_vel_clamp_controller;
 
+extern LateralVelocityFeedbackController<PID<Length, AngularVelocity>>
+  lateral_vel_controller;
+extern LateralFeedbackController<PID<Length, Voltage>> lateral_controller;
+
 // end angular velocity stuff //
 
 extern Controllers<decltype(linear_pid_controller),
@@ -90,6 +95,10 @@ extern Controllers<decltype(linear_pid_controller),
                    decltype(angular_vel_pid_controller),
                    decltype(angular_vel_slew_controller),
                    decltype(angular_vel_clamp_controller),
+
+                   // lateral controllers
+                   decltype(lateral_vel_controller),
+                   decltype(lateral_controller),
 
                    decltype(linear_voltage_constraints),
                    decltype(angular_voltage_constraints)>

@@ -160,6 +160,9 @@ class moveTo
         // NOTE: sgn can be zero, which can set linear error to zero as well!
         linear_error *= signed_sgn(lin_multiplier);
 
+        Length projected_cte =
+          (target_point - position).magnitude() * units::sin(angular_error);
+
         this->tolerances.linearErrorToleranceUpdate(linear_error);
 
         this->tolerances.linearVelocityToleranceUpdate(
@@ -212,11 +215,23 @@ class moveTo
                     0_in,
                     delta_time);
 
-                AngularVelocity angular_vel =
-                  this->controllers.angular_velocity_feedback.update(
-                    -angular_error,
-                    0_stRad,
-                    delta_time);
+                AngularVelocity angular_vel = 0_radps;
+
+                // use lateral controller when far away, use regular angular
+                // when settling
+                if (!state.close) {
+                    AngularVelocity angular_vel =
+                      this->controllers.lateral_velocity_feedback.update(
+                        -projected_cte,
+                        0_stRad,
+                        delta_time);
+                } else {
+                    AngularVelocity angular_vel =
+                      this->controllers.angular_velocity_feedback.update(
+                        -angular_error,
+                        0_stRad,
+                        delta_time);
+                }
 
                 if (m_k_lat) {
                     angular_vel =
@@ -283,7 +298,8 @@ class moveTo
                 //           << linear_error.internal() << " "
                 //           << target.linear_velocity.internal() << " "
                 //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " << right_vel.internal()
+                //           << left_vel.internal() << " " <<
+                //           right_vel.internal()
                 //           << " " << left_voltage.internal() << " "
                 //           << right_voltage.internal() << " "
                 //           << actual_volt_left.internal() << " "
