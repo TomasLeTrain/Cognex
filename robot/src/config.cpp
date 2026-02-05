@@ -5,6 +5,7 @@
 #include "blazing/controllers/controllers.hpp"
 #include "blazing/controllers/slew.hpp"
 #include "globals.h"
+#include "lyfast/mp_feedback.hpp"
 #include "lyfast/vel_controller.hpp"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
@@ -27,7 +28,7 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -192,8 +193,8 @@ AngularVoltageClampController angular_voltage_constraints;
 // tolerances
 tolerances_config_t<Length> linear_tolerances_config {
     .duration = 100_msec,
-    // .error { 0.7_in },
-    .error { 1.0_in },
+    .error { 0.7_in },
+    // .error { 1.0_in },
     .velocity { 400_inps },
 
     .large_duration = 1.2_sec,
@@ -402,23 +403,42 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 
 blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
+
     .left_Kv = 0.420125 * volt / mps,
 
     // length kp and ka term create a feedback loop intenuating noise
-    // .left_Ka = 0.02 * volt / mps2,
-    .left_Ka = 0.0 * volt / mps2,
+    .left_Ka = 0.09 * volt / mps2,
+    // .left_Ka = 0.0 * volt / mps2,
     .left_Ks = 0.0819155 * volt,
 
-    .left_Kp = 0.0 * volt / mps,
-    .left_Ki = 0.0 * volt / m,
+    .left_Kp = 0.9 * volt / mps,
+    .left_Ki = 1.0 * volt / m,
 
     .right_Kv = 0.422079 * volt / mps,
-    // .right_Ka = 0.02 * volt / mps2,
-    .right_Ka = 0.0 * volt / mps2,
-    .right_Ks = 0.0761917 * volt,
+    .right_Ka = 0.09 * volt / mps2,
+    // .right_Ka = 0.0 * volt / mps2,
+    .right_Ks = 0.08 * volt,
 
-    .right_Kp = 0.0 * volt / mps,
-    .right_Ki = 0.0 * volt / m,
+    .right_Kp = 0.9 * volt / mps,
+    .right_Ki = 1.0 * volt / m,
+
+    // .left_Kv = 0.420125 * volt / mps,
+    //
+    // // length kp and ka term create a feedback loop intenuating noise
+    // // .left_Ka = 0.02 * volt / mps2,
+    // .left_Ka = 0.0 * volt / mps2,
+    // .left_Ks = 0.0819155 * volt,
+    //
+    // .left_Kp = 0.0 * volt / mps,
+    // .left_Ki = 0.0 * volt / m,
+    //
+    // .right_Kv = 0.422079 * volt / mps,
+    // // .right_Ka = 0.02 * volt / mps2,
+    // .right_Ka = 0.0 * volt / mps2,
+    // .right_Ks = 0.0761917 * volt,
+    //
+    // .right_Kp = 0.0 * volt / mps,
+    // .right_Ki = 0.0 * volt / m,
   },
   100_inps,
   drivetrain_config.track_width,
@@ -427,29 +447,22 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 // goated for turning
 blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
-
     .left_Kv = 0.471609 * volt / mps,
-    // ka kinda useful turns
-    .left_Ka = 0.00986881348841 * volt / mps2,
-    // .left_Ka = 0.0 * volt / mps2,
+    // lower by one degree of magnitude?
+    .left_Ka = 0.0986881348841 * volt / mps2,
     .left_Ks = 0.08 * volt,
 
     // lambda 0.6
-    // .left_Kp = 0.915472273416 * volt / mps,
-    // .left_Ki = 5.09538143189 * volt / m,
-    .left_Kp = 0.0 * volt / mps,
-    .left_Ki = 0.0 * volt / m,
+    .left_Kp = 0.9 * volt / mps,
+    .left_Ki = 1.0 * volt / m,
 
     .right_Kv = 0.475 * volt / mps,
-    // ka kinda useful turns
-    .right_Ka = 0.010128620282 * volt / mps2,
-    // .right_Ka = 0.0 * volt / mps2,
+    // lower by one degree of magnitude?
+    .right_Ka = 0.10128620282 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
-    // .right_Kp = 0.968620056451 * volt / mps,
-    // .right_Ki = 5.5578634857 * volt / m,
-    .right_Kp = 0.0 * volt / mps,
-    .right_Ki = 0.0 * volt / m,
+    .right_Kp = 0.9 * volt / mps,
+    .right_Ki = 1.0 * volt / m,
   },
   100_inps,
   drivetrain_config.track_width,
@@ -485,16 +498,16 @@ lyfast::ArcadeVelocityController turn_vel_controller {
     diff_turn_vel_controller,
     diff_turn_vel_controller,
     100_inps,
-    drivetrain_config.track_width,
-    std::ref(drivetrain)
+    drivetrain_config.track_width
 };
 // --- turning vel stuff --- //
 
-lyfast::ArcadeVelocityController vel_controller { linear_velocity_controller,
-                                                  angular_velocity_controller,
-                                                  70_inps,
-                                                  drivetrain_config.track_width,
-                                                  std::ref(drivetrain) };
+lyfast::ArcadeVelocityController vel_controller {
+    linear_velocity_controller,
+    angular_velocity_controller,
+    70_inps,
+    drivetrain_config.track_width
+};
 
 lyfast::VelocityFeedforward<decltype(vel_controller)>
   controller_velocity_controller(vel_controller);
@@ -557,18 +570,22 @@ PID<Length, LinearVelocity>
 
 PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
 
+lyfast::mpFeedback<Length> linear_mp_feedback { 80_inps, 110_inps2 };
+LinearVelocityFeedbackController<decltype(linear_mp_feedback)>
+  linear_mp_feedback_controller(linear_mp_feedback);
+
 LinearVelocitySlewController linear_vel_slew_controller {};
 LinearVelocityClampController linear_vel_clamp_controller {};
 
 // end linear velocity stuff //
 //
 // used for seeking motions
-PID<Length, AngularVelocity> lateral_vel_pid(1.00,
+PID<Length, AngularVelocity> lateral_vel_pid(1.67,
                                              0.0,
-                                             0.0,
+                                             1.1,
                                              std::nullopt, // anti windup range
                                              std::nullopt, // max vel
-                                             0.7, // derivative
+                                             0.9, // derivative
                                              50_msec,
                                              1_in,
                                              1_radps);
@@ -619,8 +636,10 @@ AngularVelocitySlewController angular_vel_slew_controller {};
 AngularVelocityClampController angular_vel_clamp_controller {};
 
 // lateral controllers
-LateralVelocityFeedbackController lateral_vel_controller(lateral_vel_pid);
-LateralFeedbackController lateral_controller(lateral_pid);
+LateralVelocityFeedbackController<decltype(lateral_vel_pid)>
+  lateral_vel_controller(lateral_vel_pid);
+LateralFeedbackController<decltype(lateral_pid)>
+  lateral_controller(lateral_pid);
 
 // end angular velocity stuff //
 
@@ -630,7 +649,8 @@ Controllers<decltype(linear_pid_controller),
             decltype(linear_slew),
             decltype(angular_slew),
 
-            decltype(linear_vel_pid_controller),
+            decltype(linear_mp_feedback_controller),
+            // decltype(linear_vel_pid_controller),
             decltype(linear_vel_slew_controller),
             decltype(linear_vel_clamp_controller),
 
@@ -639,8 +659,8 @@ Controllers<decltype(linear_pid_controller),
             decltype(angular_vel_clamp_controller),
 
             // lateral controllers
-            decltype(lateral_vel_controller),
             decltype(lateral_controller),
+            decltype(lateral_vel_controller),
 
             decltype(linear_voltage_constraints),
             decltype(angular_voltage_constraints)>
@@ -655,7 +675,8 @@ Controllers<decltype(linear_pid_controller),
     angular_slew,
 
     // linear velocity controllers
-    linear_vel_pid_controller,
+    // linear_vel_pid_controller,
+    linear_mp_feedback_controller,
     linear_vel_slew_controller,
     linear_vel_clamp_controller,
 

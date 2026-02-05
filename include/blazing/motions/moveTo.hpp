@@ -24,6 +24,7 @@ struct MoveToState {
     std::optional<Time> last_time;
     Time start_time;
     std::optional<Angle> locked_heading;
+    std::optional<std::pair<DifferentialSpeeds, Time>> last_vel_update;
 };
 
 template<typename ControllersType,
@@ -74,8 +75,9 @@ class moveTo
     int getLoopDelayTime() override {
         if (m_velocity_based) {
             // useful to make derivative not super bad
-            return 35;
+            return 20;
         } else {
+            // TODO: should probably also switch this one out?
             return 10;
         }
     }
@@ -160,8 +162,17 @@ class moveTo
         // NOTE: sgn can be zero, which can set linear error to zero as well!
         linear_error *= signed_sgn(lin_multiplier);
 
-        Length projected_cte =
-          (target_point - position).magnitude() * units::sin(angular_error);
+        Length projected_cte_error = [&] {
+            Length cte_error = 0_in;
+            if (units::sgn(lin_multiplier) >= 0) {
+                cte_error = (target_point - position).magnitude() *
+                            units::sin(angular_error);
+            } else {
+                // probably good enough to turn very fast
+                cte_error = 100_in * units::sgn(units::sin(angular_error));
+            }
+            return cte_error;
+        }();
 
         this->tolerances.linearErrorToleranceUpdate(linear_error);
 
@@ -220,20 +231,28 @@ class moveTo
                 // use lateral controller when far away, use regular angular
                 // when settling
                 if (!state.close) {
-                    AngularVelocity angular_vel =
+                    // std::cout << "cte " << -projected_cte_error.convert(in)
+                    //           << std::endl;
+                    angular_vel =
                       this->controllers.lateral_velocity_feedback.update(
-                        -projected_cte,
-                        0_stRad,
+                        -projected_cte_error,
+                        0_in,
                         delta_time);
                 } else {
-                    AngularVelocity angular_vel =
-                      this->controllers.angular_velocity_feedback.update(
-                        -angular_error,
-                        0_stRad,
-                        delta_time);
+                    // angular_vel =
+                    //   this->controllers.angular_velocity_feedback.update(
+                    //     -angular_error,
+                    //     0_stRad,
+                    //     delta_time);
                 }
 
-                if (m_k_lat) {
+                // AngularVelocity angular_vel =
+                //   this->controllers.angular_velocity_feedback.update(
+                //     -angular_error,
+                //     0_stRad,
+                //     delta_time);
+
+                if (m_k_lat && !state.close) {
                     angular_vel =
                       angular_vel +
                       *m_k_lat * (rad / m) * linear_vel *
@@ -243,7 +262,7 @@ class moveTo
 
                 // sign was already applied to error, only applies cosine
                 // scaling component
-                linear_vel *= units::abs(lin_multiplier);
+                if (!state.close) linear_vel *= units::abs(lin_multiplier);
 
                 // here the robot would attempt to move backwards, when instead
                 // the robot should turn around until it should start moving
@@ -276,7 +295,19 @@ class moveTo
                                                                     delta_time);
                 }
 
-                DifferentialSpeeds target { linear_vel, angular_vel };
+                DifferentialSpeeds curr_target { linear_vel, angular_vel };
+
+                // if (state.last_vel_update.has_value()) {
+                //     if (timeoutDone(outer_loop_time,
+                //                     state.last_vel_update.value().second)) {
+                //         state.last_vel_update = { curr_target, now() };
+                //     }
+                //
+                // } else {
+                state.last_vel_update = { curr_target, now() };
+                // }
+
+                DifferentialSpeeds target = state.last_vel_update.value().first;
 
                 // pass velocities into feedforward
                 auto [left_voltage, right_voltage] =
@@ -290,24 +321,23 @@ class moveTo
                 auto [actual_volt_left, actual_volt_right] =
                   this->drivetrain.getDrivetrainVoltages();
 
-                // std::cout << std::fixed;
-                // std::cout << std::setprecision(5);
-                //
-                // std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
-                //              "av_l/av_r/x/y/theta/t_err: "
-                //           << linear_error.internal() << " "
-                //           << target.linear_velocity.internal() << " "
-                //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " <<
-                //           right_vel.internal()
-                //           << " " << left_voltage.internal() << " "
-                //           << right_voltage.internal() << " "
-                //           << actual_volt_left.internal() << " "
-                //           << actual_volt_right.internal() << " "
-                //           << position.x.convert(in) << " "
-                //           << position.y.convert(in) << " "
-                //           << heading.convert(deg) << " "
-                //           << angular_error.internal() << std::endl;
+                std::cout << std::fixed;
+                std::cout << std::setprecision(5);
+
+                std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
+                             "av_l/av_r/x/y/theta/t_err: "
+                          << linear_error.internal() << " "
+                          << target.linear_velocity.internal() << " "
+                          << target.angular_velocity.internal() << " "
+                          << left_vel.internal() << " " << right_vel.internal()
+                          << " " << left_voltage.internal() << " "
+                          << right_voltage.internal() << " "
+                          << actual_volt_left.internal() << " "
+                          << actual_volt_right.internal() << " "
+                          << position.x.convert(in) << " "
+                          << position.y.convert(in) << " "
+                          << heading.convert(deg) << " "
+                          << angular_error.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 

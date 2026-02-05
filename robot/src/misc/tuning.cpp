@@ -499,7 +499,7 @@ void drive_vel_pid_tuning() {
     while (true) {
         drivetrain.setBrakeMode(pros::MotorBrake::hold);
         if (!reversed)
-            RobotSetPose(0, 0, 0);
+            RobotSetPose(0, 0, 90);
         else
             RobotSetPose(0, 0, 180);
 
@@ -512,16 +512,17 @@ void drive_vel_pid_tuning() {
 
         if (reversed) {
             // RobotSetPose(2 * target_distance.convert(in), 0, 0);
-            mb_vel.moveTo(start_pose.x + target_distance, start_pose.y)
-                .drive_vel_kp(curr_kp)
-                .drive_vel_ki(curr_ki)
-                .drive_vel_kd(curr_kd)
+            mb_vel
+                .moveTo(start_pose.x + target_distance, start_pose.y)
+                // .drive_vel_kp(curr_kp)
+                // .drive_vel_ki(curr_ki)
+                // .drive_vel_kd(curr_kd)
                 .drive_vel_accelSlew(curr_accel_slew)
 
                 // .turn_vel_kp(0)
                 // .turn_vel_ki(0)
                 // .turn_vel_kd(0)
-
+                //
                 .k_lat(curr_k_lat)
                 .reverse()
               // .closeThreshold(7_in)
@@ -531,18 +532,19 @@ void drive_vel_pid_tuning() {
             mb_vel
                 .moveTo(start_pose.x + target_distance,
                         start_pose.y + target_lateral_distance)
-                .drive_vel_kp(curr_kp)
-                .drive_vel_ki(curr_ki)
-                .drive_vel_kd(curr_kd)
-                .drive_vel_accelSlew(curr_accel_slew)
+                // .drive_vel_kp(curr_kp)
+                // .drive_vel_ki(curr_ki)
+                // .drive_vel_kd(curr_kd)
+                // .drive_vel_accelSlew(curr_accel_slew)
 
                 // .turn_vel_kp(0)
                 // .turn_vel_ki(0)
                 // .turn_vel_kd(0)
+                //
                 .timeout(3.3_sec)
-                // .drive_errorTolerance(0_in)
+              // .drive_errorTolerance(0_in)
 
-                .k_lat(curr_k_lat)
+              // .k_lat(curr_k_lat)
               // .closeThreshold(7_in)
               | run;
         }

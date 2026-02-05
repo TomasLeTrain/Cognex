@@ -204,6 +204,9 @@ class DifferentialVelocityController {
     Length m_track_width;
     std::reference_wrapper<DifferentialDrivetrain> drivetrain;
 
+    std::optional<LeftRightSpeeds> last_velocities = std::nullopt;
+    double vel_alpha = 0.8;
+
   public:
     LeftRightVoltages update(LeftRightSpeeds measurement,
                              DifferentialSpeeds target,
@@ -235,9 +238,22 @@ class DifferentialVelocityController {
 
     LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
         // fall back to using specified drivetrain
-        return update(drivetrain.get().getDrivetrainVelocities(),
-                      target,
-                      duration);
+        LeftRightSpeeds velocities = drivetrain.get().getDrivetrainVelocities();
+
+		// use low pass filter on the velocities
+        if (last_velocities) {
+            velocities.left_vel =
+              vel_alpha * velocities.left_vel +
+              (1 - vel_alpha) * last_velocities.value().left_vel;
+
+            velocities.right_vel =
+              vel_alpha * velocities.right_vel +
+              (1 - vel_alpha) * last_velocities.value().right_vel;
+        }
+
+        last_velocities = velocities;
+
+        return update(velocities, target, duration);
     }
 
     // allows using as only a linear feedforward
@@ -336,21 +352,21 @@ class ArcadeVelocityController {
 
     LinearVelocity m_max_velocity;
     Length m_track_width;
-    std::reference_wrapper<DifferentialDrivetrain> drivetrain;
 
   public:
-    LeftRightVoltages update(LeftRightSpeeds measurement,
-                             DifferentialSpeeds target,
-                             Time duration) {
-        Voltage linear = linear_controller.update(measurement,
-                                                  target.linear_velocity,
-                                                  duration);
-        Voltage angular = angular_controller.update(measurement,
-                                                    target.angular_velocity,
-                                                    duration);
-
-        return LeftRightVoltages { linear - angular, linear + angular };
-    }
+    // TODO: rewrite to actually be good
+    // LeftRightVoltages update(LeftRightSpeeds measurement,
+    //                          DifferentialSpeeds target,
+    //                          Time duration) {
+    //     Voltage linear = linear_controller.update(measurement,
+    //                                               target.linear_velocity,
+    //                                               duration);
+    //     Voltage angular = angular_controller.update(measurement,
+    //                                                 target.angular_velocity,
+    //                                                 duration);
+    //
+    //     return LeftRightVoltages { linear - angular, linear + angular };
+    // }
 
     LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
         Length track_radius = m_track_width / 2.0;
@@ -410,17 +426,14 @@ class ArcadeVelocityController {
         return angular_controller.update(measurement, target, duration);
     }
 
-    ArcadeVelocityController(
-      DifferentialVelocityController linear_controller,
-      DifferentialVelocityController angular_controller,
-      LinearVelocity max_velocity,
-      Length track_width,
-      std::reference_wrapper<DifferentialDrivetrain> drivetrain)
+    ArcadeVelocityController(DifferentialVelocityController linear_controller,
+                             DifferentialVelocityController angular_controller,
+                             LinearVelocity max_velocity,
+                             Length track_width)
         : linear_controller(linear_controller),
           angular_controller(angular_controller),
           m_max_velocity(max_velocity),
-          m_track_width(track_width),
-          drivetrain(drivetrain) {}
+          m_track_width(track_width) {}
 };
 
 template<typename Controller>

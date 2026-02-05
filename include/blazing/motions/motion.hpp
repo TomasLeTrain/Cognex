@@ -680,14 +680,14 @@ class LinearMotion {
         return DerivedReturnType;
     }
 
-    motionChangerT drive_vel_PIDmaxVolt(T maxVoltage) {
+    motionChangerT drive_vel_PIDmaxVel(T maxVoltage) {
         ThisDerived->controllers.linear_velocity_feedback.set_maxOutput(
           maxVoltage);
         return DerivedReturnType;
     }
 
     // linear Velocity constraints
-    motionChangerTU drive_vel_minMaxVolt(T minVelocity, U maxVelocity)
+    motionChangerTU drive_vel_minMaxVel(T minVelocity, U maxVelocity)
         requires std::derived_from<typename Derived::controllersType,
                                    LinearVelocityClampController>
     {
@@ -696,7 +696,7 @@ class LinearMotion {
         return DerivedReturnType;
     }
 
-    motionChangerT drive_vel_minVolt(T minVelocity)
+    motionChangerT drive_vel_minVel(T minVelocity)
         requires std::derived_from<typename Derived::controllersType,
                                    LinearVelocityClampController>
     {
@@ -704,7 +704,7 @@ class LinearMotion {
         return DerivedReturnType;
     }
 
-    motionChangerT drive_vel_maxVolt(T maxVelocity)
+    motionChangerT drive_vel_maxVel(T maxVelocity)
         requires std::derived_from<typename Derived::controllersType,
                                    LinearVelocityClampController>
     {
@@ -747,6 +747,34 @@ class LinearMotion {
         requires hasLinearVelocitySlew<typename Derived::controllersType>
     {
         ThisDerived->controllers.linear_velocity_slew.set_decel(decelSlew);
+        return DerivedReturnType;
+    }
+
+    // lateral pid
+    motionChangerT lateral_vel_kp(T kp) {
+        ThisDerived->controllers.lateral_velocity_feedback.set_kp(kp);
+        return DerivedReturnType;
+    }
+
+    motionChangerT lateral_vel_ki(T ki) {
+        ThisDerived->controllers.lateral_velocity_feedback.set_ki(ki);
+        return DerivedReturnType;
+    }
+
+    motionChangerT lateral_vel_kd(T kd) {
+        ThisDerived->controllers.lateral_velocity_feedback.set_kd(kd);
+        return DerivedReturnType;
+    }
+
+    motionChangerT lateral_vel_windupRange(T windupRange) {
+        ThisDerived->controllers.lateral_velocity_feedback.set_windupRange(
+          windupRange);
+        return DerivedReturnType;
+    }
+
+    motionChangerT lateral_vel_PIDmaxVel(T maxVel) {
+        ThisDerived->controllers.lateral_velocity_feedback.set_maxOutput(
+          maxVel);
         return DerivedReturnType;
     }
 };

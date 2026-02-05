@@ -65,7 +65,7 @@ class SmootherModel : public LocalizationModel {
 
     // relatively quick so that we can get the latest updates as fast as
     // possible
-    Time task_delta_time = 8_msec;
+    Time task_delta_time = 4_msec;
 
     SmootherConfig config;
 

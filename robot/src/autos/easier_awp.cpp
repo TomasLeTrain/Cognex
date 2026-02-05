@@ -258,7 +258,7 @@ void run_auton() {
         .reverse()
         .k_lat(0.3)
         // .drive_maxVolt(0.5_volt)
-        .drive_vel_maxVolt(40_inps)
+        .drive_vel_maxVel(40_inps)
       // .drive_kp(linear_pid.get_kp() * 0.7)
       | chain;
 

@@ -62,6 +62,11 @@ extern lyfast::VelocityFeedforward<decltype(vel_controller)>
 extern PID<Length, LinearVelocity> linear_vel_pid;
 extern PIDLinearVelocityController linear_vel_pid_controller;
 
+// linear mp stuff
+extern lyfast::mpFeedback<Length> linear_mp_feedback;
+extern LinearVelocityFeedbackController<decltype(linear_mp_feedback)>
+  linear_mp_feedback_controller;
+
 extern LinearVelocitySlewController linear_vel_slew_controller;
 extern LinearVelocityClampController linear_vel_clamp_controller;
 
@@ -76,9 +81,13 @@ extern PIDAngularVelocityController angular_vel_pid_controller;
 extern AngularVelocitySlewController angular_vel_slew_controller;
 extern AngularVelocityClampController angular_vel_clamp_controller;
 
-extern LateralVelocityFeedbackController<PID<Length, AngularVelocity>>
+// lateral controllers
+extern PID<Length, Voltage> lateral_pid;
+extern PID<Length, AngularVelocity> lateral_vel_pid;
+
+extern LateralVelocityFeedbackController<decltype(lateral_vel_pid)>
   lateral_vel_controller;
-extern LateralFeedbackController<PID<Length, Voltage>> lateral_controller;
+extern LateralFeedbackController<decltype(lateral_pid)> lateral_controller;
 
 // end angular velocity stuff //
 
@@ -88,7 +97,8 @@ extern Controllers<decltype(linear_pid_controller),
                    decltype(linear_slew),
                    decltype(angular_slew),
 
-                   decltype(linear_vel_pid_controller),
+                   decltype(linear_mp_feedback_controller),
+                   // decltype(linear_vel_pid_controller),
                    decltype(linear_vel_slew_controller),
                    decltype(linear_vel_clamp_controller),
 
@@ -97,8 +107,8 @@ extern Controllers<decltype(linear_pid_controller),
                    decltype(angular_vel_clamp_controller),
 
                    // lateral controllers
-                   decltype(lateral_vel_controller),
                    decltype(lateral_controller),
+                   decltype(lateral_vel_controller),
 
                    decltype(linear_voltage_constraints),
                    decltype(angular_voltage_constraints)>
