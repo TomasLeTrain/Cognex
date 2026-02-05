@@ -186,6 +186,11 @@ void initialize() {
                            .timeout(5_sec));
     });
 
+    // TODO: remove!!!!
+    auto curr_config = front_laser_model.getConfig();
+    curr_config.maxUsableDistance = 36_in;
+    front_laser_model.setConfig(curr_config);
+
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
                                                screen::health::succeed);
 

@@ -72,48 +72,47 @@ void run_auton() {
         // pull matchloader down regardless
         matchloader::down();
 
-        mb.boomerang(func)
-            .timeout(3_sec)
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            .k_lat(1.2)
-            .lead(0.9) |
-          async;
+        mb.moveTo(func).timeout(1_sec)
+          // .drive_toleranceDuration(100_sec)
+          // .drive_largeToleranceDuration(100_sec)
+          // .k_lat(1.2)
+          // .lead(0.9)
+          | run;
 
-        Length slow_dist = 19.5_in;
-        async.waitUntil([&] -> bool {
-            return RobotGetPose().distanceTo(target_Point) < slow_dist;
-        });
-
-        async.exitAll();
-
-        mb.boomerang(func)
-            .timeout(3_sec)
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            .drive_maxVolt(0.25_volt)
-            .drive_velocityTolerance(03_inps)
-            .drive_errorTolerance(10_in)
-            .drive_toleranceDuration(0_sec)
-            .k_lat(1.2)
-            .lead(0.9)
-            .executeAfterMotion([] {
-                pros::delay(10);
-                drivetrain.moveTank(0.25_volt, 0.25_volt);
-            }) |
-          async;
-
-        Length match_timer_length_thresh = 11_in;
-
-        // delay a bit to not include start acceleration
-        pros::delay(50);
-
-        async.waitUntil([&] -> bool {
-            return (units::abs(model_manager.getLocalVelocityVector().x) <
-                    1_inps) &&
-                   (RobotGetPose().distanceTo(target_Point) <
-                    match_timer_length_thresh);
-        });
+        // Length slow_dist = 19.5_in;
+        // async.waitUntil([&] -> bool {
+        //     return RobotGetPose().distanceTo(target_Point) < slow_dist;
+        // });
+        //
+        // async.exitAll();
+        //
+        // mb.boomerang(func)
+        //     .timeout(3_sec)
+        //     .drive_toleranceDuration(100_sec)
+        //     .drive_largeToleranceDuration(100_sec)
+        //     .drive_maxVolt(0.25_volt)
+        //     .drive_velocityTolerance(03_inps)
+        //     .drive_errorTolerance(10_in)
+        //     .drive_toleranceDuration(0_sec)
+        //     .k_lat(1.2)
+        //     .lead(0.9)
+        //     .executeAfterMotion([] {
+        //         pros::delay(10);
+        //         drivetrain.moveTank(0.25_volt, 0.25_volt);
+        //     }) |
+        //   async;
+        //
+        // Length match_timer_length_thresh = 11_in;
+        //
+        // // delay a bit to not include start acceleration
+        // pros::delay(50);
+        //
+        // async.waitUntil([&] -> bool {
+        //     return (units::abs(model_manager.getLocalVelocityVector().x) <
+        //             1_inps) &&
+        //            (RobotGetPose().distanceTo(target_Point) <
+        //             match_timer_length_thresh);
+        // });
         // here the robot is close to still, start matchloading
 
         pros::delay(to_msec(matchload_time));
@@ -151,57 +150,59 @@ void run_auton() {
         //         .drive_minVolt(0.2_volt) |
         //       chain;
         // else
-        mb.turnTo(target_pose).reverse().setChainTime(0_sec) | chain;
+        // mb.turnTo(target_pose).reverse().setChainTime(0_sec) | chain;
 
-        mb_vel.boomerang(target_pose).reverse() | chain;
+        mb.moveTo(target_pose).reverse() | chain;
 
-        Length slow_dist = 12_in;
+        // mb_vel.boomerang(target_pose).reverse() | chain;
+        //
+        // Length slow_dist = 12_in;
         Length score_dist = 7.5_in;
-
-        // chain.waitUntil([&] -> bool {
+        //
+        // // chain.waitUntil([&] -> bool {
+        // //     return RobotGetPose().distanceTo(target_pose) < slow_dist;
+        // // });
+        // chain.stopIf([&] -> bool {
         //     return RobotGetPose().distanceTo(target_pose) < slow_dist;
         // });
-        chain.stopIf([&] -> bool {
-            return RobotGetPose().distanceTo(target_pose) < slow_dist;
-        });
-
-        // exit current boomerang
-        // chain.exitAll();
-        pros::delay(20);
-
-        // go into new which is slower
-        mb_vel
-            .boomerang(target_pose)
-            // .drive_maxVolt(0.4_volt)
-            .reverse()
-
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            // .drive_maxVolt(0.25_volt)
-            .drive_velocityTolerance(03_inps)
-            .drive_errorTolerance(6_in)
-            .drive_toleranceDuration(0_sec)
-            .setChainTime(0_sec)
-
-          // .closeThreshold(100_in)
-          // .timeout(5_sec)
-          // .drive_toleranceDuration(100_sec)
-          // .drive_largeToleranceDuration(100_sec)
-          // .turn_kp(turn_drive_pid.get_kp() * 2)
-          // .turn_kd(turn_drive_pid.get_kd() * 0.5)
-          | chain;
-
-        mb.boomerang(other_target_pose)
-            // .drive_maxVolt(0.3_volt)
-            .reverse()
-            .closeThreshold(100_in)
-            .timeout(5_sec)
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            .drive_ki(0)
-          // .turn_kp(turn_drive_pid.get_kp() * 1.0)
-          // .turn_kd(turn_drive_pid.get_kd() * 0.8)
-          | chain;
+        //
+        // // exit current boomerang
+        // // chain.exitAll();
+        // pros::delay(20);
+        //
+        // // go into new which is slower
+        // mb_vel
+        //     .boomerang(target_pose)
+        //     // .drive_maxVolt(0.4_volt)
+        //     .reverse()
+        //
+        //     .drive_toleranceDuration(100_sec)
+        //     .drive_largeToleranceDuration(100_sec)
+        //     // .drive_maxVolt(0.25_volt)
+        //     .drive_velocityTolerance(03_inps)
+        //     .drive_errorTolerance(6_in)
+        //     .drive_toleranceDuration(0_sec)
+        //     .setChainTime(0_sec)
+        //
+        //   // .closeThreshold(100_in)
+        //   // .timeout(5_sec)
+        //   // .drive_toleranceDuration(100_sec)
+        //   // .drive_largeToleranceDuration(100_sec)
+        //   // .turn_kp(turn_drive_pid.get_kp() * 2)
+        //   // .turn_kd(turn_drive_pid.get_kd() * 0.5)
+        //   | chain;
+        //
+        // mb.boomerang(other_target_pose)
+        //     // .drive_maxVolt(0.3_volt)
+        //     .reverse()
+        //     .closeThreshold(100_in)
+        //     .timeout(5_sec)
+        //     .drive_toleranceDuration(100_sec)
+        //     .drive_largeToleranceDuration(100_sec)
+        //     .drive_ki(0)
+        //   // .turn_kp(turn_drive_pid.get_kp() * 1.0)
+        //   // .turn_kd(turn_drive_pid.get_kd() * 0.8)
+        //   | chain;
 
         chain.waitUntil(closeEnough(target_pose, score_dist));
         intake::score_long();
@@ -220,7 +221,8 @@ void run_auton() {
 
     if (pushing) mb.moveTo(-46.57, -4.7).timeout(1.2_sec) | chain;
 
-    mb.moveTo(-46.376, -normal_match).reverse().timeout(1.3_sec) | chain;
+    mb.moveTo(-46.376, -normal_match - 0.5_in).reverse().timeout(1.3_sec) |
+      chain;
     chain.wait();
 
     // turn to and go to matchloader
@@ -277,7 +279,7 @@ void run_auton() {
     intake::in();
 
     // turn to and go to matchloader
-    mb.moveTo(-48_in, normal_match - 0.5_in) | chain;
+    mb.moveTo(-48_in, normal_match + 0.5_in).only_y(true) | chain;
     chain.wait();
 
     // turn to and go to matchloader

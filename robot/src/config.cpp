@@ -28,7 +28,7 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -581,19 +581,9 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 //
 // used for seeking motions
 // really good for fast move to points, too aggressive
-// PID<Length, AngularVelocity> lateral_vel_pid(1.67,
-//                                              0.0,
-//                                              1.1,
-//                                              std::nullopt, // anti windup range
-//                                              std::nullopt, // max vel
-//                                              0.9, // derivative
-//                                              50_msec,
-//                                              1_in,
-//                                              1_radps);
-
-PID<Length, AngularVelocity> lateral_vel_pid(0.7,
+PID<Length, AngularVelocity> lateral_vel_pid(1.67,
                                              0.0,
-                                             0.0,
+                                             1.1,
                                              std::nullopt, // anti windup range
                                              std::nullopt, // max vel
                                              0.9, // derivative
@@ -601,6 +591,15 @@ PID<Length, AngularVelocity> lateral_vel_pid(0.7,
                                              1_in,
                                              1_radps);
 
+// PID<Length, AngularVelocity> lateral_vel_pid(0.7,
+//                                              0.0,
+//                                              0.0,
+//                                              std::nullopt, // anti windup
+//                                              range std::nullopt, // max vel
+//                                              0.9, // derivative
+//                                              50_msec,
+//                                              1_in,
+//                                              1_radps);
 
 PID<Angle, AngularVelocity>
   linear_angular_vel_pid(15.400,
@@ -864,6 +863,7 @@ DistanceSensorModel front_laser_model(&front_distance,
                                       front_distance_scale_offset,
                                       "front",
                                       distance_sensor_config);
+
 DistanceSensorModel left_laser_model(&left_distance,
                                      left_distance_offsets,
                                      left_distance_scale_factor,
