@@ -483,7 +483,7 @@ void drive_vel_pid_tuning() {
     Number k_lat_delta = 0.01;
 
     // Length target_lateral_distance = 24_in;
-    Length target_lateral_distance = 0_in;
+    Length target_lateral_distance = 24_in;
 
     bool k_lat_config_active = false;
 
@@ -499,7 +499,7 @@ void drive_vel_pid_tuning() {
     while (true) {
         drivetrain.setBrakeMode(pros::MotorBrake::hold);
         if (!reversed)
-            RobotSetPose(0, 0, 90);
+            RobotSetPose(0, 0, 0);
         else
             RobotSetPose(0, 0, 180);
 
@@ -529,9 +529,29 @@ void drive_vel_pid_tuning() {
               | run;
         } else {
             // RobotSetPose(0, 0, 0);
+            // mb_vel
+            //     .moveTo(start_pose.x + target_distance,
+            //             start_pose.y + target_lateral_distance)
+            //     // .drive_vel_kp(curr_kp)
+            //     // .drive_vel_ki(curr_ki)
+            //     // .drive_vel_kd(curr_kd)
+            //     // .drive_vel_accelSlew(curr_accel_slew)
+            //
+            //     // .turn_vel_kp(0)
+            //     // .turn_vel_ki(0)
+            //     // .turn_vel_kd(0)
+            //     //
+            //     .timeout(3.3_sec)
+            //   // .drive_errorTolerance(0_in)
+            //
+            //   // .k_lat(curr_k_lat)
+            //   // .closeThreshold(7_in)
+            //   | run;
+
             mb_vel
-                .moveTo(start_pose.x + target_distance,
-                        start_pose.y + target_lateral_distance)
+                .boomerang(start_pose.x + target_distance,
+                           start_pose.y + target_lateral_distance,
+                           0)
                 // .drive_vel_kp(curr_kp)
                 // .drive_vel_ki(curr_ki)
                 // .drive_vel_kd(curr_kd)
@@ -541,6 +561,7 @@ void drive_vel_pid_tuning() {
                 // .turn_vel_ki(0)
                 // .turn_vel_kd(0)
                 //
+                .drive_vel_maxVel(20_inps)
                 .timeout(3.3_sec)
               // .drive_errorTolerance(0_in)
 

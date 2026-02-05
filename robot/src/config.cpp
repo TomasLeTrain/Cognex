@@ -580,15 +580,27 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 // end linear velocity stuff //
 //
 // used for seeking motions
-PID<Length, AngularVelocity> lateral_vel_pid(1.67,
+// really good for fast move to points, too aggressive
+// PID<Length, AngularVelocity> lateral_vel_pid(1.67,
+//                                              0.0,
+//                                              1.1,
+//                                              std::nullopt, // anti windup range
+//                                              std::nullopt, // max vel
+//                                              0.9, // derivative
+//                                              50_msec,
+//                                              1_in,
+//                                              1_radps);
+
+PID<Length, AngularVelocity> lateral_vel_pid(0.7,
                                              0.0,
-                                             1.1,
+                                             0.0,
                                              std::nullopt, // anti windup range
                                              std::nullopt, // max vel
                                              0.9, // derivative
                                              50_msec,
                                              1_in,
                                              1_radps);
+
 
 PID<Angle, AngularVelocity>
   linear_angular_vel_pid(15.400,

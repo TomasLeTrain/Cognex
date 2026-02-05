@@ -156,7 +156,7 @@ void initialize() {
 
     mb_vel.setBoomerangModifier([](auto&& boomerang) {
         return std::move(boomerang.velocity_based(true)
-                           .k_lat(0.15 * rad / m, true)
+                           .k_lat(0.0 * rad / m, true)
                            .timeout(5_sec));
     });
 
@@ -182,7 +182,7 @@ void initialize() {
 
     mb.setBoomerangModifier([](auto&& boomerang) {
         return std::move(boomerang.velocity_based(true)
-                           .k_lat(0.15 * rad / m, true)
+                           .k_lat(0.0 * rad / m, true)
                            .timeout(5_sec));
     });
 
