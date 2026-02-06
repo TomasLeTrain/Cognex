@@ -24,6 +24,7 @@ float cy = 0;
 float w = 0;
 float h = 0;
 
+// callback, thread safe
 void rectangle_update(void* obj, int t) {
     int time = t;
     float dt = time - prev_time;
@@ -74,6 +75,8 @@ void rectangle_update(void* obj, int t) {
 }
 
 void init(lv_obj_t* parent_screen) {
+    get_screen_mutex();
+
     // main screen object
     screen = lv_obj_create(parent_screen);
 
@@ -126,6 +129,8 @@ void init(lv_obj_t* parent_screen) {
     lv_anim_set_values(&bounce, 0, value * 1000);
     lv_anim_set_repeat_count(&bounce, LV_ANIM_REPEAT_INFINITE);
     lv_anim_start(&bounce);
+
+    give_screen_mutex();
 }
 } // namespace bouncing_dvd_screen
 } // namespace screen

@@ -21,6 +21,7 @@ std::string tab_names[num_tabs] = {
 static lv_style_t zero_padding;
 static lv_style_t no_round;
 
+// called once inside init, no need to make thread safe
 void initStyles() {
     // zero padding style
     lv_style_init(&zero_padding);
@@ -31,6 +32,8 @@ void initStyles() {
 }
 
 void create_tabs(lv_obj_t* parent_screen) {
+    get_screen_mutex();
+
     lv_obj_t* tabview;
 
     tabview = lv_tabview_create(parent_screen);
@@ -54,9 +57,13 @@ void create_tabs(lv_obj_t* parent_screen) {
 
     // don't make scrollable
     lv_obj_remove_flag(lv_tabview_get_content(tabview), LV_OBJ_FLAG_SCROLLABLE);
+
+    give_screen_mutex();
 }
 
 void init(lv_obj_t* parent_screen) {
+    get_screen_mutex();
+
     initStyles();
 
     // main screen object
@@ -76,6 +83,8 @@ void init(lv_obj_t* parent_screen) {
     lv_obj_add_flag(screen, LV_OBJ_FLAG_HIDDEN);
 
     create_tabs(screen);
+
+    give_screen_mutex();
 }
 
 } // namespace tabs

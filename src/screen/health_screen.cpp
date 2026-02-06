@@ -11,7 +11,8 @@ lv_obj_t* screen;
 const int max_error_notifs = 15;
 static int num_error_notifs = 0;
 
-static lv_obj_t* notification_lists[2];
+// initalized to null such that if they are not initialized they stay null
+static lv_obj_t* notification_lists[2] = { NULL, NULL };
 static lv_obj_t* console_textarea;
 
 // used for each tab object
@@ -22,6 +23,7 @@ static lv_style_t warn_style, critical_style, succeed_style;
 static lv_style_t no_round;
 static lv_style_t notification_list_style;
 
+// called once inside init, no need to make thread safe
 void initStyles() {
     lv_style_init(&shared_notif_style);
     lv_style_set_pad_row(&shared_notif_style, 5);
@@ -62,11 +64,15 @@ void add_notification(std::string title_text,
     if (num_error_notifs >= max_error_notifs) return;
     num_error_notifs++;
 
-    // done as a hacky way to get thread safety with liblvgl
-    get_screen_mutex();
-
     lv_obj_t* parent = notification_lists[1];
     lv_obj_t* notif;
+
+    // screen is likely inactive, just return
+    if (parent == NULL) return;
+
+    // get mutex before using lv functions
+    get_screen_mutex();
+
     notif = lv_obj_create(parent);
     lv_obj_set_size(notif, lv_pct(100), lv_pct(40));
     lv_obj_set_flex_flow(notif, LV_FLEX_FLOW_COLUMN);
@@ -92,15 +98,22 @@ void add_notification(std::string title_text,
     lv_label_set_text(detail, detail_text.c_str());
 
     lv_obj_scroll_to_view(notif, LV_ANIM_ON);
+
+    // give mutex back
+    give_screen_mutex();
 }
 
 // returns the index of the notification
 int add_init_notif(std::string title_text, notification_severity_t severity) {
-    // done as a hacky way to get thread safety with liblvgl
-    get_screen_mutex();
-
     lv_obj_t* parent = notification_lists[0];
     lv_obj_t* notif;
+
+    // screen is likely inactive, just return
+    if (parent == NULL) return -1;
+
+    // get screen mutex
+    get_screen_mutex();
+
     notif = lv_obj_create(parent);
 
     lv_obj_set_size(notif, lv_pct(100), lv_pct(15));
@@ -122,33 +135,53 @@ int add_init_notif(std::string title_text, notification_severity_t severity) {
 
     lv_obj_scroll_to_view(notif, LV_ANIM_ON);
 
-    return lv_obj_get_index(notif);
+    int result = lv_obj_get_index(notif);
+
+    // give mutex back
+    give_screen_mutex();
+
+    return result;
 }
 
 void update_init_notif_severity(int index,
                                 notification_severity_t new_severity) {
-    get_screen_mutex();
 
     if (index < 0) {
         printf("invalid notif severity index!\n");
         return;
     }
-    lv_obj_t* child = lv_obj_get_child(notification_lists[0], index);
+
+    lv_obj_t* parent = notification_lists[0];
+
+    // screen is likely inactive, just return
+    if (parent == NULL) return;
+
+    // get screen mutex before lv functions
+    get_screen_mutex();
+
+    lv_obj_t* child = lv_obj_get_child(parent, index);
     if (child == NULL) {
         printf("notif severity: child is null!\n");
-        return;
+        // NOTE: don't return! need to give back the mutex
+    } else {
+        if (new_severity == notification_severity_t::critical) {
+            lv_obj_add_style(child, &critical_style, 0);
+        } else if (new_severity == notification_severity_t::warn) {
+            lv_obj_add_style(child, &warn_style, 0);
+        } else if (new_severity == notification_severity_t::succeed) {
+            lv_obj_add_style(child, &succeed_style, 0);
+        }
     }
-    if (new_severity == notification_severity_t::critical) {
-        lv_obj_add_style(child, &critical_style, 0);
-    } else if (new_severity == notification_severity_t::warn) {
-        lv_obj_add_style(child, &warn_style, 0);
-    } else if (new_severity == notification_severity_t::succeed) {
-        lv_obj_add_style(child, &succeed_style, 0);
-    }
+
+    give_screen_mutex();
 }
 
 void init_notification_list(lv_obj_t* parent_screen, int notification_index) {
+    // get screen mutex before lv functions
+    get_screen_mutex();
+
     notification_lists[notification_index] = lv_list_create(parent_screen);
+
     // set to be 70% screen
     lv_obj_set_size(notification_lists[notification_index],
                     lv_pct(100),
@@ -157,36 +190,49 @@ void init_notification_list(lv_obj_t* parent_screen, int notification_index) {
     lv_obj_add_style(notification_lists[notification_index],
                      &notification_list_style,
                      0);
+
+    give_screen_mutex();
 }
 
 void console_screen(lv_obj_t* parent_obj) {
+    get_screen_mutex();
+
     console_textarea = lv_textarea_create(parent_obj);
     lv_obj_add_style(console_textarea, &no_round, 0);
     lv_obj_set_size(console_textarea, lv_pct(100), lv_pct(100));
+
+    give_screen_mutex();
 }
 
 void set_console_text(std::string text) {
-    // done as a hacky way to get thread safety with liblvgl
     get_screen_mutex();
 
     lv_textarea_set_text(console_textarea, text.c_str());
+
+    give_screen_mutex();
 }
 
 void console_println(std::string text) {
     get_screen_mutex();
+
     text += "\n";
     lv_textarea_add_text(console_textarea, text.c_str());
+
+    give_screen_mutex();
 }
 
 void init(lv_obj_t* error_parent_screen,
           lv_obj_t* status_parent_screen,
           lv_obj_t* console_parent_screen) {
     get_screen_mutex();
+
     initStyles();
 
     init_notification_list(error_parent_screen, 0);
     init_notification_list(status_parent_screen, 1);
     console_screen(console_parent_screen);
+
+    give_screen_mutex();
 }
 
 } // namespace health

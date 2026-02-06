@@ -55,6 +55,7 @@ static lv_style_t no_round;
 
 static lv_style_t corner_style_default;
 
+// called once inside init, no need to make thread safe
 void initStyles() {
     lv_color_t red_col = lv_palette_darken(LV_PALETTE_RED, 1);
     lv_color_t blue_col = lv_palette_darken(LV_PALETTE_BLUE, 1);
@@ -130,10 +131,12 @@ void initStyles() {
     lv_style_set_transition(&not_selected_style, &transition_dsc_focus);
 }
 
+// only called from callbacks, also thread safe
 void update_fields() {
     for (int i = 0; i < 4; i++) {
         lv_obj_add_state(field_btns[i], LV_STATE_USER_2);
     }
+
     auto activate_field = [](lv_obj_t* obj) {
         lv_obj_remove_state(obj, LV_STATE_USER_2);
         lv_obj_add_state(obj, LV_STATE_USER_1);
@@ -152,6 +155,7 @@ void update_fields() {
     }
 }
 
+// callbacks are thread safe
 void left_cb(lv_event_t* e) {
     setFieldSide(field_side_t::left);
     update_fields();
@@ -177,6 +181,7 @@ lv_obj_t* make_btn(lv_obj_t* holder,
                    alliance_t alliance,
                    field_side_t side,
                    void (*callback)(lv_event_t*)) {
+    get_screen_mutex();
 
     lv_obj_t* btn = lv_button_create(holder);
     lv_obj_set_size(btn, lv_pct(45), lv_pct(45));
@@ -207,10 +212,14 @@ lv_obj_t* make_btn(lv_obj_t* holder,
     } else {
         lv_obj_set_style_text_font(btn, &lv_font_montserrat_30, 0);
     }
+
+    give_screen_mutex();
+
     return btn;
 }
 
 // responsible for updating selected auton every time a checkbox is set
+// callback so its thread safe
 static void auton_radio_event_handler(lv_event_t* e) {
     lv_obj_t* cont = (lv_obj_t*)lv_event_get_current_target(e);
     lv_obj_t* act_cb = (lv_obj_t*)lv_event_get_target(e);
@@ -234,6 +243,8 @@ static void auton_radio_event_handler(lv_event_t* e) {
 
 // sets up the screen
 void init(lv_obj_t* parent_screen) {
+    get_screen_mutex();
+
     initStyles();
 
     // main screen
@@ -320,6 +331,8 @@ void init(lv_obj_t* parent_screen) {
 
         radio_to_auton_mode[checkbox] = pair.first;
     }
+
+    give_screen_mutex();
 }
 } // namespace auton_select
 } // namespace screen

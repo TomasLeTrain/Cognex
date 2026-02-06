@@ -17,6 +17,7 @@ namespace screen {
 extern lv_obj_t** curr_screen;
 
 void get_screen_mutex();
+void give_screen_mutex();
 
 void change_screen(lv_event_t* e);
 void setScreen(lv_obj_t** new_screen);
