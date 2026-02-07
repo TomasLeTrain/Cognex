@@ -5,6 +5,7 @@
 #include "autos.h"
 #include "liblvgl/core/lv_obj_pos.h"
 #include "liblvgl/core/lv_obj_style.h"
+#include "liblvgl/core/lv_obj_tree.h"
 #include "liblvgl/display/lv_display.h"
 #include "liblvgl/draw/lv_draw_rect.h"
 #include "liblvgl/font/lv_font.h"
@@ -26,26 +27,7 @@ std::map<lv_obj_t*, std::string> radio_to_auton_mode;
 // auton screen objects
 lv_obj_t* field_btns[4];
 
-uint32_t last_selected_checkbox = -1;
-
-void setAuton(std::string new_auton) {
-    selected_auton = new_auton;
-    std::cout << "changed auton to " << new_auton << std::endl;
-}
-
-void setFieldSide(field_side_t new_side) {
-    auto_side = new_side;
-    std::cout << "changed auton to "
-              << (new_side == field_side_t::right ? "right" : "left")
-              << std::endl;
-}
-
-void setAlliance(alliance_t new_alliance) {
-    auto_alliance = new_alliance;
-    std::cout << "changed auton to "
-              << (new_alliance == alliance_t::red ? "red" : "blue")
-              << std::endl;
-}
+std::optional<lv_obj_t*> last_selected_checkbox = std::nullopt;
 
 static lv_style_t selected_style, not_selected_style;
 static lv_style_t red_style, blue_style, side_style;
@@ -158,31 +140,26 @@ void update_fields() {
 // callbacks are thread safe
 void left_cb(lv_event_t* e) {
     setFieldSide(field_side_t::left);
-    update_fields();
 }
 
 void right_cb(lv_event_t* e) {
     setFieldSide(field_side_t::right);
-    update_fields();
 }
 
 void red_cb(lv_event_t* e) {
     setAlliance(alliance_t::red);
-    update_fields();
 }
 
 void blue_cb(lv_event_t* e) {
     setAlliance(alliance_t::blue);
-    update_fields();
 }
 
+// only called inside init, assumed to be thread-safe
 lv_obj_t* make_btn(lv_obj_t* holder,
                    std::string s,
                    alliance_t alliance,
                    field_side_t side,
                    void (*callback)(lv_event_t*)) {
-    get_screen_mutex();
-
     lv_obj_t* btn = lv_button_create(holder);
     lv_obj_set_size(btn, lv_pct(45), lv_pct(45));
     lv_obj_add_event_cb(btn, callback, LV_EVENT_CLICKED, NULL);
@@ -213,8 +190,6 @@ lv_obj_t* make_btn(lv_obj_t* holder,
         lv_obj_set_style_text_font(btn, &lv_font_montserrat_30, 0);
     }
 
-    give_screen_mutex();
-
     return btn;
 }
 
@@ -227,18 +202,59 @@ static void auton_radio_event_handler(lv_event_t* e) {
     // Do nothing if the container was clicked
     if (act_cb == cont) return;
 
-    // Uncheck the previous radio button
-    if (last_selected_checkbox != -1) {
-        lv_obj_t* old_cb = lv_obj_get_child(cont, last_selected_checkbox);
-        lv_obj_remove_state(old_cb, LV_STATE_CHECKED);
-    }
-    lv_obj_add_state(act_cb,
-                     LV_STATE_CHECKED); // Uncheck the current radio button
-
-    last_selected_checkbox = lv_obj_get_index(act_cb);
+    // TODO: this is already done by setAuton?
+    // check current button
+    // lv_obj_add_state(act_cb, LV_STATE_CHECKED);
+    //
+    // // Uncheck the previous radio button
+    // if (last_selected_checkbox.has_value()) {
+    //     lv_obj_remove_state(last_selected_checkbox.value(),
+    //     LV_STATE_CHECKED);
+    // }
+    //
+    // last_selected_checkbox = act_cb;
 
     // update the auton mode to the correct one
     setAuton(radio_to_auton_mode[act_cb]);
+}
+
+void update_auton_radio_ui() {
+    auto curr_auton = getAuton();
+
+    lv_obj_t* new_selected = NULL;
+
+    // search for c
+    for (auto& it : radio_to_auton_mode) {
+        if (it.second == curr_auton) {
+            new_selected = it.first;
+            break;
+        }
+    }
+
+    if (new_selected != NULL) {
+        // check current button
+        lv_obj_add_state(new_selected, LV_STATE_CHECKED);
+
+        // Uncheck the previous radio button
+        if (last_selected_checkbox.has_value()) {
+            lv_obj_remove_state(last_selected_checkbox.value(),
+                                LV_STATE_CHECKED);
+        }
+
+        last_selected_checkbox = new_selected;
+    }
+}
+
+// TODO: getting screen mutex is fine even if called from callback?
+void ui_update() {
+    get_screen_mutex();
+    // update field buttons
+    update_fields();
+
+    // update radio buttons
+    update_auton_radio_ui();
+
+    give_screen_mutex();
 }
 
 // sets up the screen

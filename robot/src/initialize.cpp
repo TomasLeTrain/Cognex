@@ -1,8 +1,10 @@
 #include "apis.h"
 //
 
+#include "controller_ui/controller_auton_selector.h"
 #include "globals.h"
 #include "globals/blazing_globals.h"
+#include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "health_daemon.h"
 #include "main.h"
@@ -12,6 +14,9 @@
 void initialize() {
     // initialize screens
     screen::init();
+
+    // initialize controller screen control
+	controller_ui::init();
 
     int imu_notif = screen::health::add_init_notif("calibrating imu");
 

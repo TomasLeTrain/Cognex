@@ -68,6 +68,7 @@ void init(lv_obj_t* parent_screen);
 
 namespace auton_select {
 extern lv_obj_t* screen;
+void ui_update();
 void init(lv_obj_t* parent_screen);
 } // namespace auton_select
 

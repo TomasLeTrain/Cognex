@@ -1,10 +1,10 @@
-#include "globals/config.h"
 #include "apis.h"
 //
 
 #include "blazing/controllers/controllers.hpp"
 #include "blazing/controllers/slew.hpp"
 #include "globals.h"
+#include "globals/config.h"
 #include "lyfast/mp_feedback.hpp"
 #include "lyfast/vel_controller.hpp"
 #include "units/Angle.hpp"
