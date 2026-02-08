@@ -750,6 +750,17 @@ class LinearMotion {
         return DerivedReturnType;
     }
 
+    motionChangerT drive_vel_mp_maxVel(T max_vel) {
+        ThisDerived->controllers.linear_velocity_feedback.setMaxVel(max_vel);
+        return DerivedReturnType;
+    }
+
+    motionChangerT drive_vel_mp_setMaxAccel(T max_accel) {
+        ThisDerived->controllers.linear_velocity_feedback.setMaxAccel(
+          max_accel);
+        return DerivedReturnType;
+    }
+
     // lateral pid
     motionChangerT lateral_vel_kp(T kp) {
         ThisDerived->controllers.lateral_velocity_feedback.set_kp(kp);

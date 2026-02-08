@@ -46,7 +46,6 @@ class DifferentialDrivetrain : public ChainableDrivetrain {
 
         // return if not doing hardware action
         if (!enabled) {
-            std::cout << "not enabled! " << pros::millis() << std::endl;
             return;
         }
 

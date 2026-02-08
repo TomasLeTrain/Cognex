@@ -164,10 +164,17 @@ class moveTo
 
         Length projected_cte_error = [&] {
             Length cte_error = 0_in;
+
+            Length linear_magnitude = (target_point - position).magnitude();
+
+            linear_magnitude = units::min(linear_magnitude, 100_in);
+            linear_magnitude = units::max(linear_magnitude, 20_in);
+
+            // facing forwards
             if (units::sgn(lin_multiplier) >= 0) {
-                cte_error = (target_point - position).magnitude() *
-                            units::sin(angular_error);
+                cte_error = linear_magnitude * units::sin(angular_error);
             } else {
+                // facing backwards
                 // probably good enough to turn very fast
                 cte_error = 100_in * units::sgn(units::sin(angular_error));
             }
@@ -321,23 +328,23 @@ class moveTo
                 auto [actual_volt_left, actual_volt_right] =
                   this->drivetrain.getDrivetrainVoltages();
 
-                // std::cout << std::fixed;
-                // std::cout << std::setprecision(5);
-                //
-                // std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
-                //              "av_l/av_r/x/y/theta/t_err: "
-                //           << linear_error.internal() << " "
-                //           << target.linear_velocity.internal() << " "
-                //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " << right_vel.internal()
-                //           << " " << left_voltage.internal() << " "
-                //           << right_voltage.internal() << " "
-                //           << actual_volt_left.internal() << " "
-                //           << actual_volt_right.internal() << " "
-                //           << position.x.convert(in) << " "
-                //           << position.y.convert(in) << " "
-                //           << heading.convert(deg) << " "
-                //           << angular_error.internal() << std::endl;
+                std::cout << std::fixed;
+                std::cout << std::setprecision(5);
+
+                std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
+                             "av_l/av_r/x/y/theta/t_err: "
+                          << linear_error.internal() << " "
+                          << target.linear_velocity.internal() << " "
+                          << target.angular_velocity.internal() << " "
+                          << left_vel.internal() << " " << right_vel.internal()
+                          << " " << left_voltage.internal() << " "
+                          << right_voltage.internal() << " "
+                          << actual_volt_left.internal() << " "
+                          << actual_volt_right.internal() << " "
+                          << position.x.convert(in) << " "
+                          << position.y.convert(in) << " "
+                          << projected_cte_error.convert(in) << " "
+                          << angular_error.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 

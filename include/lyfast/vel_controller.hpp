@@ -129,7 +129,13 @@ class SimpleVelocityController {
         // decrease integral by some amount when crossing error to minimize
         // overshooot due to the integral
         if (last_error && units::sgn(error) != units::sgn(*last_error)) {
-            double tbh_factor = 0.8;
+            // TODO: make this adjustable, this value was used for turns
+            // double tbh_factor = 0.1;
+
+            // CHNAGED!!
+            double tbh_factor = 0.0;
+
+            // double tbh_factor = 0.8;
             current_integral *= tbh_factor;
         }
 
@@ -205,7 +211,7 @@ class DifferentialVelocityController {
     std::reference_wrapper<DifferentialDrivetrain> drivetrain;
 
     std::optional<LeftRightSpeeds> last_velocities = std::nullopt;
-    double vel_alpha = 0.8;
+    double m_vel_alpha = 1.0;
 
   public:
     LeftRightVoltages update(LeftRightSpeeds measurement,
@@ -240,15 +246,15 @@ class DifferentialVelocityController {
         // fall back to using specified drivetrain
         LeftRightSpeeds velocities = drivetrain.get().getDrivetrainVelocities();
 
-		// use low pass filter on the velocities
+        // use low pass filter on the velocities
         if (last_velocities) {
             velocities.left_vel =
-              vel_alpha * velocities.left_vel +
-              (1 - vel_alpha) * last_velocities.value().left_vel;
+              m_vel_alpha * velocities.left_vel +
+              (1 - m_vel_alpha) * last_velocities.value().left_vel;
 
             velocities.right_vel =
-              vel_alpha * velocities.right_vel +
-              (1 - vel_alpha) * last_velocities.value().right_vel;
+              m_vel_alpha * velocities.right_vel +
+              (1 - m_vel_alpha) * last_velocities.value().right_vel;
         }
 
         last_velocities = velocities;
@@ -312,6 +318,7 @@ class DifferentialVelocityController {
       VelocityControllerParams params,
       LinearVelocity max_velocity,
       Length track_width,
+      double vel_alpha,
       std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : m_params(params),
           left_controller({ .Kv = this->m_params.left_Kv,
@@ -330,12 +337,14 @@ class DifferentialVelocityController {
           }),
           m_max_velocity(max_velocity),
           m_track_width(track_width),
+          m_vel_alpha(vel_alpha),
           drivetrain(drivetrain) {}
 
     DifferentialVelocityController(
       SimpleVelocityControllerParams<LinearVelocity> params,
       LinearVelocity max_velocity,
       Length track_width,
+      double vel_alpha,
       std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : m_params(VelocityControllerParams::fromSimple(params)),
           left_controller(params),
@@ -343,6 +352,7 @@ class DifferentialVelocityController {
 
           m_max_velocity(max_velocity),
           m_track_width(track_width),
+          m_vel_alpha(vel_alpha),
           drivetrain(drivetrain) {}
 };
 

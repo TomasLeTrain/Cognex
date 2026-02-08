@@ -16,7 +16,7 @@ void initialize() {
     screen::init();
 
     // initialize controller screen control
-	controller_ui::init();
+    controller_ui::init();
 
     int imu_notif = screen::health::add_init_notif("calibrating imu");
 
@@ -155,8 +155,10 @@ void initialize() {
     });
 
     mb_vel.setMoveToModifier([](auto&& moveTo) {
-        return std::move(
-          moveTo.velocity_based(true).k_lat(0.0 * rad / m).timeout(3_sec));
+        return std::move(moveTo.velocity_based(true)
+                           .customAngularLinearFunc(angular_linear_func)
+                           .k_lat(0.0 * rad / m)
+                           .timeout(3_sec));
     });
 
     mb_vel.setBoomerangModifier([](auto&& boomerang) {
@@ -181,8 +183,11 @@ void initialize() {
     });
 
     mb.setMoveToModifier([](auto&& moveTo) {
-        return std::move(
-          moveTo.velocity_based(true).k_lat(0.0 * rad / m).timeout(3_sec));
+        return std::move(moveTo
+                           .velocity_based(true)
+                           // .customAngularLinearFunc(angular_linear_func)
+                           .k_lat(0.0 * rad / m)
+                           .timeout(3_sec));
     });
 
     mb.setBoomerangModifier([](auto&& boomerang) {
@@ -190,11 +195,6 @@ void initialize() {
                            .k_lat(0.0 * rad / m, true)
                            .timeout(5_sec));
     });
-
-    // TODO: remove!!!!
-    auto curr_config = front_laser_model.getConfig();
-    curr_config.maxUsableDistance = 36_in;
-    front_laser_model.setConfig(curr_config);
 
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
                                                screen::health::succeed);

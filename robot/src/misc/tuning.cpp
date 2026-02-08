@@ -468,11 +468,15 @@ void drive_pid_tuning() {
 
 void drive_vel_pid_tuning() {
     Length target_distance = 24_in;
-    Length target_distance_delta = 12_in;
+    Length target_distance_delta = 8_in;
 
-    double curr_kp = linear_vel_pid.get_kp() / linear_vel_pid.UKP;
-    double curr_ki = linear_vel_pid.get_ki() / linear_vel_pid.UKI;
-    double curr_kd = linear_vel_pid.get_kd() / linear_vel_pid.UKD;
+    // double curr_kp = linear_vel_pid.get_kp() / linear_vel_pid.UKP;
+    // double curr_ki = linear_vel_pid.get_ki() / linear_vel_pid.UKI;
+    // double curr_kd = linear_vel_pid.get_kd() / linear_vel_pid.UKD;
+
+    double curr_kp = lateral_vel_pid.get_kp() / lateral_vel_pid.UKP;
+    double curr_ki = lateral_vel_pid.get_ki() / lateral_vel_pid.UKI;
+    double curr_kd = lateral_vel_pid.get_kd() / lateral_vel_pid.UKD;
 
     LinearAcceleration curr_accel_slew = 1000_mps2;
     Number curr_k_lat = 0.0;
@@ -485,7 +489,7 @@ void drive_vel_pid_tuning() {
     Number k_lat_delta = 0.01;
 
     // Length target_lateral_distance = 24_in;
-    Length target_lateral_distance = 24_in;
+    Length target_lateral_distance = 5_in;
 
     bool k_lat_config_active = false;
 
@@ -519,21 +523,49 @@ void drive_vel_pid_tuning() {
                 // .drive_vel_kp(curr_kp)
                 // .drive_vel_ki(curr_ki)
                 // .drive_vel_kd(curr_kd)
-                .drive_vel_accelSlew(curr_accel_slew)
+                // .drive_vel_accelSlew(curr_accel_slew)
+
+                // .lateral_vel_kp(curr_kp)
+                // .lateral_vel_ki(curr_ki)
+                // .lateral_vel_kd(curr_kd)
 
                 // .turn_vel_kp(0)
                 // .turn_vel_ki(0)
                 // .turn_vel_kd(0)
                 //
-                .k_lat(curr_k_lat)
+                // .k_lat(0)
                 .reverse()
               // .closeThreshold(7_in)
               | run;
         } else {
             // RobotSetPose(0, 0, 0);
+            mb_vel
+                .moveTo(start_pose.x + target_distance,
+                        start_pose.y + target_lateral_distance)
+                // .drive_vel_kp(curr_kp)
+                // .drive_vel_ki(curr_ki)
+                // .drive_vel_kd(curr_kd)
+                // .drive_vel_accelSlew(curr_accel_slew)
+
+                // .turn_vel_kp(0)
+                // .turn_vel_ki(0)
+                // .turn_vel_kd(0)
+
+                // .lateral_vel_kp(curr_kp)
+                // .lateral_vel_ki(curr_ki)
+                // .lateral_vel_kd(curr_kd)
+
+                .timeout(3.3_sec)
+              // .drive_errorTolerance(0_in)
+
+              // .k_lat(curr_k_lat)
+              // .closeThreshold(7_in)
+              | run;
+
             // mb_vel
-            //     .moveTo(start_pose.x + target_distance,
-            //             start_pose.y + target_lateral_distance)
+            //     .boomerang(start_pose.x + target_distance,
+            //                start_pose.y + target_lateral_distance,
+            //                0)
             //     // .drive_vel_kp(curr_kp)
             //     // .drive_vel_ki(curr_ki)
             //     // .drive_vel_kd(curr_kd)
@@ -543,33 +575,13 @@ void drive_vel_pid_tuning() {
             //     // .turn_vel_ki(0)
             //     // .turn_vel_kd(0)
             //     //
+            //     .drive_vel_maxVel(20_inps)
             //     .timeout(3.3_sec)
             //   // .drive_errorTolerance(0_in)
             //
             //   // .k_lat(curr_k_lat)
             //   // .closeThreshold(7_in)
             //   | run;
-
-            mb_vel
-                .boomerang(start_pose.x + target_distance,
-                           start_pose.y + target_lateral_distance,
-                           0)
-                // .drive_vel_kp(curr_kp)
-                // .drive_vel_ki(curr_ki)
-                // .drive_vel_kd(curr_kd)
-                // .drive_vel_accelSlew(curr_accel_slew)
-
-                // .turn_vel_kp(0)
-                // .turn_vel_ki(0)
-                // .turn_vel_kd(0)
-                //
-                .drive_vel_maxVel(20_inps)
-                .timeout(3.3_sec)
-              // .drive_errorTolerance(0_in)
-
-              // .k_lat(curr_k_lat)
-              // .closeThreshold(7_in)
-              | run;
         }
 
         controller.rumble(".");
@@ -761,12 +773,33 @@ void turn_vel_pid_tuning() {
         RobotSetPose(0, 0, 0);
         auto start_time = from_msec(pros::millis());
 
+        // mb_vel.moveTo(-48_in, 3_in)
+        //     .reverse()
+        //     .drive_vel_minVel(50_inps)
+        //     // .drive_vel_mp_maxVel(100_inps)
+        //     // .drive_vel_mp_setMaxAccel(300_inps2)
+        //     .setChainTime(0_msec) |
+        //   chain;
+
+        // mb_vel.turnTo(target_theta)
+        //     .turn_vel_kp(curr_kp)
+        //     .turn_vel_ki(curr_ki)
+        //     .turn_vel_kd(curr_kd)
+        //     // .turn_vel_PIDmaxVel(30_degps)
+        //     .reverse()
+        //     // .turn_vel_maxVel(30_degps)
+        //     .radius(-10.5_in / 2.0)
+        //     .timeout(5_sec) |
+        //   chain;
+        // chain.wait();
+
         mb_vel.turnTo(target_theta)
             .turn_vel_kp(curr_kp)
             .turn_vel_ki(curr_ki)
             .turn_vel_kd(curr_kd)
             .timeout(5_sec) |
           run;
+
         controller.rumble(".");
 
         auto end_time = from_msec(pros::millis());

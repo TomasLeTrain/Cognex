@@ -10,6 +10,7 @@
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include "vexmaps/mcl/distance_model.hpp"
+#include <cmath>
 #include <functional>
 
 using namespace blazing;
@@ -166,18 +167,8 @@ angular_pid_config_t turn_heading_pid_config {
 };
 
 angular_pid_config_t matchloader_angular_pid_config {
-    // .kp = 2.3,
-    // .ki = 0,
-    // .kd = 3.05,
-
-    // pre ki ones
-    // .kp = 3.15, .ki = 0, .kd = 5.35, .windupRange = 14, .maxVoltage = 127,
-
     // after ki ones - aggressive
     .kp = 3.50, .ki = 0.17, .kd = 6.0, .windupRange = 45, .maxVoltage = 127,
-    //
-    // same kp, lower kd a bit to reach endpoint better
-    // .kp = 3.15, .ki = 0, .kd = 5.3, .windupRange = 14, .maxVoltage = 127,
 };
 
 // LinearSlewController linear_slew(0.07_volt, 0.06_volt);
@@ -197,9 +188,9 @@ tolerances_config_t<Length> linear_tolerances_config {
     // .error { 1.0_in },
     .velocity { 400_inps },
 
-    .large_duration = 1.2_sec,
+    .large_duration = 400_sec,
     .large_error { 3_in },
-    .large_velocity { 400_inps },
+    .large_velocity { 30_inps },
 
     .chain_duration = 1_sec,
     .chain_error { 6_in },
@@ -224,17 +215,17 @@ tolerances_config_t<Angle> angular_tolerances_config {
     // .velocity = { 20_degps },
 
     .duration = 40_msec,
-    .error = { 2_stDeg },
+    .error = { 2.25_stDeg },
     // .velocity = { 60_degps },
-    .velocity = { 100_degps },
+    .velocity = { 120_degps },
 
     // .duration = 30_msec,
     // .error = { 1.2_stDeg },
     // .velocity = { 20_degps },
     //
-    .large_duration = 100_sec,
-    .large_error = { 15_stDeg },
-    .large_velocity = { 300_degps },
+    .large_duration = 400_msec,
+    .large_error = { 7_stDeg },
+    .large_velocity = { 70_degps },
 
     .chain_duration = 1_sec,
     .chain_error = { 20_stDeg },
@@ -370,7 +361,7 @@ PID<Length, Voltage> linear_pid(linear_pid_config.kp,
                                 linear_pid_config.outputUnits);
 PID<Length, Voltage> lateral_pid(4.0,
                                  0.0,
-                                 0.0,
+                                 0.3,
                                  7, // antiwindup range
                                  127, // max vel
                                  std::nullopt, // derivative_alpha
@@ -407,20 +398,26 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
     .left_Kv = 0.420125 * volt / mps,
 
     // length kp and ka term create a feedback loop intenuating noise
-    .left_Ka = 0.09 * volt / mps2,
+    // .left_Ka = 0.09 * volt / mps2,
+    .left_Ka = 0.05 * volt / mps2,
     // .left_Ka = 0.0 * volt / mps2,
     .left_Ks = 0.0819155 * volt,
 
-    .left_Kp = 0.9 * volt / mps,
-    .left_Ki = 1.0 * volt / m,
+    // .left_Kp = 0.9 * volt / mps,
+    // .left_Kp = 0.3 * volt / mps,
+    .left_Kp = 0.7 * volt / mps,
+    .left_Ki = 4.0 * volt / m,
 
     .right_Kv = 0.422079 * volt / mps,
-    .right_Ka = 0.09 * volt / mps2,
+    // .right_Ka = 0.09 * volt / mps2,
+    .right_Ka = 0.05 * volt / mps2,
     // .right_Ka = 0.0 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
-    .right_Kp = 0.9 * volt / mps,
-    .right_Ki = 1.0 * volt / m,
+    // .right_Kp = 0.9 * volt / mps,
+    // .right_Kp = 0.3 * volt / mps,
+    .right_Kp = 0.7 * volt / mps,
+    .right_Ki = 4.0 * volt / m,
 
     // .left_Kv = 0.420125 * volt / mps,
     //
@@ -442,61 +439,56 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   },
   100_inps,
   drivetrain_config.track_width,
-  std::ref(drivetrain));
-
-// goated for turning
-blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
-  lyfast::VelocityControllerParams {
-    .left_Kv = 0.471609 * volt / mps,
-    // lower by one degree of magnitude?
-    .left_Ka = 0.0986881348841 * volt / mps2,
-    .left_Ks = 0.08 * volt,
-
-    // lambda 0.6
-    .left_Kp = 0.9 * volt / mps,
-    .left_Ki = 1.0 * volt / m,
-
-    .right_Kv = 0.475 * volt / mps,
-    // lower by one degree of magnitude?
-    .right_Ka = 0.10128620282 * volt / mps2,
-    .right_Ks = 0.08 * volt,
-
-    .right_Kp = 0.9 * volt / mps,
-    .right_Ki = 1.0 * volt / m,
-  },
-  100_inps,
-  drivetrain_config.track_width,
+  0.8,
   std::ref(drivetrain));
 
 // --- turning vel stuff --- //
 // goated for turning
-blazing::lyfast::DifferentialVelocityController diff_turn_vel_controller(
+blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
 
     .left_Kv = 0.471609 * volt / mps,
-    .left_Ka = 0.00986881348841 * volt / mps2,
+    // .left_Ka = 0.0986881348841 * volt / mps2,
+    .left_Ka = 0.03 * volt / mps2,
+    // .left_Ka = 0.0 * volt / mps2,
     .left_Ks = 0.08 * volt,
 
     // lambda 0.6
-    .left_Kp = 0.915472273416 * volt / mps,
+    // .left_Kp = 0.915472273416 * volt / mps,
+    // .left_Ki = 5.09538143189 * volt / m,
+    // .left_Kp = 0.915472273416 * volt / mps,
+    // .left_Kp = 0.915472273416 * volt / mps,
+    // .left_Ki = 2.09538143189 * volt / m,
+
+    // .left_Kp = 0.0 * volt / mps,
+    .left_Kp = 0.3 * volt / mps,
+    // .left_Ki = 0.0 * volt / m,
     .left_Ki = 5.09538143189 * volt / m,
 
     .right_Kv = 0.475 * volt / mps,
-    .right_Ka = 0.010128620282 * volt / mps2,
+    // .right_Ka = 0.10128620282 * volt / mps2,
+    .right_Ka = 0.03 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
-    .right_Kp = 0.968620056451 * volt / mps,
+    // .right_Kp = 0.968620056451 * volt / mps,
+    // .right_Kp = 0.968620056451 * volt / mps,
+    // .right_Ki = 2.0578634857 * volt / m,
+    // .right_Kp = 0.0 * volt / mps,
+    .right_Kp = 0.3 * volt / mps,
+    // .right_Ki = 0.0 * volt / m,
+    // .right_Kp = 0.968620056451 * volt / mps,
     .right_Ki = 5.5578634857 * volt / m,
   },
   100_inps,
   drivetrain_config.track_width,
+  0.85,
   std::ref(drivetrain));
 
 // use arcade since templating uses this type
 lyfast::ArcadeVelocityController turn_vel_controller {
     // TODO: never need to worry about linear?
-    diff_turn_vel_controller,
-    diff_turn_vel_controller,
+    angular_velocity_controller,
+    angular_velocity_controller,
     100_inps,
     drivetrain_config.track_width
 };
@@ -520,7 +512,7 @@ PID<Length, LinearVelocity>
                  7.300,
                  7,
                  // std::nullopt,
-                 70,
+                 70, // max vel
                  // use new measurements with 70% confidence
                  0.7,
                  50_msec,
@@ -581,9 +573,9 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 //
 // used for seeking motions
 // really good for fast move to points, too aggressive
-PID<Length, AngularVelocity> lateral_vel_pid(1.67,
+PID<Length, AngularVelocity> lateral_vel_pid(0.7,
                                              0.0,
-                                             1.1,
+                                             1.8,
                                              std::nullopt, // anti windup range
                                              std::nullopt, // max vel
                                              0.9, // derivative
@@ -616,7 +608,7 @@ PID<Angle, AngularVelocity>
 PID<Angle, AngularVelocity> turn_heading_vel_pid(19.000,
                                                  // 0.01,
                                                  0.0,
-                                                 23.800,
+                                                 19.050,
                                                  to_stRad(10_stDeg),
                                                  std::nullopt,
                                                  // 70,
@@ -781,20 +773,29 @@ double angular_linear_func(Angle angle) {
     // reduces the domain to [0,pi]
     angle = units::abs(units::constrainAngle180(angle));
 
+    // double sgn = units::sgn(angle);
+    // angle = units::abs(angle);
+
+    // defined on the range [0,pi/2]
+    // auto func = [](double x) -> double {
+    //     double poly = 0.0001;
+    //     if (x < 1.224747) {
+    //         // simple polynomial that delays linear output until angle error
+    //         is
+    //         // small
+    //         poly = 1.0 - 2.0 * (x * x) + 1.08866 * (x * x * x);
+    //     }
+    //     // return 0.00001;
+    //     return 0.7 * poly + std::cos(x) * 0.3;
+    // };
+
     // defined on the range [0,pi/2]
     auto func = [](double x) -> double {
-        double poly = 0.0001;
-        if (x < 1.224747) {
-            // simple polynomial that delays linear output until angle error is
-            // small
-            poly = 1.0 - 2.0 * (x * x) + 1.08866 * (x * x * x);
-        }
-        // return 0.00001;
-        return 0.7 * poly + std::cos(x) * 0.3;
+        return std::exp(-1.25 * x);
     };
 
     // makes this function apply on the range [0,pi]
-    if (angle <= rot / 2.0) {
+    if (angle <= rot / 4.0) {
         return func(angle.internal());
     } else {
         return -func(M_PI - angle.internal());
@@ -856,6 +857,8 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
                   // drivetrain of no rotations are connected
 
                   false);
+
+auto curr_config = front_laser_model.getConfig();
 
 DistanceSensorModel front_laser_model(&front_distance,
                                       front_distance_offsets,
