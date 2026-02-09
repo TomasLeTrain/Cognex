@@ -128,17 +128,21 @@ void run_auton() {
 
     if (pushing) mb.moveTo(-46.57, -4.7).timeout(1.2_sec) | chain;
 
-    mb.moveTo(-46.376, -normal_match - 0.5_in).reverse().timeout(1.3_sec) |
+    mb.moveTo(-46.376, -normal_match - 0.5_in)
+        .only_y(true)
+        .reverse()
+        .timeout(1.3_sec) |
       chain;
     chain.wait();
 
     // turn to and go to matchloader
     matchloader::down();
-    mb.turnTo(make_matchloader_point(-1, -1))
-        .turn_toleranceDuration(25_msec)
-        .timeout(0.8_sec) |
-      async;
-    async.wait();
+
+    // mb.turnTo(make_matchloader_point(-1, -1))
+    //     .turn_toleranceDuration(25_msec)
+    //     .timeout(0.8_sec) |
+    //   async;
+    // async.wait();
 
     // pros::delay(50);
     matchload(-1, -1, 0.3_sec);
@@ -146,22 +150,26 @@ void run_auton() {
 
     matchloader::up();
 
-    mb.turnTo(-1_tile, -1_tile).radius(-1.2) | chain;
+    // mb.turnTo(-1_tile, -1_tile).radius(-1.2) | chain;
 
     mb.moveTo(-1_tile, -1_tile)
         .executeAfterMotion([] {
             intake::in();
         })
-        .drive_minVolt(0.5_volt)
+        // .drive_minVolt(0.5_volt)
+        .drive_vel_minVel(50_inps)
         .setChainTime(0_sec) |
       chain;
 
-    mb.moveTo(-1_tile, 1_tile).executeAfterMotion([] {
-        intake::in();
-    }) |
+    mb.moveTo(-1_tile, 1_tile)
+        // already going fast from previous motion, slew can be faster
+        .drive_vel_accelSlew(300_inps)
+        .executeAfterMotion([] {
+            intake::in();
+        }) |
       chain;
 
-    mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y).reverse() | chain;
+    // mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y).reverse() | chain;
 
     mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
         .reverse()
@@ -190,7 +198,7 @@ void run_auton() {
     chain.wait();
 
     // turn to and go to matchloader
-    mb.turnTo(make_matchloader_point(-1, 1)) | run;
+    // mb.turnTo(make_matchloader_point(-1, 1)) | run;
 
     // pros::delay(50);
     matchload(-1, 1, 0.3_sec);

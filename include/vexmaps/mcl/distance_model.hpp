@@ -246,13 +246,12 @@ class DistanceSensorModel : public Sensor {
 
         measured_distance = from_mm(measured_mm);
 
-        // only applies scale factor if distance sensor uses alternate algo
-        // for determining distance (smaller than 200_mm probably does not
-        // need a scaling factor)
-        if (measured_distance > 200_mm) {
-            measured_distance *= m_distance_scale_factor;
-            measured_distance += m_distance_scale_offset;
-        }
+
+		// smaller than 200_mm still has some scaling that is benefitial to do
+        // if (measured_distance > 200_mm) {
+        measured_distance *= m_distance_scale_factor;
+        measured_distance += m_distance_scale_offset;
+        // }
 
         f_measured_distance = measured_distance.internal();
 

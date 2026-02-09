@@ -91,25 +91,31 @@ units::Pose front_distance_offsets =
   distToCor({ 4_in, +(12.5_in / 2) - 2.25_in, 0_stDeg });
 
 units::Pose left_distance_offsets =
-  distToCor({ 1.25_in, +(12.5_in / 2) - 2.25_in, 90_stDeg });
+  distToCor({ 1.0_in, +(12.5_in / 2) - 2.25_in, 90_stDeg });
 
 units::Pose back_distance_offsets =
-  distToCor({ -2_in, -(12.5_in / 2) + 3_in, 180_stDeg });
+  distToCor({ -1.75_in, -(12.5_in / 2) + 2.9_in, 180_stDeg });
 
 units::Pose right_distance_offsets =
-  distToCor({ 1.25_in, -(12.5_in / 2) + 2.25_in, 270_stDeg });
+  distToCor({ 1.0_in, -(12.5_in / 2) + 2.25_in, 270_stDeg });
 
-double front_distance_scale_factor = 0.973792726538;
-Length front_distance_scale_offset = 0.796476972035_in;
+// sunlight: 0.967078567542
+// no sunlight: 0.973046024541
+double front_distance_scale_factor = 0.973046024541;
+// tends to be pretty constant regardless of conditions
+Length front_distance_scale_offset = 0.582681261102_in;
 
-double left_distance_scale_factor = 0.980664086761;
-Length left_distance_scale_offset = 0.124681158364_in;
+// no sunlight: 0.98758896953
+double left_distance_scale_factor = 0.98758896953;
+Length left_distance_scale_offset = 0.243371397983_in;
 
-double back_distance_scale_factor = 0.98606683626;
-Length back_distance_scale_offset = -0.32142368218_in;
+// no sunlight: 0.98238
+double back_distance_scale_factor = 0.98238;
+Length back_distance_scale_offset = 0.0964698_in;
 
-double right_distance_scale_factor = 0.979427538911;
-Length right_distance_scale_offset = -0.184835902564_in;
+// no sunlight: 0.975042
+double right_distance_scale_factor = 0.975042;
+Length right_distance_scale_offset = 0.395641_in;
 
 /* vexmaps configuration */
 
@@ -129,6 +135,8 @@ tracker_config_t sideways_tracker_config = {
 /* drivetrain / pid configuration */
 
 // NOTE: remember to update every time the drivetrain changes!
+// TODO: track width is actually closer to 10.5 - 1/8, but everything wnas
+// already tuned to 10.5
 drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
                                         .wheel_diameter = 3.25_in,
                                         .rpm = 450_rpm };
@@ -268,7 +276,7 @@ vexmaps::SmootherConfig smoother_config = {
 
     // possible good values
     .ang_vel_alpha = 0.10 / 300_degps,
-    .theta_to_alpha = 0.03,
+    .theta_to_alpha = 0.07,
     .linear_vel_alpha = 0.00 / 70_inps,
     //
     // .ang_vel_alpha = 0.0 / 300_degps,
