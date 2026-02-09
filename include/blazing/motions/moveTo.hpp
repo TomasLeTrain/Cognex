@@ -61,6 +61,9 @@ class moveTo
     bool m_only_x = false;
     bool m_only_y = false;
 
+    std::optional<Length> m_custom_x_settling = std::nullopt;
+    std::optional<Length> m_custom_y_settling = std::nullopt;
+
     bool m_velocity_based = false;
 
     // defaults to cosine of angle
@@ -119,18 +122,26 @@ class moveTo
         Length linear_error = [&] -> Length {
             double reverse_multiplier = reversed ? -1.0 : 1.0;
 
+            // only go for x when settling
+            if (m_only_x && state.close) {
+                Length target_x = target_point.x;
+                if (m_custom_x_settling.has_value())
+                    target_x = *m_custom_x_settling;
+
+                return units::abs(target_x - position.x) * reverse_multiplier;
+            }
+            // only go for x when settling
+            if (m_only_y && state.close) {
+                Length target_y = target_point.y;
+                if (m_custom_y_settling.has_value())
+                    target_y = *m_custom_y_settling;
+
+                return units::abs(target_y - position.y) * reverse_multiplier;
+            }
+
             // use forward error when settling
             if (state.close) {
                 return units::abs(forward_error) * reverse_multiplier;
-            }
-
-            if (m_only_x) {
-                return units::abs(target_point.x - position.x) *
-                       reverse_multiplier;
-            }
-            if (m_only_y) {
-                return units::abs(target_point.y - position.y) *
-                       reverse_multiplier;
             }
 
             // none active, error like normal
@@ -237,21 +248,30 @@ class moveTo
 
                 // use lateral controller when far away, use regular angular
                 // when settling
-                if (!state.close) {
-                    // std::cout << "cte " << -projected_cte_error.convert(in)
-                    //           << std::endl;
-                    angular_vel =
-                      this->controllers.lateral_velocity_feedback.update(
-                        -projected_cte_error,
-                        0_in,
-                        delta_time);
-                } else {
-                    // angular_vel =
-                    //   this->controllers.angular_velocity_feedback.update(
-                    //     -angular_error,
-                    //     0_stRad,
-                    //     delta_time);
-                }
+                // if (!state.close) {
+                //     // std::cout << "cte " <<
+                //     -projected_cte_error.convert(in)
+                //     //           << std::endl;
+                //     // angular_vel =
+                //     //   this->controllers.lateral_velocity_feedback.update(
+                //     //     -projected_cte_error,
+                //     //     0_in,
+                //     //     delta_time);
+                //
+                //     angular_vel =
+                //       this->controllers.angular_velocity_feedback.update(
+                //         -angular_error,
+                //         0_stRad,
+                //         delta_time);
+                // } else {
+                //     // angular_vel =
+                //     //   this->controllers.angular_velocity_feedback.update(
+                //     //     -angular_error,
+                //     //     0_stRad,
+                //     //     delta_time);
+                // }
+                angular_vel = this->controllers.angular_velocity_feedback
+                                .update(-angular_error, 0_stRad, delta_time);
 
                 // AngularVelocity angular_vel =
                 //   this->controllers.angular_velocity_feedback.update(
@@ -260,11 +280,11 @@ class moveTo
                 //     delta_time);
 
                 if (m_k_lat && !state.close) {
-                    angular_vel =
-                      angular_vel +
-                      *m_k_lat * (rad / m) * linear_vel *
-                        (target_point - position).rotatedBy(-heading).y *
-                        sinc(angular_error);
+                    // angular_vel =
+                    //   angular_vel +
+                    //   *m_k_lat * (rad / m) * linear_vel *
+                    //     (target_point - position).rotatedBy(-heading).y *
+                    //     sinc(angular_error);
                 }
 
                 // sign was already applied to error, only applies cosine
@@ -290,16 +310,20 @@ class moveTo
                         angular_vel);
                 }
 
-                // apply slew
-                if constexpr (hasLinearVelocitySlew<ControllersType>) {
-                    linear_vel =
-                      this->controllers.linear_velocity_slew.apply(linear_vel,
-                                                                   delta_time);
-                }
-                if constexpr (hasAngularVelocitySlew<ControllersType>) {
-                    angular_vel =
-                      this->controllers.angular_velocity_slew.apply(angular_vel,
-                                                                    delta_time);
+                // don't apply slew when settling
+                if (!state.close) {
+                    if constexpr (hasLinearVelocitySlew<ControllersType>) {
+                        linear_vel =
+                          this->controllers.linear_velocity_slew.apply(
+                            linear_vel,
+                            delta_time);
+                    }
+                    if constexpr (hasAngularVelocitySlew<ControllersType>) {
+                        angular_vel =
+                          this->controllers.angular_velocity_slew.apply(
+                            angular_vel,
+                            delta_time);
+                    }
                 }
 
                 DifferentialSpeeds curr_target { linear_vel, angular_vel };
@@ -528,14 +552,20 @@ class moveTo
         return *this;
     }
 
-    motionChangerMsg moveTo& only_x(bool only_x) {
+    motionChangerMsg moveTo&
+    only_x(bool only_x,
+           std::optional<Length> custom_x_settling = std::nullopt) {
         this->m_only_x = only_x;
+        this->m_custom_x_settling = custom_x_settling;
 
         return *this;
     }
 
-    motionChangerMsg moveTo& only_y(bool only_y) {
+    motionChangerMsg moveTo&
+    only_y(bool only_y,
+           std::optional<Length> custom_y_settling = std::nullopt) {
         this->m_only_y = only_y;
+        this->m_custom_y_settling = custom_y_settling;
 
         return *this;
     }

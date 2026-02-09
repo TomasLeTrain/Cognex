@@ -32,22 +32,37 @@ desaturateDifferentialSpeeds(DifferentialSpeeds target,
                              LinearVelocity max_velocity) {
     Length track_radius = track_width / 2.0;
 
-    LinearVelocity target_left_vel =
-      target.linear_velocity - (target.angular_velocity / rad) * track_radius;
-    LinearVelocity target_right_vel =
-      target.linear_velocity + (target.angular_velocity / rad) * track_radius;
+    // first determine how fast we want to go angular wise
+    LinearVelocity lin_alg_target =
+      (target.angular_velocity / rad) * track_radius;
 
-    std::array<LinearVelocity, 2> saturated = { target_left_vel,
-                                                target_right_vel };
+    // clamp linear speed based on angular speed
+    LinearVelocity max_lin_speed =
+      units::abs(max_velocity) - units::abs(lin_alg_target);
 
-    auto [new_left_vel, new_right_vel] =
-      blazing::desaturate(saturated, max_velocity);
+    LinearVelocity new_lin_speed =
+      units::clamp(target.linear_velocity, -max_lin_speed, max_lin_speed);
 
-    LinearVelocity new_lin_vel = (new_left_vel + new_right_vel) / 2.0;
-    AngularVelocity new_ang_vel =
-      rad * (new_right_vel - new_left_vel) / track_width;
+    return { new_lin_speed, target.angular_velocity };
 
-    return { new_lin_vel, new_ang_vel };
+    // LinearVelocity target_left_vel =
+    //   target.linear_velocity - (target.angular_velocity / rad) *
+    //   track_radius;
+    // LinearVelocity target_right_vel =
+    //   target.linear_velocity + (target.angular_velocity / rad) *
+    //   track_radius;
+    //
+    // std::array<LinearVelocity, 2> saturated = { target_left_vel,
+    //                                             target_right_vel };
+    //
+    // auto [new_left_vel, new_right_vel] =
+    //   blazing::desaturate(saturated, max_velocity);
+    //
+    // LinearVelocity new_lin_vel = (new_left_vel + new_right_vel) / 2.0;
+    // AngularVelocity new_ang_vel =
+    //   rad * (new_right_vel - new_left_vel) / track_width;
+    //
+    // return { new_lin_vel, new_ang_vel };
 }
 
 template<typename T>
@@ -59,6 +74,8 @@ struct SimpleVelocityControllerParams {
     Divided<Voltage, Multiplied<T, Time>> Ki { 0 };
 
     Voltage max_output { 1_volt };
+
+    double tbh_factor { 0.0 };
 };
 
 struct VelocityControllerParams {
@@ -68,6 +85,7 @@ struct VelocityControllerParams {
     Divided<Voltage, LinearVelocity> left_Kp { 0 };
     Divided<Voltage, Length> left_Ki { 0 };
     Voltage left_max_output { 1_volt };
+    double left_tbh_factor { 0.0 };
 
     KvUnits right_Kv;
     KaUnits right_Ka;
@@ -75,6 +93,7 @@ struct VelocityControllerParams {
     Divided<Voltage, LinearVelocity> right_Kp { 0 };
     Divided<Voltage, Length> right_Ki { 0 };
     Voltage right_max_output { 1_volt };
+    double right_tbh_factor { 0.0 };
 
     // construct both sides with equal gains
     static VelocityControllerParams
@@ -86,6 +105,7 @@ struct VelocityControllerParams {
             .left_Kp = params.Kp,
             .left_Ki = params.Ki,
             .left_max_output = params.max_output,
+            .left_tbh_factor = params.tbh_factor,
 
             .right_Kv = params.Kv,
             .right_Ka = params.Ka,
@@ -93,6 +113,7 @@ struct VelocityControllerParams {
             .right_Kp = params.Kp,
             .right_Ki = params.Ki,
             .right_max_output = params.max_output,
+            .right_tbh_factor = params.tbh_factor,
         };
     }
 };
@@ -129,14 +150,7 @@ class SimpleVelocityController {
         // decrease integral by some amount when crossing error to minimize
         // overshooot due to the integral
         if (last_error && units::sgn(error) != units::sgn(*last_error)) {
-            // TODO: make this adjustable, this value was used for turns
-            // double tbh_factor = 0.1;
-
-            // CHNAGED!!
-            double tbh_factor = 0.0;
-
-            // double tbh_factor = 0.8;
-            current_integral *= tbh_factor;
+            current_integral *= m_params.tbh_factor;
         }
 
         Voltage result {
@@ -321,12 +335,15 @@ class DifferentialVelocityController {
       double vel_alpha,
       std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : m_params(params),
-          left_controller({ .Kv = this->m_params.left_Kv,
-                            .Ka = this->m_params.left_Ka,
-                            .Ks = this->m_params.left_Ks,
-                            .Kp = this->m_params.left_Kp,
-                            .Ki = this->m_params.left_Ki,
-                            .max_output = this->m_params.left_max_output }),
+          left_controller({
+            .Kv = this->m_params.left_Kv,
+            .Ka = this->m_params.left_Ka,
+            .Ks = this->m_params.left_Ks,
+            .Kp = this->m_params.left_Kp,
+            .Ki = this->m_params.left_Ki,
+            .max_output = this->m_params.left_max_output,
+            .tbh_factor = this->m_params.left_tbh_factor,
+          }),
           right_controller({
             .Kv = this->m_params.right_Kv,
             .Ka = this->m_params.right_Ka,
@@ -334,6 +351,7 @@ class DifferentialVelocityController {
             .Kp = this->m_params.right_Kp,
             .Ki = this->m_params.right_Ki,
             .max_output = this->m_params.right_max_output,
+            .tbh_factor = this->m_params.right_tbh_factor,
           }),
           m_max_velocity(max_velocity),
           m_track_width(track_width),

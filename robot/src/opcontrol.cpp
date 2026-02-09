@@ -50,8 +50,15 @@ void opcontrol() {
     // drive_vel_pid_tuning();
     // return;
     // turn_vel_pid_tuning();
-    drive_vel_pid_tuning();
-    return;
+    // drive_vel_pid_tuning();
+
+    // intake::init(false);
+    // matchloader::init(false);
+    // wings::init(false);
+    // odom_retract::init(false);
+    // long_goal_tuning();
+    // return;
+    //
 
     // drive_pid_tuning();
 
@@ -100,7 +107,11 @@ void opcontrol() {
 
     odom_retract::retractOdom();
 
-    // RobotSetPose(-48, -48, 180);
+    // RobotSetPose(48, 48, 0);
+    //    RobotSetPose(28.2378, 47.0146, 0);
+    //
+    //    pros::delay(3000);
+    // pf_model.setDisabled(true);
 
     // matchloadTuning();
     // long_goal_tuning();

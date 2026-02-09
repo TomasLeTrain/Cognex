@@ -183,9 +183,8 @@ void initialize() {
     });
 
     mb.setMoveToModifier([](auto&& moveTo) {
-        return std::move(moveTo
-                           .velocity_based(true)
-                           // .customAngularLinearFunc(angular_linear_func)
+        return std::move(moveTo.velocity_based(true)
+                           .customAngularLinearFunc(angular_linear_func)
                            .k_lat(0.0 * rad / m)
                            .timeout(3_sec));
     });

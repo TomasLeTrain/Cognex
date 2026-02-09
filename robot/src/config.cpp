@@ -361,7 +361,7 @@ PID<Length, Voltage> linear_pid(linear_pid_config.kp,
                                 linear_pid_config.outputUnits);
 PID<Length, Voltage> lateral_pid(4.0,
                                  0.0,
-                                 0.3,
+                                 0.0,
                                  7, // antiwindup range
                                  127, // max vel
                                  std::nullopt, // derivative_alpha
@@ -392,6 +392,8 @@ PID<Angle, Voltage> turn_heading_pid(turn_heading_pid_config.kp,
 PIDLinearController linear_pid_controller(linear_pid);
 PIDAngularController angular_pid_controller(turn_drive_pid);
 
+// REALLY GOOD
+// TODO: could play around with slighlty higher ka?
 blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
 
@@ -399,7 +401,7 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 
     // length kp and ka term create a feedback loop intenuating noise
     // .left_Ka = 0.09 * volt / mps2,
-    .left_Ka = 0.05 * volt / mps2,
+    .left_Ka = 0.06 * volt / mps2,
     // .left_Ka = 0.0 * volt / mps2,
     .left_Ks = 0.0819155 * volt,
 
@@ -410,7 +412,7 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 
     .right_Kv = 0.422079 * volt / mps,
     // .right_Ka = 0.09 * volt / mps2,
-    .right_Ka = 0.05 * volt / mps2,
+    .right_Ka = 0.06 * volt / mps2,
     // .right_Ka = 0.0 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
@@ -437,7 +439,7 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
     // .right_Kp = 0.0 * volt / mps,
     // .right_Ki = 0.0 * volt / m,
   },
-  100_inps,
+  70_inps,
   drivetrain_config.track_width,
   0.8,
   std::ref(drivetrain));
@@ -497,7 +499,7 @@ lyfast::ArcadeVelocityController turn_vel_controller {
 lyfast::ArcadeVelocityController vel_controller {
     linear_velocity_controller,
     angular_velocity_controller,
-    70_inps,
+    76_inps,
     drivetrain_config.track_width
 };
 
@@ -506,15 +508,13 @@ lyfast::VelocityFeedforward<decltype(vel_controller)>
 
 // linear velocity stuff
 PID<Length, LinearVelocity>
-  linear_vel_pid(4.700,
+  linear_vel_pid(4.700, // kp
                  0.0,
                  // 7.000,
-                 7.300,
-                 7,
-                 // std::nullopt,
+                 7.300, // kd
+                 7, // antiwindup range,
                  70, // max vel
-                 // use new measurements with 70% confidence
-                 0.7,
+                 0.7, // use new measurements with 70% confidence
                  50_msec,
                  1_in,
                  1_inps);
@@ -562,11 +562,13 @@ PID<Length, LinearVelocity>
 
 PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
 
-lyfast::mpFeedback<Length> linear_mp_feedback { 80_inps, 110_inps2 };
+// mp feedback
+lyfast::mpFeedback<Length> linear_mp_feedback { 76_inps, 110_inps2 };
+
 LinearVelocityFeedbackController<decltype(linear_mp_feedback)>
   linear_mp_feedback_controller(linear_mp_feedback);
 
-LinearVelocitySlewController linear_vel_slew_controller {};
+LinearVelocitySlewController linear_vel_slew_controller { 110_inps2 };
 LinearVelocityClampController linear_vel_clamp_controller {};
 
 // end linear velocity stuff //
@@ -594,11 +596,11 @@ PID<Length, AngularVelocity> lateral_vel_pid(0.7,
 //                                              1_radps);
 
 PID<Angle, AngularVelocity>
-  linear_angular_vel_pid(15.400,
-                         1.1,
-                         17,
+  linear_angular_vel_pid(13.90,
+                         0.0,
+                         15.5,
                          to_stRad(10_stDeg), // windup range
-                         70, // restrict max vel
+                         76, // restrict max vel
                          std::nullopt, // derivative alpha
                          50_msec,
                          1_stRad,
@@ -633,7 +635,7 @@ PID<Angle, AngularVelocity> turn_heading_vel_pid(19.000,
 // start angular velocity stuff
 // PIDAngularVelocityController
 // angular_vel_pid_controller(linear_angular_vel_pid);
-PIDAngularVelocityController angular_vel_pid_controller(turn_heading_vel_pid);
+PIDAngularVelocityController angular_vel_pid_controller(linear_angular_vel_pid);
 
 AngularVelocitySlewController angular_vel_slew_controller {};
 AngularVelocityClampController angular_vel_clamp_controller {};
@@ -781,17 +783,21 @@ double angular_linear_func(Angle angle) {
     //     double poly = 0.0001;
     //     if (x < 1.224747) {
     //         // simple polynomial that delays linear output until angle error
-    //         is
-    //         // small
-    //         poly = 1.0 - 2.0 * (x * x) + 1.08866 * (x * x * x);
+    //         is small poly = 1.0 - 2.0 * (x * x) + 1.08866 * (x * x * x);
     //     }
     //     // return 0.00001;
     //     return 0.7 * poly + std::cos(x) * 0.3;
     // };
 
     // defined on the range [0,pi/2]
+    // auto func = [](double x) -> double {
+    //     return std::exp(-1.25 * x);
+    // };
+    //
+    // defined on the range [0,pi/2]
     auto func = [](double x) -> double {
-        return std::exp(-1.25 * x);
+        double a = 0.93;
+        return std::exp(-a * x) * (1 - (2 / M_PI) * x);
     };
 
     // makes this function apply on the range [0,pi]
