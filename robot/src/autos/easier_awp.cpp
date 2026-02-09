@@ -87,6 +87,8 @@ void run_auton() {
                                 .rotatedBy(-RobotGetPose().orientation)
                                 .x) < matchload_start_distance;
         });
+        pros::delay(to_msec(matchload_time));
+        async.exitAll();
         // controller.rumble(".");
     };
 
