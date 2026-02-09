@@ -13,8 +13,13 @@ namespace controller_ui {
 bool warning_triggered = false;
 bool critical_error_triggered = false;
 bool was_connected = false;
+bool need_auton_update = false;
 
 void autonUpdate() {
+    need_auton_update = true;
+}
+
+void actualAutonUpdate() {
     std::string line2 = getAuton();
 
     if (getAuton() == "") {
@@ -81,12 +86,10 @@ void general_update() {
     if (!was_connected && controller.is_connected()) {
         // controller connected, need to update its state?
         controller.clear();
-        pros::delay(300);
-        autonUpdate();
-        pros::delay(300);
+        pros::delay(100);
+        // autonUpdate();
+        // pros::delay(300);
     }
-
-    was_connected = controller.is_connected();
 
     // update with battery information
     int capacity = (int)pros::battery::get_capacity();
@@ -94,17 +97,26 @@ void general_update() {
     // controller.print(0, 0, ""line1);
     controller.print(0, 0, "capacity: %d%%", capacity);
 
+    if (need_auton_update) {
+        pros::delay(100);
+        actualAutonUpdate();
+
+        need_auton_update = false;
+    }
+
+    was_connected = controller.is_connected();
+
     // pros::delay(200);
 }
 
 void init() {
     // initla clear
-    controller.clear();
+    // controller.clear();
 
-    pros::delay(100);
-    // run an initial time
-    autonUpdate();
-    pros::delay(100);
+    // pros::delay(100);
+    // // run an initial time
+    // autonUpdate();
+    // pros::delay(100);
 
     pros::Task([] {
         general_update();

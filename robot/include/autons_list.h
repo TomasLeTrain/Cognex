@@ -35,14 +35,17 @@ H_AUTON(four_ball)
 // H_AUTON(qual_match_first)
 //
 // H_AUTON(sunshine_elims)
+// H_AUTON(ninesix_skills)
 
 H_AUTON(qual_match_first)
 H_AUTON(sunshine_quals)
-H_AUTON(easier_awp)
+H_AUTON(awp)
 H_AUTON(seven_ball)
-H_AUTON(ninesix_skills)
+
 H_AUTON(elims_nineball_split)
 H_AUTON(easier_awp_new_tech)
+
+H_AUTON(states_skills)
 
 // special disabled auton that does nothing
 namespace disabled_auton {

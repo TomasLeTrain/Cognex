@@ -105,9 +105,13 @@ void opcontrol() {
     // no need to initialize in auto
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
 
-    odom_retract::retractOdom();
-
     // RobotSetPose(48, 48, 0);
+    odom_retract::retractOdom();
+    //
+    //
+    //
+    //
+
     //    RobotSetPose(28.2378, 47.0146, 0);
     //
     //    pros::delay(3000);
