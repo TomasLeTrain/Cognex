@@ -1,0 +1,389 @@
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$ t
+Not sending analytics for this command.
+
+Established terminal connection
+
+
+
+         _+=+_
+      .-`  .  `-.          8888888b.  8888888b.   .d88888b.   .d8888b.
+   _+`     "     `+_       888   Y88b 888   Y88b d88P" "Y88b d88P  Y88b
+  \\\sssssssssssss///      888    888 888    888 888     888 Y88b.
+     .ss\  *  /ss.         888   d88P 888   d88P 888     888  "Y888b.
+ .+bm  .s  *  s.  md+.     8888888P"  8888888P"  888     888     "Y88b.
+.hMMMMs .  *  . sMMMMh.    888        888 T88b   888     888       "888
+ `\hMMMb \ | / dMMMh:      888        888  T88b  Y88b. .d88P Y88b  d88P
+   -SNMNo  -  oNMNs-       888        888   T88b  "Y88888P"   "Y8888P"
+     `+dMh\./dMd/
+        `:yNy:`                      Powered by PROS for VEX V5
+           "                Copyright (c) Purdue University ACM SIGBots
+Version:        4.2.1     Platform:  V1.1.5 (b18)     Uptime:    0.000 s
+Compiled:   Jan  1 1980 00:00:00     Directory:
+
+
+bouncing done
+health done
+auton done
+calibrated!
+initializing odom model
+initializing pf model
+initializing smoother model
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14161 -0.02794 -59.69066 0.00000 0.00000 1.00000 -1.00000 -0.00017 0.00000 0 0 0.00119 -3.14161
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -0.05588 -59.68761 0.00000 0.00000 1.00000 -1.00000 0.00000 -0.00017 0 0 -0.00033 -3.14159
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 3.14157 -0.08382 76.00000 0.00000 -0.03415 -1.00000 1.00000 0.11481 -0.14731 0 0 0.00123 3.14157
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -0.11176 -76.00000 0.16317 -0.30818 1.00000 -1.00000 0.29739 -0.33522 0 0 -0.00042 -3.14159
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 3.14159 -0.13970 76.00000 0.45038 -0.39873 -1.00000 1.00000 0.18069 -0.14817 0 0 0.00026 3.14159
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14138 -0.16764 -76.00000 0.18997 -0.26042 1.00000 -1.00000 0.09394 -0.20414 0 0 -0.01240 -3.14138
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13908 -0.19558 -59.42419 0.17721 -0.12081 1.00000 1.00000 0.08486 -0.12647 0 0 -0.14377 -3.13908
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13563 -0.22352 -59.24808 0.13291 -0.06030 1.00000 -1.00000 0.06589 -0.08194 0 0 -0.34161 -3.13563
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13129 -0.25146 -59.08100 0.14717 -0.04582 1.00000 -1.00000 0.24881 -0.07769 0 0 -0.59034 -3.13129
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.12745 -0.27940 -59.05583 0.23319 -0.05144 1.00000 -1.00000 0.42775 -0.07050 0 0 -0.81033 -3.12745
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.12334 -0.30734 -58.95192 0.36243 -0.03393 1.00000 -1.00000 0.53489 -0.24606 0 0 -1.04585 -3.12334
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.11876 -0.33528 -58.82006 0.35032 -0.21201 1.00000 -1.00000 0.58383 -0.42519 0 0 -1.30832 -3.11876
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.11254 -0.36322 -58.54624 0.43093 -0.40262 1.00000 -1.00000 0.61292 -0.53472 0 0 -1.66447 -3.11254
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.10377 -0.39116 -58.13550 0.46854 -0.36437 1.00000 -1.00000 0.63361 -0.56381 0 0 -2.16736 -3.10377
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.09150 -0.41910 -57.57010 0.48345 -0.52062 1.00000 -1.00000 0.67333 -0.61189 0 0 -2.87017 -3.09150
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.07590 -0.44704 -56.95646 0.55650 -0.68465 1.00000 -1.00000 0.65397 -0.64147 0 0 -3.76385 -3.07590
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.05721 -0.47498 -56.30651 0.69135 -0.72139 1.00000 -1.00000 0.69828 -0.73508 0 0 -4.83484 -3.05721
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.03540 -0.50292 -55.59570 0.75986 -0.85647 1.00000 -1.00000 0.72550 -0.74725 0 0 -6.08420 -3.03540
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.01042 -0.53086 -54.81833 0.78385 -0.81259 1.00000 -1.00000 0.72636 -0.77428 0 0 -7.51563 -3.01042
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.98223 -0.55880 -53.97766 0.69308 -0.79466 1.00000 -1.00000 0.74878 -0.77153 0 0 -9.13061 -2.98223
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.95061 -0.58674 -53.04896 0.76591 -0.79487 1.00000 -1.00000 0.75650 -0.76622 0 0 -10.94275 -2.95061
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.91494 -0.61468 -51.98717 0.81584 -0.88132 1.00000 -1.00000 0.75975 -0.76400 0 0 -12.98601 -2.91494
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.87588 -0.64262 -50.92136 0.86965 -0.96193 1.00000 -1.00000 0.76211 -0.77819 0 0 -15.22397 -2.87588
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.83401 -0.67056 -49.85767 0.96885 -1.01942 1.00000 -1.00000 0.78008 -0.79292 0 0 -17.62319 -2.83401
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.78939 -0.69850 -48.74874 0.96452 -1.05421 1.00000 -1.00000 0.79256 -0.80181 0 0 -20.17953 -2.78939
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.74200 -0.72644 -47.58364 0.97857 -1.00191 1.00000 -1.00000 0.79636 -0.80181 0 0 -22.89504 -2.74200
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.69192 -0.75438 -46.37604 0.91071 -0.97943 1.00000 -1.00000 0.79819 -0.80181 0 0 -25.76457 -2.69192
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.46505 -0.86614 -41.10242 1.19209 -1.09290 1.00000 -1.00000 0.81583 -0.81686 0 0 -38.76322 -2.46505
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.40277 -0.89408 -39.72117 1.16270 -1.11580 1.00000 -1.00000 0.82031 -0.82011 0 0 -42.33121 -2.40277
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.33842 -0.92202 -38.30044 1.09765 -1.08231 1.00000 -1.00000 0.82250 -0.82183 0 0 -46.01833 -2.33842
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.27224 -0.94996 -36.86926 1.20160 -1.09916 1.00000 -1.00000 0.82286 -0.82114 0 0 -49.81000 -2.27224
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.20425 -0.97790 -35.40386 1.22040 -1.07885 1.00000 -1.00000 0.82389 -0.82250 0 0 -53.70600 -2.20425
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.13465 -1.00584 -33.92955 1.26082 -1.11688 1.00000 -1.00000 0.82492 -0.82253 0 0 -57.69345 -2.13465
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.06341 -1.03378 -32.41935 1.25282 -1.13655 1.00000 -1.00000 0.82903 -0.82767 0 0 -61.77514 -2.06341
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.99098 -1.06172 -30.92991 1.09181 -1.15298 1.00000 -1.00000 0.82919 -0.82767 0 0 -65.92497 -1.99098
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.93152 -1.08966 -31.03483 0.87030 -1.11407 1.00000 -1.00000 0.80575 -0.80831 0 0 -69.33207 -1.93152
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.90868 -1.11760 -34.08913 0.54937 -1.25347 1.00000 -1.00000 0.76586 -0.78761 0 0 -70.64084 -1.90868
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.88604 -1.14554 -33.67858 0.30191 -1.44732 1.00000 -1.00000 0.62642 -0.80761 0 0 -71.93786 -1.88604
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.87014 -1.17348 -34.01851 0.25329 -1.59255 1.00000 -1.00000 0.50856 -0.84731 0 0 -72.84870 -1.87014
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.85356 -1.20142 -33.63857 0.53856 -1.69932 1.00000 -1.00000 0.50239 -0.86150 0 0 -73.79860 -1.85356
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.84120 -1.22936 -33.80468 0.57746 -1.73843 1.00000 -1.00000 0.63433 -0.85742 0 0 -74.50723 -1.84120
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.83117 -1.25730 -33.83759 0.85409 -1.43890 1.00000 -1.00000 0.72739 -0.85125 0 0 -75.08152 -1.83117
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.82114 -1.28524 -33.64624 1.04124 -0.70108 1.00000 -1.00000 0.76092 -0.80439 0 0 -75.65625 -1.82114
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.80545 -1.31318 -32.80876 0.87051 -0.47221 1.00000 -1.00000 0.75286 -0.75014 0 0 -76.55540 -1.80545
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.78453 -1.34112 -31.91310 0.81259 -0.49598 1.00000 -1.00000 0.76758 -0.66647 0 0 -77.75419 -1.78453
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.76563 -1.36906 -31.74737 0.99391 -0.56557 1.00000 -1.00000 0.78214 -0.63656 0 0 -78.83673 -1.76563
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.74741 -1.39700 -31.46536 0.94702 -0.73933 1.00000 -1.00000 0.78025 -0.68958 0 0 -79.88066 -1.74741
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.72730 -1.42494 -30.90336 0.71188 -0.95069 1.00000 -1.00000 0.76708 -0.74039 0 0 -81.03283 -1.72730
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.70632 -1.45288 -30.42129 0.57119 -1.14174 1.00000 -1.00000 0.76006 -0.76917 0 0 -82.23515 -1.70632
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.68737 -1.48082 -30.25473 0.43590 -1.15989 1.00000 -1.00000 0.69692 -0.79719 0 0 -83.32105 -1.68737
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.66905 -1.50876 -29.96692 0.32677 -1.07280 1.00000 -1.00000 0.60828 -0.80097 0 0 -84.37069 -1.66905
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.64984 -1.53670 -29.51703 0.34557 -0.94226 1.00000 -1.00000 0.62114 -0.78622 0 0 -85.47140 -1.64984
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.63099 -1.56464 -29.19383 0.50571 -0.83701 1.00000 -1.00000 0.61703 -0.77617 0 0 -86.55114 -1.63099
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.61177 -1.59258 -28.79319 0.73544 -0.70562 1.00000 -1.00000 0.67503 -0.76622 0 0 -87.65223 -1.61177
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.59176 -1.62052 -28.33695 0.81324 -0.68141 1.00000 -1.00000 0.72553 -0.75544 0 0 -88.79901 -1.59176
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.57387 -1.64846 -28.20023 0.73198 -0.64143 1.00000 -1.00000 0.73611 -0.72772 0 0 -89.82365 -1.57387
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.55796 -1.67640 -28.08492 0.60426 -0.66088 1.00000 -1.00000 0.70172 -0.71406 0 0 -90.73571 -1.55796
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.54085 -1.70434 -27.64701 0.58459 -0.81303 1.00000 -1.00000 0.70361 -0.70242 0 0 -91.71571 -1.54085
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.52098 -1.73228 -27.00636 0.70562 -1.02136 1.00000 -1.00000 0.68889 -0.76247 0 0 -92.85401 -1.52098
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.49933 -1.76022 -26.42416 0.80028 -1.00818 1.00000 -1.00000 0.70397 -0.78933 0 0 -94.09498 -1.49933
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.47547 -1.78816 -25.76198 0.72528 -0.82686 1.00000 -1.00000 0.70394 -0.78028 0 0 -95.46165 -1.47547
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.44716 -1.81610 -24.79873 0.78234 -0.67990 1.00000 -1.00000 0.70822 -0.75992 0 0 -97.08411 -1.44716
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.41396 -1.84404 -23.70388 0.81865 -0.73133 1.00000 -1.00000 0.73372 -0.75561 0 0 -98.98581 -1.41396
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.37763 -1.87198 -22.71378 1.02460 -0.80957 1.00000 -1.00000 0.76744 -0.73011 0 0 -101.06779 -1.37763
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.33914 -1.89992 -21.77775 1.01531 -0.89688 1.00000 -1.00000 0.78111 -0.76092 0 0 -103.27294 -1.33914
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.29803 -1.92786 -20.74677 0.94097 -0.89990 1.00000 -1.00000 0.77631 -0.77375 0 0 -105.62841 -1.29803
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.25410 -1.95580 -19.64414 0.86533 -0.94334 1.00000 -1.00000 0.77219 -0.77614 0 0 -108.14512 -1.25410
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.20761 -1.98374 -18.51625 0.95501 -1.00472 1.00000 -1.00000 0.77461 -0.78300 0 0 -110.80892 -1.20761
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.15887 -2.01168 -17.37552 1.04600 -0.97727 0.53806 -1.00000 0.78658 -0.79019 0 0 -113.60180 -1.15887
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.10750 -2.03962 -16.15015 0.97403 -0.93686 0.27969 -1.00000 0.79136 -0.79069 0 0 -116.54473 -1.10750
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.05302 -2.06756 -14.81763 1.03714 -0.93621 -0.06444 -1.00000 0.61839 -0.81156 0 0 -119.66650 -1.05302
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.99582 -2.09550 -13.47270 0.86165 -1.04730 -0.29449 -1.00000 0.46353 -0.83056 0 0 -122.94359 -0.99582
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.93705 -2.12344 -12.20620 0.66477 -1.10608 -0.43107 -1.00000 0.23458 -0.84647 0 0 -126.31084 -0.93705
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.87697 -2.15138 -10.93922 0.40457 -1.13785 -0.77702 -1.00000 -0.05664 -0.84714 0 0 -129.75349 -0.87697
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.81625 -2.17932 -9.72567 0.27403 -1.15168 -0.94757 -1.00000 -0.26556 -0.83875 0 0 -133.23221 -0.81625
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.75569 -2.20726 -8.58910 0.18262 -1.15146 -1.00000 -1.00000 -0.30714 -0.84183 0 0 -136.70240 -0.75569
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.69721 -2.04736 -7.67665 -0.12513 -1.05897 -1.00000 -1.00000 -0.45414 -0.81825 0 0 -140.05308 -0.69721
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.63985 -1.78542 -6.69448 -0.21849 -0.97987 -1.00000 -1.00000 -0.25428 -0.82764 0 0 -143.33908 -0.63985
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.58317 -1.51526 -5.68150 -0.17073 -1.03217 -0.65846 -1.00000 -0.24606 -0.83364 0 0 -146.58662 -0.58317
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.52709 -1.24636 -4.67326 -0.11670 -1.02568 -0.18456 -0.91997 -0.38961 -0.81311 0 0 -149.79971 -0.52709
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47198 -0.99157 -3.71791 -0.23427 -1.04924 -0.09941 -0.71699 -0.45600 -0.80369 0 0 -152.95757 -0.47198
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.41811 -0.75018 -2.81281 -0.25437 -0.95415 -0.02739 -0.53668 -0.20758 -0.61581 0 0 -156.04417 -0.41811
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.36596 -0.52971 -1.98618 -0.07629 -0.90531 -0.02511 0.57070 -0.12578 -0.59306 0 0 -159.03201 -0.36596
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.31615 -0.33667 -1.26234 0.04884 -1.01380 -0.03936 0.71409 -0.05750 -0.58281 0 0 -161.88597 -0.31615
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.26934 -0.17559 -0.65839 0.14004 -0.68444 -0.06454 0.70398 -0.02636 -0.19167 0 0 -164.56819 -0.26934
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.22509 -0.01654 -0.06201 0.15215 -0.37539 -0.02298 0.81322 -0.02311 0.04278 0 0 -167.10344 -0.22509
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.18317 -0.04448 0.51214 0.13658 -0.18629 -0.66323 0.39724 -0.04242 0.22092 0 0 -169.50500 -0.18317
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.14375 -0.07242 1.02320 0.12189 -0.06051 -0.72284 0.37280 -0.02586 0.34069 0 0 -171.76346 -0.14375
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.10883 -0.10036 1.25922 0.06851 -0.05316 -0.66171 0.26506 -0.24178 0.34239 0 0 -173.76471 -0.10883
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.07999 -0.12830 1.22668 -0.00346 -0.02982 -0.56843 0.13085 -0.30628 0.34378 0 0 -175.41682 -0.07999
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.06981 -0.09510 -0.35659 -0.12362 -0.02096 0.64741 -0.71749 -0.43614 0.29567 0 0 -176.00018 -0.06981
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.07072 -0.12304 -1.43011 -0.20661 -0.00692 0.54323 -0.84543 -0.23956 0.20411 0 0 -175.94817 -0.07072
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.07507 -0.15098 -1.84074 0.01405 0.00692 0.25583 -0.66807 0.11361 -0.00717 0 0 -175.69888 -0.07507
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08177 -0.17892 -2.19223 0.43785 -0.18132 0.11341 -0.67499 0.30269 -0.31947 0 0 -175.31477 -0.08177
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08960 -0.20686 -2.44838 0.35335 -0.72247 0.07168 -0.48851 0.29189 -0.46714 0 0 -174.86608 -0.08960
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.09712 -0.23480 -2.56103 0.20488 -0.79984 0.03369 -0.41448 0.18444 -0.54636 0 0 -174.43552 -0.09712
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.10265 -0.26274 -2.47771 0.10525 -0.47243 -0.04816 -0.43481 0.10492 -0.50903 0 0 -174.11835 -0.10265
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.10399 -0.29068 -2.10266 -0.00692 -0.38058 -0.35375 -0.34282 0.05406 -0.43239 0 0 -174.04200 -0.10399
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.10008 -0.31862 -1.52921 -0.01167 -0.20531 -0.51078 -0.28851 -0.00942 -0.36311 0 0 -174.26594 -0.10008
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.09443 -0.33497 -1.25599 -0.04387 -0.12081 -0.39349 -0.40545 -0.19197 -0.34169 0 0 -174.58965 -0.09443
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08833 -0.29272 -1.09756 -0.44628 -0.17181 -0.01402 -0.23549 -0.37097 -0.29617 0 0 -174.93899 -0.08833
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08231 -0.26415 -0.99044 -0.62068 -0.16533 0.05417 -0.27821 -0.39594 -0.34256 0 0 -175.28394 -0.08231
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.07988 -0.29209 -1.28609 -0.50809 -0.17700 0.05665 -0.67256 -0.21767 -0.28300 0 0 -175.42326 -0.07988
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08050 -0.32003 -1.58854 -0.23946 -0.14739 0.01206 -0.75388 -0.03422 -0.26025 0 0 -175.38774 -0.08050
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08176 -0.34797 -1.67320 -0.01794 -0.12708 -0.20905 -0.72621 0.03081 -0.42778 0 0 -175.31566 -0.08176
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08292 -0.37591 -1.68592 0.05641 -0.17376 -0.29368 -0.73371 0.02858 -0.29569 0 0 -175.24920 -0.08292
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08427 -0.40385 -1.73035 0.06851 -0.14934 -0.31632 -0.80268 -0.08519 -0.34428 0 0 -175.17150 -0.08427
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08765 -0.43179 -1.98727 -0.07607 -0.21266 -0.19958 -0.94755 -0.20706 -0.44058 0 0 -174.97789 -0.08765
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.09112 -0.45973 -2.06152 -0.39614 -0.32007 -0.17324 -0.89981 -0.26453 -0.46439 0 0 -174.77923 -0.09112
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.09417 -0.48767 -2.08000 -0.42013 -0.30040 -0.18691 -0.92652 -0.22722 -0.37197 0 0 -174.60435 -0.09417
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.09834 -0.51561 -2.26580 -0.28635 -0.18651 -0.14626 -1.00000 -0.18444 -0.38431 0 0 -174.36537 -0.09834
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.10346 -0.54355 -2.45280 -0.18262 -0.13788 -0.19576 -1.00000 -0.17386 -0.34067 0 0 -174.07235 -0.10346
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.10752 -0.57149 -2.43033 -0.17441 -0.16165 -0.31235 -1.00000 -0.14817 -0.41222 0 0 -173.83933 -0.10752
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.11108 -0.59943 -2.44961 -0.09833 -0.33519 -0.34153 -1.00000 -0.16206 -0.51981 0 0 -173.63540 -0.11108
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.11390 -0.62737 -2.43242 -0.08818 -0.48302 -0.39463 -1.00000 -0.22572 -0.62814 0 0 -173.47400 -0.11390
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.11644 -0.65445 -2.45387 -0.09725 -0.59216 -0.40506 -1.00000 -0.28811 -0.65808 0 0 -173.32868 -0.11644
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.11909 -0.67081 -2.51524 -0.12427 -0.67450 -0.36754 -1.00000 -0.32906 -0.69747 0 0 -173.17676 -0.11909
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.12231 -0.69875 -2.63063 -0.11173 -0.74733 -0.40394 -1.00000 -0.35814 -0.72242 0 0 -172.99223 -0.12231
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.12591 -0.72669 -2.73529 -0.12146 -0.87916 -0.42900 -1.00000 -0.35197 -0.77083 0 0 -172.78590 -0.12591
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.12978 -0.75463 -2.83449 -0.13313 -0.97533 -0.45166 -1.00000 -0.36839 -0.77017 0 0 -172.56414 -0.12978
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.13398 -0.78257 -2.94558 -0.20401 -1.00061 -0.44972 -1.00000 -0.38344 -0.80456 0 0 -172.32355 -0.13398
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.13840 -0.81051 -3.05086 -0.22584 -0.99759 -0.46409 -1.00000 -0.40656 -0.81583 0 0 -172.07017 -0.13840
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.14310 -0.83845 -3.16671 -0.22109 -0.96625 -0.47908 -1.00000 -0.41358 -0.81772 0 0 -171.80082 -0.14310
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.14809 -0.86639 -3.28875 -0.20553 -0.93362 -0.50015 -1.00000 -0.42536 -0.81361 0 0 -171.51507 -0.14809
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.15336 -0.89433 -3.41535 -0.19861 -0.93081 -0.52090 -1.00000 -0.42694 -0.80728 0 0 -171.21335 -0.15336
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.15899 -0.92227 -3.55767 -0.21720 -0.95134 -0.52917 -1.00000 -0.44403 -0.80678 0 0 -170.89044 -0.15899
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.16505 -0.95021 -3.71282 -0.23881 -0.96236 -0.53501 -1.00000 -0.44883 -0.80883 0 0 -170.54342 -0.16505
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.17149 -0.97815 -3.87137 -0.26733 -0.96496 -0.54138 -1.00000 -0.47361 -0.80594 0 0 -170.17460 -0.17149
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.17827 -1.00609 -4.03384 -0.28873 -0.98354 -0.54772 -1.00000 -0.44247 -0.81328 0 0 -169.78563 -0.17827
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.18538 -1.03403 -4.19924 -0.29435 -0.94334 -0.55794 -1.00000 -0.46506 -0.80969 0 0 -169.37840 -0.18538
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.19267 -1.06197 -4.35499 -0.29327 -0.92886 -0.57664 -1.00000 -0.48936 -0.80475 0 0 -168.96079 -0.19267
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.20035 -1.08991 -4.53827 -0.29003 -0.95329 -0.57889 -1.00000 -0.45567 -0.80489 0 0 -168.52072 -0.20035
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.20857 -1.11785 -4.74610 -0.30407 -0.98592 -0.57539 -1.00000 -0.46028 -0.81006 0 0 -168.04960 -0.20857
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.21721 -1.14579 -4.95013 -0.30991 -0.99672 -0.58463 -1.00000 -0.50136 -0.80472 0 0 -167.55451 -0.21721
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.22603 -1.17373 -5.13454 -0.36091 -1.00450 -0.58973 -1.00000 -0.52683 -0.80233 0 0 -167.04928 -0.22603
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.23523 -1.20167 -5.34507 -0.34514 -1.01358 -0.58830 -1.00000 -0.44628 -0.81961 0 0 -166.52248 -0.23523
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.24500 -1.22961 -5.58599 -0.33152 -1.00234 -0.58417 -1.00000 -0.49214 -0.81036 0 0 -165.96248 -0.24500
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.25493 -1.25755 -5.78961 -0.42704 -0.98938 -0.58160 -1.00000 -0.53247 -0.80489 0 0 -165.39349 -0.25493
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.26485 -1.28549 -5.97736 -0.45492 -0.97338 -0.58237 -1.00000 -0.54789 -0.80303 0 0 -164.82496 -0.26485
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.26485 -1.31343 -5.03223 -0.40716 -0.96776 -1.00000 -1.00000 -0.55406 -0.80025 0 0 -164.82496 -0.26485
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.27525 -1.34137 -6.22002 -0.46616 -0.97274 -0.20478 -1.00000 -0.55456 -0.80164 0 0 -164.22929 -0.27525
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.28614 -1.36931 -6.47350 -0.43677 -0.95718 -0.58255 -1.00000 -0.49725 -0.80900 0 0 -163.60557 -0.28614
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.29735 -1.39725 -6.71821 -0.34341 -0.94896 -0.61240 -1.00000 -0.31211 -0.82339 0 0 -162.96285 -0.29735
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.30878 -1.42519 -6.95539 -0.26301 -0.96150 -0.64604 -1.00000 -0.41733 -0.81139 0 0 -162.30807 -0.30878
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.32045 -1.45313 -7.20037 -0.50463 -1.01228 -0.58748 -1.00000 -0.49278 -0.80953 0 0 -161.63932 -0.32045
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.33177 -1.48107 -7.38194 -0.47286 -1.07604 -0.61631 -1.00000 -0.52322 -0.81278 0 0 -160.99074 -0.33177
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.34286 -1.50901 -7.57017 -0.46378 -1.11753 -0.61955 -1.00000 -0.52358 -0.82100 0 0 -160.35561 -0.34286
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.35487 -1.53695 -7.88605 -0.37518 -1.11343 -0.39944 -1.00000 -0.51556 -0.82456 0 0 -159.66770 -0.35487
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.36739 -1.56489 -8.17318 -0.50571 -1.03498 0.01824 -1.00000 -0.55747 -0.81464 0 0 -158.95020 -0.36739
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.37964 -1.59283 -8.38067 -0.47092 -0.96517 0.00037 -1.00000 -0.46147 -0.82389 0 0 -158.24796 -0.37964
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.39193 -1.62077 -8.61732 -0.36026 -0.96755 0.05128 -1.00000 -0.16650 -0.83297 0 0 -157.54383 -0.39193
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.40479 -1.64871 -8.91522 -0.26906 -1.01855 0.14059 -1.00000 -0.05494 -0.84133 0 0 -156.80739 -0.40479
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.41749 -1.67665 -9.14270 -0.26906 -1.08771 0.13438 -1.00000 0.01456 -0.85075 0 0 -156.07935 -0.41749
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.42923 -1.70459 -9.27353 -0.26906 -1.15211 0.09284 -1.00000 0.09139 -0.85672 0 0 -155.40677 -0.42923
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.44018 -1.73253 -9.40654 -0.18716 -1.23748 0.11043 -1.00000 0.11244 -0.86306 0 0 -154.77935 -0.44018
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.45111 -1.76047 -9.61179 -0.17743 -1.31917 0.37432 -1.00000 0.09517 -0.87128 0 0 -154.15333 -0.45111
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.46102 -1.78841 -9.70348 -0.14869 -1.40389 0.30450 -1.00000 0.09772 -0.88208 0 0 -153.58544 -0.46102
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.46979 -1.81635 -9.76150 -0.11108 -1.39956 0.28842 -1.00000 0.22864 -0.87828 0 0 -153.08289 -0.46979
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47763 -1.84429 -9.82174 -0.11108 -1.36455 0.31046 -1.00000 0.27550 -0.87386 0 0 -152.63371 -0.47763
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48442 -1.87223 -9.85043 -0.11108 -1.32500 0.30081 -1.00000 0.26692 -0.87078 0 0 -152.24484 -0.48442
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48965 -1.90017 -9.80150 -0.11108 -1.32500 0.23837 -1.00000 0.27892 -0.86719 0 0 -151.94517 -0.48965
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49348 -1.92811 -9.74156 -0.10287 -1.27314 0.22397 -1.00000 0.28061 -0.86292 0 0 -151.72540 -0.49348
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49612 -1.95605 -9.67721 -0.09423 -1.23964 0.21230 -1.00000 0.23597 -0.86392 0 0 -151.57445 -0.49612
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49715 -1.98399 -9.54419 -0.10330 -1.25628 0.13814 -1.00000 0.21472 -0.86444 0 0 -151.51532 -0.49715
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49700 -2.01193 -9.42854 -0.06267 -1.20571 -0.03799 -1.00000 0.20308 -0.86358 0 0 -151.52401 -0.49700
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49625 -2.03987 -9.35770 -0.06267 -1.12964 -0.01664 -1.00000 0.14681 -0.86258 0 0 -151.56678 -0.49625
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49509 -2.06781 -9.29637 -0.06332 -1.03065 -0.02115 -1.00000 0.02344 -0.85675 0 0 -151.63320 -0.49509
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49367 -2.09575 -9.24399 -3.34374 -0.96798 0.88254 -1.00000 -0.00478 -0.84869 0 0 -151.71484 -0.49367
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49234 -2.12369 -9.22794 -3.34374 -0.88370 1.00000 -1.00000 -0.01644 -0.83928 0 0 -151.79096 -0.49234
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49110 -2.15163 -9.21220 -3.30332 -0.83118 1.00000 -1.00000 0.21800 -0.81258 0 0 -151.86230 -0.49110
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49005 -2.17957 -9.21142 0.36243 -0.78688 0.20218 -1.00000 0.42847 -0.78231 0 0 -151.92218 -0.49005
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48940 -2.20751 -9.23681 0.36307 -0.76894 -0.20293 -1.00000 0.56108 -0.75903 0 0 -151.95936 -0.48940
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48869 -2.23545 -9.21782 0.33455 -0.87224 -0.27560 -1.00000 0.27789 -0.78214 0 0 -151.99989 -0.48869
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48688 -2.26339 -9.07768 0.21093 -0.95004 -0.39115 -1.00000 -0.00308 -0.76692 0 0 -152.10395 -0.48688
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48384 -2.29133 -8.90305 -0.18089 -1.05897 -0.36037 -1.00000 -0.16478 -0.80764 0 0 -152.27829 -0.48384
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48118 -2.31927 -8.88999 -0.44541 -1.05205 -0.10192 -1.00000 -0.29192 -0.83175 0 0 -152.43018 -0.48118
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47972 -2.34721 -8.97482 -0.46573 -0.88175 0.02517 -1.00000 -0.33106 -0.83042 0 0 -152.51427 -0.47972
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47837 -2.37515 -8.96131 -0.42510 -0.73004 -0.04901 -1.00000 -0.22108 -0.80475 0 0 -152.59115 -0.47837
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47728 -2.39064 -8.96380 -0.24270 -0.59410 -0.07316 -1.00000 -0.07717 -0.74706 0 0 -152.65400 -0.47728
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47784 -2.41858 -9.13214 -0.21936 -0.57098 0.08730 -1.00000 -0.03594 -0.72089 0 0 -152.62197 -0.47784
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47910 -2.44652 -9.22274 -0.18110 -0.62976 0.03790 -1.00000 -0.05475 -0.72003 0 0 -152.54984 -0.47910
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48126 -2.47446 -9.34977 -0.17635 -0.71469 0.09630 -1.00000 0.01197 -0.74483 0 0 -152.42599 -0.48126
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48369 -2.50240 -9.42148 -0.10957 -0.77845 0.05504 -1.00000 0.03681 -0.76075 0 0 -152.28678 -0.48369
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48604 -2.52279 -9.45929 -0.00086 -0.74646 0.00776 -1.00000 0.06503 -0.76094 0 0 -152.15176 -0.48604
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48833 -2.53268 -9.49636 0.04041 -0.79617 -0.06545 -1.00000 0.06042 -0.77872 0 0 -152.02060 -0.48833
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49128 -2.56062 -9.61526 0.05208 -0.86900 0.17764 -1.00000 0.02619 -0.77344 0 0 -151.85163 -0.49128
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49429 -2.58118 -9.67823 0.05079 -0.96798 0.14452 -1.00000 -0.03217 -0.81619 0 0 -151.67917 -0.49429
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49642 -2.56968 -9.63511 0.03328 -0.99456 0.05477 -1.00000 0.08181 -0.82800 0 0 -151.55702 -0.49642
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49744 -2.54636 -9.54767 0.02161 -0.95847 0.00434 -1.00000 0.12592 -0.83006 0 0 -151.49904 -0.49744
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49852 -2.55372 -9.57524 0.02161 -0.94205 0.10194 -1.00000 0.08078 -0.83603 0 0 -151.43687 -0.49852
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49907 -2.54286 -9.53454 0.02161 -1.00494 0.03832 -1.00000 0.01503 -0.83589 0 0 -151.40546 -0.49907
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49880 -2.52072 -9.45152 0.02161 -1.06912 -0.17413 -1.00000 0.05767 -0.83964 0 0 -151.42090 -0.49880
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49884 -2.52874 -9.48158 0.02831 -1.09462 -0.08119 -1.00000 0.04347 -0.85211 0 0 -151.41870 -0.49884
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49876 -2.52530 -9.46870 -0.00346 -1.04924 -0.11174 -1.00000 -0.08658 -0.85142 0 0 -151.42332 -0.49876
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49857 -2.52174 -9.45533 -0.09228 -0.96906 -0.08131 -1.00000 -0.09292 -0.84750 0 0 -151.43388 -0.49857
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49855 -2.52572 -9.47027 -0.16209 -0.90855 -0.02924 -1.00000 -0.09958 -0.83622 0 0 -151.43519 -0.49855
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49843 -2.52269 -9.45891 -0.19537 -0.90120 -0.03312 -1.00000 -0.09086 -0.82558 0 0 -151.44198 -0.49843
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49806 -2.51448 -9.42811 -0.18305 -0.91266 -0.04800 -1.00000 -0.05269 -0.82133 0 0 -151.46309 -0.49806
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49775 -2.51431 -9.42749 -0.18154 -0.91222 -0.01657 -1.00000 -0.03525 -0.82458 0 0 -151.48100 -0.49775
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49763 -2.51849 -9.44314 -0.18154 -0.91871 0.00765 -1.00000 -0.03611 -0.81686 0 0 -151.48808 -0.49763
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49777 -2.52592 -9.47103 -0.18154 -0.92281 0.03151 -1.00000 -0.01781 -0.82561 0 0 -151.47999 -0.49777
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49813 -2.53341 -9.49909 -0.18672 -0.91395 0.04758 -1.00000 -0.00325 -0.82800 0 0 -151.45918 -0.49813
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49855 -2.53688 -9.51213 -0.18824 -0.92433 0.04810 -1.00000 0.01969 -0.81244 0 0 -151.43529 -0.49855
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49884 -2.53523 -9.50591 -0.08191 -0.99240 0.01147 -1.00000 0.03336 -0.82389 0 0 -151.41849 -0.49884
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49898 -2.53215 -9.49436 -0.07478 -1.04708 0.00312 -1.00000 0.03681 -0.83964 0 0 -151.41028 -0.49898
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49916 -2.53380 -9.50055 0.00000 -1.02871 0.00056 -1.00000 0.01983 -0.84322 0 0 -151.40033 -0.49916
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49930 -2.53360 -9.49982 0.02853 -1.04081 -0.09226 -1.00000 0.01197 -0.85003 0 0 -151.39240 -0.49930
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49932 -2.53078 -9.48922 0.03415 -0.99802 -0.10712 -1.00000 0.00839 -0.84886 0 0 -151.39111 -0.49932
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49921 -2.52701 -9.47510 0.03415 -0.98376 -0.11554 -1.00000 -0.05031 -0.84103 0 0 -151.39711 -0.49921
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49902 -2.52384 -9.46321 0.02226 -0.98224 -0.11545 -1.00000 -0.08247 -0.83228 0 0 -151.40808 -0.49902
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49883 -2.52269 -9.45891 -0.08818 -0.99953 -0.07539 -1.00000 -0.09803 -0.84322 0 0 -151.41937 -0.49883
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49863 -2.52163 -9.45495 -0.10028 -0.99089 -0.06521 -1.00000 -0.10042 -0.84461 0 0 -151.43078 -0.49863
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49861 -2.52627 -9.47234 -0.10028 -0.98268 -0.03927 -1.00000 -0.07889 -0.84422 0 0 -151.43157 -0.49861
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49911 -2.54175 -9.53037 -0.10028 -0.99953 0.17013 -1.00000 -0.06383 -0.84031 0 0 -151.40313 -0.49911
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49970 -2.54703 -9.55015 -0.10028 -1.04016 0.14896 -1.00000 -0.03936 -0.83978 0 0 -151.36949 -0.49970
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50020 -2.54748 -9.55185 -0.08104 -1.04168 0.13500 -1.00000 0.08844 -0.84819 0 0 -151.34060 -0.50020
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50056 -2.54552 -9.54449 0.09293 -0.98030 0.05844 -1.00000 0.13022 -0.84511 0 0 -151.32020 -0.50056
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50103 -2.55084 -9.56444 0.21266 -0.97057 0.04097 -1.00000 0.13125 -0.83569 0 0 -151.29319 -0.50103
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50176 -2.56113 -9.60305 0.23838 -0.96820 0.04176 -1.00000 0.09531 -0.83125 0 0 -151.25131 -0.50176
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50250 -2.56524 -9.61843 0.20380 -0.98030 0.02334 -1.00000 0.06008 -0.84442 0 0 -151.20868 -0.50250
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50303 -2.56238 -9.60771 0.15128 -0.96539 0.00652 -1.00000 0.04194 -0.82969 0 0 -151.17852 -0.50303
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50339 -2.56010 -9.59916 0.15128 -0.90941 0.00180 -1.00000 0.02858 -0.83467 0 0 -151.15766 -0.50339
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50351 -2.55447 -9.57808 0.10460 -0.87527 -0.00620 -1.00000 0.00564 -0.82386 0 0 -151.15084 -0.50351
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50357 -2.55319 -9.57328 0.04474 -0.87484 0.01941 -1.00000 -0.00650 -0.81056 0 0 -151.14756 -0.50357
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50362 -2.55326 -9.57354 0.00713 -0.88629 0.03457 -1.00000 -0.00719 -0.81619 0 0 -151.14469 -0.50362
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50373 -2.55543 -9.58168 -0.00735 -0.81281 0.09965 -1.00000 0.00206 -0.81225 0 0 -151.13823 -0.50373
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50382 -2.55534 -9.58133 -0.00735 -0.71340 0.09468 -1.00000 0.01678 -0.76844 0 0 -151.13301 -0.50382
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50394 -2.55659 -9.58603 -0.00735 -0.70864 0.10098 -1.00000 0.05544 -0.75322 0 0 -151.12631 -0.50394
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50434 -2.56567 -9.62006 -0.01210 -0.69027 0.13424 -1.00000 0.07703 -0.72958 0 0 -151.10365 -0.50434
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50480 -2.56988 -9.63583 -0.02183 -0.73803 0.12776 -1.00000 0.08386 -0.77856 0 0 -151.07685 -0.50480
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50509 -2.56657 -9.62345 -0.02183 -0.75208 0.10559 -1.00000 0.10611 -0.75886 0 0 -151.06071 -0.50509
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50524 -2.56397 -9.61369 -0.02680 -0.80373 0.10951 -1.00000 0.11497 -0.77564 0 0 -151.05216 -0.50524
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50533 -2.56316 -9.61065 -0.01707 -0.75014 0.11431 -1.00000 0.10231 -0.76897 0 0 -151.04655 -0.50533
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50536 -2.56154 -9.60457 -0.01707 -0.72939 0.11233 -1.00000 0.09444 -0.75733 0 0 -151.04492 -0.50536
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50533 -2.55979 -9.59801 -0.00713 -0.69589 0.10972 -1.00000 0.09789 -0.76022 0 0 -151.04686 -0.50533
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50521 -2.55707 -9.58782 -0.00713 -0.66369 0.10568 -1.00000 0.09992 -0.75064 0 0 -151.05358 -0.50521
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50502 -2.55413 -9.57680 0.00000 -0.70713 0.10189 -1.00000 0.09272 -0.76569 0 0 -151.06471 -0.50502
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50480 -2.55264 -9.57119 0.20077 -0.67839 0.03412 -1.00000 0.09017 -0.73492 0 0 -151.07681 -0.50480
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50452 -2.54926 -9.55853 0.23643 -0.72874 -0.00050 -1.00000 0.09017 -0.75803 0 0 -151.09323 -0.50452
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50427 -2.54893 -9.55728 0.23643 -0.73350 -0.00545 -1.00000 0.05150 -0.73528 0 0 -151.10756 -0.50427
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50417 -2.55242 -9.57039 0.23643 -0.77413 -0.00309 -1.00000 0.00956 -0.78900 0 0 -151.11293 -0.50417
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50421 -2.55582 -9.58311 0.19018 -0.76354 0.00062 -1.00000 -0.00786 -0.75064 0 0 -151.11103 -0.50421
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50432 -2.55851 -9.59321 -0.02183 -0.72636 0.09906 -1.00000 -0.01044 -0.76675 0 0 -151.10437 -0.50432
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50457 -2.56305 -9.61022 -0.04193 -0.71794 0.12323 -1.00000 -0.00647 -0.76314 0 0 -151.09029 -0.50457
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50492 -2.56758 -9.62722 -0.04193 -0.74841 0.13193 -1.00000 0.05064 -0.77053 0 0 -151.07004 -0.50492
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50541 -2.57343 -9.64914 -0.01621 -0.74365 0.13724 -1.00000 0.09172 -0.73797 0 0 -151.04215 -0.50541
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50593 -2.57696 -9.66241 -0.00864 -0.80417 0.13273 -1.00000 0.11106 -0.78044 0 0 -151.01225 -0.50593
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50636 -2.57681 -9.66184 -0.00864 -0.81303 0.12349 -1.00000 0.11925 -0.77975 0 0 -150.98761 -0.50636
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50653 -2.57101 -9.64008 -0.00864 -0.76116 0.10417 -1.00000 0.12081 -0.80131 0 0 -150.97798 -0.50653
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50648 -2.56518 -9.61823 -0.00864 -0.68530 0.10146 -1.00000 0.11517 -0.73456 0 0 -150.98091 -0.50648
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50636 -2.56287 -9.60958 -0.00864 -0.72485 0.11191 -1.00000 0.10147 -0.76058 0 0 -150.98768 -0.50636
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50627 -2.56321 -9.61085 -0.00475 -0.71059 0.12064 -1.00000 0.09308 -0.74244 0 0 -150.99270 -0.50627
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.50605 -2.55851 -9.59323 -0.00475 -0.72377 0.10308 -1.00000 0.09736 -0.78489 0 0 -151.00572 -0.50605
+final error was 331.044
+position: -0.04 -0.59 -151.0435
+took 2600.0000 time to finish turn
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -0.02794 -59.69027 0.00000 0.00000 1.00000 -1.00000 -0.00017 0.00000 0 0 0.00003 -3.14159
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14160 -0.05588 -59.69086 0.00000 0.00000 1.00000 -1.00000 0.00017 0.00000 0 0 0.00033 -3.14160
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14160 -0.08382 -59.69012 0.05035 -0.06462 1.00000 -1.00000 0.21800 -0.19558 0 0 0.00020 -3.14160
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14160 -0.11176 -59.69090 0.50463 -0.44520 1.00000 -1.00000 0.44350 -0.41856 0 0 0.00049 -3.14160
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14160 -0.13970 -59.68983 0.61377 -0.47372 1.00000 -1.00000 0.60672 -0.59186 0 0 0.00019 -3.14160
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14129 -0.16764 -59.65508 0.54677 -0.52127 1.00000 -1.00000 0.67708 -0.64694 0 0 -0.01749 -3.14129
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13742 -0.19558 -59.24280 0.53186 -0.58827 1.00000 -1.00000 0.62008 -0.69642 0 0 -0.23897 -3.13742
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.12941 -0.22352 -58.69619 0.63408 -0.66369 1.00000 -1.00000 0.66528 -0.66664 0 0 -0.69775 -3.12941
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.11774 -0.25146 -58.12517 0.64294 -0.69697 1.00000 -1.00000 0.68322 -0.72019 0 0 -1.36660 -3.11774
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.10308 -0.27940 -57.56230 0.73717 -0.71685 1.00000 -1.00000 0.72653 -0.73097 0 0 -2.20649 -3.10308
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.08513 -0.30734 -56.90800 0.77693 -0.77391 1.00000 -1.00000 0.74742 -0.72739 0 0 -3.23484 -3.08513
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.06399 -0.33528 -56.20225 0.78082 -0.78450 1.00000 -1.00000 0.75544 -0.75117 0 0 -4.44610 -3.06399
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.03955 -0.36322 -55.42328 0.71210 -0.85668 1.00000 -1.00000 0.74311 -0.76553 0 0 -5.84657 -3.03955
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.01159 -0.39116 -54.55661 0.88759 -0.90509 1.00000 -1.00000 0.75664 -0.77583 0 0 -7.44878 -3.01159
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.98034 -0.41910 -53.65068 0.91503 -0.88996 1.00000 -1.00000 0.76586 -0.78161 0 0 -9.23885 -2.98034
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.94610 -0.44704 -52.71430 0.92065 -0.89126 1.00000 -1.00000 0.77272 -0.78042 0 0 -11.20082 -2.94610
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.90856 -0.47498 -51.68695 0.82448 -0.94594 1.00000 -1.00000 0.77889 -0.78417 0 0 -13.35172 -2.90856
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.86763 -0.50292 -50.58674 0.92994 -1.00602 1.00000 -1.00000 0.78419 -0.78983 0 0 -15.69667 -2.86763
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.82402 -0.53086 -49.50232 0.94032 -1.06977 1.00000 -1.00000 0.78761 -0.79533 0 0 -18.19548 -2.82402
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.77756 -0.55880 -48.34837 0.86381 -1.11905 1.00000 -1.00000 0.79175 -0.79975 0 0 -20.85744 -2.77756
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.72829 -0.58674 -47.14489 1.01855 -1.06264 1.00000 -1.00000 0.79583 -0.80283 0 0 -23.68024 -2.72829
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.67669 -0.61468 -45.94213 1.07042 -1.00645 1.00000 -1.00000 0.79789 -0.80111 0 0 -26.63679 -2.67669
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.62250 -0.64262 -44.66524 1.13028 -0.99348 1.00000 -1.00000 0.80047 -0.79958 0 0 -29.74200 -2.62250
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.56540 -0.67056 -43.30393 1.17243 -1.06134 1.00000 -1.00000 0.80592 -0.80406 0 0 -33.01351 -2.56540
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.31490 -0.78232 -37.73379 1.10975 -1.20311 1.00000 -1.00000 0.81397 -0.82150 0 0 -47.36611 -2.31490
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.24727 -0.81026 -36.25607 1.16313 -1.17070 1.00000 -1.00000 0.81619 -0.82217 0 0 -51.24115 -2.24727
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.17764 -0.83820 -34.74371 1.24180 -1.16378 1.00000 -1.00000 0.82267 -0.82425 0 0 -55.23021 -2.17764
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.10627 -0.86614 -33.22110 1.10673 -1.19555 1.00000 -1.00000 0.82608 -0.82731 0 0 -59.31947 -2.10627
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.03342 -0.89408 -31.69524 1.27551 -1.21089 1.00000 -1.00000 0.82783 -0.82817 0 0 -63.49388 -2.03342
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.95895 -0.92202 -30.12730 1.27595 -1.27249 1.00000 -1.00000 0.83278 -0.83467 0 0 -67.76039 -1.95895
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.88327 -0.94996 -28.57372 1.26860 -1.28351 1.00000 -1.00000 0.83208 -0.83536 0 0 -72.09649 -1.88327
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.80653 -0.97790 -27.01443 1.25714 -1.36520 1.00000 -1.00000 0.83381 -0.83961 0 0 -76.49346 -1.80653
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.72857 -1.00584 -25.41691 1.24331 -1.40345 1.00000 -1.00000 0.83639 -0.84478 0 0 -80.96035 -1.72857
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.64963 -1.03378 -23.82359 1.30728 -1.42874 1.00000 -1.00000 0.84031 -0.84992 0 0 -85.48343 -1.64963
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.56997 -1.06172 -22.24239 1.31160 -1.38465 1.00000 -1.00000 0.84286 -0.85092 0 0 -90.04728 -1.56997
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.48945 -1.08966 -20.63000 1.19209 -1.36779 1.00000 -0.77396 0.84494 -0.85042 0 0 -94.66076 -1.48945
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.40754 -1.11760 -18.94171 1.39330 -1.37428 1.00000 -0.54674 0.84836 -0.85331 0 0 -99.35368 -1.40754
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.32467 -1.14554 -17.27482 1.16551 -1.23964 0.03413 -1.00000 0.86325 -0.69864 0 0 -104.10209 -1.32467
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.24085 -1.17348 -15.59218 1.34618 -1.16724 -0.33344 -1.00000 0.86822 -0.61036 0 0 -108.90466 -1.24085
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.15612 -1.20142 -13.89591 0.86986 -1.21262 -0.56439 -1.00000 0.35761 -0.68511 0 0 -113.75923 -1.15612
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.07112 -1.22936 -12.25454 0.53078 -1.35893 -0.74513 -1.00000 -0.04089 -0.81653 0 0 -118.62961 -1.07112
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.98634 -1.25730 -10.66555 0.15971 -1.37730 -0.91451 -1.00000 -0.32425 -0.83722 0 0 -123.48691 -0.98634
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90185 -1.28524 -9.08769 0.05662 -1.33149 -1.00000 -1.00000 -0.18294 -0.85692 0 0 -128.32771 -0.90185
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82418 -1.31318 -8.26139 -0.10417 -1.34553 -0.53287 -1.00000 -0.38878 -0.84906 0 0 -132.77787 -0.82418
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.74826 -1.34112 -6.98591 -0.13702 -1.41815 -0.86049 -1.00000 -0.29653 -0.86272 0 0 -137.12761 -0.74826
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.46393 -0.66041 -2.47623 -0.13226 -1.05572 0.14452 0.72308 -0.34667 -0.58928 0 0 -153.41890 -0.46393
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.39916 -0.37731 -1.41472 -0.15733 -0.71815 0.26642 0.99604 -0.12764 -0.24144 0 0 -157.12992 -0.39916
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.33581 -0.09230 -0.34606 0.01988 -0.41386 0.33342 1.00000 0.05836 0.08247 0 0 -160.75971 -0.33581
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.27479 -0.12024 0.59129 0.40889 -0.33239 -0.79162 0.31124 0.19353 0.28694 0 0 -164.25593 -0.27479
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.21649 -0.14818 1.43968 0.48583 -0.33239 -0.93478 0.51568 0.26742 0.32956 0 0 -167.59620 -0.21649
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.16221 -0.17612 2.08770 0.45946 -0.01253 -0.98528 0.41358 0.03814 0.33403 0 0 -170.70594 -0.16221
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.11122 -0.20406 2.74429 0.22714 0.11238 -1.00000 0.42564 -0.30800 0.37608 0 0 -173.62781 -0.11122
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.06299 -0.23200 3.39718 -0.17786 0.32417 -1.00000 0.34211 -0.31789 0.40808 0 0 -176.39119 -0.06299
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.01708 -0.25994 4.04822 -0.16965 0.31985 -1.00000 0.37615 -0.40742 0.39697 0 0 -179.02150 -0.01708
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.02528 -0.28788 4.51446 -0.22411 0.27252 -1.00000 0.34247 -0.54344 0.35025 0 0 -181.44821 0.02528
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.06377 -0.31582 4.87825 -0.45147 0.24594 -1.00000 0.32915 -0.64217 0.34097 0 0 -183.65378 0.06377
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.09684 -0.34376 4.99011 -0.62371 0.20401 -0.90757 0.23563 -0.64472 0.33397 0 0 -185.54867 0.09684
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.12353 -0.37170 4.88957 -0.77910 0.17635 -0.80380 0.13328 -0.68408 0.31672 0 0 -187.07801 0.12353
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14394 -0.39964 4.67836 -0.63560 0.12448 -0.80520 0.06536 -0.50564 0.27122 0 0 -188.24709 0.14394
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15893 -0.42758 4.44765 -0.57335 0.12491 -0.83604 0.01776 -0.56997 0.18769 0 0 -189.10605 0.15893
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.16914 -0.45552 4.18653 -0.57184 0.11713 -0.84429 -0.06419 -0.68647 0.10233 0 0 -189.69122 0.16914
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17506 -0.48346 3.88940 -0.52624 -0.00735 -0.85616 -0.09887 -0.39969 0.03953 0 0 -190.03007 0.17506
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17748 -0.51140 3.60253 -0.32482 -0.10957 -0.93363 -0.27285 -0.42436 -0.03008 0 0 -190.16870 0.17748
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17657 -0.53934 3.26803 -0.49274 -0.16662 -0.89588 -0.32582 -0.45444 -0.07511 0 0 -190.11652 0.17657
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17321 -0.56728 2.97088 -0.47675 -0.22671 -0.92589 -0.34236 -0.43103 -0.16581 0 0 -189.92401 0.17321
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.16802 -0.59522 2.69843 -0.38598 -0.44541 -0.97883 -0.31767 -0.43222 -0.26608 0 0 -189.62687 0.16802
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.16149 -0.62316 2.44668 -0.49663 -0.54504 -0.98407 -0.31165 -0.52375 -0.30286 0 0 -189.25290 0.16149
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15385 -0.58541 2.19502 -0.30710 -0.45622 -0.80244 -0.11768 -0.44283 -0.30558 0 0 -188.81492 0.15385
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14525 -0.51747 1.94027 -0.49274 -0.29586 -0.61302 -0.03894 -0.38225 -0.30236 0 0 -188.32201 0.14525
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.13615 -0.45883 1.72041 -0.32201 -0.23751 -0.64108 -0.04927 -0.42672 -0.20978 0 0 -187.80082 0.13615
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.12780 -0.43562 1.63337 -0.55261 -0.16727 -0.73257 -0.16007 -0.48047 -0.10078 0 0 -187.32266 0.12780
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.12010 -0.41274 1.54757 -0.60188 -0.12837 -0.69114 -0.16780 -0.50817 -0.05731 0 0 -186.88099 0.12010
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.11223 -0.36881 1.38286 -0.62544 -0.09704 -0.12315 -0.13338 -0.58208 -0.10419 0 0 -186.43016 0.11223
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.10372 -0.30960 1.16084 -0.55282 -0.13983 0.00121 -0.08093 -0.54550 -0.14117 0 0 -185.94297 0.10372
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.09410 -0.23233 0.87112 -0.45795 -0.25069 0.15083 0.01585 -0.32200 -0.14114 0 0 -185.39151 0.09410
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.08317 -0.14375 0.53898 -0.31769 -0.27403 0.27087 0.08625 -0.16511 -0.11158 0 0 -184.76518 0.08317
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07151 -0.06632 0.24866 -0.27360 -0.24464 0.30098 0.10501 0.00272 -0.04619 0 0 -184.09743 0.07151
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.06130 -0.05114 0.19176 -0.10633 -0.20120 -0.00070 0.01659 0.16650 0.02719 0 0 -183.51218 0.06130
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05550 -0.07908 0.50213 0.15063 -0.15582 -0.43310 0.04052 0.24400 0.07272 0 0 -183.17991 0.05550
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05242 -0.10702 0.70218 0.20336 -0.05814 -0.47180 -0.02562 0.10711 0.04450 0 0 -183.00323 0.05242
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05217 -0.13496 0.96728 -0.01405 -0.06332 -0.51194 0.00676 -0.16889 0.03133 0 0 -182.98887 0.05217
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05489 -0.16290 1.30235 -0.59821 -0.06289 -0.40576 0.21090 -0.35864 -0.00547 0 0 -183.14494 0.05489
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05783 -0.19084 1.37892 -0.76051 -0.13875 -0.25372 -0.04159 -0.44469 -0.04978 0 0 -183.31345 0.05783
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05921 -0.21878 1.25678 -0.52494 -0.19191 -0.22041 -0.13192 -0.41511 0.09889 0 0 -183.39268 0.05921
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05961 -0.24672 1.17058 -0.27684 -0.14264 -0.34460 -0.15295 -0.30989 0.01917 0 0 -183.41551 0.05961
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05745 -0.23630 0.88600 -0.17376 -0.08212 -0.15592 -0.22651 -0.24467 -0.07000 0 0 -183.29183 0.05745
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05378 -0.17935 0.67250 -0.16706 -0.14156 0.00731 -0.02385 -0.28797 -0.11942 0 0 -183.08165 0.05378
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05007 -0.15939 0.59763 -0.20942 -0.23189 -0.12965 -0.04159 -0.21389 -0.16600 0 0 -182.86887 0.05007
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.04639 -0.14150 0.53056 -0.18305 -0.34859 -0.12514 0.00672 -0.08847 -0.13056 0 0 -182.65785 0.04639
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.04245 -0.11497 0.43107 -0.12513 -0.28462 -0.07270 0.03236 -0.08967 -0.06964 0 0 -182.43202 0.04245
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.03895 -0.10846 0.40668 -0.07888 -0.19494 -0.17233 -0.00892 -0.10778 -0.05919 0 0 -182.23152 0.03895
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.03617 -0.11277 0.42284 -0.11908 -0.15344 -0.22118 -0.03384 -0.08761 -0.01881 0 0 -182.07246 0.03617
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.03375 -0.10965 0.41113 -0.17959 -0.14674 -0.14193 -0.01978 -0.14028 0.00361 0 0 -181.93399 0.03375
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.03176 -0.11015 0.41302 -0.24097 -0.14674 -0.13887 -0.02082 -0.18686 -0.01333 0 0 -181.81949 0.03176
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.02982 -0.10195 0.38227 -0.21503 -0.11389 -0.09080 -0.00860 -0.14939 -0.01678 0 0 -181.70861 0.02982
+final error was 361.577
+position: 4.98 0.68 -181.5774
+took 1020.0000 time to finish turn
+WARNING - pros.serial.terminal.terminal:stop - Stopping terminal - pros-cli version:3.5.6
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$
+

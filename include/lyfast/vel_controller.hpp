@@ -27,9 +27,9 @@ using FKvUnits = Divided<FVoltage, FLinearVelocity>;
 using FKaUnits = Divided<FVoltage, FLinearAcceleration>;
 
 inline DifferentialSpeeds
-desaturateDifferentialSpeeds(DifferentialSpeeds target,
-                             Length track_width,
-                             LinearVelocity max_velocity) {
+desaturatePrioritizeAngularDiffSpeeds(DifferentialSpeeds target,
+                                      Length track_width,
+                                      LinearVelocity max_velocity) {
     Length track_radius = track_width / 2.0;
 
     // first determine how fast we want to go angular wise
@@ -44,25 +44,30 @@ desaturateDifferentialSpeeds(DifferentialSpeeds target,
       units::clamp(target.linear_velocity, -max_lin_speed, max_lin_speed);
 
     return { new_lin_speed, target.angular_velocity };
+}
 
-    // LinearVelocity target_left_vel =
-    //   target.linear_velocity - (target.angular_velocity / rad) *
-    //   track_radius;
-    // LinearVelocity target_right_vel =
-    //   target.linear_velocity + (target.angular_velocity / rad) *
-    //   track_radius;
-    //
-    // std::array<LinearVelocity, 2> saturated = { target_left_vel,
-    //                                             target_right_vel };
-    //
-    // auto [new_left_vel, new_right_vel] =
-    //   blazing::desaturate(saturated, max_velocity);
-    //
-    // LinearVelocity new_lin_vel = (new_left_vel + new_right_vel) / 2.0;
-    // AngularVelocity new_ang_vel =
-    //   rad * (new_right_vel - new_left_vel) / track_width;
-    //
-    // return { new_lin_vel, new_ang_vel };
+inline DifferentialSpeeds
+desaturateDifferentialSpeeds(DifferentialSpeeds target,
+                             Length track_width,
+                             LinearVelocity max_velocity) {
+    Length track_radius = track_width / 2.0;
+
+    LinearVelocity target_left_vel =
+      target.linear_velocity - (target.angular_velocity / rad) * track_radius;
+    LinearVelocity target_right_vel =
+      target.linear_velocity + (target.angular_velocity / rad) * track_radius;
+
+    std::array<LinearVelocity, 2> saturated = { target_left_vel,
+                                                target_right_vel };
+
+    auto [new_left_vel, new_right_vel] =
+      blazing::desaturate(saturated, max_velocity);
+
+    LinearVelocity new_lin_vel = (new_left_vel + new_right_vel) / 2.0;
+    AngularVelocity new_ang_vel =
+      rad * (new_right_vel - new_left_vel) / track_width;
+
+    return { new_lin_vel, new_ang_vel };
 }
 
 template<typename T>
@@ -171,14 +176,15 @@ class SimpleVelocityController {
           units::abs(result) >= m_params.max_output &&
           // output going in direct of error
           units::sgn(error) == units::sgn(result)) {
-            // clamp output and stop integral windup
-            result =
-              units::clamp(result, -m_params.max_output, m_params.max_output);
+            // clamping, stop integral windup
             // no need to update integral to current integral
         } else {
             // not saturating, update integral
             integral = current_integral;
         }
+
+        result =
+          units::clamp(result, -m_params.max_output, m_params.max_output);
 
         last_speed = { target };
         last_error = error;
@@ -226,6 +232,7 @@ class DifferentialVelocityController {
 
     std::optional<LeftRightSpeeds> last_velocities = std::nullopt;
     double m_vel_alpha = 1.0;
+    bool m_prioritize_angular = false;
 
   public:
     LeftRightVoltages update(LeftRightSpeeds measurement,
@@ -234,8 +241,14 @@ class DifferentialVelocityController {
         Length track_radius = m_track_width / 2.0;
 
         // desaturate target first
-        target =
-          desaturateDifferentialSpeeds(target, m_track_width, m_max_velocity);
+        if (m_prioritize_angular)
+            target = desaturatePrioritizeAngularDiffSpeeds(target,
+                                                           m_track_width,
+                                                           m_max_velocity);
+        else
+            target = desaturateDifferentialSpeeds(target,
+                                                  m_track_width,
+                                                  m_max_velocity);
 
         LinearVelocity target_left_vel =
           target.linear_velocity -
@@ -333,6 +346,7 @@ class DifferentialVelocityController {
       LinearVelocity max_velocity,
       Length track_width,
       double vel_alpha,
+      bool prioritize_angular,
       std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : m_params(params),
           left_controller({
@@ -356,6 +370,7 @@ class DifferentialVelocityController {
           m_max_velocity(max_velocity),
           m_track_width(track_width),
           m_vel_alpha(vel_alpha),
+          m_prioritize_angular(prioritize_angular),
           drivetrain(drivetrain) {}
 
     DifferentialVelocityController(
@@ -363,6 +378,7 @@ class DifferentialVelocityController {
       LinearVelocity max_velocity,
       Length track_width,
       double vel_alpha,
+      bool prioritize_angular,
       std::reference_wrapper<DifferentialDrivetrain> drivetrain)
         : m_params(VelocityControllerParams::fromSimple(params)),
           left_controller(params),
@@ -371,6 +387,7 @@ class DifferentialVelocityController {
           m_max_velocity(max_velocity),
           m_track_width(track_width),
           m_vel_alpha(vel_alpha),
+          m_prioritize_angular(prioritize_angular),
           drivetrain(drivetrain) {}
 };
 
@@ -379,6 +396,8 @@ class ArcadeVelocityController {
     DifferentialVelocityController angular_controller;
 
     LinearVelocity m_max_velocity;
+    bool m_prioritize_angular = false;
+
     Length m_track_width;
 
   public:
@@ -399,8 +418,15 @@ class ArcadeVelocityController {
     LeftRightVoltages update(DifferentialSpeeds target, Time duration) {
         Length track_radius = m_track_width / 2.0;
 
-        target =
-          desaturateDifferentialSpeeds(target, m_track_width, m_max_velocity);
+        // desaturate target first
+        if (m_prioritize_angular)
+            target = desaturatePrioritizeAngularDiffSpeeds(target,
+                                                           m_track_width,
+                                                           m_max_velocity);
+        else
+            target = desaturateDifferentialSpeeds(target,
+                                                  m_track_width,
+                                                  m_max_velocity);
 
         LeftRightVoltages linear = linear_controller.update(target, duration);
         LeftRightVoltages angular = angular_controller.update(target, duration);
@@ -457,10 +483,12 @@ class ArcadeVelocityController {
     ArcadeVelocityController(DifferentialVelocityController linear_controller,
                              DifferentialVelocityController angular_controller,
                              LinearVelocity max_velocity,
+                             bool prioritize_angular,
                              Length track_width)
         : linear_controller(linear_controller),
           angular_controller(angular_controller),
           m_max_velocity(max_velocity),
+          m_prioritize_angular(prioritize_angular),
           m_track_width(track_width) {}
 };
 

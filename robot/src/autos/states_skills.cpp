@@ -6,10 +6,13 @@
 
 #include "apis.h"
 //
+#include "auton_globals.h"
 #include "autos.h"
+#include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/blazing_globals.h"
 #include "globals/device_globals.h"
+#include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 #include "systems/odom_retract.h"
@@ -111,8 +114,10 @@ void run_auton() {
             async.exitAll();
         } else {
             // got to matcloader successfully, start matchloading
-            pros::delay(to_msec(matchload_time));
             async.exitAll();
+            // passive voltage forwards since motion might oscilate
+            drivetrain.moveTank(0.13_volt, 0.13_volt);
+            pros::delay(to_msec(matchload_time));
         }
     };
 
@@ -123,28 +128,14 @@ void run_auton() {
         // turn to goal, reversed
         Length long_goal = 47.05_in;
 
-        auto target_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
+        auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
         auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
 
         units::Pose target_pose = { 24_in * sign_x,
                                     long_goal * sign_y,
-                                    target_heading };
+                                    target_backwards_heading };
 
-        // turn towards 24, settle at 48
-        if (with_swing) {
-            // do the swing
-            mb.turnTo(target_forwards_heading).radius(-10.5 / 2) | async;
-        } else {
-            mb.moveTo(target_pose)
-                .drive_vel_mp_setMaxAccel(110_inps2)
-                .only_x(true, 28_in)
-                .closeThreshold(10_in)
-                .timeout(2_sec)
-                .reverse() |
-              async;
-        }
-
-        async.waitUntil([&] -> bool {
+        auto exit_condition = [&] -> bool {
             // use forwards error and
 
             auto curr_pose = RobotGetPose();
@@ -159,7 +150,38 @@ void run_auton() {
 
             return x_close && y_close && theta_close;
             // return x_close;
-        });
+        };
+
+        // turn towards 24, settle at 48
+        if (!with_swing) {
+            mb.moveTo(target_pose)
+                .drive_vel_mp_setMaxAccel(110_inps2)
+                .only_x(true, 28_in)
+                .closeThreshold(10_in)
+                .timeout(2_sec)
+                .reverse() |
+              async;
+            async.waitUntil(exit_condition);
+        } else {
+            Time start_time = now();
+            // swinging
+            while (true) {
+                drivetrain.moveTank(0_volt, -1_volt);
+                left_motors.set_brake_mode(pros::MotorBrake::brake);
+
+                bool exit = exit_condition();
+                // swing max of 1.5 seconds
+                bool timeout = timeoutDone(1.5_sec, start_time);
+                bool turn_close =
+                  units::abs(angleError(target_forwards_heading,
+                                        RobotGetPose().orientation)) < 20_stDeg;
+
+                if (exit || timeout || turn_close) break;
+                pros::delay(10);
+            }
+            drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
+        }
+
         intake::score_long();
         // let move to point settle a bit
         pros::delay(100);
@@ -178,29 +200,51 @@ void run_auton() {
     intake::in();
 
     // swing back a bit
-    drivetrain.moveTank(-0_volt, -1_volt);
+    drivetrain.moveTank(0_volt, -1_volt);
     pros::delay(300);
-    mb.moveTo(-40, -19).reverse() | run;
+    mb.moveTo(-37, -19.2).reverse() | run;
 
-    mb.turnTo(-30.414, -17.062) | run;
-    mb.moveTo(-30.414, -17.062) | run;
-    mb.moveTo(-13.097, -13.691).closeThreshold(4_in) | run;
-
-    // TODO: align to the goal and score
+    // mb.turnTo(0) | run;
+    // mb.turnTo(-30.414, -17.062) | run;
+    // mb.moveTo(-20.414, -17.062) | run;
+    mb.moveTo(-20.414, -17.062) | run;
+    // mb.turnTo(-11.097, -11.691) | run;
+    mb.turnTo(45) | run;
+    mb.moveTo(-11.097, -11.691).closeThreshold(4_in) | run;
+    mb.turnTo(45).radius(5_in) | run;
 
     drivetrain.moveTank(-1_volt, -1_volt);
-    pros::delay(200);
+    pros::delay(170);
 
-    mb.turnTo(-43.02, 44.349) | run;
-    mb.moveTo(-43.02, 44.349) | run;
+    // got towards matchloader at other end
+    // mb.turnTo(-43.02, 44.349) | run;
+    mb.moveTo(-43.02, 46.5).only_y(true).drive_errorTolerance(1_in) | run;
 
     matchload(-1, 1, 1.5_sec);
 
     // go away from matchloader
-    mb.moveTo(-30.692, 59.614) | run;
+    mb.moveTo(-30.692, 57)
+        .reverse()
+        .closeThreshold(4_in)
+        .drive_vel_minVel(50_inps)
+        .setChainTime(0_sec) |
+      chain;
 
     // prepare for swing
-    mb.moveTo(14.375, 56.613) | run;
+    mb.moveTo(17.5, 57)
+        .drive_vel_accelSlew(300_inps)
+        .drive_vel_minVel(40_inps)
+        // .setChainTime(0_sec) |
+        .drive_errorTolerance(1.5_in)
+        .drive_toleranceDuration(0_sec)
+        .reverse() |
+      chain;
+
+    // put matchlaoder up after a bit
+    pros::delay(300);
+    matchloader::up();
+
+    chain.wait();
 
     score_long_goal(1, 1, 2_sec, true);
 
@@ -229,10 +273,11 @@ void run_auton() {
     matchload(1, 1, 1.5_sec);
 
     // go away from matchloader
-    mb.moveTo(30.692, -59.614) | run;
+    mb.moveTo(30.692, -59.614).reverse() | run;
+    matchloader::up();
 
     // prepare for swing
-    mb.moveTo(-14.375, -56.613) | run;
+    mb.moveTo(-14.375, -56.613).reverse() | run;
 
     score_long_goal(-1, -1, 2_sec, true);
 
@@ -249,7 +294,7 @@ void run_auton() {
     pros::delay(300);
     drivetrain.moveTank(0.0_volt, 0.0_volt);
 
-	// cinema
+    // cinema
 }
 
 } // namespace states_skills

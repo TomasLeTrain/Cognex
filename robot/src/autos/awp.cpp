@@ -262,4 +262,4 @@ void run_auton() {
     score_long_goal(-1, 1, 1_sec, true);
 }
 
-} // namespace easier_awp
+} // namespace awp

@@ -39,7 +39,7 @@ void testing_auton_func() {
 
     setFieldSide(field_side_t::left);
     setAlliance(alliance_t::red);
-    setAuton("awp");
+    // setAuton("awp");
     setAuton("skills");
 
     // std::cout << "calling selected auto" << std::endl;

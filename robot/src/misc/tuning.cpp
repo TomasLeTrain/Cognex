@@ -770,7 +770,7 @@ void drive_vel_pid_tuning() {
 }
 
 void turn_vel_pid_tuning() {
-    double target_theta = 90;
+    double target_theta = 180;
     // by how much we can increase or decrease
     double target_theta_delta = 44;
 
@@ -808,12 +808,31 @@ void turn_vel_pid_tuning() {
         //   chain;
         // chain.wait();
 
-        mb_vel.turnTo(target_theta)
-            .turn_vel_kp(curr_kp)
-            .turn_vel_ki(curr_ki)
-            .turn_vel_kd(curr_kd)
-            .timeout(5_sec) |
+        // drivetrain.moveTank(0_volt, -1_volt);
+        // left_motors.set_brake_mode(pros::MotorBrake::brake);
+        //
+        // pros::delay(1500);
+        // drivetrain.moveTank(0_volt, 0_volt);
+
+        mb.turnTo(target_theta)
+            // .turn_vel_maxVel(200_degps)
+            // .direction(AngularDirection::RIGHT)
+            // .radius(-10.5_in)
+            // .turn_vel_kp(curr_kp)
+            // .turn_vel_ki(curr_ki)
+            // .turn_vel_kd(curr_kd)
+            .timeout(2.6_sec) |
           run;
+
+        // mb.turnTo(target_theta)
+        //     // .turn_vel_maxVel(200_degps)
+        //     .direction(AngularDirection::RIGHT)
+        //     .radius(-10.5_in)
+        //     // .turn_vel_kp(curr_kp)
+        //     // .turn_vel_ki(curr_ki)
+        //     // .turn_vel_kd(curr_kd)
+        //     .timeout(2.6_sec) |
+        //   run;
 
         controller.rumble(".");
 
@@ -954,8 +973,8 @@ void matchloadTuning() {
                     .timeout(3_sec)
                     .drive_toleranceDuration(100_sec)
                     .drive_largeToleranceDuration(100_sec)
-                    .drive_vel_mp_setMaxAccel(70_inps2)
-                  | async;
+                    .drive_vel_mp_setMaxAccel(70_inps2) |
+                  async;
 
                 Length matchload_start_distance = 13_in;
                 async.waitUntil([&] {

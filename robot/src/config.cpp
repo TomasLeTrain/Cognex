@@ -451,6 +451,7 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   70_inps,
   drivetrain_config.track_width,
   0.8,
+  true, // prioritize angular everywhere?
   std::ref(drivetrain));
 
 // --- turning vel stuff --- //
@@ -493,6 +494,7 @@ blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   100_inps,
   drivetrain_config.track_width,
   0.85,
+  true, // prioritize angular everywhere?
   std::ref(drivetrain));
 
 // use arcade since templating uses this type
@@ -501,6 +503,7 @@ lyfast::ArcadeVelocityController turn_vel_controller {
     angular_velocity_controller,
     angular_velocity_controller,
     100_inps,
+    false, // don't prioritize turning to allow swings
     drivetrain_config.track_width
 };
 // --- turning vel stuff --- //
@@ -509,6 +512,7 @@ lyfast::ArcadeVelocityController vel_controller {
     linear_velocity_controller,
     angular_velocity_controller,
     76_inps,
+    true, // prioritize angular everywhere?
     drivetrain_config.track_width
 };
 
@@ -621,8 +625,8 @@ PID<Angle, AngularVelocity> turn_heading_vel_pid(19.000,
                                                  0.0,
                                                  19.050,
                                                  to_stRad(10_stDeg),
-                                                 std::nullopt,
-                                                 // 70,
+                                                 // std::nullopt,
+                                                 76, // max speed
                                                  std::nullopt,
                                                  50_msec,
                                                  1_stRad,
