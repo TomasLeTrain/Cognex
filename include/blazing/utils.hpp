@@ -78,22 +78,38 @@ Number signed_sgn(Q num) {
 // scales all values of saturated such that max(desaturated) <= max
 template<isQuantity T, size_t size>
 std::array<T, size> desaturate(std::array<T, size> saturated, T max) {
+    std::cout << "start: " << std::endl;
+    for (auto vel : saturated) {
+        std::cout << vel << std::endl;
+    }
 
     auto abs_compare = [](T a, T b) {
         return units::abs(a) < units::abs(b);
     };
 
-    T largest_magnitude = *std::ranges::max_element(saturated, abs_compare);
+    T largest_magnitude =
+      units::abs(*std::ranges::max_element(saturated, abs_compare));
+    std::cout << "largest magnitude: " << largest_magnitude << std::endl;
     Number multiplier = max / largest_magnitude;
+    std::cout << "max, mult: " << max << " " << largest_magnitude << std::endl;
 
     if (largest_magnitude > max) {
+        std::cout << "actaully saturating!!" << std::endl;
         std::transform(saturated.cbegin(),
                        saturated.cend(),
                        saturated.begin(),
                        [multiplier](T num) {
+                           std::cout
+                             << "multiplying stuff : " << num * multiplier
+                             << std::endl;
                            return num * multiplier;
                        });
     };
+
+    std::cout << "end result: " << std::endl;
+    for (auto vel : saturated) {
+        std::cout << vel << std::endl;
+    }
 
     return saturated;
 }

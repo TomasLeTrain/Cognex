@@ -79,8 +79,8 @@ void opcontrol() {
     // drive_vel_pid_tuning();
     // return;
 
-    // turn_vel_pid_tuning();
-    // return;
+    turn_vel_pid_tuning();
+    return;
 
     //
     // turn_pid_tuning();

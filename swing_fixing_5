@@ -1,0 +1,3448 @@
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$ mcc
+mu
+Compiled include/apis.h [OK]
+Cleaning project
+Not sending analytics for this command.
+
+Creating cold package with blazing,Eigen,float_units,libc,liblvgl,libm,libpros,lyfast,misc,vexmaps,vexmath,zlib [OK]
+Stripping cold package  [DONE]
+Section sizes:
+   text    data     bss   total     hex filename
+2.27MB  4.52KB  57.24MB  59.51MB 3b816f7 bin/cold.package.elf
+Creating cold package binary for VEX EDR V5 [DONE]
+Compiled src/controller_ui/controller_auton_selector.cpp [OK]
+Compiled src/screen/screen.cpp [OK]
+Compiled robot/src/autonomous.cpp [OK]
+Compiled robot/src/auton_list.cpp [OK]
+Compiled robot/src/misc/auto_state_utils.cpp [OK]
+Compiled robot/src/systems/matchloader.cpp [OK]
+Compiled src/screen/dvd_bouncing_screen.cpp [OK]
+Compiled robot/src/systems/odom_retract.cpp [OK]
+Compiled src/screen/health_screen.cpp [OK]
+Compiled robot/src/misc/sysid.cpp [OK]
+Compiled robot/src/systems/drivetrain.cpp [OK]
+Compiled src/screen/tab_screen.cpp [OK]
+Compiled robot/src/systems/wings.cpp [OK]
+Compiled robot/src/opcontrol.cpp [OK]
+Compiled src/screen/auton_selector.cpp [OK]
+Compiled robot/src/systems/intake.cpp [OK]
+Compiled robot/src/health_daemon.cpp [OK]
+Compiled robot/src/misc/auton_utils.cpp [OK]
+Compiled robot/src/autos/elims_nineball_split.cpp [OK]
+Compiled src/main.cpp [OK]
+Compiled robot/src/autos/awp.cpp [OK]
+Compiled robot/src/autos/states_skills.cpp [OK]
+Compiled robot/src/autos/four_ball.cpp [WARNINGS]
+robot/src/autos/four_ball.cpp: In function 'void four_ball::run_auton()':
+robot/src/autos/four_ball.cpp:72:16: warning: unused variable 'opposite_alliance' [-Wunused-variable]
+   72 |     alliance_t opposite_alliance =
+      |                ^~~~~~~~~~~~~~~~~
+Compiled robot/src/autos/seven_ball.cpp [OK]
+Compiled robot/src/autos/seven_split.cpp [OK]
+Compiled robot/src/autos/qual_match_first.cpp [WARNINGS]
+robot/src/autos/qual_match_first.cpp: In function 'void qual_match_first::run_auton()':
+robot/src/autos/qual_match_first.cpp:71:16: warning: unused variable 'opposite_alliance' [-Wunused-variable]
+   71 |     alliance_t opposite_alliance =
+      |                ^~~~~~~~~~~~~~~~~
+Compiled robot/src/initialize.cpp [OK]
+Compiled robot/src/config.cpp [OK]
+Compiled robot/src/misc/tuning.cpp [WARNINGS]
+robot/src/misc/tuning.cpp: In function 'void drive_vel_pid_tuning()':
+robot/src/misc/tuning.cpp:495:12: warning: unused variable 'ki_delta' [-Wunused-variable]
+  495 |     double ki_delta = 0.01;
+      |            ^~~~~~~~
+Adding timestamp [OK]
+started linking: Tue Feb 10 11:54:06 AM EST 2026
+Linking hot project with ./bin/cold.package.elf and blazing,Eigen,float_units,libc,liblvgl,libm,libpros,lyfast,misc,vexmaps,vexmath,zlib [OK]
+end linking: Tue Feb 10 11:54:15 AM EST 2026
+Section sizes:
+   text    data     bss   total     hex filename
+330.05KB  2.13KB  46.04MB  46.36MB 2e5b882 bin/hot.package.elf
+Creating bin/hot.package.bin for VEX EDR V5 [DONE]
+Capturing metadata for PROS Editor...
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$ mu
+Not sending analytics for this command.
+
+make: Nothing to be done for 'quick'.
+Uploading program "cognex" (cognex) to V5 slot 1 on /dev/ttyACM0 (compressed)
+Compressing library [####################################] 100%
+Library is already onboard V5
+Uploading slot_1.ini [####################################] 100%
+Compressing binary [####################################] 100%
+Uploading slot_1.bin (hot.package.bin) [####################################] 100%
+tFinished uploading "cognex" (cognex) to V5
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$ t
+Not sending analytics for this command.
+
+Established terminal connection
+
+
+
+         _+=+_
+      .-`  .  `-.          8888888b.  8888888b.   .d88888b.   .d8888b.
+   _+`     "     `+_       888   Y88b 888   Y88b d88P" "Y88b d88P  Y88b
+  \\\sssssssssssss///      888    888 888    888 888     888 Y88b.
+     .ss\  *  /ss.         888   d88P 888   d88P 888     888  "Y888b.
+ .+bm  .s  *  s.  md+.     8888888P"  8888888P"  888     888     "Y88b.
+.hMMMMs .  *  . sMMMMh.    888        888 T88b   888     888       "888
+ `\hMMMb \ | / dMMMh:      888        888  T88b  Y88b. .d88P Y88b  d88P
+   -SNMNo  -  oNMNs-       888        888   T88b  "Y88888P"   "Y8888P"
+     `+dMh\./dMd/
+        `:yNy:`                      Powered by PROS for VEX V5
+           "                Copyright (c) Purdue University ACM SIGBots
+Version:        4.2.1     Platform:  V1.1.5 (b18)     Uptime:    0.000 s
+Compiled:   Jan  1 1980 00:00:00     Directory:
+
+
+bouncing done
+health done
+auton done
+calibrated!
+initializing odom model
+initializing pf model
+initializing smoother model
+max vel vel: 1.9304 mps
+start:
+-1.9304 mps
+-5.7912 mps
+largest magnitude: -5.7912 mps
+max, mult: 1.9304 mps -5.7912 mps
+end result:
+-1.9304 mps
+-5.7912 mps
+old vels: -1.9304 mps -5.7912 mps
+new vels: -1.9304 mps -5.7912 mps
+max vel: 1.9304 mps
+desaturated: -3.8608 -14.4762
+lin factor: 0.666667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 0.00017 0.00017 0 0 -0.00010 -3.14159
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 0.00017 0.00000 0 0 -0.00026 -3.14159
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.09207 -0.03890 1.00000 -1.00000 0.16581 -0.22569 0 0 -0.00007 -3.14159
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14160 -3.86080 -14.47619 0.30775 -0.66196 1.00000 -1.00000 0.42400 -0.47550 0 0 0.00046 -3.14160
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14110 -3.86080 -14.47619 0.36134 -0.75662 1.00000 -1.00000 0.59597 -0.64047 0 0 -0.02819 -3.14110
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13842 -3.86080 -14.47619 0.43439 -0.69892 1.00000 -1.00000 0.63978 -0.70719 0 0 -0.18171 -3.13842
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13092 -3.86080 -14.47619 0.48518 -0.73112 1.00000 -1.00000 0.61242 -0.70294 0 0 -0.61154 -3.13092
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.11960 -3.86080 -14.47619 0.60966 -0.82686 0.96244 -1.00000 0.64661 -0.73475 0 0 -1.26019 -3.11960
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.10522 -3.86080 -14.47619 0.76332 -0.86792 0.95162 -1.00000 0.70344 -0.75425 0 0 -2.08374 -3.10522
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.08772 -3.86080 -14.47619 0.74409 -0.88348 0.97947 -1.00000 0.56603 -0.78283 0 0 -3.08644 -3.08772
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.06709 -3.86080 -14.47619 0.44693 -0.85193 1.00000 -1.00000 0.50681 -0.77219 0 0 -4.26871 -3.06709
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.04336 -3.86080 -14.47619 0.56644 -0.70627 1.00000 -1.00000 0.50186 -0.76025 0 0 -5.62840 -3.04336
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.01603 -3.86080 -14.47619 0.45341 -0.75943 1.00000 -1.00000 0.47861 -0.73389 0 0 -7.19433 -3.01603
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.98509 -3.86080 -14.47619 0.58157 -0.76289 1.00000 -1.00000 0.60403 -0.73097 0 0 -8.96679 -2.98509
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.95150 -3.86080 -14.47619 0.90812 -0.87656 0.97650 -1.00000 0.70289 -0.76569 0 0 -10.89139 -2.95150
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.91545 -3.86080 -14.47619 0.86381 -0.98095 0.99816 -1.00000 0.73131 -0.78336 0 0 -12.95701 -2.91545
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.87652 -3.86080 -14.47619 0.73631 -0.99586 1.00000 -1.00000 0.55300 -0.81225 0 0 -15.18743 -2.87652
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.83441 -3.86080 -14.47619 0.56644 -1.03779 1.00000 -1.00000 0.52239 -0.81022 0 0 -17.60038 -2.83441
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.78948 -3.86080 -14.47619 0.80417 -1.01099 1.00000 -1.00000 0.52531 -0.82133 0 0 -20.17467 -2.78948
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.74210 -3.86080 -14.47619 0.63689 -1.06588 1.00000 -1.00000 0.48336 -0.82731 0 0 -22.88909 -2.74210
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.69231 -3.86080 -14.47619 0.68876 -1.05832 1.00000 -1.00000 0.56553 -0.81961 0 0 -25.74211 -2.69231
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.64039 -3.86080 -14.47619 0.86770 -1.06048 1.00000 -1.00000 0.64611 -0.81331 0 0 -28.71684 -2.64039
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.58659 -3.86080 -14.47619 1.02158 -1.04643 0.97923 -1.00000 0.72294 -0.80728 0 0 -31.79910 -2.58659
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.53071 -3.86080 -14.47619 1.11062 -1.04470 0.96370 -1.00000 0.77528 -0.80356 0 0 -35.00085 -2.53071
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.47257 -3.86080 -14.47619 0.95112 -1.09571 1.00000 -1.00000 0.62625 -0.83125 0 0 -38.33224 -2.47257
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.41255 -3.86080 -14.47619 0.92476 -1.10759 1.00000 -1.00000 0.62131 -0.83311 0 0 -41.77085 -2.41255
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.35033 -3.86080 -14.47619 0.94097 -1.19231 1.00000 -1.00000 0.60725 -0.84444 0 0 -45.33621 -2.35033
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.28617 -3.86080 -14.47619 0.97490 -1.22148 1.00000 -1.00000 0.66769 -0.83775 0 0 -49.01215 -2.28617
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.22030 -3.86080 -14.47619 1.06631 -1.26233 0.99191 -1.00000 0.75286 -0.82969 0 0 -52.78628 -2.22030
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.15310 -3.86080 -14.47619 1.13244 -1.24828 0.98331 -1.00000 0.79856 -0.82831 0 0 -56.63636 -2.15310
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.08453 -3.86080 -14.47619 1.03130 -1.26147 1.00000 -1.00000 0.64197 -0.85417 0 0 -60.56514 -2.08453
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.01419 -3.86080 -14.47619 0.96582 -1.25369 1.00000 -1.00000 0.66067 -0.84869 0 0 -64.59548 -2.01419
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.94241 -3.86080 -14.47619 1.06286 -1.24331 1.00000 -1.00000 0.61892 -0.85878 0 0 -68.70812 -1.94241
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.86980 -3.86080 -14.47619 1.03995 -1.30469 1.00000 -1.00000 0.61461 -0.86308 0 0 -72.86858 -1.86980
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.79591 -3.86080 -14.47619 1.15449 -1.30274 0.98994 -1.00000 0.72172 -0.85333 0 0 -77.10194 -1.79591
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.72107 -3.86080 -14.47619 1.22883 -1.32587 0.97402 -1.00000 0.79494 -0.84544 0 0 -81.39004 -1.72107
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.64532 -3.86080 -14.47619 1.10781 -1.34510 1.00000 -1.00000 0.67314 -0.86806 0 0 -85.73016 -1.64532
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.56803 -3.86080 -14.47619 1.05508 -1.34402 1.00000 -1.00000 0.70000 -0.86017 0 0 -90.15873 -1.56803
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.48961 -3.86080 -14.47619 1.06458 -1.36326 1.00000 -1.00000 0.60194 -0.87367 0 0 -94.65152 -1.48961
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.41042 -3.86080 -14.47619 0.99283 -1.38011 1.00000 -1.00000 0.54397 -0.88581 0 0 -99.18863 -1.41042
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.33041 -3.86080 -14.47619 1.18302 -1.34402 1.00000 -1.00000 0.67586 -0.86839 0 0 -103.77284 -1.33041
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.25000 -3.86080 -14.47619 1.29410 -1.36369 0.96194 -1.00000 0.78661 -0.85689 0 0 -108.38008 -1.25000
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.16904 -3.86080 -14.47619 1.35072 -1.35483 0.69740 -1.00000 0.82969 -0.85606 0 0 -113.01886 -1.16904
+max vel vel: 1.93040 mps
+start:
+-1.71572 mps
+-5.14717 mps
+largest magnitude: -5.14717 mps
+max, mult: 1.93040 mps -5.14717 mps
+end result:
+-1.71572 mps
+-5.14717 mps
+old vels: -1.71572 mps -5.14717 mps
+new vels: -1.71572 mps -5.14717 mps
+max vel: 1.93040 mps
+desaturated: -3.43145 -12.86632
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.08724 -3.43145 -12.86632 1.11278 -1.29604 -0.87120 -1.00000 0.72825 -0.86819 0 0 -117.70556 -1.08724
+max vel vel: 1.93040 mps
+start:
+-1.48296 mps
+-4.44888 mps
+largest magnitude: -4.44888 mps
+max, mult: 1.93040 mps -4.44888 mps
+end result:
+-1.48296 mps
+-4.44888 mps
+old vels: -1.48296 mps -4.44888 mps
+new vels: -1.48296 mps -4.44888 mps
+max vel: 1.93040 mps
+desaturated: -2.96592 -11.12081
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.00377 -2.96592 -11.12081 1.18820 -1.32565 -1.00000 -1.00000 0.68856 -0.87211 0 0 -122.48822 -1.00377
+max vel vel: 1.93040 mps
+start:
+-1.25118 mps
+-3.75355 mps
+largest magnitude: -3.75355 mps
+max, mult: 1.93040 mps -3.75355 mps
+end result:
+-1.25118 mps
+-3.75355 mps
+old vels: -1.25118 mps -3.75355 mps
+new vels: -1.25118 mps -3.75355 mps
+max vel: 1.93040 mps
+desaturated: -2.50237 -9.38270
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.91897 -2.50237 -9.38270 0.86835 -1.31506 -1.00000 -1.00000 0.25442 -0.86667 0 0 -127.34717 -0.91897
+max vel vel: 1.93040 mps
+start:
+-1.02938 mps
+-3.08814 mps
+largest magnitude: -3.08814 mps
+max, mult: 1.93040 mps -3.08814 mps
+end result:
+-1.02938 mps
+-3.08814 mps
+old vels: -1.02938 mps -3.08814 mps
+new vels: -1.02938 mps -3.08814 mps
+max vel: 1.93040 mps
+desaturated: -2.05876 -7.71939
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.83371 -2.05876 -7.71939 0.37237 -1.39546 -1.00000 -1.00000 -0.05286 -0.88119 0 0 -132.23220 -0.83371
+max vel vel: 1.93040 mps
+start:
+-0.80565 mps
+-2.41695 mps
+largest magnitude: -2.41695 mps
+max, mult: 1.93040 mps -2.41695 mps
+end result:
+-0.80565 mps
+-2.41695 mps
+old vels: -0.80565 mps -2.41695 mps
+new vels: -0.80565 mps -2.41695 mps
+max vel: 1.93040 mps
+desaturated: -1.61130 -6.04163
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.74794 -1.61130 -6.04163 0.17938 -1.44970 -1.00000 -1.00000 -0.24503 -0.88000 0 0 -137.14624 -0.74794
+max vel vel: 1.93040 mps
+start:
+-0.59117 mps
+-1.77351 mps
+largest magnitude: -1.77351 mps
+max, mult: 1.93040 mps -1.77351 mps
+end result:
+-0.59117 mps
+-1.77351 mps
+old vels: -0.59117 mps -1.77351 mps
+new vels: -0.59117 mps -1.77351 mps
+max vel: 1.93040 mps
+desaturated: -1.18234 -4.43322
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.66236 -1.18234 -4.43322 -0.06289 -1.46461 0.06575 0.87828 -0.42761 -0.86153 0 0 -142.04967 -0.66236
+max vel vel: 1.93040 mps
+start:
+-0.39692 mps
+-1.19076 mps
+largest magnitude: -1.19076 mps
+max, mult: 1.93040 mps -1.19076 mps
+end result:
+-0.39692 mps
+-1.19076 mps
+old vels: -0.39692 mps -1.19076 mps
+new vels: -0.39692 mps -1.19076 mps
+max vel: 1.93040 mps
+desaturated: -0.79384 -2.97654
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.57826 -0.79384 -2.97654 -0.34600 -1.39178 0.22088 1.00000 -0.52478 -0.84819 0 0 -146.86816 -0.57826
+max vel vel: 1.93040 mps
+start:
+-0.21505 mps
+-0.64515 mps
+largest magnitude: -0.64515 mps
+max, mult: 1.93040 mps -0.64515 mps
+end result:
+-0.21505 mps
+-0.64515 mps
+old vels: -0.21505 mps -0.64515 mps
+new vels: -0.21505 mps -0.64515 mps
+max vel: 1.93040 mps
+desaturated: -0.43010 -1.61268
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49621 -0.43010 -1.61268 -0.33174 -0.90228 0.39764 1.00000 -0.17828 -0.21525 0 0 -151.56930 -0.49621
+max vel vel: 1.93040 mps
+start:
+-0.04868 mps
+-0.14604 mps
+largest magnitude: -0.14604 mps
+max, mult: 1.93040 mps -0.14604 mps
+end result:
+-0.04868 mps
+-0.14604 mps
+old vels: -0.04868 mps -0.14604 mps
+new vels: -0.04868 mps -0.14604 mps
+max vel: 1.93040 mps
+desaturated: -0.09736 -0.36505
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.41688 -0.09736 -0.36505 0.23168 -0.41235 0.33717 1.00000 0.11925 0.02856 0 0 -156.11431 -0.41688
+max vel vel: 1.93040 mps
+start:
+-0.31329 mps
+-0.10443 mps
+largest magnitude: -0.31329 mps
+max, mult: 1.93040 mps -0.31329 mps
+end result:
+-0.31329 mps
+-0.10443 mps
+old vels: -0.31329 mps -0.10443 mps
+new vels: -0.31329 mps -0.10443 mps
+max vel: 1.93040 mps
+desaturated: -0.20886 0.78312
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.34070 -0.20886 0.78312 0.55758 -0.28570 -1.00000 0.03895 0.24728 0.07256 0 0 -160.47928 -0.34070
+max vel vel: 1.93040 mps
+start:
+-0.72984 mps
+-0.24328 mps
+largest magnitude: -0.72984 mps
+max, mult: 1.93040 mps -0.72984 mps
+end result:
+-0.72984 mps
+-0.24328 mps
+old vels: -0.72984 mps -0.24328 mps
+new vels: -0.72984 mps -0.24328 mps
+max vel: 1.93040 mps
+desaturated: -0.48656 1.82438
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.26807 -0.48656 1.82438 0.70389 -0.18219 -1.00000 -0.62435 0.30508 0.25206 0 0 -164.64053 -0.26807
+max vel vel: 1.93040 mps
+start:
+-1.08983 mps
+-0.36328 mps
+largest magnitude: -1.08983 mps
+max, mult: 1.93040 mps -1.08983 mps
+end result:
+-1.08983 mps
+-0.36328 mps
+old vels: -1.08983 mps -0.36328 mps
+new vels: -1.08983 mps -0.36328 mps
+max vel: 1.93040 mps
+desaturated: -0.72655 2.72423
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.19965 -0.72655 2.72423 0.60080 -0.01232 -1.00000 -0.71937 0.10692 0.22756 0 0 -168.56103 -0.19965
+max vel vel: 1.93040 mps
+start:
+-1.46187 mps
+-0.48729 mps
+largest magnitude: -1.46187 mps
+max, mult: 1.93040 mps -1.46187 mps
+end result:
+-1.46187 mps
+-0.48729 mps
+old vels: -1.46187 mps -0.48729 mps
+new vels: -1.46187 mps -0.48729 mps
+max vel: 1.93040 mps
+desaturated: -0.97458 3.65422
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.13446 -0.97458 3.65422 0.35875 -0.22562 -1.00000 -0.79742 -0.12031 -0.07047 0 0 -172.29593 -0.13446
+max vel vel: 1.93040 mps
+start:
+-1.77960 mps
+-0.59320 mps
+largest magnitude: -1.77960 mps
+max, mult: 1.93040 mps -1.77960 mps
+end result:
+-1.77960 mps
+-0.59320 mps
+old vels: -1.77960 mps -0.59320 mps
+new vels: -1.77960 mps -0.59320 mps
+max vel: 1.93040 mps
+desaturated: -1.18640 4.44844
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.07316 -1.18640 4.44844 0.29478 -0.79012 -1.00000 -0.64707 -0.31397 -0.41614 0 0 -175.80800 -0.07316
+max vel vel: 1.93040 mps
+start:
+-1.90280 mps
+-0.63427 mps
+largest magnitude: -1.90280 mps
+max, mult: 1.93040 mps -1.90280 mps
+end result:
+-1.90280 mps
+-0.63427 mps
+old vels: -1.90280 mps -0.63427 mps
+new vels: -1.90280 mps -0.63427 mps
+max vel: 1.93040 mps
+desaturated: -1.26853 4.75639
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.01937 -1.26853 4.75639 0.16943 -1.16940 -1.00000 -0.34907 -0.50256 -0.56894 0 0 -178.89044 -0.01937
+ax vel vel: 1.93040 mps
+start:
+-0.04907 mps
+-0.14720 mps
+largest magnitude: -0.14720 mps
+max, mult: 1.93040 mps -0.14720 mps
+end result:
+-0.04907 mps
+-0.14720 mps
+old vels: -0.04907 mps -0.14720 mps
+new vels: -0.04907 mps -0.14720 mps
+max vel: 1.93040 mps
+desaturated: -0.09813 -0.36794
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.01937 -0.09813 -0.36794 -0.24637 -1.29993 1.00000 1.00000 -0.54206 -0.63669 0 0 -178.89044 -0.01937
+max vel vel: 1.93040 mps
+start:
+-4.03913 mps
+-1.34638 mps
+largest magnitude: -4.03913 mps
+max, mult: 1.93040 mps -4.03913 mps
+end result:
+-4.03913 mps
+-1.34638 mps
+old vels: -4.03913 mps -1.34638 mps
+new vels: -4.03913 mps -1.34638 mps
+max vel: 1.93040 mps
+desaturated: -2.69275 10.09655
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07223 -2.69275 10.09655 -0.26431 -1.15968 -1.00000 1.00000 -0.50203 -0.54550 0 0 -184.13833 0.07223
+max vel vel: 1.93040 mps
+start:
+-0.54900 mps
+-0.18300 mps
+largest magnitude: -0.54900 mps
+max, mult: 1.93040 mps -0.54900 mps
+end result:
+-0.54900 mps
+-0.18300 mps
+old vels: -0.54900 mps -0.18300 mps
+new vels: -0.54900 mps -0.18300 mps
+max vel: 1.93040 mps
+desaturated: -0.36600 1.37232
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07223 -0.36600 1.37232 -0.20574 -0.73177 1.00000 -0.91959 -0.16992 -0.18669 0 0 -184.13833 0.07223
+max vel vel: 1.93040 mps
+start:
+-2.43186 mps
+-0.81062 mps
+largest magnitude: -2.43186 mps
+max, mult: 1.93040 mps -2.43186 mps
+end result:
+-2.43186 mps
+-0.81062 mps
+old vels: -2.43186 mps -0.81062 mps
+new vels: -2.43186 mps -0.81062 mps
+max vel: 1.93040 mps
+desaturated: -1.62124 6.07890
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.11342 -1.62124 6.07890 0.23665 -0.38577 -1.00000 -1.00000 -0.12594 0.08078 0 0 -186.49866 0.11342
+max vel vel: 1.93040 mps
+start:
+-2.54040 mps
+-0.84680 mps
+largest magnitude: -2.54040 mps
+max, mult: 1.93040 mps -2.54040 mps
+end result:
+-2.54040 mps
+-0.84680 mps
+old vels: -2.54040 mps -0.84680 mps
+new vels: -2.54040 mps -0.84680 mps
+max vel: 1.93040 mps
+desaturated: -1.69360 6.35020
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15014 -1.69360 6.35020 0.17289 -0.08018 -1.00000 -0.76260 -0.01539 0.01061 0 0 -188.60251 0.15014
+max vel vel: 1.93040 mps
+start:
+-2.62215 mps
+-0.87405 mps
+largest magnitude: -2.62215 mps
+max, mult: 1.93040 mps -2.62215 mps
+end result:
+-2.62215 mps
+-0.87405 mps
+old vels: -2.62215 mps -0.87405 mps
+new vels: -2.62215 mps -0.87405 mps
+max vel: 1.93040 mps
+desaturated: -1.74810 6.55455
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.18254 -1.74810 6.55455 0.13399 -0.06635 -1.00000 -0.50674 -0.05561 -0.21369 0 0 -190.45897 0.18254
+max vel vel: 1.93040 mps
+start:
+-2.71410 mps
+-0.90470 mps
+largest magnitude: -2.71410 mps
+max, mult: 1.93040 mps -2.71410 mps
+end result:
+-2.71410 mps
+-0.90470 mps
+old vels: -2.71410 mps -0.90470 mps
+new vels: -2.71410 mps -0.90470 mps
+max vel: 1.93040 mps
+desaturated: -1.80940 6.78441
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.21157 -1.80940 6.78441 -0.00756 -0.63279 -1.00000 -0.32193 -0.25531 -0.40997 0 0 -192.12197 0.21157
+max vel vel: 1.93040 mps
+start:
+-2.85203 mps
+-0.95068 mps
+largest magnitude: -2.85203 mps
+max, mult: 1.93040 mps -2.85203 mps
+end result:
+-2.85203 mps
+-0.95068 mps
+old vels: -2.85203 mps -0.95068 mps
+new vels: -2.85203 mps -0.95068 mps
+max vel: 1.93040 mps
+desaturated: -1.90135 7.12918
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23878 -1.90135 7.12918 -0.45103 -0.93146 -1.00000 -0.03686 -0.46236 -0.49364 0 0 -193.68131 0.23878
+max vel vel: 1.93040 mps
+start:
+-3.00464 mps
+-1.00155 mps
+largest magnitude: -3.00464 mps
+max, mult: 1.93040 mps -3.00464 mps
+end result:
+-3.00464 mps
+-1.00155 mps
+old vels: -3.00464 mps -1.00155 mps
+new vels: -3.00464 mps -1.00155 mps
+max vel: 1.93040 mps
+desaturated: -2.00310 7.51067
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.26481 -2.00310 7.51067 -0.96690 -0.90531 -1.00000 0.09597 -0.65825 -0.41992 0 0 -195.17264 0.26481
+max vel vel: 1.93040 mps
+start:
+-3.14521 mps
+-1.04840 mps
+largest magnitude: -3.14521 mps
+max, mult: 1.93040 mps -3.14521 mps
+end result:
+-3.14521 mps
+-1.04840 mps
+old vels: -3.14521 mps -1.04840 mps
+new vels: -3.14521 mps -1.04840 mps
+max vel: 1.93040 mps
+desaturated: -2.09681 7.86204
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.28959 -2.09681 7.86204 -1.25131 -0.54461 -1.00000 0.06812 -0.79033 -0.22533 0 0 -196.59217 0.28959
+max vel vel: 1.93040 mps
+start:
+-3.32379 mps
+-1.10793 mps
+largest magnitude: -3.32379 mps
+max, mult: 1.93040 mps -3.32379 mps
+end result:
+-3.32379 mps
+-1.10793 mps
+old vels: -3.32379 mps -1.10793 mps
+new vels: -3.32379 mps -1.10793 mps
+max vel: 1.93040 mps
+desaturated: -2.21586 8.30844
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.31415 -2.21586 8.30844 -1.36650 -0.26842 -1.00000 0.12132 -0.85828 -0.02994 0 0 -197.99951 0.31415
+max vel vel: 1.93040 mps
+start:
+-3.56259 mps
+-1.18753 mps
+largest magnitude: -3.56259 mps
+max, mult: 1.93040 mps -3.56259 mps
+end result:
+-3.56259 mps
+-1.18753 mps
+old vels: -3.56259 mps -1.18753 mps
+new vels: -3.56259 mps -1.18753 mps
+max vel: 1.93040 mps
+desaturated: -2.37506 8.90535
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.33985 -2.37506 8.90535 -0.66347 -0.26842 -1.00000 0.35250 -0.78778 0.04019 0 0 -199.47214 0.33985
+max vel vel: 1.93040 mps
+start:
+-3.75599 mps
+-1.25200 mps
+largest magnitude: -3.75599 mps
+max, mult: 1.93040 mps -3.75599 mps
+end result:
+-3.75599 mps
+-1.25200 mps
+old vels: -3.75599 mps -1.25200 mps
+new vels: -3.75599 mps -1.25200 mps
+max vel: 1.93040 mps
+desaturated: -2.50399 9.38880
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.36551 -2.50399 9.38880 -0.52105 -0.26842 -1.00000 0.36933 -0.67092 0.08008 0 0 -200.94232 0.36551
+max vel vel: 1.93040 mps
+start:
+-3.57733 mps
+-1.19244 mps
+largest magnitude: -3.57733 mps
+max, mult: 1.93040 mps -3.57733 mps
+end result:
+-3.57733 mps
+-1.19244 mps
+old vels: -3.57733 mps -1.19244 mps
+new vels: -3.57733 mps -1.19244 mps
+max vel: 1.93040 mps
+desaturated: -2.38489 8.94222
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.38300 -2.38489 8.94222 -0.56838 -0.11433 -1.00000 -0.51624 -0.68683 0.20686 0 0 -201.94404 0.38300
+max vel vel: 1.93040 mps
+start:
+-3.51475 mps
+-1.17158 mps
+largest magnitude: -3.51475 mps
+max, mult: 1.93040 mps -3.51475 mps
+end result:
+-3.51475 mps
+-1.17158 mps
+old vels: -3.51475 mps -1.17158 mps
+new vels: -3.51475 mps -1.17158 mps
+max vel: 1.93040 mps
+desaturated: -2.34316 8.78577
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.39620 -2.34316 8.78577 -0.67947 0.10525 -1.00000 -0.38623 -0.70153 0.30303 0 0 -202.70072 0.39620
+max vel vel: 1.93040 mps
+start:
+-3.48017 mps
+-1.16006 mps
+largest magnitude: -3.48017 mps
+max, mult: 1.93040 mps -3.48017 mps
+end result:
+-3.48017 mps
+-1.16006 mps
+old vels: -3.48017 mps -1.16006 mps
+new vels: -3.48017 mps -1.16006 mps
+max vel: 1.93040 mps
+desaturated: -2.32011 8.69933
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.40646 -2.32011 8.69933 -0.85258 0.18435 -1.00000 -0.39568 -0.71728 0.09703 0 0 -203.28822 0.40646
+max vel vel: 1.93040 mps
+start:
+-3.39661 mps
+-1.13220 mps
+largest magnitude: -3.39661 mps
+max, mult: 1.93040 mps -3.39661 mps
+end result:
+-3.39661 mps
+-1.13220 mps
+old vels: -3.39661 mps -1.13220 mps
+new vels: -3.39661 mps -1.13220 mps
+max vel: 1.93040 mps
+desaturated: -2.26440 8.49046
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41318 -2.26440 8.49046 -1.05508 -0.13356 -1.00000 -0.47612 -0.79394 -0.18736 0 0 -203.67326 0.41318
+max vel vel: 1.93040 mps
+start:
+-3.28055 mps
+-1.09352 mps
+largest magnitude: -3.28055 mps
+max, mult: 1.93040 mps -3.28055 mps
+end result:
+-3.28055 mps
+-1.09352 mps
+old vels: -3.28055 mps -1.09352 mps
+new vels: -3.28055 mps -1.09352 mps
+max vel: 1.93040 mps
+desaturated: -2.18703 8.20035
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41624 -2.18703 8.20035 -1.43652 -0.55196 -1.00000 -0.44093 -0.84783 -0.32392 0 0 -203.84878 0.41624
+max vel vel: 1.93040 mps
+start:
+-3.17379 mps
+-1.05793 mps
+largest magnitude: -3.17379 mps
+max, mult: 1.93040 mps -3.17379 mps
+end result:
+-3.17379 mps
+-1.05793 mps
+old vels: -3.17379 mps -1.05793 mps
+new vels: -3.17379 mps -1.05793 mps
+max vel: 1.93040 mps
+desaturated: -2.11586 7.93349
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41646 -2.11586 7.93349 -1.52016 -0.74128 -1.00000 -0.40015 -0.87644 -0.40161 0 0 -203.86129 0.41646
+max vel vel: 1.93040 mps
+start:
+-3.10820 mps
+-1.03607 mps
+largest magnitude: -3.10820 mps
+max, mult: 1.93040 mps -3.10820 mps
+end result:
+-3.10820 mps
+-1.03607 mps
+old vels: -3.10820 mps -1.03607 mps
+new vels: -3.10820 mps -1.03607 mps
+max vel: 1.93040 mps
+desaturated: -2.07213 7.76952
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41520 -2.07213 7.76952 -1.32219 -0.55045 -1.00000 -0.37982 -0.87589 -0.42092 0 0 -203.78948 0.41520
+max vel vel: 1.93040 mps
+start:
+-3.06472 mps
+-1.02157 mps
+largest magnitude: -3.06472 mps
+max, mult: 1.93040 mps -3.06472 mps
+end result:
+-3.06472 mps
+-1.02157 mps
+old vels: -3.06472 mps -1.02157 mps
+new vels: -3.06472 mps -1.02157 mps
+max vel: 1.93040 mps
+desaturated: -2.04314 7.66083
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41321 -2.04314 7.66083 -1.01877 -0.39398 -1.00000 -0.42576 -0.84956 -0.39783 0 0 -203.67511 0.41321
+max vel vel: 1.93040 mps
+start:
+-2.99098 mps
+-0.99699 mps
+largest magnitude: -2.99098 mps
+max, mult: 1.93040 mps -2.99098 mps
+end result:
+-2.99098 mps
+-0.99699 mps
+old vels: -2.99098 mps -0.99699 mps
+new vels: -2.99098 mps -0.99699 mps
+max vel: 1.93040 mps
+desaturated: -1.99399 7.47652
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.40993 -1.99399 7.47652 -0.84026 -0.50506 -1.00000 -0.50650 -0.83175 -0.37333 0 0 -203.48733 0.40993
+max vel vel: 1.93040 mps
+start:
+-2.88346 mps
+-0.96115 mps
+largest magnitude: -2.88346 mps
+max, mult: 1.93040 mps -2.88346 mps
+end result:
+-2.88346 mps
+-0.96115 mps
+old vels: -2.88346 mps -0.96115 mps
+new vels: -2.88346 mps -0.96115 mps
+max vel: 1.93040 mps
+desaturated: -1.92231 7.20775
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.40485 -1.92231 7.20775 -0.94572 -0.66888 -1.00000 -0.58104 -0.79514 -0.39475 0 0 -203.19599 0.40485
+max vel vel: 1.93040 mps
+start:
+-2.81287 mps
+-0.93762 mps
+largest magnitude: -2.81287 mps
+max, mult: 1.93040 mps -2.81287 mps
+end result:
+-2.81287 mps
+-0.93762 mps
+old vels: -2.81287 mps -0.93762 mps
+new vels: -2.81287 mps -0.93762 mps
+max vel: 1.93040 mps
+desaturated: -1.87525 7.03131
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.39906 -1.87525 7.03131 -0.95458 -0.77132 -1.00000 -0.50765 -0.78128 -0.44897 0 0 -202.86461 0.39906
+max vel vel: 1.93040 mps
+start:
+-2.70288 mps
+-0.90096 mps
+largest magnitude: -2.70288 mps
+max, mult: 1.93040 mps -2.70288 mps
+end result:
+-2.70288 mps
+-0.90096 mps
+old vels: -2.70288 mps -0.90096 mps
+new vels: -2.70288 mps -0.90096 mps
+max vel: 1.93040 mps
+desaturated: -1.80192 6.75636
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.39183 -1.80192 6.75636 -0.87505 -0.81195 -1.00000 -0.62378 -0.80506 -0.51403 0 0 -202.45046 0.39183
+max vel vel: 1.93040 mps
+start:
+-2.55525 mps
+-0.85175 mps
+largest magnitude: -2.55525 mps
+max, mult: 1.93040 mps -2.55525 mps
+end result:
+-2.55525 mps
+-0.85175 mps
+old vels: -2.55525 mps -0.85175 mps
+new vels: -2.55525 mps -0.85175 mps
+max vel: 1.93040 mps
+desaturated: -1.70350 6.38732
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.38258 -1.70350 6.38732 -1.04146 -0.63106 -1.00000 -0.82650 -0.81875 -0.50117 0 0 -201.92011 0.38258
+max vel vel: 1.93040 mps
+start:
+-2.42147 mps
+-0.80716 mps
+largest magnitude: -2.42147 mps
+max, mult: 1.93040 mps -2.42147 mps
+end result:
+-2.42147 mps
+-0.80716 mps
+old vels: -2.42147 mps -0.80716 mps
+new vels: -2.42147 mps -0.80716 mps
+max vel: 1.93040 mps
+desaturated: -1.61431 6.05291
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.37193 -1.61431 6.05291 -1.09441 -0.59389 -1.00000 -0.44716 -0.82164 -0.54069 0 0 -201.31026 0.37193
+max vel vel: 1.93040 mps
+start:
+-2.34616 mps
+-0.78205 mps
+largest magnitude: -2.34616 mps
+max, mult: 1.93040 mps -2.34616 mps
+end result:
+-2.34616 mps
+-0.78205 mps
+old vels: -2.34616 mps -0.78205 mps
+new vels: -2.34616 mps -0.78205 mps
+max vel: 1.93040 mps
+desaturated: -1.56411 5.86466
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.36141 -1.56411 5.86466 -1.00667 -0.56968 -1.00000 -0.46045 -0.81381 -0.55250 0 0 -200.70742 0.36141
+max vel vel: 1.93040 mps
+start:
+-2.29485 mps
+-0.76495 mps
+largest magnitude: -2.29485 mps
+max, mult: 1.93040 mps -2.29485 mps
+end result:
+-2.29485 mps
+-0.76495 mps
+old vels: -2.29485 mps -0.76495 mps
+new vels: -2.29485 mps -0.76495 mps
+max vel: 1.93040 mps
+desaturated: -1.52990 5.73640
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.35152 -1.52990 5.73640 -0.95026 -0.51479 -1.00000 -0.49893 -0.81994 -0.38706 0 0 -200.14051 0.35152
+max vel vel: 1.93040 mps
+start:
+-2.22318 mps
+-0.74106 mps
+largest magnitude: -2.22318 mps
+max, mult: 1.93040 mps -2.22318 mps
+end result:
+-2.22318 mps
+-0.74106 mps
+old vels: -2.22318 mps -0.74106 mps
+new vels: -2.22318 mps -0.74106 mps
+max vel: 1.93040 mps
+desaturated: -1.48212 5.55726
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.34170 -1.48212 5.55726 -1.02482 -0.49037 -1.00000 -0.48212 -0.82336 -0.42536 0 0 -199.57804 0.34170
+max vel vel: 1.93040 mps
+start:
+-2.13071 mps
+-0.71024 mps
+largest magnitude: -2.13071 mps
+max, mult: 1.93040 mps -2.13071 mps
+end result:
+-2.13071 mps
+-0.71024 mps
+old vels: -2.13071 mps -0.71024 mps
+new vels: -2.13071 mps -0.71024 mps
+max vel: 1.93040 mps
+desaturated: -1.42047 5.32610
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.33149 -1.42047 5.32610 -0.95653 -0.68163 -1.00000 -0.39832 -0.82969 -0.46147 0 0 -198.99318 0.33149
+max vel vel: 1.93040 mps
+start:
+-2.04129 mps
+-0.68043 mps
+largest magnitude: -2.04129 mps
+max, mult: 1.93040 mps -2.04129 mps
+end result:
+-2.04129 mps
+-0.68043 mps
+old vels: -2.04129 mps -0.68043 mps
+new vels: -2.04129 mps -0.68043 mps
+max vel: 1.93040 mps
+desaturated: -1.36086 5.10258
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32103 -1.36086 5.10258 -1.15406 -0.75316 -1.00000 -0.29644 -0.83964 -0.47139 0 0 -198.39350 0.32103
+max vel vel: 1.93040 mps
+start:
+-1.93554 mps
+-0.64518 mps
+largest magnitude: -1.93554 mps
+max, mult: 1.93040 mps -1.93554 mps
+end result:
+-1.93554 mps
+-0.64518 mps
+old vels: -1.93554 mps -0.64518 mps
+new vels: -1.93554 mps -0.64518 mps
+max vel: 1.93040 mps
+desaturated: -1.29036 4.83825
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.30999 -1.29036 4.83825 -1.26449 -0.73544 -0.99095 -0.24938 -0.85606 -0.42214 0 0 -197.76098 0.30999
+max vel vel: 1.93040 mps
+start:
+-1.81121 mps
+-0.60374 mps
+largest magnitude: -1.81121 mps
+max, mult: 1.93040 mps -1.81121 mps
+end result:
+-1.81121 mps
+-0.60374 mps
+old vels: -1.81121 mps -0.60374 mps
+new vels: -1.81121 mps -0.60374 mps
+max vel: 1.93040 mps
+desaturated: -1.20748 4.52747
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.29806 -1.20748 4.52747 -1.13677 -0.66888 -0.90095 -0.21116 -0.86819 -0.34494 0 0 -197.07780 0.29806
+max vel vel: 1.93040 mps
+start:
+-1.69156 mps
+-0.56385 mps
+largest magnitude: -1.69156 mps
+max, mult: 1.93040 mps -1.69156 mps
+end result:
+-1.69156 mps
+-0.56385 mps
+old vels: -1.69156 mps -0.56385 mps
+new vels: -1.69156 mps -0.56385 mps
+max vel: 1.93040 mps
+desaturated: -1.12771 4.22838
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.28551 -1.12771 4.22838 -1.08447 -0.61053 -0.87205 -0.19869 -0.62625 -0.28850 0 0 -196.35824 0.28551
+max vel vel: 1.93040 mps
+start:
+-1.56900 mps
+-0.52300 mps
+largest magnitude: -1.56900 mps
+max, mult: 1.93040 mps -1.56900 mps
+end result:
+-1.56900 mps
+-0.52300 mps
+old vels: -1.56900 mps -0.52300 mps
+new vels: -1.56900 mps -0.52300 mps
+max vel: 1.93040 mps
+desaturated: -1.04600 3.92201
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.27235 -1.04600 3.92201 -1.07345 -0.56795 -0.80193 -0.17454 -0.64083 -0.24347 0 0 -195.60470 0.27235
+max vel vel: 1.93040 mps
+start:
+-1.44042 mps
+-0.48014 mps
+largest magnitude: -1.44042 mps
+max, mult: 1.93040 mps -1.44042 mps
+end result:
+-1.44042 mps
+-0.48014 mps
+old vels: -1.44042 mps -0.48014 mps
+new vels: -1.44042 mps -0.48014 mps
+max vel: 1.93040 mps
+desaturated: -0.96028 3.60059
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.25858 -0.96028 3.60059 -0.89472 -0.53683 -0.75678 -0.14205 -0.55489 -0.21731 0 0 -194.81528 0.25858
+max vel vel: 1.93040 mps
+start:
+-1.31279 mps
+-0.43760 mps
+largest magnitude: -1.31279 mps
+max, mult: 1.93040 mps -1.31279 mps
+end result:
+-1.31279 mps
+-0.43760 mps
+old vels: -1.31279 mps -0.43760 mps
+new vels: -1.31279 mps -0.43760 mps
+max vel: 1.93040 mps
+desaturated: -0.87520 3.28157
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.24430 -0.87520 3.28157 -1.25088 -0.49771 -0.59338 -0.11792 -0.68497 -0.19883 0 0 -193.99716 0.24430
+max vel vel: 1.93040 mps
+start:
+-1.19054 mps
+-0.39685 mps
+largest magnitude: -1.19054 mps
+max, mult: 1.93040 mps -1.19054 mps
+end result:
+-1.19054 mps
+-0.39685 mps
+old vels: -1.19054 mps -0.39685 mps
+new vels: -1.19054 mps -0.39685 mps
+max vel: 1.93040 mps
+desaturated: -0.79369 2.97598
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.22972 -0.79369 2.97598 -1.19944 -0.46919 -0.27195 -0.09668 -0.64389 -0.17369 0 0 -193.16185 0.22972
+max vel vel: 1.93040 mps
+start:
+-1.07569 mps
+-0.35856 mps
+largest magnitude: -1.07569 mps
+max, mult: 1.93040 mps -1.07569 mps
+end result:
+-1.07569 mps
+-0.35856 mps
+old vels: -1.07569 mps -0.35856 mps
+new vels: -1.07569 mps -0.35856 mps
+max vel: 1.93040 mps
+desaturated: -0.71713 2.68889
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.21505 -0.71713 2.68889 -1.19404 -0.46465 -0.20371 -0.07177 -0.62558 -0.14647 0 0 -192.32147 0.21505
+max vel vel: 1.93040 mps
+start:
+-0.95580 mps
+-0.31860 mps
+largest magnitude: -0.95580 mps
+max, mult: 1.93040 mps -0.95580 mps
+end result:
+-0.95580 mps
+-0.31860 mps
+old vels: -0.95580 mps -0.31860 mps
+new vels: -0.95580 mps -0.31860 mps
+max vel: 1.93040 mps
+desaturated: -0.63720 2.38921
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.20020 -0.63720 2.38921 -1.00083 -0.53986 -0.14066 -0.00814 -0.47139 -0.12783 0 0 -191.47056 0.20020
+max vel vel: 1.93040 mps
+start:
+-0.81677 mps
+-0.27226 mps
+largest magnitude: -0.81677 mps
+max, mult: 1.93040 mps -0.81677 mps
+end result:
+-0.81677 mps
+-0.27226 mps
+old vels: -0.81677 mps -0.27226 mps
+new vels: -0.81677 mps -0.27226 mps
+max vel: 1.93040 mps
+desaturated: -0.54451 2.04167
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.18478 -0.54451 2.04167 -0.87937 -0.53791 -0.01028 0.06244 -0.34992 -0.10967 0 0 -190.58687 0.18478
+max vel vel: 1.93040 mps
+start:
+-0.64062 mps
+-0.21354 mps
+largest magnitude: -0.64062 mps
+max, mult: 1.93040 mps -0.64062 mps
+end result:
+-0.64062 mps
+-0.21354 mps
+old vels: -0.64062 mps -0.21354 mps
+new vels: -0.64062 mps -0.21354 mps
+max vel: 1.93040 mps
+desaturated: -0.42708 1.60134
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.16806 -0.42708 1.60134 -0.64619 -0.48194 0.17506 0.14617 -0.25186 -0.05458 0 0 -189.62932 0.16806
+max vel vel: 1.93040 mps
+start:
+-0.46242 mps
+-0.15414 mps
+largest magnitude: -0.46242 mps
+max, mult: 1.93040 mps -0.46242 mps
+end result:
+-0.46242 mps
+-0.15414 mps
+old vels: -0.46242 mps -0.15414 mps
+new vels: -0.46242 mps -0.15414 mps
+max vel: 1.93040 mps
+desaturated: -0.30828 1.15589
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15023 -0.30828 1.15589 -0.52516 -0.36848 0.28139 0.17738 -0.12953 0.01658 0 0 -188.60762 0.15023
+max vel vel: 1.93040 mps
+start:
+-0.27608 mps
+-0.09203 mps
+largest magnitude: -0.27608 mps
+max, mult: 1.93040 mps -0.27608 mps
+end result:
+-0.27608 mps
+-0.09203 mps
+old vels: -0.27608 mps -0.09203 mps
+new vels: -0.27608 mps -0.09203 mps
+max vel: 1.93040 mps
+desaturated: -0.18405 0.69011
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.13129 -0.18405 0.69011 -0.45816 -0.25804 0.43359 0.21245 0.04669 0.09103 0 0 -187.52224 0.13129
+max vel vel: 1.93040 mps
+start:
+-0.10381 mps
+-0.03460 mps
+largest magnitude: -0.10381 mps
+max, mult: 1.93040 mps -0.10381 mps
+end result:
+-0.10381 mps
+-0.03460 mps
+old vels: -0.10381 mps -0.03460 mps
+new vels: -0.10381 mps -0.03460 mps
+max vel: 1.93040 mps
+desaturated: -0.06921 0.25950
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.11173 -0.06921 0.25950 -0.35378 -0.17830 0.50602 0.22719 0.17950 0.13431 0 0 -186.40141 0.11173
+max vel vel: 1.93040 mps
+start:
+-0.00873 mps
+-0.02619 mps
+largest magnitude: -0.02619 mps
+max, mult: 1.93040 mps -0.02619 mps
+end result:
+-0.00873 mps
+-0.02619 mps
+old vels: -0.00873 mps -0.02619 mps
+new vels: -0.00873 mps -0.02619 mps
+max vel: 1.93040 mps
+desaturated: -0.01746 -0.06547
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.09257 -0.01746 -0.06547 -0.21482 -0.15042 0.32054 0.08382 0.27822 0.17267 0 0 -185.30401 0.09257
+max vel vel: 1.93040 mps
+start:
+-0.03215 mps
+-0.09646 mps
+largest magnitude: -0.09646 mps
+max, mult: 1.93040 mps -0.09646 mps
+end result:
+-0.03215 mps
+-0.09646 mps
+old vels: -0.03215 mps -0.09646 mps
+new vels: -0.03215 mps -0.09646 mps
+max vel: 1.93040 mps
+desaturated: -0.06431 -0.24111
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07507 -0.06431 -0.24111 -0.11324 -0.10395 -0.07654 -0.21611 0.34019 0.19764 0 0 -184.30103 0.07507
+max vel vel: 1.93040 mps
+start:
+-0.04161 mps
+-0.12483 mps
+largest magnitude: -0.12483 mps
+max, mult: 1.93040 mps -0.12483 mps
+end result:
+-0.04161 mps
+-0.12483 mps
+old vels: -0.04161 mps -0.12483 mps
+new vels: -0.04161 mps -0.12483 mps
+max vel: 1.93040 mps
+desaturated: -0.08322 -0.31203
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05985 -0.08322 -0.31203 -0.05122 -0.10395 -0.05944 -0.23031 0.25853 0.10864 0 0 -183.42928 0.05985
+max vel vel: 1.93040 mps
+start:
+-0.05165 mps
+-0.15494 mps
+largest magnitude: -0.15494 mps
+max, mult: 1.93040 mps -0.15494 mps
+end result:
+-0.05165 mps
+-0.15494 mps
+old vels: -0.05165 mps -0.15494 mps
+new vels: -0.05165 mps -0.15494 mps
+max vel: 1.93040 mps
+desaturated: -0.10330 -0.38731
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.04651 -0.10330 -0.38731 -0.01318 -0.13529 -0.14376 -0.25242 0.07206 -0.11892 0 0 -182.66475 0.04651
+max vel vel: 1.93040 mps
+start:
+-0.07081 mps
+-0.21242 mps
+largest magnitude: -0.21242 mps
+max, mult: 1.93040 mps -0.21242 mps
+end result:
+-0.07081 mps
+-0.21242 mps
+old vels: -0.07081 mps -0.21242 mps
+new vels: -0.07081 mps -0.21242 mps
+max vel: 1.93040 mps
+desaturated: -0.14161 -0.53099
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.03413 -0.14161 -0.53099 -0.09704 -0.37647 -0.16644 -0.31518 -0.02736 -0.19522 0 0 -181.95531 0.03413
+max vel vel: 1.93040 mps
+start:
+-0.10138 mps
+-0.30415 mps
+largest magnitude: -0.30415 mps
+max, mult: 1.93040 mps -0.30415 mps
+end result:
+-0.10138 mps
+-0.30415 mps
+old vels: -0.10138 mps -0.30415 mps
+new vels: -0.10138 mps -0.30415 mps
+max vel: 1.93040 mps
+desaturated: -0.20277 -0.76029
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.02180 -0.20277 -0.76029 -0.27706 -0.44152 -0.17134 -0.45611 -0.10131 -0.22947 0 0 -181.24886 0.02180
+max vel vel: 1.93040 mps
+start:
+-0.13028 mps
+-0.39085 mps
+largest magnitude: -0.39085 mps
+max, mult: 1.93040 mps -0.39085 mps
+end result:
+-0.13028 mps
+-0.39085 mps
+old vels: -0.13028 mps -0.39085 mps
+new vels: -0.13028 mps -0.39085 mps
+max vel: 1.93040 mps
+desaturated: -0.26057 -0.97701
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.00962 -0.26057 -0.97701 -0.41516 -0.53272 -0.13570 -0.47417 -0.14733 -0.27739 0 0 -180.55120 0.00962
+max vel vel: 1.93040 mps
+start:
+-0.14238 mps
+-0.42713 mps
+largest magnitude: -0.42713 mps
+max, mult: 1.93040 mps -0.42713 mps
+end result:
+-0.14238 mps
+-0.42713 mps
+old vels: -0.14238 mps -0.42713 mps
+new vels: -0.14238 mps -0.42713 mps
+max vel: 1.93040 mps
+desaturated: -0.28475 -1.06769
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.00132 -0.28475 -1.06769 -0.44282 -0.63970 -0.06710 -0.31076 -0.17164 -0.37767 0 0 -179.92410 -0.00132
+start:
+0.00000 volt
+0.00000 volt
+largest magnitude: 0.00000 volt
+max, mult: 1.00000 volt 0.00000 volt
+end result:
+0.00000 volt
+0.00000 volt
+final error was 359.383
+position: 10.60 -0.91 -179.3828
+took 1130.0000 time to finish turn
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14158 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 0.00000 0.00000 0 0 -0.00100 -3.14158
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14160 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 -0.00017 0.00000 0 0 0.00019 -3.14160
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14158 -3.86080 -14.47619 0.05446 -0.04236 1.00000 -1.00000 0.13414 -0.23408 0 0 -0.00049 -3.14158
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.46724 -0.56255 1.00000 -1.00000 0.36719 -0.44572 0 0 -0.00036 -3.14159
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14161 -3.86080 -14.47619 0.57379 -0.53208 0.97768 -1.00000 0.58092 -0.60556 0 0 0.00086 -3.14161
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13983 -3.86080 -14.47619 0.53337 -0.57443 1.00000 -1.00000 0.67878 -0.65125 0 0 -0.10120 -3.13983
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13358 -3.86080 -14.47619 0.45103 -0.62652 1.00000 -1.00000 0.38175 -0.70650 0 0 -0.45903 -3.13358
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.12313 -3.86080 -14.47619 0.34946 -0.72550 1.00000 -1.00000 0.45600 -0.69486 0 0 -1.05767 -3.12313
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.10938 -3.86080 -14.47619 0.59994 -0.74344 1.00000 -1.00000 0.61342 -0.71556 0 0 -1.84548 -3.10938
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.09274 -3.86080 -14.47619 0.70605 -0.74970 0.97217 -1.00000 0.70222 -0.73047 0 0 -2.79900 -3.09274
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.07291 -3.86080 -14.47619 0.77629 -0.77996 0.97928 -1.00000 0.72928 -0.74294 0 0 -3.93499 -3.07291
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.04947 -3.86080 -14.47619 0.52213 -0.83745 1.00000 -1.00000 0.39631 -0.75992 0 0 -5.27841 -3.04947
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.02227 -3.86080 -14.47619 0.41818 -0.82880 1.00000 -1.00000 0.38978 -0.74944 0 0 -6.83672 -3.02227
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.99180 -3.86080 -14.47619 0.60620 -0.84371 1.00000 -1.00000 0.53864 -0.75389 0 0 -8.58223 -2.99180
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.95901 -3.86080 -14.47619 0.76829 -0.87764 1.00000 -1.00000 0.66561 -0.76058 0 0 -10.46100 -2.95901
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.92367 -3.86080 -14.47619 0.87613 -0.89580 0.97797 -1.00000 0.73681 -0.75753 0 0 -12.48619 -2.92367
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.88539 -3.86080 -14.47619 0.87570 -0.90315 0.99615 -1.00000 0.74314 -0.77189 0 0 -14.67953 -2.88539
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.84420 -3.86080 -14.47619 0.58783 -0.95329 1.00000 -1.00000 0.40861 -0.81072 0 0 -17.03936 -2.84420
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.80004 -3.86080 -14.47619 0.72420 -0.99283 1.00000 -1.00000 0.53061 -0.80800 0 0 -19.56979 -2.80004
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.75354 -3.86080 -14.47619 0.70497 -1.00429 1.00000 -1.00000 0.46217 -0.82150 0 0 -22.23393 -2.75354
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.70510 -3.86080 -14.47619 0.82318 -1.00580 1.00000 -1.00000 0.57681 -0.81756 0 0 -25.00942 -2.70510
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.65463 -3.86080 -14.47619 0.97468 -1.03562 0.99576 -1.00000 0.70875 -0.80200 0 0 -27.90078 -2.65463
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.60210 -3.86080 -14.47619 0.99629 -1.05702 1.00000 -1.00000 0.76453 -0.79842 0 0 -30.91056 -2.60210
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.54738 -3.86080 -14.47619 0.73371 -1.07928 1.00000 -1.00000 0.49297 -0.83314 0 0 -34.04603 -2.54738
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.49021 -3.86080 -14.47619 0.73868 -1.13374 1.00000 -1.00000 0.51400 -0.83450 0 0 -37.32124 -2.49021
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.43153 -3.86080 -14.47619 0.95869 -1.14930 1.00000 -1.00000 0.65639 -0.82303 0 0 -40.68381 -2.43153
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.37157 -3.86080 -14.47619 1.11148 -1.10111 0.97152 -1.00000 0.74331 -0.81603 0 0 -44.11895 -2.37157
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.30993 -3.86080 -14.47619 1.20376 -1.07496 0.95039 -1.00000 0.78711 -0.81228 0 0 -47.65051 -2.30993
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.24648 -3.86080 -14.47619 0.97274 -1.12985 1.00000 -1.00000 0.58364 -0.83775 0 0 -51.28616 -2.24648
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.18130 -3.86080 -14.47619 1.07496 -1.19663 1.00000 -1.00000 0.67469 -0.83878 0 0 -55.02051 -2.18130
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.11460 -3.86080 -14.47619 0.93924 -1.28135 1.00000 -1.00000 0.59050 -0.85161 0 0 -58.84216 -2.11460
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.04652 -3.86080 -14.47619 0.87267 -1.29885 1.00000 -1.00000 0.66661 -0.85297 0 0 -62.74287 -2.04652
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.97767 -3.86080 -14.47619 1.08425 -1.27033 1.00000 -1.00000 0.77289 -0.83361 0 0 -66.68808 -1.97767
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.90734 -3.86080 -14.47619 1.18085 -1.26147 0.96839 -1.00000 0.80542 -0.82986 0 0 -70.71770 -1.90734
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.83525 -3.86080 -14.47619 1.22537 -1.27573 0.95892 -1.00000 0.81961 -0.83436 0 0 -74.84765 -1.83525
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.76207 -3.86080 -14.47619 1.15298 -1.28934 0.98166 -1.00000 0.65653 -0.86442 0 0 -79.04099 -1.76207
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.68768 -3.86080 -14.47619 1.07453 -1.25066 1.00000 -1.00000 0.67692 -0.85161 0 0 -83.30294 -1.68768
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.61217 -3.86080 -14.47619 0.92281 -1.26103 1.00000 -1.00000 0.59647 -0.86494 0 0 -87.62943 -1.61217
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.53555 -3.86080 -14.47619 1.06307 -1.33516 1.00000 -1.00000 0.66064 -0.85244 0 0 -92.01927 -1.53555
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.45841 -3.86080 -14.47619 1.22343 -1.35115 0.98152 -1.00000 0.77939 -0.84664 0 0 -96.43926 -1.45841
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.38078 -3.86080 -14.47619 1.28264 -1.34229 0.96408 -1.00000 0.82322 -0.84783 0 0 -100.88725 -1.38078
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.30204 -3.86080 -14.47619 1.15081 -1.37882 0.99959 -1.00000 0.65742 -0.87539 0 0 -105.39861 -1.30204
+max vel vel: 1.93040 mps
+start:
+-1.93040 mps
+-5.79120 mps
+largest magnitude: -5.79120 mps
+max, mult: 1.93040 mps -5.79120 mps
+end result:
+-1.93040 mps
+-5.79120 mps
+old vels: -1.93040 mps -5.79120 mps
+new vels: -1.93040 mps -5.79120 mps
+max vel: 1.93040 mps
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.22184 -3.86080 -14.47619 1.01985 -1.31377 1.00000 -1.00000 0.64147 -0.86564 0 0 -109.99362 -1.22184
+max vel vel: 1.93040 mps
+start:
+-1.85740 mps
+-5.57221 mps
+largest magnitude: -5.57221 mps
+max, mult: 1.93040 mps -5.57221 mps
+end result:
+-1.85740 mps
+-5.57221 mps
+old vels: -1.85740 mps -5.57221 mps
+new vels: -1.85740 mps -5.57221 mps
+max vel: 1.93040 mps
+desaturated: -3.71481 -13.92879
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.14056 -3.71481 -13.92879 0.85863 -1.34445 0.54817 -1.00000 0.58331 -0.87025 0 0 -114.65060 -1.14056
+max vel vel: 1.93040 mps
+start:
+-1.63461 mps
+-4.90384 mps
+largest magnitude: -4.90384 mps
+max, mult: 1.93040 mps -4.90384 mps
+end result:
+-1.63461 mps
+-4.90384 mps
+old vels: -1.63461 mps -4.90384 mps
+new vels: -1.63461 mps -4.90384 mps
+max vel: 1.93040 mps
+desaturated: -3.26923 -12.25806
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.05818 -3.26923 -12.25806 1.18647 -1.39870 -1.00000 -1.00000 0.66919 -0.86461 0 0 -119.37098 -1.05818
+max vel vel: 1.93040 mps
+start:
+-1.42178 mps
+-4.26533 mps
+largest magnitude: -4.26533 mps
+max, mult: 1.93040 mps -4.26533 mps
+end result:
+-1.42178 mps
+-4.26533 mps
+old vels: -1.42178 mps -4.26533 mps
+new vels: -1.42178 mps -4.26533 mps
+max vel: 1.93040 mps
+desaturated: -2.84356 -10.66200
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.97552 -2.84356 -10.66200 1.11926 -1.50179 -1.00000 -1.00000 0.57306 -0.88958 0 0 -124.10677 -0.97552
+max vel vel: 1.93040 mps
+start:
+-1.21293 mps
+-3.63879 mps
+largest magnitude: -3.63879 mps
+max, mult: 1.93040 mps -3.63879 mps
+end result:
+-1.21293 mps
+-3.63879 mps
+old vels: -1.21293 mps -3.63879 mps
+new vels: -1.21293 mps -3.63879 mps
+max vel: 1.93040 mps
+desaturated: -2.42586 -9.09585
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.89290 -2.42586 -9.09585 0.65699 -1.46332 -1.00000 -1.00000 0.17794 -0.89625 0 0 -128.84040 -0.89290
+max vel vel: 1.93040 mps
+start:
+-1.00114 mps
+-3.00341 mps
+largest magnitude: -3.00341 mps
+max, mult: 1.93040 mps -3.00341 mps
+end result:
+-1.00114 mps
+-3.00341 mps
+old vels: -1.00114 mps -3.00341 mps
+new vels: -1.00114 mps -3.00341 mps
+max vel: 1.93040 mps
+desaturated: -2.00227 -7.50758
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.81012 -2.00227 -7.50758 0.33563 -1.41556 -1.00000 -1.00000 0.01250 -0.90000 0 0 -133.58333 -0.81012
+max vel vel: 1.93040 mps
+start:
+-0.78639 mps
+-2.35916 mps
+largest magnitude: -2.35916 mps
+max, mult: 1.93040 mps -2.35916 mps
+end result:
+-0.78639 mps
+-2.35916 mps
+old vels: -0.78639 mps -2.35916 mps
+new vels: -0.78639 mps -2.35916 mps
+max vel: 1.93040 mps
+desaturated: -1.57277 -5.89716
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.72701 -1.57277 -5.89716 0.28873 -1.37276 -1.00000 -1.00000 -0.16411 -0.88958 0 0 -138.34512 -0.72701
+max vel vel: 1.93040 mps
+start:
+-0.57903 mps
+-1.73710 mps
+largest magnitude: -1.73710 mps
+max, mult: 1.93040 mps -1.73710 mps
+end result:
+-0.57903 mps
+-1.73710 mps
+old vels: -0.57903 mps -1.73710 mps
+new vels: -0.57903 mps -1.73710 mps
+max vel: 1.93040 mps
+desaturated: -1.15807 -4.34221
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.64412 -1.15807 -4.34221 -0.10201 -1.37212 0.33158 0.81462 -0.36753 -0.86531 0 0 -143.09482 -0.64412
+max vel vel: 1.93040 mps
+start:
+-0.38576 mps
+-1.15729 mps
+largest magnitude: -1.15729 mps
+max, mult: 1.93040 mps -1.15729 mps
+end result:
+-0.38576 mps
+-1.15729 mps
+old vels: -0.38576 mps -1.15729 mps
+new vels: -0.38576 mps -1.15729 mps
+max vel: 1.93040 mps
+desaturated: -0.77153 -2.89287
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.56232 -0.77153 -2.89287 -0.28376 -1.38335 0.48312 1.00000 -0.55733 -0.83108 0 0 -147.78146 -0.56232
+max vel vel: 1.93040 mps
+start:
+-0.21267 mps
+-0.63802 mps
+largest magnitude: -0.63802 mps
+max, mult: 1.93040 mps -0.63802 mps
+end result:
+-0.21267 mps
+-0.63802 mps
+old vels: -0.21267 mps -0.63802 mps
+new vels: -0.21267 mps -0.63802 mps
+max vel: 1.93040 mps
+desaturated: -0.42534 -1.59484
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48276 -0.42534 -1.59484 -0.21849 -0.95199 0.34203 1.00000 -0.06639 -0.16408 0 0 -152.33966 -0.48276
+max vel vel: 1.93040 mps
+start:
+-1.22315 mps
+-3.66946 mps
+largest magnitude: -3.66946 mps
+max, mult: 1.93040 mps -3.66946 mps
+end result:
+-1.22315 mps
+-3.66946 mps
+old vels: -1.22315 mps -3.66946 mps
+new vels: -1.22315 mps -3.66946 mps
+max vel: 1.93040 mps
+desaturated: -2.44631 -9.17251
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.48276 -2.44631 -9.17251 0.46508 -0.36848 0.09608 -1.00000 0.13672 0.07067 0 0 -152.33966 -0.48276
+max vel vel: 1.93040 mps
+start:
+-0.05898 mps
+-0.17694 mps
+largest magnitude: -0.17694 mps
+max, mult: 1.93040 mps -0.17694 mps
+end result:
+-0.05898 mps
+-0.17694 mps
+old vels: -0.05898 mps -0.17694 mps
+new vels: -0.05898 mps -0.17694 mps
+max vel: 1.93040 mps
+desaturated: -0.11796 -0.44230
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.40635 -0.11796 -0.44230 0.58394 -0.29586 -0.21371 1.00000 0.21831 0.04056 0 0 -156.71782 -0.40635
+max vel vel: 1.93040 mps
+start:
+-0.22758 mps
+-0.07586 mps
+largest magnitude: -0.22758 mps
+max, mult: 1.93040 mps -0.22758 mps
+end result:
+-0.22758 mps
+-0.07586 mps
+old vels: -0.22758 mps -0.07586 mps
+new vels: -0.22758 mps -0.07586 mps
+max vel: 1.93040 mps
+desaturated: -0.15172 0.56889
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.33379 -0.15172 0.56889 0.63365 -0.28441 -1.00000 0.22408 0.19386 -0.09153 0 0 -160.87499 -0.33379
+max vel vel: 1.93040 mps
+start:
+-0.59771 mps
+-0.19924 mps
+largest magnitude: -0.59771 mps
+max, mult: 1.93040 mps -0.59771 mps
+end result:
+-0.59771 mps
+-0.19924 mps
+old vels: -0.59771 mps -0.19924 mps
+new vels: -0.59771 mps -0.19924 mps
+max vel: 1.93040 mps
+desaturated: -0.39847 1.49408
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.26521 -0.39847 1.49408 0.47545 -0.50333 -1.00000 -0.47697 0.01161 -0.02739 0 0 -164.80479 -0.26521
+max vel vel: 1.93040 mps
+start:
+-0.92420 mps
+-0.30807 mps
+largest magnitude: -0.92420 mps
+max, mult: 1.93040 mps -0.92420 mps
+end result:
+-0.92420 mps
+-0.30807 mps
+old vels: -0.92420 mps -0.30807 mps
+new vels: -0.92420 mps -0.30807 mps
+max vel: 1.93040 mps
+desaturated: -0.61614 2.31022
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.20088 -0.61614 2.31022 0.29694 -0.43093 -1.00000 -0.51684 -0.25614 0.14047 0 0 -168.49035 -0.20088
+max vel vel: 1.93040 mps
+start:
+-1.24245 mps
+-0.41415 mps
+largest magnitude: -1.24245 mps
+max, mult: 1.93040 mps -1.24245 mps
+end result:
+-1.24245 mps
+-0.41415 mps
+old vels: -1.24245 mps -0.41415 mps
+new vels: -1.24245 mps -0.41415 mps
+max vel: 1.93040 mps
+desaturated: -0.82830 3.10574
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.14029 -0.82830 3.10574 -0.09207 -0.44304 -1.00000 -0.58491 -0.49400 0.00375 0 0 -171.96194 -0.14029
+max vel vel: 1.93040 mps
+start:
+-1.52353 mps
+-0.50784 mps
+largest magnitude: -1.52353 mps
+max, mult: 1.93040 mps -1.52353 mps
+end result:
+-1.52353 mps
+-0.50784 mps
+old vels: -1.52353 mps -0.50784 mps
+new vels: -1.52353 mps -0.50784 mps
+max vel: 1.93040 mps
+desaturated: -1.01569 3.80835
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.08363 -1.01569 3.80835 -0.22692 -0.71275 -1.00000 -0.54600 -0.53831 -0.31658 0 0 -175.20855 -0.08363
+max vel vel: 1.93040 mps
+start:
+-1.62790 mps
+-0.54263 mps
+largest magnitude: -1.62790 mps
+max, mult: 1.93040 mps -1.62790 mps
+end result:
+-1.62790 mps
+-0.54263 mps
+old vels: -1.62790 mps -0.54263 mps
+new vels: -1.62790 mps -0.54263 mps
+max vel: 1.93040 mps
+desaturated: -1.08527 4.06924
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.03410 -1.08527 4.06924 -0.30580 -1.00796 -1.00000 -0.29452 -0.45089 -0.48425 0 0 -178.04608 -0.03410
+max vel vel: 1.93040 mps
+start:
+-1.68509 mps
+-0.56170 mps
+largest magnitude: -1.68509 mps
+max, mult: 1.93040 mps -1.68509 mps
+end result:
+-1.68509 mps
+-0.56170 mps
+old vels: -1.68509 mps -0.56170 mps
+new vels: -1.68509 mps -0.56170 mps
+max vel: 1.93040 mps
+desaturated: -1.12339 4.21220
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.00844 -1.12339 4.21220 -0.35421 -1.07107 -1.00000 -0.20797 -0.50014 -0.51900 0 0 -180.48342 0.00844
+max vel vel: 1.93040 mps
+start:
+-1.82839 mps
+-0.60946 mps
+largest magnitude: -1.82839 mps
+max, mult: 1.93040 mps -1.82839 mps
+end result:
+-1.82839 mps
+-0.60946 mps
+old vels: -1.82839 mps -0.60946 mps
+new vels: -1.82839 mps -0.60946 mps
+max vel: 1.93040 mps
+desaturated: -1.21893 4.57040
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.04704 -1.21893 4.57040 -0.25675 -0.88802 -1.00000 -0.35132 -0.54617 -0.40108 0 0 -182.69506 0.04704
+max vel vel: 1.93040 mps
+start:
+-1.95437 mps
+-0.65146 mps
+largest magnitude: -1.95437 mps
+max, mult: 1.93040 mps -1.95437 mps
+end result:
+-1.95437 mps
+-0.65146 mps
+old vels: -1.95437 mps -0.65146 mps
+new vels: -1.95437 mps -0.65146 mps
+max vel: 1.93040 mps
+desaturated: -1.30291 4.88531
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.08197 -1.30291 4.88531 -0.31488 -0.67752 -1.00000 -0.41643 -0.55989 -0.29089 0 0 -184.69682 0.08197
+max vel vel: 1.93040 mps
+start:
+-2.04255 mps
+-0.68085 mps
+largest magnitude: -2.04255 mps
+max, mult: 1.93040 mps -2.04255 mps
+end result:
+-2.04255 mps
+-0.68085 mps
+old vels: -2.04255 mps -0.68085 mps
+new vels: -2.04255 mps -0.68085 mps
+max vel: 1.93040 mps
+desaturated: -1.36170 5.10575
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.11303 -1.36170 5.10575 -0.33952 -0.59518 -1.00000 -0.51200 -0.58519 -0.30817 0 0 -186.47623 0.11303
+max vel vel: 1.93040 mps
+start:
+-2.09054 mps
+-0.69685 mps
+largest magnitude: -2.09054 mps
+max, mult: 1.93040 mps -2.09054 mps
+end result:
+-2.09054 mps
+-0.69685 mps
+old vels: -2.09054 mps -0.69685 mps
+new vels: -2.09054 mps -0.69685 mps
+max vel: 1.93040 mps
+desaturated: -1.39369 5.22570
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.13997 -1.39369 5.22570 -0.60793 -0.65072 -1.00000 -0.47786 -0.64147 -0.36550 0 0 -188.01989 0.13997
+max vel vel: 1.93040 mps
+start:
+-2.11959 mps
+-0.70653 mps
+largest magnitude: -2.11959 mps
+max, mult: 1.93040 mps -2.11959 mps
+end result:
+-2.11959 mps
+-0.70653 mps
+old vels: -2.11959 mps -0.70653 mps
+new vels: -2.11959 mps -0.70653 mps
+max vel: 1.93040 mps
+desaturated: -1.41306 5.29830
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.16307 -1.41306 5.29830 -1.07431 -0.68746 -1.00000 -0.45775 -0.72703 -0.44353 0 0 -189.34323 0.16307
+max vel vel: 1.93040 mps
+start:
+-2.15481 mps
+-0.71827 mps
+largest magnitude: -2.15481 mps
+max, mult: 1.93040 mps -2.15481 mps
+end result:
+-2.15481 mps
+-0.71827 mps
+old vels: -2.15481 mps -0.71827 mps
+new vels: -2.15481 mps -0.71827 mps
+max vel: 1.93040 mps
+desaturated: -1.43654 5.38635
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.18310 -1.43654 5.38635 -1.40237 -0.68314 -1.00000 -0.47420 -0.81208 -0.46319 0 0 -190.49067 0.18310
+max vel vel: 1.93040 mps
+start:
+-2.23922 mps
+-0.74641 mps
+largest magnitude: -2.23922 mps
+max, mult: 1.93040 mps -2.23922 mps
+end result:
+-2.23922 mps
+-0.74641 mps
+old vels: -2.23922 mps -0.74641 mps
+new vels: -2.23922 mps -0.74641 mps
+max vel: 1.93040 mps
+desaturated: -1.49281 5.59734
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.20164 -1.49281 5.59734 -1.46008 -0.67385 -1.00000 -0.55044 -0.86428 -0.44950 0 0 -191.55309 0.20164
+max vel vel: 1.93040 mps
+start:
+-2.36073 mps
+-0.78691 mps
+largest magnitude: -2.36073 mps
+max, mult: 1.93040 mps -2.36073 mps
+end result:
+-2.36073 mps
+-0.78691 mps
+old vels: -2.36073 mps -0.78691 mps
+new vels: -2.36073 mps -0.78691 mps
+max vel: 1.93040 mps
+desaturated: -1.57382 5.90108
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.21976 -1.57382 5.90108 -1.80867 -0.64381 -1.00000 -0.63277 -0.89456 -0.45686 0 0 -192.59115 0.21976
+max vel vel: 1.93040 mps
+start:
+-2.50330 mps
+-0.83443 mps
+largest magnitude: -2.50330 mps
+max, mult: 1.93040 mps -2.50330 mps
+end result:
+-2.50330 mps
+-0.83443 mps
+old vels: -2.50330 mps -0.83443 mps
+new vels: -2.50330 mps -0.83443 mps
+max vel: 1.93040 mps
+desaturated: -1.66887 6.25747
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23798 -1.66887 6.25747 -1.50071 -0.72161 -1.00000 -0.67931 -0.90517 -0.50342 0 0 -193.63530 0.23798
+max vel vel: 1.93040 mps
+start:
+-2.69631 mps
+-0.89877 mps
+largest magnitude: -2.69631 mps
+max, mult: 1.93040 mps -2.69631 mps
+end result:
+-2.69631 mps
+-0.89877 mps
+old vels: -2.69631 mps -0.89877 mps
+new vels: -2.69631 mps -0.89877 mps
+max vel: 1.93040 mps
+desaturated: -1.79754 6.73994
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.25740 -1.79754 6.73994 -1.02006 -0.83377 -1.00000 -0.13488 -0.86222 -0.55147 0 0 -194.74777 0.25740
+max vel vel: 1.93040 mps
+start:
+-2.88323 mps
+-0.96108 mps
+largest magnitude: -2.88323 mps
+max, mult: 1.93040 mps -2.88323 mps
+end result:
+-2.88323 mps
+-0.96108 mps
+old vels: -2.88323 mps -0.96108 mps
+new vels: -2.88323 mps -0.96108 mps
+max vel: 1.93040 mps
+desaturated: -1.92215 7.20717
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.27767 -1.92215 7.20717 -0.75143 -0.94788 -1.00000 0.10404 -0.81228 -0.59358 0 0 -195.90955 0.27767
+max vel vel: 1.93040 mps
+start:
+-2.80739 mps
+-0.93580 mps
+largest magnitude: -2.80739 mps
+max, mult: 1.93040 mps -2.80739 mps
+end result:
+-2.80739 mps
+-0.93580 mps
+old vels: -2.80739 mps -0.93580 mps
+new vels: -2.80739 mps -0.93580 mps
+max vel: 1.93040 mps
+desaturated: -1.87159 7.01759
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.29292 -1.87159 7.01759 -0.67687 -0.82643 -1.00000 -0.47312 -0.76281 -0.38189 0 0 -196.78304 0.29292
+max vel vel: 1.93040 mps
+start:
+-2.72698 mps
+-0.90899 mps
+largest magnitude: -2.72698 mps
+max, mult: 1.93040 mps -2.72698 mps
+end result:
+-2.72698 mps
+-0.90899 mps
+old vels: -2.72698 mps -0.90899 mps
+new vels: -2.72698 mps -0.90899 mps
+max vel: 1.93040 mps
+desaturated: -1.81799 6.81661
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.30387 -1.81799 6.81661 -0.80179 -0.54807 -1.00000 -0.62273 -0.75114 -0.11378 0 0 -197.41048 0.30387
+max vel vel: 1.93040 mps
+start:
+-2.75156 mps
+-0.91719 mps
+largest magnitude: -2.75156 mps
+max, mult: 1.93040 mps -2.75156 mps
+end result:
+-2.75156 mps
+-0.91719 mps
+old vels: -2.75156 mps -0.91719 mps
+new vels: -2.75156 mps -0.91719 mps
+max vel: 1.93040 mps
+desaturated: -1.83437 6.87805
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.31354 -1.83437 6.87805 -0.93535 -0.31855 -1.00000 -0.48305 -0.76672 -0.19147 0 0 -197.96439 0.31354
+max vel vel: 1.93040 mps
+start:
+-2.69335 mps
+-0.89778 mps
+largest magnitude: -2.69335 mps
+max, mult: 1.93040 mps -2.69335 mps
+end result:
+-2.69335 mps
+-0.89778 mps
+old vels: -2.69335 mps -0.89778 mps
+new vels: -2.69335 mps -0.89778 mps
+max vel: 1.93040 mps
+desaturated: -1.79557 6.73253
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32032 -1.79557 6.73253 -1.10694 -0.70410 -1.00000 -0.60303 -0.75747 -0.44422 0 0 -198.35321 0.32032
+max vel vel: 1.93040 mps
+start:
+-2.58229 mps
+-0.86076 mps
+largest magnitude: -2.58229 mps
+max, mult: 1.93040 mps -2.58229 mps
+end result:
+-2.58229 mps
+-0.86076 mps
+old vels: -2.58229 mps -0.86076 mps
+new vels: -2.58229 mps -0.86076 mps
+max vel: 1.93040 mps
+desaturated: -1.72153 6.45493
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32355 -1.72153 6.45493 -1.35850 -0.91719 -1.00000 -0.67318 -0.81464 -0.48542 0 0 -198.53814 0.32355
+max vel vel: 1.93040 mps
+start:
+-2.50216 mps
+-0.83405 mps
+largest magnitude: -2.50216 mps
+max, mult: 1.93040 mps -2.50216 mps
+end result:
+-2.50216 mps
+-0.83405 mps
+old vels: -2.50216 mps -0.83405 mps
+new vels: -2.50216 mps -0.83405 mps
+max vel: 1.93040 mps
+desaturated: -1.66811 6.25462
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32449 -1.66811 6.25462 -1.62195 -0.96496 -1.00000 -0.48268 -0.86544 -0.54381 0 0 -198.59187 0.32449
+max vel vel: 1.93040 mps
+start:
+-2.46473 mps
+-0.82158 mps
+largest magnitude: -2.46473 mps
+max, mult: 1.93040 mps -2.46473 mps
+end result:
+-2.46473 mps
+-0.82158 mps
+old vels: -2.46473 mps -0.82158 mps
+new vels: -2.46473 mps -0.82158 mps
+max vel: 1.93040 mps
+desaturated: -1.64315 6.16105
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32445 -1.64315 6.16105 -1.52188 -0.91179 -1.00000 -0.39309 -0.88547 -0.60486 0 0 -198.58974 0.32445
+max vel vel: 1.93040 mps
+start:
+-2.45611 mps
+-0.81870 mps
+largest magnitude: -2.45611 mps
+max, mult: 1.93040 mps -2.45611 mps
+end result:
+-2.45611 mps
+-0.81870 mps
+old vels: -2.45611 mps -0.81870 mps
+new vels: -2.45611 mps -0.81870 mps
+max vel: 1.93040 mps
+desaturated: -1.63741 6.13951
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32423 -1.63741 6.13951 -1.68051 -0.75597 -1.00000 -0.47180 -0.90175 -0.53178 0 0 -198.57716 0.32423
+max vel vel: 1.93040 mps
+start:
+-2.45279 mps
+-0.81760 mps
+largest magnitude: -2.45279 mps
+max, mult: 1.93040 mps -2.45279 mps
+end result:
+-2.45279 mps
+-0.81760 mps
+old vels: -2.45279 mps -0.81760 mps
+new vels: -2.45279 mps -0.81760 mps
+max vel: 1.93040 mps
+desaturated: -1.63519 6.13121
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32398 -1.63519 6.13121 -0.99824 -0.57357 -1.00000 -0.53593 -0.87933 -0.42828 0 0 -198.56251 0.32398
+max vel vel: 1.93040 mps
+start:
+-2.48236 mps
+-0.82745 mps
+largest magnitude: -2.48236 mps
+max, mult: 1.93040 mps -2.48236 mps
+end result:
+-2.48236 mps
+-0.82745 mps
+old vels: -2.48236 mps -0.82745 mps
+new vels: -2.48236 mps -0.82745 mps
+max vel: 1.93040 mps
+desaturated: -1.65491 6.20513
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32441 -1.65491 6.20513 -0.86857 -0.70454 -1.00000 -0.56073 -0.83175 -0.43633 0 0 -198.58737 0.32441
+max vel vel: 1.93040 mps
+start:
+-2.38738 mps
+-0.79579 mps
+largest magnitude: -2.38738 mps
+max, mult: 1.93040 mps -2.38738 mps
+end result:
+-2.38738 mps
+-0.79579 mps
+old vels: -2.38738 mps -0.79579 mps
+new vels: -2.38738 mps -0.79579 mps
+max vel: 1.93040 mps
+desaturated: -1.59159 5.96771
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32269 -1.59159 5.96771 -1.10392 -0.89385 -1.00000 -0.34280 -0.83019 -0.49911 0 0 -198.48903 0.32269
+max vel vel: 1.93040 mps
+start:
+-2.20814 mps
+-0.73605 mps
+largest magnitude: -2.20814 mps
+max, mult: 1.93040 mps -2.20814 mps
+end result:
+-2.20814 mps
+-0.73605 mps
+old vels: -2.20814 mps -0.73605 mps
+new vels: -2.20814 mps -0.73605 mps
+max vel: 1.93040 mps
+desaturated: -1.47210 5.51967
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.31734 -1.47210 5.51967 -1.10846 -0.95890 -1.00000 -0.18017 -0.85194 -0.53864 0 0 -198.18235 0.31734
+max vel vel: 1.93040 mps
+start:
+-2.13256 mps
+-0.71085 mps
+largest magnitude: -2.13256 mps
+max, mult: 1.93040 mps -2.13256 mps
+end result:
+-2.13256 mps
+-0.71085 mps
+old vels: -2.13256 mps -0.71085 mps
+new vels: -2.13256 mps -0.71085 mps
+max vel: 1.93040 mps
+desaturated: -1.42171 5.33074
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.31123 -1.42171 5.33074 -1.40864 -0.81281 -1.00000 -0.28872 -0.87469 -0.40981 0 0 -197.83193 0.31123
+max vel vel: 1.93040 mps
+start:
+-2.04126 mps
+-0.68042 mps
+largest magnitude: -2.04126 mps
+max, mult: 1.93040 mps -2.04126 mps
+end result:
+-2.04126 mps
+-0.68042 mps
+old vels: -2.04126 mps -0.68042 mps
+new vels: -2.04126 mps -0.68042 mps
+max vel: 1.93040 mps
+desaturated: -1.36084 5.10252
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.30413 -1.36084 5.10252 -1.28264 -0.64921 -1.00000 -0.31301 -0.89233 -0.27806 0 0 -197.42533 0.30413
+max vel vel: 1.93040 mps
+start:
+-1.95126 mps
+-0.65042 mps
+largest magnitude: -1.95126 mps
+max, mult: 1.93040 mps -1.95126 mps
+end result:
+-1.95126 mps
+-0.65042 mps
+old vels: -1.95126 mps -0.65042 mps
+new vels: -1.95126 mps -0.65042 mps
+max vel: 1.93040 mps
+desaturated: -1.30084 4.87753
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.29624 -1.30084 4.87753 -1.40432 -0.60707 -0.95974 -0.30983 -0.89406 -0.27547 0 0 -196.97352 0.29624
+max vel vel: 1.93040 mps
+start:
+-1.87249 mps
+-0.62416 mps
+largest magnitude: -1.87249 mps
+max, mult: 1.93040 mps -1.87249 mps
+end result:
+-1.87249 mps
+-0.62416 mps
+old vels: -1.87249 mps -0.62416 mps
+new vels: -1.87249 mps -0.62416 mps
+max vel: 1.93040 mps
+desaturated: -1.24833 4.68064
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.28795 -1.24833 4.68064 -1.22732 -0.62868 -1.00000 -0.29686 -0.88258 -0.29483 0 0 -196.49811 0.28795
+max vel vel: 1.93040 mps
+start:
+-1.78096 mps
+-0.59365 mps
+largest magnitude: -1.78096 mps
+max, mult: 1.93040 mps -1.78096 mps
+end result:
+-1.78096 mps
+-0.59365 mps
+old vels: -1.78096 mps -0.59365 mps
+new vels: -1.78096 mps -0.59365 mps
+max vel: 1.93040 mps
+desaturated: -1.18730 4.45184
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.27903 -1.18730 4.45184 -0.92346 -0.66110 -0.98473 -0.24994 -0.58414 -0.30664 0 0 -195.98702 0.27903
+max vel vel: 1.93040 mps
+start:
+-1.64071 mps
+-0.54690 mps
+largest magnitude: -1.64071 mps
+max, mult: 1.93040 mps -1.64071 mps
+end result:
+-1.64071 mps
+-0.54690 mps
+old vels: -1.64071 mps -0.54690 mps
+new vels: -1.64071 mps -0.54690 mps
+max vel: 1.93040 mps
+desaturated: -1.09381 4.10126
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.26852 -1.09381 4.10126 -0.99154 -0.68379 -0.76277 -0.15249 -0.58894 -0.29069 0 0 -195.38511 0.26852
+max vel vel: 1.93040 mps
+start:
+-1.47206 mps
+-0.49069 mps
+largest magnitude: -1.47206 mps
+max, mult: 1.93040 mps -1.47206 mps
+end result:
+-1.47206 mps
+-0.49069 mps
+old vels: -1.47206 mps -0.49069 mps
+new vels: -1.47206 mps -0.49069 mps
+max vel: 1.93040 mps
+desaturated: -0.98138 3.67970
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.25607 -0.98138 3.67970 -1.26579 -0.66477 -0.49971 -0.07572 -0.67503 -0.26386 0 0 -194.67188 0.25607
+max vel vel: 1.93040 mps
+start:
+-1.36510 mps
+-0.45503 mps
+largest magnitude: -1.36510 mps
+max, mult: 1.93040 mps -1.36510 mps
+end result:
+-1.36510 mps
+-0.45503 mps
+old vels: -1.36510 mps -0.45503 mps
+new vels: -1.36510 mps -0.45503 mps
+max vel: 1.93040 mps
+desaturated: -0.91006 3.41231
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.24335 -0.91006 3.41231 -1.40345 -0.61528 -0.39945 -0.11338 -0.67328 -0.21097 0 0 -193.94318 0.24335
+max vel vel: 1.93040 mps
+start:
+-1.28903 mps
+-0.42968 mps
+largest magnitude: -1.28903 mps
+max, mult: 1.93040 mps -1.28903 mps
+end result:
+-1.28903 mps
+-0.42968 mps
+old vels: -1.28903 mps -0.42968 mps
+new vels: -1.28903 mps -0.42968 mps
+max vel: 1.93040 mps
+desaturated: -0.85935 3.22217
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23109 -0.85935 3.22217 -1.23099 -0.55326 -0.47057 -0.13403 -0.56947 -0.13894 0 0 -193.24030 0.23109
+max vel vel: 1.93040 mps
+start:
+-1.18501 mps
+-0.39500 mps
+largest magnitude: -1.18501 mps
+max, mult: 1.93040 mps -1.18501 mps
+end result:
+-1.18501 mps
+-0.39500 mps
+old vels: -1.18501 mps -0.39500 mps
+new vels: -1.18501 mps -0.39500 mps
+max vel: 1.93040 mps
+desaturated: -0.79001 2.96216
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.21858 -0.79001 2.96216 -1.07993 -0.61312 -0.35350 -0.05704 -0.47550 -0.14183 0 0 -192.52392 0.21858
+max vel vel: 1.93040 mps
+start:
+-1.04030 mps
+-0.34677 mps
+largest magnitude: -1.04030 mps
+max, mult: 1.93040 mps -1.04030 mps
+end result:
+-1.04030 mps
+-0.34677 mps
+old vels: -1.04030 mps -0.34677 mps
+new vels: -1.04030 mps -0.34677 mps
+max vel: 1.93040 mps
+desaturated: -0.69353 2.60043
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.20499 -0.69353 2.60043 -1.04621 -0.65915 -0.13202 0.04898 -0.45378 -0.16033 0 0 -191.74527 0.20499
+max vel vel: 1.93040 mps
+start:
+-0.89497 mps
+-0.29832 mps
+largest magnitude: -0.89497 mps
+max, mult: 1.93040 mps -0.89497 mps
+end result:
+-0.89497 mps
+-0.29832 mps
+old vels: -0.89497 mps -0.29832 mps
+new vels: -0.89497 mps -0.29832 mps
+max vel: 1.93040 mps
+desaturated: -0.59664 2.23714
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19048 -0.59664 2.23714 -1.02006 -0.58762 -0.02326 0.08771 -0.41492 -0.10111 0 0 -190.91392 0.19048
+max vel vel: 1.93040 mps
+start:
+-0.74886 mps
+-0.24962 mps
+largest magnitude: -0.74886 mps
+max, mult: 1.93040 mps -0.74886 mps
+end result:
+-0.74886 mps
+-0.24962 mps
+old vels: -0.74886 mps -0.24962 mps
+new vels: -0.74886 mps -0.24962 mps
+max vel: 1.93040 mps
+desaturated: -0.49924 1.87191
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17519 -0.49924 1.87191 -0.91179 -0.45363 0.07075 0.10421 -0.32153 -0.00908 0 0 -190.03767 0.17519
+max vel vel: 1.93040 mps
+start:
+-0.59311 mps
+-0.19770 mps
+largest magnitude: -0.59311 mps
+max, mult: 1.93040 mps -0.59311 mps
+end result:
+-0.59311 mps
+-0.19770 mps
+old vels: -0.59311 mps -0.19770 mps
+new vels: -0.59311 mps -0.19770 mps
+max vel: 1.93040 mps
+desaturated: -0.39541 1.48260
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15903 -0.39541 1.48260 -0.59453 -0.34276 0.14049 0.13117 -0.16972 0.04500 0 0 -189.11190 0.15903
+max vel vel: 1.93040 mps
+start:
+-0.43726 mps
+-0.14575 mps
+largest magnitude: -0.43726 mps
+max, mult: 1.93040 mps -0.43726 mps
+end result:
+-0.43726 mps
+-0.14575 mps
+old vels: -0.43726 mps -0.14575 mps
+new vels: -0.43726 mps -0.14575 mps
+max vel: 1.93040 mps
+desaturated: -0.29150 1.09300
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14215 -0.29150 1.09300 -0.46530 -0.25783 0.21806 0.15295 -0.02381 0.07528 0 0 -188.14470 0.14215
+max vel vel: 1.93040 mps
+start:
+-0.27242 mps
+-0.09081 mps
+largest magnitude: -0.27242 mps
+max, mult: 1.93040 mps -0.27242 mps
+end result:
+-0.27242 mps
+-0.09081 mps
+old vels: -0.27242 mps -0.09081 mps
+new vels: -0.27242 mps -0.09081 mps
+max vel: 1.93040 mps
+desaturated: -0.18161 0.68095
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.12447 -0.18161 0.68095 -0.38015 -0.21720 0.34820 0.19745 0.07753 0.10264 0 0 -187.13172 0.12447
+max vel vel: 1.93040 mps
+start:
+-0.11461 mps
+-0.03820 mps
+largest magnitude: -0.11461 mps
+max, mult: 1.93040 mps -0.11461 mps
+end result:
+-0.11461 mps
+-0.03820 mps
+old vels: -0.11461 mps -0.03820 mps
+new vels: -0.11461 mps -0.03820 mps
+max vel: 1.93040 mps
+desaturated: -0.07640 0.28648
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.10628 -0.07640 0.28648 -0.30278 -0.23492 0.43319 0.24273 0.15247 0.12472 0 0 -186.08937 0.10628
+max vel vel: 1.93040 mps
+start:
+-0.00047 mps
+-0.00141 mps
+largest magnitude: -0.00141 mps
+max, mult: 1.93040 mps -0.00141 mps
+end result:
+-0.00047 mps
+-0.00141 mps
+old vels: -0.00047 mps -0.00141 mps
+new vels: -0.00047 mps -0.00141 mps
+max vel: 1.93040 mps
+desaturated: -0.00094 -0.00352
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.08857 -0.00094 -0.00352 -0.21936 -0.21395 0.37646 0.23023 0.24589 0.15381 0 0 -185.07493 0.08857
+max vel vel: 1.93040 mps
+start:
+-0.03870 mps
+-0.11610 mps
+largest magnitude: -0.11610 mps
+max, mult: 1.93040 mps -0.11610 mps
+end result:
+-0.03870 mps
+-0.11610 mps
+old vels: -0.03870 mps -0.11610 mps
+new vels: -0.03870 mps -0.11610 mps
+max vel: 1.93040 mps
+desaturated: -0.07740 -0.29023
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07130 -0.07740 -0.29023 -0.21936 -0.15668 -0.10326 -0.32110 0.32886 0.19592 0 0 -184.08541 0.07130
+max vel vel: 1.93040 mps
+start:
+-0.06863 mps
+-0.20588 mps
+largest magnitude: -0.20588 mps
+max, mult: 1.93040 mps -0.20588 mps
+end result:
+-0.06863 mps
+-0.20588 mps
+old vels: -0.06863 mps -0.20588 mps
+new vels: -0.06863 mps -0.20588 mps
+max vel: 1.93040 mps
+desaturated: -0.13726 -0.51464
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05494 -0.13726 -0.51464 -0.10979 -0.15668 -0.12380 -0.46148 0.32083 0.20994 0 0 -183.14791 0.05494
+max vel vel: 1.93040 mps
+start:
+-0.09546 mps
+-0.28639 mps
+largest magnitude: -0.28639 mps
+max, mult: 1.93040 mps -0.28639 mps
+end result:
+-0.09546 mps
+-0.28639 mps
+old vels: -0.09546 mps -0.28639 mps
+new vels: -0.09546 mps -0.28639 mps
+max vel: 1.93040 mps
+desaturated: -0.19093 -0.71590
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.03954 -0.19093 -0.71590 -0.10157 -0.06181 -0.13989 -0.52779 0.05406 -0.00975 0 0 -182.26539 0.03954
+max vel vel: 1.93040 mps
+start:
+-0.12595 mps
+-0.37786 mps
+largest magnitude: -0.37786 mps
+max, mult: 1.93040 mps -0.37786 mps
+end result:
+-0.12595 mps
+-0.37786 mps
+old vels: -0.12595 mps -0.37786 mps
+new vels: -0.12595 mps -0.37786 mps
+max vel: 1.93040 mps
+desaturated: -0.25191 -0.94453
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.02470 -0.25191 -0.94453 -0.17959 -0.38685 -0.15409 -0.55921 -0.07358 -0.29481 0 0 -181.41497 0.02470
+max vel vel: 1.93040 mps
+start:
+-0.15430 mps
+-0.46291 mps
+largest magnitude: -0.46291 mps
+max, mult: 1.93040 mps -0.46291 mps
+end result:
+-0.15430 mps
+-0.46291 mps
+old vels: -0.15430 mps -0.46291 mps
+new vels: -0.15430 mps -0.46291 mps
+max vel: 1.93040 mps
+desaturated: -0.30861 -1.15712
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.01046 -0.30861 -1.15712 -0.37107 -0.78882 -0.11205 -0.47744 -0.12028 -0.43189 0 0 -180.59937 0.01046
+max vel vel: 1.93040 mps
+start:
+-0.17934 mps
+-0.53802 mps
+largest magnitude: -0.53802 mps
+max, mult: 1.93040 mps -0.53802 mps
+end result:
+-0.17934 mps
+-0.53802 mps
+old vels: -0.17934 mps -0.53802 mps
+new vels: -0.17934 mps -0.53802 mps
+max vel: 1.93040 mps
+desaturated: -0.35868 -1.34489
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.00305 -0.35868 -1.34489 -0.48540 -0.84782 -0.07254 -0.45838 -0.14886 -0.50169 0 0 -179.82524 -0.00305
+max vel vel: 1.93040 mps
+start:
+-0.19232 mps
+-0.57696 mps
+largest magnitude: -0.57696 mps
+max, mult: 1.93040 mps -0.57696 mps
+end result:
+-0.19232 mps
+-0.57696 mps
+old vels: -0.19232 mps -0.57696 mps
+new vels: -0.19232 mps -0.57696 mps
+max vel: 1.93040 mps
+desaturated: -0.38464 -1.44221
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.01517 -0.38464 -1.44221 -0.45773 -0.78688 -0.03386 -0.37662 -0.14081 -0.48219 0 0 -179.13104 -0.01517
+start:
+0.00000 volt
+0.00000 volt
+largest magnitude: 0.00000 volt
+max, mult: 1.00000 volt 0.00000 volt
+end result:
+0.00000 volt
+0.00000 volt
+final error was 358.527
+position: 13.32 -1.72 -178.5271
+took 1100.0000 time to finish turn
+WARNING - pros.serial.terminal.terminal:reader - Connection to /dev/ttyACM1 broken - pros-cli version:3.5.6
+WARNING - pros.serial.terminal.terminal:stop - Stopping terminal - pros-cli version:3.5.6
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$
+

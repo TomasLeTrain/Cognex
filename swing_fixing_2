@@ -1,0 +1,793 @@
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$ t
+Not sending analytics for this command.
+
+Established terminal connection
+
+
+
+         _+=+_
+      .-`  .  `-.          8888888b.  8888888b.   .d88888b.   .d8888b.
+   _+`     "     `+_       888   Y88b 888   Y88b d88P" "Y88b d88P  Y88b
+  \\\sssssssssssss///      888    888 888    888 888     888 Y88b.
+     .ss\  *  /ss.         888   d88P 888   d88P 888     888  "Y888b.
+ .+bm  .s  *  s.  md+.     8888888P"  8888888P"  888     888     "Y88b.
+.hMMMMs .  *  . sMMMMh.    888        888 T88b   888     888       "888
+ `\hMMMb \ | / dMMMh:      888        888  T88b  Y88b. .d88P Y88b  d88P
+   -SNMNo  -  oNMNs-       888        888   T88b  "Y88888P"   "Y8888P"
+     `+dMh\./dMd/
+        `:yNy:`                      Powered by PROS for VEX V5
+           "                Copyright (c) Purdue University ACM SIGBots
+Version:        4.2.1     Platform:  V1.1.5 (b18)     Uptime:    0.000 s
+Compiled:   Jan  1 1980 00:00:00     Directory:
+
+
+bouncing done
+health done
+auton done
+calibrated!
+initializing odom model
+initializing pf model
+initializing smoother model
+desaturated: -3.8608 -14.4762
+lin factor: 0.666667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 0.00000 0.00000 0 0 -0.00043 -3.14159
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14158 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 0.00017 0.00017 0 0 -0.00063 -3.14158
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.05381 -0.16684 1.00000 -1.00000 0.23067 -0.22689 0 0 -0.00029 -3.14159
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.51673 -0.63689 1.00000 -1.00000 0.46747 -0.48475 0 0 -0.00022 -3.14159
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14161 -3.86080 -14.47619 0.52581 -0.65915 0.98783 -1.00000 0.62453 -0.65139 0 0 0.00101 -3.14161
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14139 -3.86080 -14.47619 0.57616 -0.69848 1.00000 -1.00000 0.68000 -0.71917 0 0 -0.01148 -3.14139
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13827 -3.86080 -14.47619 0.46292 -0.74084 1.00000 -1.00000 0.33728 -0.71900 0 0 -0.19019 -3.13827
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13054 -3.86080 -14.47619 0.28873 -0.74970 1.00000 -1.00000 0.45086 -0.69661 0 0 -0.63321 -3.13054
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.11913 -3.86080 -14.47619 0.57119 -0.78536 1.00000 -1.00000 0.58606 -0.74603 0 0 -1.28717 -3.11913
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.10466 -3.86080 -14.47619 0.61831 -0.76937 0.99862 -1.00000 0.66681 -0.74314 0 0 -2.11584 -3.10466
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.08674 -3.86080 -14.47619 0.74495 -0.68163 0.99649 -1.00000 0.70858 -0.71558 0 0 -3.14259 -3.08674
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.06551 -3.86080 -14.47619 0.65418 -0.77629 1.00000 -1.00000 0.48408 -0.75939 0 0 -4.35898 -3.06551
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.04096 -3.86080 -14.47619 0.46249 -0.79120 1.00000 -1.00000 0.47997 -0.71933 0 0 -5.76599 -3.04096
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.01275 -3.86080 -14.47619 0.62738 -0.82923 1.00000 -1.00000 0.47122 -0.76861 0 0 -7.38211 -3.01275
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.98112 -3.86080 -14.47619 0.65461 -0.90444 1.00000 -1.00000 0.55678 -0.77289 0 0 -9.19451 -2.98112
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.94683 -3.86080 -14.47619 0.75187 -0.94507 1.00000 -1.00000 0.67192 -0.78864 0 0 -11.15935 -2.94683
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.91024 -3.86080 -14.47619 0.72917 -0.96539 1.00000 -1.00000 0.68292 -0.79772 0 0 -13.25557 -2.91024
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.87090 -3.86080 -14.47619 0.82556 -0.96258 0.99835 -1.00000 0.72294 -0.79683 0 0 -15.50975 -2.87090
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.82881 -3.86080 -14.47619 0.93837 -1.00256 0.98915 -1.00000 0.75031 -0.79225 0 0 -17.92088 -2.82881
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.78392 -3.86080 -14.47619 0.89191 -1.03195 1.00000 -1.00000 0.59117 -0.82458 0 0 -20.49330 -2.78392
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.73648 -3.86080 -14.47619 0.90833 -1.05140 1.00000 -1.00000 0.65894 -0.81911 0 0 -23.21134 -2.73648
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.68651 -3.86080 -14.47619 0.77629 -1.06869 1.00000 -1.00000 0.56656 -0.83600 0 0 -26.07441 -2.68651
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.63405 -3.86080 -14.47619 0.73890 -1.07561 1.00000 -1.00000 0.55217 -0.84117 0 0 -29.08008 -2.63405
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.57925 -3.86080 -14.47619 0.85819 -1.11364 1.00000 -1.00000 0.65775 -0.82903 0 0 -32.22009 -2.57925
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.52198 -3.86080 -14.47619 0.99845 -1.14671 0.99348 -1.00000 0.74467 -0.82236 0 0 -35.50100 -2.52198
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.46274 -3.86080 -14.47619 1.07712 -1.17264 0.98284 -1.00000 0.79103 -0.82542 0 0 -38.89549 -2.46274
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.40166 -3.86080 -14.47619 0.95458 -1.20398 1.00000 -1.00000 0.58706 -0.85264 0 0 -42.39498 -2.40166
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.33878 -3.86080 -14.47619 0.89083 -1.24180 1.00000 -1.00000 0.59169 -0.86172 0 0 -45.99767 -2.33878
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.27390 -3.86080 -14.47619 0.99889 -1.22386 1.00000 -1.00000 0.65142 -0.85572 0 0 -49.71484 -2.27390
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.20731 -3.86080 -14.47619 0.95393 -1.25369 1.00000 -1.00000 0.65942 -0.85553 0 0 -53.53035 -2.20731
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.13931 -3.86080 -14.47619 1.03973 -1.20160 1.00000 -1.00000 0.73508 -0.84581 0 0 -57.42641 -2.13931
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.06986 -3.86080 -14.47619 1.14390 -1.22818 0.97586 -1.00000 0.79464 -0.83742 0 0 -61.40566 -2.06986
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.99927 -3.86080 -14.47619 1.23078 -1.22019 0.95690 -1.00000 0.82097 -0.83914 0 0 -65.45004 -1.99927
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.92729 -3.86080 -14.47619 1.14887 -1.27811 0.98062 -1.00000 0.66561 -0.86306 0 0 -69.57426 -1.92729
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.85402 -3.86080 -14.47619 1.02893 -1.32716 1.00000 -1.00000 0.66475 -0.86803 0 0 -73.77238 -1.85402
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.77953 -3.86080 -14.47619 1.08490 -1.34662 1.00000 -1.00000 0.62336 -0.87828 0 0 -78.04062 -1.77953
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.70375 -3.86080 -14.47619 0.93989 -1.41685 1.00000 -1.00000 0.58981 -0.88683 0 0 -82.38250 -1.70375
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.62679 -3.86080 -14.47619 1.18150 -1.39416 0.99730 -1.00000 0.74192 -0.86819 0 0 -86.79172 -1.62679
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.54885 -3.86080 -14.47619 1.30231 -1.40129 0.96351 -1.00000 0.81875 -0.86219 0 0 -91.25721 -1.54885
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.47029 -3.86080 -14.47619 1.06610 -1.34056 1.00000 -1.00000 0.68922 -0.88206 0 0 -95.75885 -1.47029
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.39069 -3.86080 -14.47619 1.08879 -1.29561 1.00000 -1.00000 0.65125 -0.88000 0 0 -100.31938 -1.39069
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.30986 -3.86080 -14.47619 1.20247 -1.29518 1.00000 -1.00000 0.64286 -0.87831 0 0 -104.95054 -1.30986
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.22824 -3.86080 -14.47619 1.00818 -1.35375 1.00000 -1.00000 0.59667 -0.89097 0 0 -109.62702 -1.22824
+desaturated: -3.71667 -13.93577
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.14596 -3.71667 -13.93577 1.28610 -1.37903 0.18102 -1.00000 0.72978 -0.87658 0 0 -114.34147 -1.14596
+desaturated: -3.28154 -12.30425
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.06308 -3.28154 -12.30425 1.32284 -1.38660 -1.00000 -1.00000 0.82200 -0.87058 0 0 -119.09010 -1.06308
+desaturated: -2.85053 -10.68815
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.97984 -2.85053 -10.68815 1.18669 -1.38724 -1.00000 -1.00000 0.66853 -0.88494 0 0 -123.85948 -0.97984
+desaturated: -2.40746 -9.02683
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.89590 -2.40746 -9.02683 0.83853 -1.39913 -1.00000 -1.00000 0.29619 -0.90706 0 0 -128.66885 -0.89590
+desaturated: -1.95446 -7.32831
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.81105 -1.95446 -7.32831 0.40954 -1.38768 -1.00000 -1.00000 -0.07119 -0.89917 0 0 -133.53021 -0.81105
+desaturated: -1.50535 -5.64436
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.72558 -1.50535 -5.64436 0.27576 -1.39178 -1.00000 -0.62269 -0.32886 -0.87453 0 0 -138.42761 -0.72558
+desaturated: -1.07910 -4.04611
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.64032 -1.07910 -4.04611 -0.29802 -1.37385 0.16980 0.90975 -0.55575 -0.84150 0 0 -143.31208 -0.64032
+desaturated: -0.68084 -2.55281
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.55618 -0.68084 -2.55281 -0.59000 -1.27141 0.41450 1.00000 -0.66422 -0.74483 0 0 -148.13313 -0.55618
+desaturated: -0.32246 -1.20906
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.47427 -0.32246 -1.20906 -0.44347 -0.96344 0.48264 1.00000 -0.25922 -0.31019 0 0 -152.82632 -0.47427
+desaturated: -0.02011 -0.07542
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.39606 -0.02011 -0.07542 0.21633 -0.42488 0.33115 1.00000 0.06486 0.01131 0 0 -157.30753 -0.39606
+desaturated: -0.20843 0.78152
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.32335 -0.20843 0.78152 0.53337 -0.17289 -1.00000 -0.38587 0.26847 0.21922 0 0 -161.47326 -0.32335
+desaturated: -0.39795 1.49214
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.25652 -0.39795 1.49214 0.75381 -0.02226 -1.00000 -0.50274 0.33261 0.42844 0 0 -165.30260 -0.25652
+desaturated: -0.60120 2.25422
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.19413 -0.60120 2.25422 0.63646 0.22217 -1.00000 -0.68958 0.11397 0.10489 0 0 -168.87729 -0.19413
+desaturated: -0.81735 3.06467
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.13502 -0.81735 3.06467 0.36740 -0.60599 -1.00000 -0.57456 -0.13161 -0.15761 0 0 -172.26393 -0.13502
+desaturated: -1.02866 3.85700
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.07881 -1.02866 3.85700 0.24378 -0.66542 -1.00000 -0.59828 -0.32886 -0.27464 0 0 -175.48472 -0.07881
+desaturated: -1.18185 4.43139
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.02691 -1.18185 4.43139 -0.13658 -0.91352 -1.00000 -0.48912 -0.51794 -0.45686 0 0 -178.45794 -0.02691
+desaturated: -1.31158 4.91781
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.02061 -1.31158 4.91781 -0.65094 -1.11148 -1.00000 -0.42372 -0.61783 -0.53883 0 0 -181.18064 0.02061
+desaturated: -1.45064 5.43922
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.06479 -1.45064 5.43922 -0.77045 -1.17805 -1.00000 -0.44167 -0.70242 -0.52481 0 0 -183.71204 0.06479
+desaturated: -1.64122 6.15381
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.10788 -1.64122 6.15381 -0.55088 -1.01920 -1.00000 -0.61111 -0.73475 -0.46644 0 0 -186.18082 0.10788
+desaturated: -1.79838 6.74307
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14896 -1.79838 6.74307 -0.33541 -0.77261 -1.00000 -0.08733 -0.60194 -0.43736 0 0 -188.53456 0.14896
+desaturated: -1.86416 6.98973
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.18536 -1.86416 6.98973 -0.21936 -0.70864 -1.00000 -0.09921 -0.49056 -0.51931 0 0 -190.62055 0.18536
+desaturated: -1.89496 7.10519
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.21673 -1.89496 7.10519 -0.33541 -0.53467 -1.00000 -0.31859 -0.54719 -0.29467 0 0 -192.41755 0.21673
+desaturated: -1.92918 7.23353
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.24400 -1.92918 7.23353 -0.91028 -0.33368 -1.00000 -0.34929 -0.67775 -0.16083 0 0 -193.98007 0.24400
+desaturated: -2.00828 7.53012
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.26933 -2.00828 7.53012 -1.26471 -0.32266 -1.00000 -0.17733 -0.79600 -0.23697 0 0 -195.43147 0.26933
+desaturated: -2.10770 7.90287
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.29371 -2.10770 7.90287 -1.42528 -0.54915 -1.00000 0.03807 -0.86428 -0.30989 0 0 -196.82844 0.29371
+desaturated: -2.21321 8.29850
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.31750 -2.21321 8.29850 -1.75442 -0.54180 -1.00000 0.15287 -0.90928 -0.22636 0 0 -198.19149 0.31750
+desaturated: -2.33039 8.73787
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.34118 -2.33039 8.73787 -1.16897 -0.40738 -1.00000 0.25729 -0.91886 -0.07531 0 0 -199.54821 0.34118
+desaturated: -2.45500 9.20509
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.36501 -2.45500 9.20509 -0.75316 -0.28398 -1.00000 0.35185 -0.85297 0.07769 0 0 -200.91361 0.36501
+desaturated: -2.48517 9.31822
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.38587 -2.48517 9.31822 -0.92822 -0.23773 -1.00000 0.08614 -0.80678 0.19047 0 0 -202.10867 0.38587
+desaturated: -2.34278 8.78431
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.39859 -2.34278 8.78431 -0.78925 -0.02658 -1.00000 -0.64209 -0.80078 0.27806 0 0 -202.83724 0.39859
+desaturated: -2.31350 8.67455
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.40823 -2.31350 8.67455 -0.88975 0.06829 -1.00000 -0.36956 -0.78622 0.13944 0 0 -203.38960 0.40823
+desaturated: -2.25368 8.45025
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41430 -2.25368 8.45025 -0.96863 -0.10287 -1.00000 -0.48220 -0.79139 -0.13311 0 0 -203.73762 0.41430
+desaturated: -2.13005 7.98667
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41531 -2.13005 7.98667 -1.12553 -0.54980 -1.00000 -0.62482 -0.82269 -0.30133 0 0 -203.79529 0.41531
+desaturated: -1.98023 7.42492
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.41123 -1.98023 7.42492 -1.28978 -0.75446 -1.00000 -0.74313 -0.85622 -0.39989 0 0 -203.56164 0.41123
+desaturated: -1.85322 6.94872
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.40366 -1.85322 6.94872 -1.37017 -0.93383 -1.00000 -0.70663 -0.86903 -0.51589 0 0 -203.12804 0.40366
+desaturated: -1.78431 6.69034
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.39509 -1.78431 6.69034 -1.08187 -0.72399 -1.00000 -0.64724 -0.84750 -0.58367 0 0 -202.63697 0.39509
+desaturated: -1.71055 6.41374
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.38552 -1.71055 6.41374 -0.94334 -0.52754 -1.00000 -0.78344 -0.82150 -0.52172 0 0 -202.08886 0.38552
+desaturated: -1.62662 6.09906
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.37479 -1.62662 6.09906 -1.00818 -0.61247 -1.00000 -0.50131 -0.82233 -0.50992 0 0 -201.47408 0.37479
+desaturated: -1.60357 6.01264
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.36509 -1.60357 6.01264 -1.11127 -0.77456 -1.00000 -0.47021 -0.82558 -0.58758 0 0 -200.91821 0.36509
+desaturated: -1.55962 5.84784
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.35556 -1.55962 5.84784 -1.14995 -0.75986 -1.00000 -0.42114 -0.83142 -0.52036 0 0 -200.37213 0.35556
+desaturated: -1.49134 5.59183
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.34537 -1.49134 5.59183 -1.14952 -0.68357 -1.00000 -0.37924 -0.85042 -0.48594 0 0 -199.78848 0.34537
+desaturated: -1.42271 5.33448
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.33463 -1.42271 5.33448 -0.95285 -0.55520 -1.00000 -0.39288 -0.84989 -0.43733 0 0 -199.17283 0.33463
+desaturated: -1.36676 5.12469
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32383 -1.36676 5.12469 -1.02893 -0.53143 -1.00000 -0.40942 -0.84475 -0.39097 0 0 -198.55435 0.32383
+desaturated: -1.29458 4.85409
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.31247 -1.29458 4.85409 -1.10046 -0.60037 -0.97493 -0.34685 -0.84836 -0.38344 0 0 -197.90303 0.31247
+desaturated: -1.21606 4.55964
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.30041 -1.21606 4.55964 -1.00040 -0.65721 -0.92033 -0.23925 -0.85569 -0.38517 0 0 -197.21236 0.30041
+desaturated: -1.12747 4.22749
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.28746 -1.12747 4.22749 -1.07604 -0.65786 -0.79319 -0.18347 -0.65706 -0.37336 0 0 -196.46997 0.28746
+desaturated: -1.03546 3.88251
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.27363 -1.03546 3.88251 -0.88153 -0.59734 -0.75083 -0.15269 -0.50117 -0.29672 0 0 -195.67804 0.27363
+desaturated: -0.94206 3.53228
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.25904 -0.94206 3.53228 -1.06048 -0.53878 -0.62385 -0.12696 -0.57611 -0.23667 0 0 -194.84217 0.25904
+desaturated: -0.87542 3.28241
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.24470 -0.87542 3.28241 -1.13093 -0.47113 -0.65797 -0.15770 -0.62969 -0.18889 0 0 -194.02000 0.24470
+desaturated: -0.81067 3.03964
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23061 -0.81067 3.03964 -1.24374 -0.42640 -0.35951 -0.14776 -0.65467 -0.15725 0 0 -193.21281 0.23061
+desaturated: -0.74768 2.80343
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.21679 -0.74768 2.80343 -1.19512 -0.41840 -0.29981 -0.12804 -0.63086 -0.15706 0 0 -192.42140 0.21679
+desaturated: -0.67624 2.53557
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.20293 -0.67624 2.53557 -1.12466 -0.43482 -0.19315 -0.08020 -0.54908 -0.15672 0 0 -191.62728 0.20293
+desaturated: -0.60108 2.25377
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.18891 -0.60108 2.25377 -0.93729 -0.50009 -0.13531 -0.02043 -0.41631 -0.14939 0 0 -190.82389 0.18891
+desaturated: -0.51030 1.91337
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17424 -0.51030 1.91337 -0.85171 -0.50225 0.01497 0.05340 -0.33228 -0.12422 0 0 -189.98340 0.17424
+desaturated: -0.41465 1.55473
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15887 -0.41465 1.55473 -0.63905 -0.46703 0.09289 0.10342 -0.24828 -0.07769 0 0 -189.10283 0.15887
+desaturated: -0.31549 1.18294
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14281 -0.31549 1.18294 -0.54872 -0.38188 0.19533 0.13808 -0.13875 0.00017 0 0 -188.18225 0.14281
+desaturated: -0.21317 0.79929
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.12605 -0.21317 0.79929 -0.38620 -0.28527 0.28654 0.16641 -0.00906 0.06161 0 0 -187.22237 0.12605
+desaturated: -0.10637 0.39885
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.10858 -0.10637 0.39885 -0.35140 -0.21979 0.42201 0.20400 0.09600 0.09942 0 0 -186.22130 0.10858
+desaturated: -0.01533 0.05750
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.09103 -0.01533 0.05750 -0.24875 -0.17354 0.43923 0.21054 0.18172 0.13006 0 0 -185.21552 0.09103
+desaturated: -0.04842 -0.18154
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07430 -0.04842 -0.18154 -0.21957 -0.14091 0.02460 -0.17488 0.27686 0.16169 0 0 -184.25712 0.07430
+desaturated: -0.10630 -0.39858
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05846 -0.10630 -0.39858 -0.05295 -0.12211 -0.11937 -0.42630 0.32906 0.18583 0 0 -183.34927 0.05846
+desaturated: -0.16342 -0.61277
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.04337 -0.16342 -0.61277 -0.05295 -0.08601 -0.21168 -0.50463 0.20875 -0.02550 0 0 -182.48498 0.04337
+desaturated: -0.21895 -0.82096
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.02897 -0.21895 -0.82096 -0.03199 -0.33195 -0.23956 -0.50595 0.01303 -0.26403 0 0 -181.66002 0.02897
+desaturated: -0.27976 -1.04897
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.01497 -0.27976 -1.04897 -0.30364 -0.72139 -0.20011 -0.48159 -0.12028 -0.40261 0 0 -180.85790 0.01497
+desaturated: -0.31986 -1.19931
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.00199 -0.31986 -1.19931 -0.48367 -0.77348 -0.11780 -0.39115 -0.19064 -0.45819 0 0 -180.11378 0.00199
+desaturated: -0.32291 -1.21077
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.00894 -0.32291 -1.21077 -0.42510 -0.56990 -0.05571 -0.26466 -0.20689 -0.46339 0 0 -179.48767 -0.00894
+final error was 358.573
+position: 10.12 -1.76 -178.5732
+took 1100.0000 time to finish turn
+desaturated: -3.86080 -14.47619
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14160 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 0.00033 0.00050 0 0 0.00033 -3.14160
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.00000 0.00000 1.00000 -1.00000 0.00000 -0.00017 0 0 -0.00021 -3.14159
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14158 -3.86080 -14.47619 0.00000 -0.02701 1.00000 -1.00000 0.10642 -0.19369 0 0 -0.00073 -3.14158
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14159 -3.86080 -14.47619 0.42618 -0.42056 1.00000 -1.00000 0.35044 -0.41064 0 0 0.00009 -3.14159
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14161 -3.86080 -14.47619 0.61182 -0.64338 0.97026 -1.00000 0.55217 -0.58864 0 0 0.00110 -3.14161
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.14073 -3.86080 -14.47619 0.60275 -0.63862 1.00000 -1.00000 0.67742 -0.64011 0 0 -0.04936 -3.14073
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.13635 -3.86080 -14.47619 0.58200 -0.68314 1.00000 -1.00000 0.47656 -0.70431 0 0 -0.30064 -3.13635
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.12753 -3.86080 -14.47619 0.29824 -0.79487 1.00000 -1.00000 0.29978 -0.72772 0 0 -0.80554 -3.12753
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.11527 -3.86080 -14.47619 0.40867 -0.87267 1.00000 -1.00000 0.46419 -0.75322 0 0 -1.50792 -3.11527
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.10025 -3.86080 -14.47619 0.55758 -0.85149 1.00000 -1.00000 0.63089 -0.75922 0 0 -2.36850 -3.10025
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.08204 -3.86080 -14.47619 0.57400 -0.77737 1.00000 -1.00000 0.68100 -0.75714 0 0 -3.41223 -3.08204
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.05996 -3.86080 -14.47619 0.63689 -0.75921 0.99148 -1.00000 0.67350 -0.73883 0 0 -4.67732 -3.05996
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.03393 -3.86080 -14.47619 0.77521 -0.84220 0.98573 -1.00000 0.69058 -0.75936 0 0 -6.16869 -3.03393
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -3.00435 -3.86080 -14.47619 0.77758 -0.89342 1.00000 -1.00000 0.56739 -0.78778 0 0 -7.86340 -3.00435
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.97167 -3.86080 -14.47619 0.65569 -0.91935 1.00000 -1.00000 0.55797 -0.75425 0 0 -9.73596 -2.97167
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.93612 -3.86080 -14.47619 0.72010 -0.90142 1.00000 -1.00000 0.46542 -0.78661 0 0 -11.77280 -2.93612
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.89782 -3.86080 -14.47619 0.37561 -0.90077 1.00000 -1.00000 0.22961 -0.82286 0 0 -13.96714 -2.89782
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.85660 -3.86080 -14.47619 0.42575 -0.89753 1.00000 -1.00000 0.33178 -0.80044 0 0 -16.32866 -2.85660
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.81370 -3.86080 -14.47619 0.72939 -0.92368 1.00000 -1.00000 0.51214 -0.79908 0 0 -18.78707 -2.81370
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.76928 -3.86080 -14.47619 0.95566 -0.94983 0.96370 -1.00000 0.66322 -0.79669 0 0 -21.33167 -2.76928
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.72308 -3.86080 -14.47619 1.00558 -0.95285 0.95929 -1.00000 0.74397 -0.78692 0 0 -23.97897 -2.72308
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.67500 -3.86080 -14.47619 0.92454 -0.95804 0.99471 -1.00000 0.59683 -0.81225 0 0 -26.73383 -2.67500
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.62447 -3.86080 -14.47619 0.60167 -0.98030 1.00000 -1.00000 0.49125 -0.80389 0 0 -29.62906 -2.62447
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.57135 -3.86080 -14.47619 0.77564 -0.99327 1.00000 -1.00000 0.51864 -0.81533 0 0 -32.67254 -2.57135
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.51626 -3.86080 -14.47619 0.85474 -1.04276 1.00000 -1.00000 0.50136 -0.82747 0 0 -35.82911 -2.51626
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.45963 -3.86080 -14.47619 0.79422 -1.13180 1.00000 -1.00000 0.51864 -0.83364 0 0 -39.07378 -2.45963
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.40159 -3.86080 -14.47619 0.70432 -1.18302 1.00000 -1.00000 0.61172 -0.83053 0 0 -42.39911 -2.40159
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.34213 -3.86080 -14.47619 0.89601 -1.20203 1.00000 -1.00000 0.68769 -0.82800 0 0 -45.80598 -2.34213
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.28084 -3.86080 -14.47619 1.05227 -1.18085 0.98669 -1.00000 0.75269 -0.82133 0 0 -49.31750 -2.28084
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.21785 -3.86080 -14.47619 1.15341 -1.16637 0.96620 -1.00000 0.79550 -0.82217 0 0 -52.92634 -2.21785
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.15294 -3.86080 -14.47619 1.08339 -1.16789 0.98975 -1.00000 0.68000 -0.83808 0 0 -56.64556 -2.15294
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.08617 -3.86080 -14.47619 0.98289 -1.26363 1.00000 -1.00000 0.61994 -0.85708 0 0 -60.47137 -2.08617
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -2.01788 -3.86080 -14.47619 0.99391 -1.29043 1.00000 -1.00000 0.61378 -0.85931 0 0 -64.38386 -2.01788
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.94813 -3.86080 -14.47619 0.94442 -1.32327 1.00000 -1.00000 0.61119 -0.86358 0 0 -68.38058 -1.94813
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.87704 -3.86080 -14.47619 1.00040 -1.28826 1.00000 -1.00000 0.67383 -0.85556 0 0 -72.45332 -1.87704
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.80490 -3.86080 -14.47619 1.02136 -1.23834 1.00000 -1.00000 0.73783 -0.84475 0 0 -76.58659 -1.80490
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.73154 -3.86080 -14.47619 1.03887 -1.26341 1.00000 -1.00000 0.79156 -0.83414 0 0 -80.78982 -1.73154
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.65686 -3.86080 -14.47619 1.23532 -1.29237 0.96565 -1.00000 0.82167 -0.84100 0 0 -85.06893 -1.65686
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.58122 -3.86080 -14.47619 1.31614 -1.31766 0.94088 -1.00000 0.83467 -0.84392 0 0 -89.40260 -1.58122
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.50434 -3.86080 -14.47619 1.25520 -1.26795 0.95423 -1.00000 0.72414 -0.85967 0 0 -93.80762 -1.50434
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.42598 -3.86080 -14.47619 1.14498 -1.33538 0.98957 -1.00000 0.70225 -0.86939 0 0 -98.29743 -1.42598
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.34635 -3.86080 -14.47619 0.99975 -1.30620 1.00000 -1.00000 0.64986 -0.86617 0 0 -102.85957 -1.34635
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.26566 -3.86080 -14.47619 1.08836 -1.40108 1.00000 -1.00000 0.64233 -0.88086 0 0 -107.48291 -1.26566
+desaturated: -3.86080 -14.47619
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.18391 -3.86080 -14.47619 1.17632 -1.35440 1.00000 -1.00000 0.63683 -0.87283 0 0 -112.16681 -1.18391
+desaturated: -3.48569 -13.06969
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.10142 -3.48569 -13.06969 0.94356 -1.39719 -0.60852 -1.00000 0.59461 -0.89061 0 0 -116.89322 -1.10142
+desaturated: -3.05265 -11.44601
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -1.01844 -3.05265 -11.44601 1.23121 -1.42658 -1.00000 -1.00000 0.72650 -0.87781 0 0 -121.64789 -1.01844
+desaturated: -2.61534 -9.80631
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.93490 -2.61534 -9.80631 1.04535 -1.37601 -1.00000 -1.00000 0.34050 -0.85933 0 0 -126.43415 -0.93490
+desaturated: -2.17323 -8.14859
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.85075 -2.17323 -8.14859 0.59497 -1.38789 -1.00000 -1.00000 -0.09753 -0.85606 0 0 -131.25578 -0.85075
+desaturated: -1.72135 -6.45426
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.76576 -1.72135 -6.45426 0.17981 -1.40648 -1.00000 -1.00000 -0.04842 -0.89300 0 0 -136.12526 -0.76576
+desaturated: -1.29642 -4.86096
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.68096 -1.29642 -4.86096 0.22692 -1.42139 -0.18777 0.57846 -0.20686 -0.89658 0 0 -140.98397 -0.68096
+desaturated: -0.92626 -3.47305
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.59811 -0.92626 -3.47305 -0.01102 -1.42053 0.02578 0.93499 -0.39764 -0.87383 0 0 -145.73070 -0.59811
+desaturated: -0.54872 -2.05743
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.51665 -0.54872 -2.05743 -0.24054 -1.03109 0.23598 1.00000 -0.30403 -0.27497 0 0 -150.39796 -0.51665
+desaturated: -0.19363 -0.72602
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.43709 -0.19363 -0.72602 -0.27684 -0.51630 0.45755 1.00000 -0.11567 0.09597 0 0 -154.95674 -0.43709
+desaturated: -0.14318 0.53685
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.35970 -0.14318 0.53685 0.02356 -0.27598 -0.59364 0.63427 0.08436 0.13656 0 0 -159.39071 -0.35970
+desaturated: -0.44959 1.68575
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.28513 -0.44959 1.68575 0.44109 -0.16273 -1.00000 -0.65771 0.27156 0.32425 0 0 -163.66347 -0.28513
+desaturated: -0.67778 2.54134
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.21547 -0.67778 2.54134 0.52408 -0.06959 -1.00000 -0.66680 0.09225 0.35864 0 0 -167.65474 -0.21547
+desaturated: -0.86910 3.25870
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.15111 -0.86910 3.25870 0.38296 -0.16014 -1.00000 -0.68196 -0.15519 0.11175 0 0 -171.34200 -0.15111
+desaturated: -0.98893 3.70803
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.09353 -0.98893 3.70803 0.24097 -0.47740 -1.00000 -0.54725 -0.41408 -0.11258 0 0 -174.64140 -0.09353
+desaturated: -1.06942 4.00982
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.04287 -1.06942 4.00982 -0.34514 -0.74257 -1.00000 -0.40651 -0.57714 -0.37081 0 0 -177.54345 -0.04287
+desaturated: -1.18135 4.42952
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.00303 -1.18135 4.42952 -0.53791 -0.95545 -1.00000 -0.41722 -0.65172 -0.51914 0 0 -180.17336 0.00303
+desaturated: -1.34011 5.02478
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.04650 -1.34011 5.02478 -0.62198 -0.93881 -1.00000 -0.52685 -0.66681 -0.47686 0 0 -182.66443 0.04650
+desaturated: -1.47567 5.53309
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.08720 -1.47567 5.53309 -0.39095 -0.90488 -1.00000 -0.54024 -0.63431 -0.42367 0 0 -184.99614 0.08720
+desaturated: -1.52963 5.73540
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.12290 -1.52963 5.73540 -0.37237 -0.85711 -1.00000 -0.44453 -0.58331 -0.45242 0 0 -187.04155 0.12290
+desaturated: -1.56209 5.85711
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15373 -1.56209 5.85711 -0.50787 -0.81692 -1.00000 -0.43314 -0.54311 -0.50186 0 0 -188.80783 0.15373
+desaturated: -1.61549 6.05731
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.18118 -1.61549 6.05731 -0.69546 -0.70907 -1.00000 -0.56819 -0.62094 -0.46781 0 0 -190.38078 0.18118
+desaturated: -1.69593 6.35894
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.20671 -1.69593 6.35894 -1.14973 -0.64770 -1.00000 -0.65269 -0.73081 -0.43750 0 0 -191.84341 0.20671
+desaturated: -1.80017 6.74979
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23141 -1.80017 6.74979 -1.48839 -0.69114 -1.00000 -0.14874 -0.81703 -0.48836 0 0 -193.25881 0.23141
+desaturated: -1.91325 7.17381
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.25572 -1.91325 7.17381 -1.66690 -0.75208 -1.00000 -0.00380 -0.86633 -0.55183 0 0 -194.65147 0.25572
+desaturated: -2.04852 7.68100
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.28042 -2.04852 7.68100 -1.71941 -0.67363 -1.00000 0.15865 -0.90278 -0.40825 0 0 -196.06689 0.28042
+desaturated: -2.21095 8.29002
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.30635 -2.21095 8.29002 -1.09117 -0.46378 -1.00000 0.31987 -0.89369 -0.18000 0 0 -197.55233 0.30635
+desaturated: -2.28752 8.57713
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.33047 -2.28752 8.57713 -0.45190 -0.29240 -1.00000 0.07615 -0.80628 0.00203 0 0 -198.93473 0.33047
+desaturated: -2.16876 8.13183
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.34669 -2.16876 8.13183 -0.47437 -0.17116 -1.00000 -0.66581 -0.66511 0.16239 0 0 -199.86392 0.34669
+desaturated: -2.11562 7.93258
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.35847 -2.11562 7.93258 -0.64856 -0.02874 -1.00000 -0.56749 -0.68614 0.16375 0 0 -200.53865 0.35847
+desaturated: -2.08971 7.83542
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.36743 -2.08971 7.83542 -0.98549 0.00540 -1.00000 -0.54364 -0.73764 -0.01283 0 0 -201.05246 0.36743
+desaturated: -2.03384 7.62595
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.37308 -2.03384 7.62595 -1.15838 -0.32007 -1.00000 -0.61497 -0.80658 -0.30114 0 0 -201.37576 0.37308
+desaturated: -1.96815 7.37962
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.37563 -1.96815 7.37962 -1.45316 -0.87829 -1.00000 -0.48404 -0.85675 -0.47225 0 0 -201.52178 0.37563
+desaturated: -1.91640 7.18559
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.37605 -1.91640 7.18559 -1.24223 -0.94291 -1.00000 -0.42844 -0.87233 -0.53983 0 0 -201.54620 0.37605
+desaturated: -1.87066 7.01409
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.37491 -1.87066 7.01409 -1.05788 -0.74041 -1.00000 -0.48061 -0.85453 -0.51247 0 0 -201.48055 0.37491
+desaturated: -1.80849 6.78099
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.37191 -1.80849 6.78099 -1.06912 -0.74668 -1.00000 -0.58010 -0.85022 -0.45103 0 0 -201.30892 0.37191
+desaturated: -1.76056 6.60127
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.36784 -1.76056 6.60127 -1.12639 -0.82167 -1.00000 -0.55482 -0.85350 -0.45053 0 0 -201.07571 0.36784
+desaturated: -1.72130 6.45405
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.36316 -1.72130 6.45405 -1.10716 -0.95048 -1.00000 -0.51969 -0.85194 -0.51436 0 0 -200.80745 0.36316
+desaturated: -1.65094 6.19026
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.35695 -1.65094 6.19026 -1.05097 -0.98030 -1.00000 -0.40734 -0.84769 -0.54003 0 0 -200.45151 0.35695
+desaturated: -1.55600 5.83427
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.34865 -1.55600 5.83427 -0.93340 -0.85452 -1.00000 -0.23125 -0.84494 -0.52050 0 0 -199.97624 0.34865
+desaturated: -1.46319 5.48627
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.33869 -1.46319 5.48627 -1.05183 -0.65526 -1.00000 -0.30143 -0.84442 -0.44539 0 0 -199.40549 0.33869
+desaturated: -1.40859 5.28155
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.32859 -1.40859 5.28155 -1.11407 -0.54331 -1.00000 -0.37952 -0.85436 -0.33622 0 0 -198.82699 0.32859
+desaturated: -1.36039 5.10082
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.31859 -1.36039 5.10082 -1.03519 -0.49966 -1.00000 -0.39572 -0.86222 -0.29261 0 0 -198.25406 0.31859
+desaturated: -1.29093 4.84039
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.30798 -1.29093 4.84039 -1.21911 -0.60058 -0.94798 -0.32005 -0.86597 -0.32750 0 0 -197.64581 0.30798
+desaturated: -1.19715 4.48876
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.29605 -1.19715 4.48876 -1.22105 -0.71815 -0.75652 -0.19369 -0.87061 -0.36653 0 0 -196.96236 0.29605
+desaturated: -1.09681 4.11252
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.28281 -1.09681 4.11252 -0.97857 -0.73414 -0.70243 -0.12807 -0.65822 -0.35131 0 0 -196.20390 0.28281
+desaturated: -0.99455 3.72908
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.26842 -0.99455 3.72908 -1.09354 -0.67406 -0.58174 -0.08936 -0.61344 -0.26986 0 0 -195.37927 0.26842
+desaturated: -0.90491 3.39300
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.25348 -0.90491 3.39300 -1.20117 -0.57011 -0.51926 -0.09331 -0.65347 -0.19336 0 0 -194.52324 0.25348
+desaturated: -0.83815 3.14267
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23883 -0.83815 3.14267 -1.01120 -0.45449 -0.59880 -0.13024 -0.62419 -0.13689 0 0 -193.68403 0.23883
+desaturated: -0.76167 2.85591
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.22411 -0.76167 2.85591 -1.18042 -0.37172 -0.26974 -0.11049 -0.56314 -0.11669 0 0 -192.84057 0.22411
+desaturated: -0.68415 2.56526
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.20929 -0.68415 2.56526 -1.17307 -0.39981 -0.16763 -0.07393 -0.55867 -0.13567 0 0 -191.99162 0.20929
+desaturated: -0.60321 2.26175
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19428 -0.60321 2.26175 -0.96171 -0.45838 -0.10594 -0.01634 -0.47994 -0.13619 0 0 -191.13165 0.19428
+desaturated: -0.50503 1.89364
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17855 -0.50503 1.89364 -0.99024 -0.52041 0.09268 0.07692 -0.37267 -0.11119 0 0 -190.23008 0.17855
+desaturated: -0.39444 1.47896
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.16180 -0.39444 1.47896 -0.78169 -0.52041 0.23487 0.15721 -0.25975 -0.06469 0 0 -189.27049 0.16180
+desaturated: -0.28098 1.05356
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14411 -0.28098 1.05356 -0.56882 -0.42380 0.32710 0.19845 -0.11192 0.01658 0 0 -188.25714 0.14411
+desaturated: -0.15624 0.58582
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.12528 -0.15624 0.58582 -0.31294 -0.31250 0.45551 0.24701 0.06433 0.09567 0 0 -187.17775 0.12528
+desaturated: -0.04544 0.17037
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.10593 -0.04544 0.17037 -0.25134 -0.19407 0.50229 0.24640 0.19711 0.15331 0 0 -186.06952 0.10593
+desaturated: -0.03667 -0.13748
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.08711 -0.03667 -0.13748 -0.25134 -0.15712 0.19864 -0.04792 0.29772 0.20036 0 0 -184.99120 0.08711
+desaturated: -0.11339 -0.42516
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.06890 -0.11339 -0.42516 -0.12967 -0.15712 -0.11882 -0.50955 0.33400 0.21936 0 0 -183.94794 0.06890
+desaturated: -0.18442 -0.69148
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.05139 -0.18442 -0.69148 -0.12967 -0.07197 -0.13906 -0.59418 0.27683 0.04364 0 0 -182.94461 0.05139
+desaturated: -0.24317 -0.91178
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.03487 -0.24317 -0.91178 -0.11065 -0.43612 -0.22777 -0.51204 0.08775 -0.28967 0 0 -181.99767 0.03487
+desaturated: -0.29265 -1.09731
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.01946 -0.29265 -1.09731 -0.25783 -0.87246 -0.19626 -0.39262 -0.06469 -0.47550 0 0 -181.11515 0.01946
+desaturated: -0.31837 -1.19373
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.00578 -0.31837 -1.19373 -0.41948 -0.91763 -0.11558 -0.26359 -0.15022 -0.49842 0 0 -180.33105 0.00578
+desaturated: -0.32651 -1.22425
+lin factor: 0.66667
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.00590 -0.32651 -1.22425 -0.56882 -0.63581 -0.03168 -0.24441 -0.19644 -0.42622 0 0 -179.66204 -0.00590
+final error was 358.777
+position: 11.88 -1.06 -178.7770
+took 1080.0000 time to finish turn
+WARNING - pros.serial.terminal.terminal:reader - Connection to /dev/ttyACM1 broken - pros-cli version:3.5.6
+WARNING - pros.serial.terminal.terminal:stop - Stopping terminal - pros-cli version:3.5.6
+
+[tomas@nixbtw:~/projects/Robotics/current/Cognex]$
+

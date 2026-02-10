@@ -29,7 +29,7 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -494,7 +494,7 @@ blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   100_inps,
   drivetrain_config.track_width,
   0.85,
-  true, // prioritize angular everywhere?
+  true, // TODO: shouldn't affect swings?
   std::ref(drivetrain));
 
 // use arcade since templating uses this type
@@ -502,7 +502,8 @@ lyfast::ArcadeVelocityController turn_vel_controller {
     // TODO: never need to worry about linear?
     angular_velocity_controller,
     angular_velocity_controller,
-    100_inps,
+    // 100_inps,
+    76_inps, // TODO: turns are still fine?
     false, // don't prioritize turning to allow swings
     drivetrain_config.track_width
 };
@@ -620,17 +621,18 @@ PID<Angle, AngularVelocity>
                          1_radps);
 
 // used only for turning
-PID<Angle, AngularVelocity> turn_heading_vel_pid(19.000,
-                                                 // 0.01,
-                                                 0.0,
-                                                 19.050,
-                                                 to_stRad(10_stDeg),
-                                                 // std::nullopt,
-                                                 76, // max speed
-                                                 std::nullopt,
-                                                 50_msec,
-                                                 1_stRad,
-                                                 1_radps);
+PID<Angle, AngularVelocity>
+  turn_heading_vel_pid(19.000,
+                       // 0.01,
+                       0.0,
+                       19.050,
+                       to_stRad(10_stDeg),
+                       // std::nullopt,
+                       to_radps(rad * 76_inps / (10.5_in * 0.5)), // max speed
+                       std::nullopt, // derivative alpha
+                       50_msec,
+                       1_stRad,
+                       1_radps);
 
 // less ki, pretty good:
 // increased kp to 20.750

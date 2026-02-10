@@ -150,6 +150,16 @@ void initialize() {
             .timeout(3_sec));
     });
 
+    mb_vel.setArcModifier([](auto&& arc) -> auto {
+        return std::move(
+          arc
+            .velocity_based(true)
+            // speecifically uses turn heading pid instead of drive pid
+            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            .withVelocityFeedforwardController(turn_vel_controller)
+            .timeout(3_sec));
+    });
+
     mb_vel.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
         return std::move(distanceAtHeading.velocity_based(true).timeout(5_sec));
     });
@@ -171,6 +181,16 @@ void initialize() {
     mb.setTurnToModifier([](auto&& turnTo) {
         return std::move(
           turnTo
+            .velocity_based(true)
+            // speecifically uses turn heading pid instead of drive pid
+            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            .withVelocityFeedforwardController(turn_vel_controller)
+            .timeout(3_sec));
+    });
+
+    mb.setArcModifier([](auto&& arc) -> auto {
+        return std::move(
+          arc
             .velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
             .withAngularVelocityFeedbackController(turn_heading_vel_pid)

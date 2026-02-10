@@ -108,13 +108,24 @@ class turnToBase : public Motion<ControllersType,
             const Angle directionless_error =
               angleError(target_heading, heading);
 
-            const Angle directed_error =
+            Angle directed_error =
               angleError(target_heading, heading, m_direction);
+
+            // if motion has direction then:
+            // state.prev_directed_error ~ 3_deg
+            // directed_error ~ 360_deg
+            //
+            // state.prev_directionless_error ~ 3_deg
+            // state.prev_directionless_error ~ -3_deg
+            //
+            // sign change of directionless error can signal settling, but only
+            // if directed error is closer to zero (the prev error at least)
 
             // check for sign change in directionless error, if so then settling
             if (state.prev_directionless_error && state.prev_directed_error &&
-                // if this is not true it might cross signs on the opposite side
-                units::abs(*state.prev_directed_error) < 180_stDeg &&
+                // highly unlikely it can cross signs and also be greater than
+                // 160
+                units::abs(*state.prev_directed_error) < 160_stDeg &&
                 units::sgn(directionless_error) !=
                   units::sgn(*state.prev_directionless_error)) {
                 state.settling = true;
@@ -122,6 +133,15 @@ class turnToBase : public Motion<ControllersType,
 
             state.prev_directionless_error = directionless_error;
             state.prev_directed_error = directed_error;
+
+            // avoid oscilations when close to 180 error
+            if (!state.settling && !m_direction.has_value() &&
+                units::abs(directed_error) > 175_stDeg) {
+                // prefer going positive direction
+                if (directed_error < 0_stDeg) {
+                    directed_error += rot;
+                }
+            }
 
             return state.settling ? directionless_error : directed_error;
         }();
@@ -228,21 +248,21 @@ class turnToBase : public Motion<ControllersType,
                   this->drivetrain.getDrivetrainVoltages();
                 //
 
-                // std::cout << std::fixed;
-                // std::cout << std::setprecision(5);
-                //
-                // std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
-                //              "av_l/av_r/x/y/theta/t_err: "
-                //           << angular_error.internal() << " "
-                //           << target.linear_velocity.internal() << " "
-                //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " << right_vel.internal()
-                //           << " " << left_voltage.internal() << " "
-                //           << right_voltage.internal() << " "
-                //           << actual_volt_left.internal() << " "
-                //           << actual_volt_right.internal() << " " << 0 << " "
-                //           << 0 << " " << heading.convert(deg) << " "
-                //           << angular_error.internal() << std::endl;
+                std::cout << std::fixed;
+                std::cout << std::setprecision(5);
+
+                std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
+                             "av_l/av_r/x/y/theta/t_err: "
+                          << angular_error.internal() << " "
+                          << target.linear_velocity.internal() << " "
+                          << target.angular_velocity.internal() << " "
+                          << left_vel.internal() << " " << right_vel.internal()
+                          << " " << left_voltage.internal() << " "
+                          << right_voltage.internal() << " "
+                          << actual_volt_left.internal() << " "
+                          << actual_volt_right.internal() << " " << 0 << " "
+                          << 0 << " " << heading.convert(deg) << " "
+                          << angular_error.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);
 

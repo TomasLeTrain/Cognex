@@ -814,10 +814,12 @@ void turn_vel_pid_tuning() {
         // pros::delay(1500);
         // drivetrain.moveTank(0_volt, 0_volt);
 
+        drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
+
         mb.turnTo(target_theta)
             // .turn_vel_maxVel(200_degps)
-            // .direction(AngularDirection::RIGHT)
-            // .radius(-10.5_in)
+            .direction(AngularDirection::RIGHT)
+            .radius(-10.5_in)
             // .turn_vel_kp(curr_kp)
             // .turn_vel_ki(curr_ki)
             // .turn_vel_kd(curr_kd)

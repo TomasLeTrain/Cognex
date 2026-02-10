@@ -4,15 +4,124 @@
 #include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/device_globals.h"
+#include "lyfast/vel_controller.hpp"
+#include "pros/device.hpp"
+#include "pros/motors.hpp"
 #include "pros/rtos.hpp"
 #include "systems/intake.h"
 #include "systems/piston.h"
+#include "units/Angle.hpp"
 #include "units/units.hpp"
 #include <map>
 #include <mutex>
 #include <optional>
+#include <variant>
 
 namespace intake {
+
+class IntakeVelocityController {
+  private:
+    pros::Motor* m_motor;
+    lyfast::SimpleVelocityControllerParams<AngularVelocity> m_params;
+    double m_alpha = 0.9;
+
+    std::variant<Voltage, AngularVelocity> m_target;
+
+    std::optional<AngularVelocity> last_error = std::nullopt;
+    std::optional<AngularVelocity> last_measurement = std::nullopt;
+    Angle integral = 0.0 * deg;
+
+    AngularVelocity getMeasurement() {
+        auto curr_measurement = m_motor->get_actual_velocity() * rpm;
+        AngularVelocity result;
+        if (last_measurement.has_value()) {
+            // low pass filter the velocity
+            result =
+              // TODO: depends on how much time from last measurement?
+              last_measurement.value() * (1 - m_alpha) +
+              m_alpha * curr_measurement;
+        } else {
+            result = curr_measurement;
+        }
+
+        last_measurement = curr_measurement;
+
+        return result;
+    }
+
+    void moveVoltage(Voltage target_voltage) {
+        m_motor->move_voltage(to_mvolt(target_voltage) * 12);
+    }
+
+  public:
+    IntakeVelocityController(
+      pros::Motor* motor,
+      lyfast::SimpleVelocityControllerParams<AngularVelocity> params,
+      double alpha = 0.9)
+        : m_motor(motor),
+          m_params(params),
+          m_alpha(alpha) {}
+
+    void setTarget(std::variant<Voltage, AngularVelocity> target) {
+        m_target = target;
+    }
+
+    void update(Time duration) {
+        if (std::holds_alternative<Voltage>(m_target)) {
+            // useful for full speed commands
+            moveVoltage(std::get<Voltage>(m_target));
+            return;
+        }
+        // else we are using velocity control
+        // TODO: what to do if motor unplugs??
+
+        AngularVelocity target = std::get<AngularVelocity>(m_target);
+
+        AngularVelocity measurement = getMeasurement();
+
+        AngularVelocity error = target - measurement;
+
+        Angle current_integral = integral;
+
+        if (last_error)
+            // use trapezoidal approximation
+            current_integral += (error + *last_error) * duration / 2.0;
+        else
+            // use Riemann sum approximation
+            current_integral += error * duration;
+
+        Voltage result {
+            // kv
+            target * m_params.Kv +
+              // ks
+              units::sgn(target) * m_params.Ks +
+              // kp
+              m_params.Kp * error +
+              // ki
+              m_params.Ki * current_integral,
+        };
+
+        if (
+          // currently saturating
+          units::abs(result) >= m_params.max_output &&
+          // output going in direct of error
+          units::sgn(error) == units::sgn(result)) {
+            // clamping, stop integral windup
+            // no need to update integral to current integral
+        } else {
+            // not saturating, update integral
+            integral = current_integral;
+        }
+
+        result =
+          units::clamp(result, -m_params.max_output, m_params.max_output);
+
+        last_error = error;
+
+        moveVoltage(result);
+    }
+};
+
 bool is_driver = false;
 bool tasks_active = false;
 
@@ -123,7 +232,21 @@ void score_middle_aligned() {
 namespace bottom {
 pros::Mutex mutex;
 
-Voltage pct;
+lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params {
+    .Kv = 0.0 * volt / radps,
+    // not really used
+    .Ka = 0.0 * volt / radps2,
+    .Ks = 0.0 * volt,
+    .Kp = 0.0 * volt / radps,
+    .Ki = 0.0 * volt / rad,
+};
+
+IntakeVelocityController controller(&bottom_motor, vel_controller_params);
+
+std::variant<Voltage, AngularVelocity> target;
+// Voltage pct;
+// AngularVelocity target_rpm;
+
 bool antijam_active = true;
 
 // amount of time we antijam
@@ -135,11 +258,22 @@ Time settle_time = 500_msec;
 
 void set_pct(Voltage new_pct) {
     std::lock_guard lock(mutex);
-    pct = new_pct;
+    target = new_pct;
 }
 
 void set_pct(float new_pct) {
-    set_pct(new_pct * volt);
+    std::lock_guard lock(mutex);
+    target = new_pct * volt;
+}
+
+void set_rpm(AngularVelocity new_rpm) {
+    std::lock_guard lock(mutex);
+    target = new_rpm;
+}
+
+void set_rpm_pct(float new_vel_pct) {
+    std::lock_guard lock(mutex);
+    target = new_vel_pct * 600_rpm;
 }
 
 void set_antijam(bool active) {
@@ -151,6 +285,13 @@ void set_antijam(bool active) {
 // should only be used by update function
 void hardware_move_pct(Voltage pct) {
     bottom_motor.move_voltage(12 * to_mvolt(pct));
+}
+
+void hardware_update() {
+    controller.setTarget(target);
+
+    // TODO: make sure its actually this update rate
+    controller.update(10_msec);
 }
 
 // update can be blocking if antijam or color sort are active
@@ -167,17 +308,18 @@ void update() {
         // scoring antijam action
         pros::delay(to_msec(antijam_timeout));
 
-        // afterwards move as normal
-        hardware_move_pct(pct);
-
-        // give time to settle
-        pros::delay(to_msec(settle_time));
+        // afterwards move as normal, give it time to setttle
+        Time start_move_normal = now();
+        while (!timeoutDone(settle_time, start_move_normal)) {
+            hardware_update();
+            pros::delay(10);
+        }
 
         // afterwards goes through update again, if still jammed then
         // antijams again
     } else {
         // no antijam active, move like normal
-        hardware_move_pct(pct);
+        hardware_update();
     }
 }
 

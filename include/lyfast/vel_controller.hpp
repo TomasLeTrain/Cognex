@@ -60,8 +60,13 @@ desaturateDifferentialSpeeds(DifferentialSpeeds target,
     std::array<LinearVelocity, 2> saturated = { target_left_vel,
                                                 target_right_vel };
 
+    std::cout << "max vel vel: " << max_velocity << std::endl;
     auto [new_left_vel, new_right_vel] =
       blazing::desaturate(saturated, max_velocity);
+    std::cout << "old vels: " << target_left_vel << " " << target_right_vel
+              << std::endl;
+    std::cout << "new vels: " << new_left_vel << " " << new_right_vel
+              << std::endl;
 
     LinearVelocity new_lin_vel = (new_left_vel + new_right_vel) / 2.0;
     AngularVelocity new_ang_vel =
@@ -423,10 +428,14 @@ class ArcadeVelocityController {
             target = desaturatePrioritizeAngularDiffSpeeds(target,
                                                            m_track_width,
                                                            m_max_velocity);
-        else
+        else {
             target = desaturateDifferentialSpeeds(target,
                                                   m_track_width,
                                                   m_max_velocity);
+            std::cout << "max vel: " << m_max_velocity << std::endl;
+            std::cout << "desaturated: " << target.linear_velocity.internal()
+                      << " " << target.angular_velocity.internal() << std::endl;
+        }
 
         LeftRightVoltages linear = linear_controller.update(target, duration);
         LeftRightVoltages angular = angular_controller.update(target, duration);
@@ -443,6 +452,7 @@ class ArcadeVelocityController {
         if (units::abs(den).internal() > 1e-5) {
             lin_factor = units::abs(target.linear_velocity) / den;
         }
+        std::cout << "lin factor: " << lin_factor << std::endl;
 
         // interpolate between controllers
         Voltage left_voltage = std::lerp(angular.left_voltage.internal(),
