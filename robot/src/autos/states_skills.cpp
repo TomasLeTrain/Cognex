@@ -72,9 +72,8 @@ void run_auton() {
             return make_machloader_pose(target_Point, target_dist);
         };
 
-        // make sure we are matchloading and intaking?
+        // make sure we are matchloading
         matchloader::down();
-        intake::in();
 
         Time motion_start_time = now();
 
@@ -160,37 +159,34 @@ void run_auton() {
                 .closeThreshold(10_in)
                 .timeout(2_sec)
                 .reverse() |
-              async;
-            async.waitUntil(exit_condition);
+              chain;
         } else {
-            Time start_time = now();
-            // swinging
-            while (true) {
-                drivetrain.moveTank(0_volt, -1_volt);
-                left_motors.set_brake_mode(pros::MotorBrake::brake);
+            mb.moveTo(17_in * sign_x, 54_in * sign_y)
+                .reverse()
+                .drive_vel_minVel(50_inps)
+                .setChainTime(0_sec) |
+              chain;
 
-                bool exit = exit_condition();
-                // swing max of 1.5 seconds
-                bool timeout = timeoutDone(1.5_sec, start_time);
-                bool turn_close =
-                  units::abs(angleError(target_forwards_heading,
-                                        RobotGetPose().orientation)) < 20_stDeg;
-
-                if (exit || timeout || turn_close) break;
-                pros::delay(10);
-            }
-            drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
+            // mb.turnTo(21.8_in, 47_in)
+            mb.turnTo(target_backwards_heading)
+                .reverse()
+                .direction(AngularDirection::RIGHT)
+                .radius(-10.5_in / 2)
+                .timeout(2.6_sec) |
+              chain;
         }
+
+        chain.waitUntil(exit_condition);
 
         intake::score_long();
         // let move to point settle a bit
         pros::delay(100);
-        async.exitAll();
+        chain.exitAll();
         // queue aligning motion
-        mb.turnTo(target_forwards_heading).radius(-4.0_in) | async;
+        mb.turnTo(target_forwards_heading).radius(-4.0_in) | chain;
 
         pros::delay(units::max(to_msec(score_time) - 100, 0));
-        async.exitAll();
+        chain.exitAll();
     };
 
     /* START AUTON */
@@ -202,96 +198,170 @@ void run_auton() {
     // swing back a bit
     drivetrain.moveTank(0_volt, -1_volt);
     pros::delay(300);
-    mb.moveTo(-37, -19.2).reverse() | run;
+    mb.moveTo(-37, -19.2).reverse() | chain;
 
     // mb.turnTo(0) | run;
     // mb.turnTo(-30.414, -17.062) | run;
     // mb.moveTo(-20.414, -17.062) | run;
-    mb.moveTo(-20.414, -17.062) | run;
+    mb.moveTo(-20.414, -17.062).drive_vel_minVel(40_inps) | chain;
     // mb.turnTo(-11.097, -11.691) | run;
-    mb.turnTo(45) | run;
-    mb.moveTo(-11.097, -11.691).closeThreshold(4_in) | run;
-    mb.turnTo(45).radius(5_in) | run;
+    // mb.turnTo(-11.097, -11.691) | chain;
+    mb.moveTo(-11.097, -11.691).closeThreshold(4_in).executeAfterMotion([] {
+        intake::score_bottom();
+    }) |
+      chain;
+    // align tech
+    mb.turnTo(45).radius(5_in) | chain;
+
+    chain.wait();
+
+    pros::delay(2000);
 
     drivetrain.moveTank(-1_volt, -1_volt);
     pros::delay(170);
+    intake::in();
 
     // got towards matchloader at other end
     // mb.turnTo(-43.02, 44.349) | run;
-    mb.moveTo(-43.02, 46.5).only_y(true).drive_errorTolerance(1_in) | run;
+    mb.moveTo(-43.02, 46)
+        .only_y(true)
+        .drive_errorTolerance(1.3_in)
+        .drive_toleranceDuration(0_sec) |
+      run;
 
     matchload(-1, 1, 1.5_sec);
 
     // go away from matchloader
-    mb.moveTo(-30.692, 57)
+    mb.moveTo(-28, 56)
         .reverse()
         .closeThreshold(4_in)
         .drive_vel_minVel(50_inps)
+        // can sacrifice cross track here for speed
+        .customAngularLinearFunc([](Angle angle) -> double {
+            return units::cos(angle);
+        })
+        .executeAfterMotion([] {
+            // up matchloader here to avoid getting stuck in the swing
+            matchloader::up();
+        })
         .setChainTime(0_sec) |
       chain;
 
-    // prepare for swing
-    mb.moveTo(17.5, 57)
-        .drive_vel_accelSlew(300_inps)
-        .drive_vel_minVel(40_inps)
-        // .setChainTime(0_sec) |
-        .drive_errorTolerance(1.5_in)
-        .drive_toleranceDuration(0_sec)
-        .reverse() |
-      chain;
-
-    // put matchlaoder up after a bit
-    pros::delay(300);
-    matchloader::up();
-
-    chain.wait();
-
+    // swing is chained, so no waiting here
+    // uses swing to score on long
     score_long_goal(1, 1, 2_sec, true);
+
+    pros::Task([] {
+        // need a bit of time for the last ball on the long goal
+        // before starting to intake
+        pros::delay(200);
+        intake::in();
+    });
 
     matchload(1, 1, 1.5_sec);
 
     score_long_goal(1, 1, 2_sec);
 
-    // sprint straight towards second park
+    matchloader::up();
 
-    mb.moveTo(41.142, 0) | run;
+    pros::Task([] {
+        // need a bit of time for the last ball on the long goal
+        // before starting to intake
+        pros::delay(200);
+        intake::in();
+    });
+
+    // --- SECOND PARK --- //
+    // sprint straight towards second park
+    mb.moveTo(41.142, -0.5) | run;
     mb.turnTo(0) | run;
 
     // TODO: perform getting balls from park
+    drivetrain.moveTank(0.12_volt, 0.12_volt);
+    pros::delay(500);
 
     // swing back a bit
-    drivetrain.moveTank(-1.0_volt, -0.5_volt);
-    pros::delay(170);
-    mb.turnTo(29.545, -16.952) | run;
-    mb.moveTo(29.545, -16.952) | run;
-    mb.turnTo(10.574, -10.401).reverse() | run;
-    mb.moveTo(10.574, -10.401).reverse() | run;
+    drivetrain.moveTank(-1.0_volt, -1.0_volt);
+    pros::delay(200);
 
-    // TODO: align well and score
+    // use inertial from before, turn left
+    mb.turnTo(29.545, -16.952) | chain;
+    mb.moveTo(29.545, -16.952) | chain;
+    mb.turnTo(12.574, -12.401).reverse() | chain;
+    mb.moveTo(13.574, -12.401).reverse().executeAfterMotion([] {
+        intake::score_middle();
+    }) |
+      chain;
 
-    mb.moveTo(44.745, -44.164) | run;
-    matchload(1, 1, 1.5_sec);
+    // align tech
+    mb.turnTo(135).reverse().radius(5_in) | chain;
+
+    chain.wait();
+    pros::delay(3000);
+
+    mb.moveTo(43.02, -46)
+        .only_y(true)
+        .drive_errorTolerance(1.3_in)
+        .drive_toleranceDuration(0_sec)
+        .executeBeforeMotion([] {
+            // wait a bit before starting to intake again to not interrept balls
+            // that were just scored
+            pros::delay(300);
+            intake::in();
+        }) |
+      run;
+
+    matchload(1, -1, 1.5_sec);
 
     // go away from matchloader
-    mb.moveTo(30.692, -59.614).reverse() | run;
-    matchloader::up();
+    mb.moveTo(30.692, -56)
+        .reverse()
+        .closeThreshold(4_in)
+        .drive_vel_minVel(50_inps)
+        // can sacrifice cross track here for speed
+        .customAngularLinearFunc([](Angle angle) -> double {
+            return units::cos(angle);
+        })
+        .executeAfterMotion([] {
+            // up matchloader here to avoid getting stuck in the swing
+            matchloader::up();
+        })
+        .setChainTime(0_sec) |
+      chain;
 
-    // prepare for swing
-    mb.moveTo(-14.375, -56.613).reverse() | run;
-
+    // uses swing to score on long
     score_long_goal(-1, -1, 2_sec, true);
+
+    pros::Task([] {
+        // need a bit of time for the last ball on the long goal
+        // before starting to intake
+        pros::delay(200);
+        intake::in();
+    });
 
     matchload(-1, -1, 1.5_sec);
 
     score_long_goal(-1, -1, 2_sec);
 
+    // intake any balls in the way and shoot them out on the way to the park
+    intake::score_long();
+
     // finally park
 
-    mb.moveTo(-66.246, -18.014) | run;
-    mb.turnTo(90) | run;
+    matchloader::up();
+    mb.moveTo(-66.246, -18.014) | chain;
+    mb.turnTo(90).executeBeforeMotion([] {
+        // retract to go over park
+        // doesn't matter for turn since its heading based
+        // doing it during the motion makes it so we don't ahve to wait for the
+        // odom to lift up
+        odom_retract::retractOdom();
+    }) |
+      chain;
+    chain.wait();
 
     drivetrain.moveTank(0.5_volt, 0.5_volt);
-    pros::delay(300);
+    pros::delay(500);
     drivetrain.moveTank(0.0_volt, 0.0_volt);
 
     // cinema

@@ -58,7 +58,14 @@ class turnToBase : public Motion<ControllersType,
 
   public:
     int getLoopDelayTime() override {
-        return 10;
+        // return 10;
+        if (m_velocity_based) {
+            // useful to make derivative not super bad
+            return 20;
+        } else {
+            // TODO: should probably also switch this one out?
+            return 10;
+        }
     }
 
     std::optional<motionExecutionResult> execute() override {
@@ -171,11 +178,13 @@ class turnToBase : public Motion<ControllersType,
         }
 
         // when chaining we would like to chain immediately
-        result.inChainTolerance = result.inChainTolerance
-                                    .transform([&](auto tolerance) {
-                                        return tolerance | state.settling;
-                                    })
-                                    .value_or(false);
+        result.inChainTolerance =
+          result.inChainTolerance
+            .transform([&](auto tolerance) {
+                return tolerance | state.settling;
+            })
+            // no in chain tolerance, could still trigger with settling
+            .value_or(state.settling);
 
         result.finished = state.settled;
 

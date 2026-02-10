@@ -36,6 +36,7 @@ class PID {
     std::optional<double> m_derivative_alpha;
 
     std::optional<Input> previousError;
+    std::optional<Input> previousMeasurement;
     std::optional<Divided<Input, Time>> last_applied_derivative;
     Multiplied<Input, Time> integral = Multiplied<Input, Time>(0);
 
@@ -94,9 +95,15 @@ class PID {
         Input error = target - measurement;
 
         if (!previousError) previousError = error;
+        if (!previousMeasurement) previousMeasurement = measurement;
 
+        // const Divided<Input, Time> curr_derivative =
+        //   (dt != 0_sec) ? (error - *previousError) / dt :
+        //                   Divided<Input, Time>(0);
+
+        // TODO: test that moveto's don't break because of this
         const Divided<Input, Time> curr_derivative =
-          (dt != 0_sec) ? (error - *previousError) / dt :
+          (dt != 0_sec) ? (*previousMeasurement - measurement) / dt :
                           Divided<Input, Time>(0);
 
         Divided<Input, Time> applied_derivative = curr_derivative;
@@ -129,6 +136,7 @@ class PID {
         }
 
         previousError = error;
+        previousMeasurement = measurement;
 
         // anti windup range. Unless error is small enough, set the integral
         // to

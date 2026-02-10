@@ -782,6 +782,8 @@ void turn_vel_pid_tuning() {
     double ki_delta = 0.01;
     double kd_delta = 0.25;
 
+    pros::delay(2000);
+
     while (true) {
         matchloader::down();
 
@@ -808,23 +810,31 @@ void turn_vel_pid_tuning() {
         //   chain;
         // chain.wait();
 
-        // drivetrain.moveTank(0_volt, -1_volt);
         // left_motors.set_brake_mode(pros::MotorBrake::brake);
         //
         // pros::delay(1500);
         // drivetrain.moveTank(0_volt, 0_volt);
 
-        drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-
-        mb.turnTo(target_theta)
-            // .turn_vel_maxVel(200_degps)
-            .direction(AngularDirection::RIGHT)
-            .radius(-10.5_in)
-            // .turn_vel_kp(curr_kp)
-            // .turn_vel_ki(curr_ki)
-            // .turn_vel_kd(curr_kd)
-            .timeout(2.6_sec) |
-          run;
+        // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
+        // RobotSetPose(-30, 57, 180);
+        //
+        // mb.moveTo(17_in, 54_in)
+        //     .reverse()
+        //     .drive_vel_minVel(50_inps)
+        //     .setChainTime(0_sec) |
+        //   chain;
+        //
+        // // mb.turnTo(21.8_in, 47_in)
+        // mb.turnTo(180)
+        //     .reverse()
+        //     .direction(AngularDirection::RIGHT)
+        //     .radius(-10.5_in / 2)
+        //     .timeout(2.6_sec)
+        //     .setChainTime(0_sec) |
+        //   chain;
+        // mb.turnTo(0).radius(-4_in).timeout(2.6_sec) | chain;
+        //
+        // chain.wait();
 
         // mb.turnTo(target_theta)
         //     // .turn_vel_maxVel(200_degps)
@@ -835,6 +845,10 @@ void turn_vel_pid_tuning() {
         //     // .turn_vel_kd(curr_kd)
         //     .timeout(2.6_sec) |
         //   run;
+
+        // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
+        RobotSetPose(48, 48, 0);
+        mb.turnTo(47, 47).timeout(3.0_sec) | run;
 
         controller.rumble(".");
 

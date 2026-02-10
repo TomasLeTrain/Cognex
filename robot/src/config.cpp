@@ -783,7 +783,7 @@ AsyncExecutor async;
 // };
 
 // ChainedExecutor chain(100_msec, chain_lerp);
-ChainedExecutor chain(100_msec);
+ChainedExecutor chain(0_msec);
 
 // custom cos-like func
 double angular_linear_func(Angle angle) {
@@ -878,8 +878,6 @@ vexmaps::PfMotionModel<vexmaps::OdometryModel>
                   // drivetrain of no rotations are connected
 
                   false);
-
-auto curr_config = front_laser_model.getConfig();
 
 DistanceSensorModel front_laser_model(&front_distance,
                                       front_distance_offsets,
