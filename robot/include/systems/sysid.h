@@ -1,6 +1,7 @@
 #pragma once
 
 #include "apis.h"
+#include "lyfast/system_identification.hpp"
 //
 
 void kv_ks_tuner(std::string type,
@@ -48,3 +49,9 @@ void angular_raw_ka_tuner(blazing::lyfast::KvUnits left_Kv,
                           blazing::lyfast::KsUnits left_Ks,
                           blazing::lyfast::KvUnits right_Kv,
                           blazing::lyfast::KsUnits right_Ks);
+
+std::vector<blazing::lyfast::MotorSysidData> calculate_intake_kv_ks(
+  std::vector<blazing::lyfast::MotorSysidVoltageCommands> voltage_commands,
+  pros::MotorGroup* motors,
+  Time delta_time,
+  Time steady_state_time);

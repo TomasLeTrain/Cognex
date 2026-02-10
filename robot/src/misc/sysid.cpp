@@ -1,7 +1,9 @@
 #include "apis.h"
 //
+#include "blazing/utils.hpp"
 #include "globals/blazing_globals.h"
 #include "globals/device_globals.h"
+#include "lyfast/system_identification.hpp"
 #include "systems/sysid.h"
 
 using namespace blazing;
@@ -242,4 +244,60 @@ void angular_raw_ka_tuner(lyfast::KvUnits left_Kv,
                  left_Ks,
                  right_Kv,
                  right_Ks);
+}
+
+std::vector<MotorSysidData> calculate_intake_kv_ks(
+  std::vector<lyfast::MotorSysidVoltageCommands> voltage_commands,
+  pros::MotorGroup* motors,
+  Time delta_time,
+  Time steady_state_time) {
+    std::vector<MotorSysidData> data;
+
+    uint32_t int_delta_time = std::lround(to_msec(delta_time));
+
+    for (auto [voltage, target_time, record] : voltage_commands) {
+        motors->move_voltage(to_mvolt(voltage) * 12);
+
+        auto start_time = blazing::now();
+        uint32_t prev_time = pros::millis();
+
+        LinearVelocity averageVelocities { 0 };
+        Voltage averageVoltages { 0 };
+        int samples = 0;
+
+        while (!timeoutDone(target_time, start_time)) {
+            // time at which we start to record data
+            Time threshold_time =
+              units::max(0_Fsec, target_time - steady_state_time);
+
+            if (timeoutDone(threshold_time, start_time)) {
+
+                //
+                auto curr_vel =
+                  blazing::get_group_velocity(motors, (1 / M_PI) * m, 600_rpm);
+
+                averageVelocities += curr_vel;
+                averageVoltages += voltage;
+
+                samples++;
+            }
+
+            pros::c::task_delay_until(&prev_time, int_delta_time);
+        }
+
+        averageVelocities /= samples;
+        averageVoltages /= samples;
+
+        if (record) {
+            data.emplace_back(averageVelocities, averageVoltages);
+        }
+    }
+
+    auto [kv, ks] = lyfast::MotorGroupSysid::fit_kv_ks_data(data);
+
+    auto new_kv = kv * rad / m;
+
+    std::cout << "kv/ks: " << new_kv << " " << ks << std::endl;
+
+    return data;
 }

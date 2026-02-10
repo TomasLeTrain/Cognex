@@ -7,6 +7,7 @@
 #include "globals/config.h"
 #include "lyfast/mp_feedback.hpp"
 #include "lyfast/vel_controller.hpp"
+#include "pros/abstract_motor.hpp"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
 #include "vexmaps/mcl/distance_model.hpp"
@@ -48,8 +49,8 @@ vexmaps::ScaledIMU imu(11, (360.0 + 2.1) / 360.0);
 // pros::Motor top_motor(-1);
 
 // disable for testing
-pros::Motor bottom_motor(-5);
-pros::Motor top_motor(-9);
+pros::Motor bottom_motor(-5, pros::MotorGears::blue);
+pros::Motor top_motor(-9, pros::MotorGears::blue);
 
 pros::Optical middle_intake_color_sensor(6);
 pros::Optical bottom_intake_color_sensor(21);

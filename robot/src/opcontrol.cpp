@@ -6,8 +6,12 @@
 #include "globals/blazing_globals.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
+#include "lyfast/system_identification.hpp"
 #include "main.h"
+#include "pros/abstract_motor.hpp"
 #include "pros/imu.h"
+#include "pros/motor_group.hpp"
+#include "pros/rtos.hpp"
 #include "screen/screen.h"
 #include "systems/drivetrain.h"
 #include "systems/intake.h"
@@ -64,6 +68,46 @@ void opcontrol() {
 
     // findImuOrientation();
 
+    // pros::delay(2000);
+    // pros::MotorGroup bottom_intake_group({ bottom_motor.get_port() },
+    //                                      pros::MotorGears::blue,
+    //                                      pros::v5::MotorUnits::rotations);
+    //
+    // std::vector<blazing::lyfast::MotorSysidData> data =
+    // calculate_intake_kv_ks(
+    //   std::vector<blazing::lyfast::MotorSysidVoltageCommands> {
+    //     { .voltage = 0.05_volt,  .time = 800_msec },
+    //     { .voltage = -0.05_volt, .time = 800_msec },
+    //     { .voltage = 0.1_volt,   .time = 800_msec },
+    //     { .voltage = -0.1_volt,  .time = 800_msec },
+    //     { .voltage = 0.2_volt,   .time = 800_msec },
+    //     { .voltage = -0.2_volt,  .time = 800_msec },
+    //     { .voltage = 0.3_volt,   .time = 800_msec },
+    //     { .voltage = -0.3_volt,  .time = 800_msec },
+    //     { .voltage = 0.4_volt,   .time = 800_msec },
+    //     { .voltage = -0.4_volt,  .time = 800_msec },
+    //     { .voltage = 0.5_volt,   .time = 800_msec },
+    //     { .voltage = -0.5_volt,  .time = 800_msec },
+    //     { .voltage = 0.6_volt,   .time = 800_msec },
+    //     { .voltage = -0.6_volt,  .time = 800_msec },
+    //     { .voltage = 0.7_volt,   .time = 800_msec },
+    //     { .voltage = -0.7_volt,  .time = 800_msec },
+    //     { .voltage = 0.8_volt,   .time = 800_msec },
+    //     { .voltage = -0.8_volt,  .time = 800_msec },
+    // },
+    //   &bottom_intake_group,
+    //   10_msec,
+    //   50_msec);
+    //
+    // std::cout << "\\left[";
+    // for (int i = 0; i < data.size(); i++) {
+    //     std::cout << "\\left(" << data[i].voltage.internal() << ","
+    //               << data[i].velocity.convert(mps) << "\\right)";
+    //     // doesn't print comma for last point
+    //     if (i < data.size() - 1) std::cout << ",";
+    // }
+    // std::cout << "\\right]" << std::endl;
+
     // return;
 
     // return;
@@ -76,8 +120,8 @@ void opcontrol() {
     // 6. linear pid tuning
     // 7. autos
 
-    drive_vel_pid_tuning();
-    return;
+    // drive_vel_pid_tuning();
+    // return;
 
     // turn_vel_pid_tuning();
     // return;
