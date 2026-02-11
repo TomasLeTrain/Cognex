@@ -30,7 +30,7 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -49,8 +49,10 @@ vexmaps::ScaledIMU imu(11, (360.0 + 2.1) / 360.0);
 // pros::Motor top_motor(-1);
 
 // disable for testing
-pros::Motor bottom_motor(-5, pros::MotorGears::blue);
-pros::Motor top_motor(-9, pros::MotorGears::blue);
+pros::Motor
+  bottom_motor(-5, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+pros::Motor
+  top_motor(-9, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 
 pros::Optical middle_intake_color_sensor(6);
 pros::Optical bottom_intake_color_sensor(21);
@@ -411,7 +413,7 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 
     // length kp and ka term create a feedback loop intenuating noise
     // .left_Ka = 0.09 * volt / mps2,
-    .left_Ka = 0.06 * volt / mps2,
+    .left_Ka = 0.07 * volt / mps2,
     // .left_Ka = 0.0 * volt / mps2,
     .left_Ks = 0.0819155 * volt,
 
@@ -422,7 +424,7 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 
     .right_Kv = 0.422079 * volt / mps,
     // .right_Ka = 0.09 * volt / mps2,
-    .right_Ka = 0.06 * volt / mps2,
+    .right_Ka = 0.07 * volt / mps2,
     // .right_Ka = 0.0 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
@@ -583,7 +585,7 @@ lyfast::mpFeedback<Length> linear_mp_feedback { 76_inps, 110_inps2 };
 LinearVelocityFeedbackController<decltype(linear_mp_feedback)>
   linear_mp_feedback_controller(linear_mp_feedback);
 
-LinearVelocitySlewController linear_vel_slew_controller { 110_inps2 };
+LinearVelocitySlewController linear_vel_slew_controller { 170_inps2 };
 LinearVelocityClampController linear_vel_clamp_controller {};
 
 // end linear velocity stuff //

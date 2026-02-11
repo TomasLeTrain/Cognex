@@ -11,7 +11,9 @@
 #include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/blazing_globals.h"
+#include "globals/config.h"
 #include "globals/device_globals.h"
+#include "globals/vexmaps_globals.h"
 #include "pros/abstract_motor.hpp"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
@@ -80,6 +82,7 @@ void run_auton() {
         mb.moveTo(func)
             // if it takes longer it most likely got stuck
             .timeout(1.5_sec)
+            .drive_vel_accelSlew(110_inps2)
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
             .drive_vel_mp_setMaxAccel(70_inps2) |
@@ -161,7 +164,7 @@ void run_auton() {
                 .reverse() |
               chain;
         } else {
-            mb.moveTo(17_in * sign_x, 54_in * sign_y)
+            mb.moveTo(17_in * sign_x, 54.5_in * sign_y)
                 .reverse()
                 .drive_vel_minVel(50_inps)
                 .setChainTime(0_sec) |
@@ -191,21 +194,64 @@ void run_auton() {
 
     /* START AUTON */
 
-    RobotSetPose(-43.3, 0.0, 180);
+    RobotSetPose(-46.7, 0.0, 180);
+
+    // start by going into the park
+
+    // disable odom
+    odom_retract::retractOdom();
+    horizontal_tracker.setDisabled(true);
+
+    drivetrain.moveTank(1.0_volt, 1.0_volt);
+    pros::delay(200);
+    drivetrain.moveTank(0.5_volt, 1.5_volt);
+    pros::delay(200);
+    drivetrain.moveTank(0.2_volt, 0.2_volt);
+
+    Time first_park_start_time = now();
+
+    while (true) {
+        Length measured = from_mm(front_distance.get());
+
+        bool timeout_done = timeoutDone(3_sec, first_park_start_time);
+
+        bool distance_exit = false;
+
+        if (measured <= 40_mm) {
+            // reading intake, ignore
+        } else {
+            if (measured <= 130_mm) {
+                distance_exit = true;
+            }
+        }
+
+        if (timeout_done || distance_exit) break;
+        pros::delay(10);
+    }
+
+    drivetrain.moveTank(-0.5_volt, -0.5_volt);
+    pros::delay(800);
+
+    // enable odom again
+    odom_retract::lowerOdom();
+    horizontal_tracker.setDisabled(false);
+
+    // go back again towards the park to reset?
+    setSmootherAlphas(0.3, 0.2);
+    front_laser_model.setMaxDistanceDifference(7_in);
+    drivetrain.moveTank(0.2_volt, 0.2_volt);
+    pros::delay(500);
+    resetSmootherConfig();
+    resetMaxDistanceThresholdAll();
 
     intake::in();
 
     // swing back a bit
     drivetrain.moveTank(0_volt, -1_volt);
     pros::delay(300);
-    mb.moveTo(-37, -19.2).reverse() | chain;
+    mb.moveTo(-39, -19.2).reverse() | chain;
 
-    // mb.turnTo(0) | run;
-    // mb.turnTo(-30.414, -17.062) | run;
-    // mb.moveTo(-20.414, -17.062) | run;
-    mb.moveTo(-20.414, -17.062).drive_vel_minVel(40_inps) | chain;
-    // mb.turnTo(-11.097, -11.691) | run;
-    // mb.turnTo(-11.097, -11.691) | chain;
+    mb.moveTo(-22.414, -17.062).drive_vel_minVel(20_inps) | chain;
     mb.moveTo(-11.097, -11.691).closeThreshold(4_in).executeAfterMotion([] {
         intake::score_bottom();
     }) |
@@ -215,7 +261,7 @@ void run_auton() {
 
     chain.wait();
 
-    pros::delay(2000);
+    pros::delay(3000);
 
     drivetrain.moveTank(-1_volt, -1_volt);
     pros::delay(170);
@@ -223,9 +269,9 @@ void run_auton() {
 
     // got towards matchloader at other end
     // mb.turnTo(-43.02, 44.349) | run;
-    mb.moveTo(-43.02, 46)
+    mb.moveTo(-43.02, 45.5)
         .only_y(true)
-        .drive_errorTolerance(1.3_in)
+        // .drive_errorTolerance(0.5_in)
         .drive_toleranceDuration(0_sec) |
       run;
 
@@ -273,12 +319,55 @@ void run_auton() {
 
     // --- SECOND PARK --- //
     // sprint straight towards second park
-    mb.moveTo(41.142, -0.5) | run;
+    mb.moveTo(41.142, 0) | run;
     mb.turnTo(0) | run;
 
-    // TODO: perform getting balls from park
-    drivetrain.moveTank(0.12_volt, 0.12_volt);
+    // disable odom
+    odom_retract::retractOdom();
+    horizontal_tracker.setDisabled(true);
+
+    // align against the park while having some speed
+    drivetrain.moveTank(0.3_volt, 0.3_volt);
+    pros::delay(300);
+
+    drivetrain.moveTank(0.5_volt, 0.5_volt);
+    pros::delay(700);
+    drivetrain.moveTank(0.2_volt, 0.2_volt);
+
+    Time second_park_start_time = now();
+
+    while (true) {
+        Length measured = from_mm(front_distance.get());
+
+        bool timeout_done = timeoutDone(3_sec, second_park_start_time);
+
+        bool distance_exit = false;
+
+        if (measured <= 40_mm) {
+            // reading intake, ignore
+        } else {
+            if (measured <= 130_mm) {
+                distance_exit = true;
+            }
+        }
+
+        if (timeout_done || distance_exit) break;
+        pros::delay(10);
+    }
+    drivetrain.moveTank(-0.5_volt, -0.5_volt);
+    pros::delay(800);
+
+    // enable odom again
+    odom_retract::lowerOdom();
+    horizontal_tracker.setDisabled(false);
+
+    // go back again towards the park to reset?
+    setSmootherAlphas(0.3, 0.2);
+    front_laser_model.setMaxDistanceDifference(7_in);
+    drivetrain.moveTank(0.2_volt, 0.2_volt);
     pros::delay(500);
+    resetSmootherConfig();
+    resetMaxDistanceThresholdAll();
 
     // swing back a bit
     drivetrain.moveTank(-1.0_volt, -1.0_volt);
@@ -288,16 +377,25 @@ void run_auton() {
     mb.turnTo(29.545, -16.952) | chain;
     mb.moveTo(29.545, -16.952) | chain;
     mb.turnTo(12.574, -12.401).reverse() | chain;
-    mb.moveTo(13.574, -12.401).reverse().executeAfterMotion([] {
-        intake::score_middle();
-    }) |
-      chain;
+    mb.moveTo(11.574, -11.5).reverse() | chain;
+
+    auto top_middle_scoring_indx = chain.getCurrentIndex();
 
     // align tech
-    mb.turnTo(135).reverse().radius(5_in) | chain;
+    mb.turnTo(135)
+        .reverse()
+        .radius(-5_in)
+        // infinite time motion
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .timeout(4_sec) |
+      chain;
 
-    chain.wait();
+    chain.waitUntilIndex(top_middle_scoring_indx);
+    // start scoring?
+    intake::score_middle();
     pros::delay(3000);
+    chain.exitAll();
 
     mb.moveTo(43.02, -46)
         .only_y(true)
@@ -349,8 +447,8 @@ void run_auton() {
     // finally park
 
     matchloader::up();
-    mb.moveTo(-66.246, -18.014) | chain;
-    mb.turnTo(90).executeBeforeMotion([] {
+    mb.moveTo(-59, -20) | chain;
+    mb.turnTo(90).radius(4_in).executeBeforeMotion([] {
         // retract to go over park
         // doesn't matter for turn since its heading based
         // doing it during the motion makes it so we don't ahve to wait for the
@@ -361,7 +459,7 @@ void run_auton() {
     chain.wait();
 
     drivetrain.moveTank(0.5_volt, 0.5_volt);
-    pros::delay(500);
+    pros::delay(900);
     drivetrain.moveTank(0.0_volt, 0.0_volt);
 
     // cinema

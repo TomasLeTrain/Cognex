@@ -233,12 +233,13 @@ namespace bottom {
 pros::Mutex mutex;
 
 lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params {
-    .Kv = 0.0 * volt / radps,
+    .Kv = (1_volt / 600_rpm),
     // not really used
     .Ka = 0.0 * volt / radps2,
-    .Ks = 0.0 * volt,
-    .Kp = 0.0 * volt / radps,
-    .Ki = 0.0 * volt / rad,
+    .Ks = 0.02 * volt,
+    // .Kp = 1_volt / 100_rpm,
+    .Kp = 0.2_volt / 100_rpm,
+    .Ki = 1.0 * volt / rad,
 };
 
 IntakeVelocityController controller(&bottom_motor, vel_controller_params);
@@ -311,6 +312,11 @@ void update() {
         // afterwards move as normal, give it time to setttle
         Time start_move_normal = now();
         while (!timeoutDone(settle_time, start_move_normal)) {
+            if (std::holds_alternative<Voltage>(target) &&
+                // want to stop intake, stop immediately
+                units::abs(get<Voltage>(target).internal()) <= 0.01) {
+                break;
+            }
             hardware_update();
             pros::delay(10);
         }
@@ -328,13 +334,26 @@ void update() {
 namespace top {
 pros::Mutex mutex;
 
-Voltage pct;
+lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params {
+    .Kv = (1_volt / 600_rpm),
+    // not really used
+    .Ka = 0.0 * volt / radps2,
+    .Ks = 0.02 * volt,
+    // .Kp = 1_volt / 100_rpm,
+    .Kp = 0.2_volt / 100_rpm,
+    .Ki = 1.0 * volt / rad,
+};
+
+IntakeVelocityController controller(&top_motor, vel_controller_params);
+
+std::variant<Voltage, AngularVelocity> target;
+
 bool antijam_active = true;
 
 // latest time since we started scoring
 // used to stop antijam from running for the first 200_msec of scoring
 // bool scoring
-bool scoring_antijam = false;
+bool m_is_scoring = false;
 Time score_start_time = 0_sec;
 
 // initial timeout that allows hood to raise up before antijamming
@@ -349,11 +368,22 @@ Time settle_time = 130_msec;
 
 void set_pct(Voltage new_pct) {
     std::lock_guard lock(mutex);
-    pct = new_pct;
+    target = new_pct;
 }
 
 void set_pct(float new_pct) {
-    set_pct(new_pct * volt);
+    std::lock_guard lock(mutex);
+    target = new_pct * volt;
+}
+
+void set_rpm(AngularVelocity new_rpm) {
+    std::lock_guard lock(mutex);
+    target = new_rpm;
+}
+
+void set_rpm_pct(float new_vel_pct) {
+    std::lock_guard lock(mutex);
+    target = new_vel_pct * 600_rpm;
 }
 
 void set_antijam(bool active) {
@@ -365,14 +395,21 @@ void set_antijam(bool active) {
 // updating does not affect antijam active state
 void set_scoring(bool is_scoring) {
     std::lock_guard lock(mutex);
-    scoring_antijam = is_scoring;
-    if (scoring_antijam) score_start_time = now();
+    m_is_scoring = is_scoring;
+    if (m_is_scoring) score_start_time = now();
 }
 
 // directly updates hardware
 // should only be used by update function
 void hardware_move_pct(Voltage pct) {
     top_motor.move_voltage(12 * to_mvolt(pct));
+}
+
+void hardware_update() {
+    controller.setTarget(target);
+
+    // TODO: make sure its actually this update rate
+    controller.update(10_msec);
 }
 
 // update can be blocking if antijam or color sort are active
@@ -384,31 +421,34 @@ void update() {
 
     if (antijam_active && top_jammed) {
         // antijam is active and bottom is jammed, start doing something
-        if (scoring_antijam) {
+        if (m_is_scoring) {
             // scoring antijam is active
             bool initial_timeout_done =
               timeoutDone(initial_timeout, score_start_time);
 
             if (initial_timeout_done) {
                 // move at full speed in opposite direction of desired pct
-                hardware_move_pct(units::sgn(pct) * -1.0_volt);
+                hardware_move_pct(-1.0_volt);
 
                 // scoring antijam action
                 pros::delay(to_msec(antijam_timeout));
 
-                // afterwards move as normal
-                hardware_move_pct(pct);
-
-                // give time to settle
-                pros::delay(to_msec(settle_time));
-
-                // afterwards goes through update again, if still jammed then
-                // antijams again
+                // afterwards move as normal, give it time to setttle
+                Time start_move_normal = now();
+                while (!timeoutDone(settle_time, start_move_normal)) {
+                    if (std::holds_alternative<Voltage>(target) &&
+                        // want to stop intake, stop immediately
+                        units::abs(get<Voltage>(target).internal()) <= 0.01) {
+                        break;
+                    }
+                    hardware_update();
+                    pros::delay(10);
+                }
             }
         }
     } else {
         // no antijam active, move like normal
-        hardware_move_pct(pct);
+        hardware_update();
     }
 }
 
@@ -483,8 +523,13 @@ void score_long(float bottom_speed, float top_speed) {
     top::set_scoring(true);
 }
 
+// defaults:
+// score_middle -> bottom_speed = 1.0, top_speed = 0.4
 void score_middle(float bottom_speed, float top_speed) {
-    set_pct(bottom_speed, top_speed);
+    // set_pct(bottom_speed, top_speed);
+    bottom::set_pct(bottom_speed);
+    // use speed for the top
+    top::set_rpm_pct(top_speed);
 
     pistons::score_middle_aligned();
     pistons::intake_down();
@@ -496,8 +541,13 @@ void score_middle_slow() {
     score_middle(1.0, 0.25);
 }
 
+// defaults: bottom_speed = -0.5,  top_speed = -1.0
 void score_bottom(float bottom_speed, float top_speed) {
-    set_pct(bottom_speed, top_speed);
+    // set_pct(bottom_speed, top_speed);
+    // set_pct(bottom_speed, top_speed);
+    bottom::set_rpm_pct(bottom_speed);
+    // use speed for the top
+    top::set_pct(top_speed);
 
     // only updates bottom piston, no need to update others
     pistons::intake_up();
