@@ -8,6 +8,7 @@
 //
 #include "auton_globals.h"
 #include "autos.h"
+#include "blazing/executor.hpp"
 #include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/blazing_globals.h"
@@ -91,28 +92,27 @@ void run_auton() {
         Length matchload_start_distance = 13_in;
 
         auto custom_exit_condition = [&] -> bool {
+            auto curr_pose = RobotGetPose();
+            auto error = (target_Point - curr_pose);
+            auto local_error = error.rotatedBy(-curr_pose.orientation);
+
+            bool close = error.magnitude() <
+                         // trigger only if closes to the matchloader
+                         matchload_start_distance + 5_in;
+
+            bool forwards_close =
+              units::abs(local_error.x) < matchload_start_distance;
+
             // use forwards error and
-            return (target_Point - RobotGetPose()).magnitude() <
-                     // trigger only if closes to the matchloader
-                     matchload_start_distance + 5_in &&
-                   units::abs((target_Point - RobotGetPose())
-                                .rotatedBy(-RobotGetPose().orientation)
-                                .x) < matchload_start_distance;
+            return close && forwards_close;
         };
 
-        bool motion_finished = false;
+        auto wait_result = async.waitOr(custom_exit_condition, 3_sec);
 
-        while (true) {
-            bool exit_now = custom_exit_condition();
-            motion_finished = async.numQueuedMotions() == 0;
-
-            if (motion_finished || exit_now) break;
-            pros::delay(10);
-        }
-
-        if (motion_finished) {
-            // motion finished before matchload start time, we likely got stuck
-            // and should stop any more matchloading time
+        if (wait_result == blazing::AsyncExecutorBase::motionFinished ||
+            wait_result == blazing::AsyncExecutorBase::timeoutFinished) {
+            // custom condition did not trigger, meaning we got stuck or
+            // something else went wrong. Don't wait just exit
             async.exitAll();
         } else {
             // got to matcloader successfully, start matchloading
@@ -138,8 +138,6 @@ void run_auton() {
                                     target_backwards_heading };
 
         auto exit_condition = [&] -> bool {
-            // use forwards error and
-
             auto curr_pose = RobotGetPose();
             bool x_close = units::abs(curr_pose.x) >= 27_in &&
                            units::abs(curr_pose.x) <= 29.5_in;
@@ -148,10 +146,9 @@ void run_auton() {
             //
             bool theta_close =
               units::abs(angleError(target_forwards_heading,
-                                    curr_pose.orientation)) < 25_stDeg;
+                                    curr_pose.orientation)) <= 25_stDeg;
 
             return x_close && y_close && theta_close;
-            // return x_close;
         };
 
         // turn towards 24, settle at 48
@@ -179,7 +176,9 @@ void run_auton() {
               chain;
         }
 
-        chain.waitUntil(exit_condition);
+        chain.waitOr(exit_condition);
+
+        // regardless of getting stuck or not we perform the same action
 
         intake::score_long();
         // let move to point settle a bit

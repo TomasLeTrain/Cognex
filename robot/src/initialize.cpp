@@ -16,7 +16,7 @@ void initialize() {
     screen::init();
 
     // initialize controller screen control
-    controller_ui::init();
+    // controller_ui::init();
 
     int imu_notif = screen::health::add_init_notif("calibrating imu");
 
@@ -173,6 +173,7 @@ void initialize() {
 
     mb_vel.setBoomerangModifier([](auto&& boomerang) {
         return std::move(boomerang.velocity_based(true)
+                           .customAngularLinearFunc(angular_linear_func)
                            .k_lat(0.0 * rad / m, true)
                            .timeout(5_sec));
     });
@@ -212,6 +213,7 @@ void initialize() {
 
     mb.setBoomerangModifier([](auto&& boomerang) {
         return std::move(boomerang.velocity_based(true)
+                           .customAngularLinearFunc(angular_linear_func)
                            .k_lat(0.0 * rad / m, true)
                            .timeout(5_sec));
     });

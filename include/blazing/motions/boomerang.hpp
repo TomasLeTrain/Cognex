@@ -235,18 +235,6 @@ class boomerang : public Motion<ControllersType,
         // applies sign component here so that sign of error is accurate
         linear_error *= signed_sgn(lin_multiplier);
 
-        Length projected_cte_error = [&] {
-            Length cte_error = 0_in;
-            if (units::sgn(lin_multiplier) >= 0) {
-                cte_error =
-                  (carrot - position).magnitude() * units::sin(angular_error);
-            } else {
-                // probably good enough to turn very fast
-                cte_error = 100_in * units::sgn(units::sin(angular_error));
-            }
-            return cte_error;
-        }();
-
         // update tolerances if they are included
         this->tolerances.linearErrorToleranceUpdate(linear_error);
         this->tolerances.linearVelocityToleranceUpdate(
@@ -299,47 +287,21 @@ class boomerang : public Motion<ControllersType,
                     0_in,
                     delta_time);
 
-                AngularVelocity angular_vel = 0_radps;
-
-                // use lateral controller when far away, use regular angular
-                // when settling
-                if (!state.close) {
-                    // std::cout << "cte " <<
-                    // -projected_cte_error.convert(in)
-                    //           << std::endl;
-                    angular_vel =
-                      this->controllers.lateral_velocity_feedback.update(
-                        -projected_cte_error,
-                        0_in,
-                        delta_time);
-                } else {
-                    angular_vel =
-                      this->controllers.angular_velocity_feedback.update(
-                        -angular_error,
-                        0_stRad,
-                        delta_time);
-                }
-
-                if (!state.close && m_k_lat &&
-                    (!k_lat_only_settling ||
-                     (k_lat_only_settling && state.crossed_sideways))) {
-                    angular_vel =
-                      angular_vel +
-                      *m_k_lat * (rad / m) * linear_vel *
-                        (target_pose - position).rotatedBy(-heading).y *
-                        sinc(angular_error);
-                }
+                AngularVelocity angular_vel =
+                  this->controllers.angular_velocity_feedback.update(
+                    -angular_error,
+                    0_stRad,
+                    delta_time);
 
                 // sign was already applied to error, only applies cosine
                 // scaling component
                 if (!state.close) linear_vel *= units::abs(lin_multiplier);
 
-                // here the robot would attempt to move backwards, when
-                // instead the robot should turn around until it should
-                // start moving towards the target the reason that this is
-                // done to linear_output and not linear_error is because
-                // otherwise linear_error would be zero and tolerances would
-                // trigger
+                // here the robot would attempt to move backwards, when instead
+                // the robot should turn around until it should start moving
+                // towards the target the reason that this is done to
+                // linear_output and not linear_error is because otherwise
+                // linear_error would be zero and tolerances would trigger
                 if (!state.close && lin_multiplier < 0) {
                     linear_vel = 0_mps;
                 }
@@ -354,16 +316,20 @@ class boomerang : public Motion<ControllersType,
                         angular_vel);
                 }
 
-                // apply slew
-                if constexpr (hasLinearVelocitySlew<ControllersType>) {
-                    linear_vel =
-                      this->controllers.linear_velocity_slew.apply(linear_vel,
-                                                                   delta_time);
-                }
-                if constexpr (hasAngularVelocitySlew<ControllersType>) {
-                    angular_vel =
-                      this->controllers.angular_velocity_slew.apply(angular_vel,
-                                                                    delta_time);
+                // don't apply slew when settling
+                if (!state.close) {
+                    if constexpr (hasLinearVelocitySlew<ControllersType>) {
+                        linear_vel =
+                          this->controllers.linear_velocity_slew.apply(
+                            linear_vel,
+                            delta_time);
+                    }
+                    if constexpr (hasAngularVelocitySlew<ControllersType>) {
+                        angular_vel =
+                          this->controllers.angular_velocity_slew.apply(
+                            angular_vel,
+                            delta_time);
+                    }
                 }
 
                 DifferentialSpeeds target { linear_vel, angular_vel };
@@ -374,6 +340,7 @@ class boomerang : public Motion<ControllersType,
                                                                 delta_time);
 
                 // TODO: apply voltage clamp/slew? probably not
+
                 auto [left_vel, right_vel] =
                   this->drivetrain.getDrivetrainVelocities();
                 auto [actual_volt_left, actual_volt_right] =
@@ -387,14 +354,15 @@ class boomerang : public Motion<ControllersType,
                 //           << linear_error.internal() << " "
                 //           << target.linear_velocity.internal() << " "
                 //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " << right_vel.internal()
+                //           << left_vel.internal() << " " <<
+                //           right_vel.internal()
                 //           << " " << left_voltage.internal() << " "
                 //           << right_voltage.internal() << " "
                 //           << actual_volt_left.internal() << " "
                 //           << actual_volt_right.internal() << " "
                 //           << position.x.convert(in) << " "
                 //           << position.y.convert(in) << " "
-                //           << heading.convert(deg) << " "
+                //           << projected_cte_error.convert(in) << " "
                 //           << angular_error.internal() << std::endl;
 
                 this->drivetrain.moveTank(left_voltage, right_voltage);

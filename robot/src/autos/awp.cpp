@@ -70,15 +70,15 @@ void run_auton() {
             return make_machloader_pose(target_Point, target_dist);
         };
 
-        // make sure we are matchloading and intaking?
+        // make sure we are matchloading
         matchloader::down();
-        intake::in();
 
         Time motion_start_time = now();
 
         mb.moveTo(func)
             // if it takes longer it most likely got stuck
             .timeout(1.5_sec)
+            .drive_vel_accelSlew(110_inps2)
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
             .drive_vel_mp_setMaxAccel(70_inps2) |
@@ -87,62 +87,52 @@ void run_auton() {
         Length matchload_start_distance = 13_in;
 
         auto custom_exit_condition = [&] -> bool {
+            auto curr_pose = RobotGetPose();
+            auto error = (target_Point - curr_pose);
+            auto local_error = error.rotatedBy(-curr_pose.orientation);
+
+            bool close = error.magnitude() <
+                         // trigger only if closes to the matchloader
+                         matchload_start_distance + 5_in;
+
+            bool forwards_close =
+              units::abs(local_error.x) < matchload_start_distance;
+
             // use forwards error and
-            return (target_Point - RobotGetPose()).magnitude() <
-                     // trigger only if closes to the matchloader
-                     matchload_start_distance + 5_in &&
-                   units::abs((target_Point - RobotGetPose())
-                                .rotatedBy(-RobotGetPose().orientation)
-                                .x) < matchload_start_distance;
+            return close && forwards_close;
         };
 
-        bool motion_finished = false;
+        auto wait_result = async.waitOr(custom_exit_condition, 3_sec);
 
-        while (true) {
-            bool exit_now = custom_exit_condition();
-            motion_finished = async.numQueuedMotions() == 0;
-
-            if (motion_finished || exit_now) break;
-            pros::delay(10);
-        }
-
-        if (motion_finished) {
-            // motion finished before matchload start time, we likely got stuck
-            // and should stop any more matchloading time
+        if (wait_result == blazing::AsyncExecutorBase::motionFinished ||
+            wait_result == blazing::AsyncExecutorBase::timeoutFinished) {
+            // custom condition did not trigger, meaning we got stuck or
+            // something else went wrong. Don't wait just exit
             async.exitAll();
         } else {
             // got to matcloader successfully, start matchloading
-            pros::delay(to_msec(matchload_time));
             async.exitAll();
+            // passive voltage forwards since motion might oscilate
+            drivetrain.moveTank(0.13_volt, 0.13_volt);
+            pros::delay(to_msec(matchload_time));
         }
     };
 
     auto score_long_goal = [](double sign_x,
                               double sign_y,
                               Time score_time,
-                              bool from_matchloader = false) {
+                              bool with_swing = false) {
         // turn to goal, reversed
         Length long_goal = 47.05_in;
 
-        auto target_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
+        auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
         auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
 
         units::Pose target_pose = { 24_in * sign_x,
                                     long_goal * sign_y,
-                                    target_heading };
+                                    target_backwards_heading };
 
-        // turn towards 24, settle at 48
-        mb.moveTo(target_pose)
-            .drive_vel_mp_setMaxAccel(110_inps2)
-            .only_x(true, 28_in)
-            .closeThreshold(10_in)
-            .timeout(2_sec)
-            .reverse() |
-          async;
-
-        async.waitUntil([&] -> bool {
-            // use forwards error and
-
+        auto exit_condition = [&] -> bool {
             auto curr_pose = RobotGetPose();
             bool x_close = units::abs(curr_pose.x) >= 27_in &&
                            units::abs(curr_pose.x) <= 29.5_in;
@@ -151,20 +141,49 @@ void run_auton() {
             //
             bool theta_close =
               units::abs(angleError(target_forwards_heading,
-                                    curr_pose.orientation)) < 25_stDeg;
+                                    curr_pose.orientation)) <= 25_stDeg;
 
             return x_close && y_close && theta_close;
-            // return x_close;
-        });
+        };
+
+        // turn towards 24, settle at 48
+        if (!with_swing) {
+            mb.moveTo(target_pose)
+                .drive_vel_mp_setMaxAccel(110_inps2)
+                .only_x(true, 28_in)
+                .closeThreshold(10_in)
+                .timeout(2_sec)
+                .reverse() |
+              chain;
+        } else {
+            mb.moveTo(17_in * sign_x, 54.5_in * sign_y)
+                .reverse()
+                .drive_vel_minVel(50_inps)
+                .setChainTime(0_sec) |
+              chain;
+
+            // mb.turnTo(21.8_in, 47_in)
+            mb.turnTo(target_backwards_heading)
+                .reverse()
+                .direction(AngularDirection::RIGHT)
+                .radius(-10.5_in / 2)
+                .timeout(2.6_sec) |
+              chain;
+        }
+
+        chain.waitOr(exit_condition);
+
+        // regardless of getting stuck or not we perform the same action
+
         intake::score_long();
         // let move to point settle a bit
         pros::delay(100);
-        async.exitAll();
+        chain.exitAll();
         // queue aligning motion
-        mb.turnTo(target_forwards_heading).radius(-4.0_in) | async;
+        mb.turnTo(target_forwards_heading).radius(-4.0_in) | chain;
 
         pros::delay(units::max(to_msec(score_time) - 100, 0));
-        async.exitAll();
+        chain.exitAll();
     };
 
     // start auton
@@ -176,7 +195,7 @@ void run_auton() {
 
     if (pushing) mb.moveTo(-46.57, -4.7).timeout(1.2_sec) | chain;
 
-    mb.moveTo(-46.376, -normal_match - 0.5_in)
+    mb.moveTo(-46.376, -normal_match)
         .only_y(true)
         .reverse()
         .drive_errorTolerance(1_in)
@@ -185,20 +204,9 @@ void run_auton() {
         })
         .timeout(1.3_sec) |
       run;
-    // chain.wait();
 
-    // turn to and go to matchloader
-    // matchloader::down();
-
-    // mb.turnTo(make_matchloader_point(-1, -1))
-    //     .turn_toleranceDuration(25_msec)
-    //     .timeout(0.8_sec) |
-    //   async;
-    // async.wait();
-
-    // pros::delay(50);
     matchload(-1, -1, 0.35_sec);
-    score_long_goal(-1, -1, 1_sec, true);
+    score_long_goal(-1, -1, 1_sec);
 
     matchloader::up();
 
@@ -241,25 +249,22 @@ void run_auton() {
     // align well
     mb.turnTo(135).radius(-4.0_in) | async;
 
-    // drivetrain.moveTank(-0.1_volt, -0.1_volt);
-
+    // score more time
     pros::delay(800);
 
     async.exitAll();
 
     intake::in();
 
-    // turn to and go to matchloader
+    // go towards matchloader
     mb.moveTo(-48_in, normal_match).drive_errorTolerance(1_in).only_y(true) |
       chain;
     chain.wait();
 
     // turn to and go to matchloader
-    // mb.turnTo(make_matchloader_point(-1, 1)) | run;
 
-    // pros::delay(50);
     matchload(-1, 1, 0.35_sec);
-    score_long_goal(-1, 1, 1_sec, true);
+    score_long_goal(-1, 1, 1_sec);
 }
 
 } // namespace awp

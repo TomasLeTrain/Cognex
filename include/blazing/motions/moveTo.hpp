@@ -24,7 +24,6 @@ struct MoveToState {
     std::optional<Time> last_time;
     Time start_time;
     std::optional<Angle> locked_heading;
-    std::optional<std::pair<DifferentialSpeeds, Time>> last_vel_update;
 };
 
 template<typename ControllersType,
@@ -173,25 +172,6 @@ class moveTo
         // NOTE: sgn can be zero, which can set linear error to zero as well!
         linear_error *= signed_sgn(lin_multiplier);
 
-        Length projected_cte_error = [&] {
-            Length cte_error = 0_in;
-
-            Length linear_magnitude = (target_point - position).magnitude();
-
-            linear_magnitude = units::min(linear_magnitude, 100_in);
-            linear_magnitude = units::max(linear_magnitude, 20_in);
-
-            // facing forwards
-            if (units::sgn(lin_multiplier) >= 0) {
-                cte_error = linear_magnitude * units::sin(angular_error);
-            } else {
-                // facing backwards
-                // probably good enough to turn very fast
-                cte_error = 100_in * units::sgn(units::sin(angular_error));
-            }
-            return cte_error;
-        }();
-
         this->tolerances.linearErrorToleranceUpdate(linear_error);
 
         this->tolerances.linearVelocityToleranceUpdate(
@@ -244,48 +224,11 @@ class moveTo
                     0_in,
                     delta_time);
 
-                AngularVelocity angular_vel = 0_radps;
-
-                // use lateral controller when far away, use regular angular
-                // when settling
-                // if (!state.close) {
-                //     // std::cout << "cte " <<
-                //     -projected_cte_error.convert(in)
-                //     //           << std::endl;
-                //     // angular_vel =
-                //     //   this->controllers.lateral_velocity_feedback.update(
-                //     //     -projected_cte_error,
-                //     //     0_in,
-                //     //     delta_time);
-                //
-                //     angular_vel =
-                //       this->controllers.angular_velocity_feedback.update(
-                //         -angular_error,
-                //         0_stRad,
-                //         delta_time);
-                // } else {
-                //     // angular_vel =
-                //     //   this->controllers.angular_velocity_feedback.update(
-                //     //     -angular_error,
-                //     //     0_stRad,
-                //     //     delta_time);
-                // }
-                angular_vel = this->controllers.angular_velocity_feedback
-                                .update(-angular_error, 0_stRad, delta_time);
-
-                // AngularVelocity angular_vel =
-                //   this->controllers.angular_velocity_feedback.update(
-                //     -angular_error,
-                //     0_stRad,
-                //     delta_time);
-
-                if (m_k_lat && !state.close) {
-                    // angular_vel =
-                    //   angular_vel +
-                    //   *m_k_lat * (rad / m) * linear_vel *
-                    //     (target_point - position).rotatedBy(-heading).y *
-                    //     sinc(angular_error);
-                }
+                AngularVelocity angular_vel =
+                  this->controllers.angular_velocity_feedback.update(
+                    -angular_error,
+                    0_stRad,
+                    delta_time);
 
                 // sign was already applied to error, only applies cosine
                 // scaling component
@@ -326,19 +269,7 @@ class moveTo
                     }
                 }
 
-                DifferentialSpeeds curr_target { linear_vel, angular_vel };
-
-                // if (state.last_vel_update.has_value()) {
-                //     if (timeoutDone(outer_loop_time,
-                //                     state.last_vel_update.value().second)) {
-                //         state.last_vel_update = { curr_target, now() };
-                //     }
-                //
-                // } else {
-                state.last_vel_update = { curr_target, now() };
-                // }
-
-                DifferentialSpeeds target = state.last_vel_update.value().first;
+                DifferentialSpeeds target { linear_vel, angular_vel };
 
                 // pass velocities into feedforward
                 auto [left_voltage, right_voltage] =
@@ -360,7 +291,8 @@ class moveTo
                 //           << linear_error.internal() << " "
                 //           << target.linear_velocity.internal() << " "
                 //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " << right_vel.internal()
+                //           << left_vel.internal() << " " <<
+                //           right_vel.internal()
                 //           << " " << left_voltage.internal() << " "
                 //           << right_voltage.internal() << " "
                 //           << actual_volt_left.internal() << " "

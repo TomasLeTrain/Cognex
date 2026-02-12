@@ -38,39 +38,15 @@ void run_auton() {
     // runs before anything else
     pre_auton();
 
-    auto make_machloader_point = [&](units::V2FPosition target,
-                                     Length distance) -> units::V2FPosition {
-        auto target_angle = target.angleTo(RobotGetPose());
-
-        return target + distance * (RobotGetPose() - target).normalize();
-    };
-
     bool winging = true;
     bool fast_wing = false;
     Voltage slow_wing_speed = 0.5_volt;
 
-    auto start_time = now();
-
-    units::V2FPosition target_point;
-
     intake::in();
 
-    Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
 
     Length match1 = normal_match;
-    Length match2 = normal_match;
-    Length match3 = -normal_match;
-    Length match4 = -normal_match;
-
-    units::V2Position centerBallOne = { -24_in, 24_in };
-
-    units::V2Position centerTopGoalFirst = { -7.9_in, 7.4_in };
-    // units::V2Position centerBottomGoalFirst = { -10.3_in, -11_in };
-    units::V2Position centerBottomGoalFirst = { -12.4_in, -13.4_in };
-
-    alliance_t opposite_alliance =
-      auto_alliance == alliance_t::red ? alliance_t::blue : alliance_t::red;
 
     bool bl =
       (auto_side == field_side_t::left || auto_side == field_side_t::unset);
@@ -88,8 +64,8 @@ void run_auton() {
     auto matchload = [make_matchloader_point](double sign_x,
                                               double sign_y,
                                               Time matchload_time) {
-        auto make_machloader_pose = [&](units::V2FPosition target,
-                                        Length distance) -> units::Pose {
+        auto make_machloader_pose = [](units::V2FPosition target,
+                                       Length distance) -> units::Pose {
             // auto target_angle = target.angleTo(RobotGetPose());
             auto final_point =
               target + distance * (RobotGetPose() - target).normalize();
@@ -99,147 +75,126 @@ void run_auton() {
 
         Length normal_match = 46.7_in;
         units::V2Position target_Point = make_matchloader_point(sign_x, sign_y);
-        Length target_dist = 7_in;
+        Length target_dist = 11_in;
 
         auto func = [&] -> units::Pose {
             return make_machloader_pose(target_Point, target_dist);
         };
 
-        // pull matchloader down regardless
+        // make sure we are matchloading
         matchloader::down();
 
-        mb.boomerang(func)
-            .timeout(3_sec)
+        Time motion_start_time = now();
+
+        mb.moveTo(func)
+            // if it takes longer it most likely got stuck
+            .timeout(1.5_sec)
+            .drive_vel_accelSlew(110_inps2)
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
-            .drive_maxVolt(0.6_volt)
-            .k_lat(1.2)
-            .lead(0.9) |
+            .drive_vel_mp_setMaxAccel(70_inps2) |
           async;
 
-        Length slow_dist = 19.5_in;
-        async.waitUntil([&] -> bool {
-            return RobotGetPose().distanceTo(target_Point) < slow_dist;
-        });
+        Length matchload_start_distance = 13_in;
 
-        async.exitAll();
+        auto custom_exit_condition = [&] -> bool {
+            auto curr_pose = RobotGetPose();
+            auto error = (target_Point - curr_pose);
+            auto local_error = error.rotatedBy(-curr_pose.orientation);
 
-        mb.boomerang(func)
-            .timeout(3_sec)
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            .drive_maxVolt(0.25_volt)
-            .drive_velocityTolerance(03_inps)
-            .drive_errorTolerance(10_in)
-            .drive_toleranceDuration(0_sec)
-            .k_lat(1.2)
-            .lead(0.9)
-            .executeAfterMotion([] {
-                pros::delay(10);
-                drivetrain.moveTank(0.25_volt, 0.25_volt);
-            }) |
-          async;
+            bool close = error.magnitude() <
+                         // trigger only if closes to the matchloader
+                         matchload_start_distance + 5_in;
 
-        Length match_timer_length_thresh = 11_in;
+            bool forwards_close =
+              units::abs(local_error.x) < matchload_start_distance;
 
-        // delay a bit to not include start acceleration
-        pros::delay(50);
+            // use forwards error and
+            return close && forwards_close;
+        };
 
-        async.waitUntil([&] -> bool {
-            return (units::abs(model_manager.getLocalVelocityVector().x) <
-                    1_inps) &&
-                   (RobotGetPose().distanceTo(target_Point) <
-                    match_timer_length_thresh);
-        });
-        // here the robot is close to still, start matchloading
+        auto wait_result = async.waitOr(custom_exit_condition, 3_sec);
 
-        pros::delay(to_msec(matchload_time));
-
-        async.exitAll();
+        if (wait_result == blazing::AsyncExecutorBase::motionFinished ||
+            wait_result == blazing::AsyncExecutorBase::timeoutFinished) {
+            // custom condition did not trigger, meaning we got stuck or
+            // something else went wrong. Don't wait just exit
+            async.exitAll();
+        } else {
+            // got to matcloader successfully, start matchloading
+            async.exitAll();
+            // passive voltage forwards since motion might oscilate
+            drivetrain.moveTank(0.13_volt, 0.13_volt);
+            pros::delay(to_msec(matchload_time));
+        }
     };
 
     auto score_long_goal = [](double sign_x,
                               double sign_y,
                               Time score_time,
-                              bool from_matchloader = false) {
+                              bool with_swing = false) {
         // turn to goal, reversed
-        // mb.turnTo(25_in * sign_x, long_goal * sign_y).reverse() |
-        // chain; mb.moveTo(25_in * sign_x, long_goal * sign_y)
-        //     .reverse()
-        //     .k_lat(0.0) |
-        //   chain;
+        Length long_goal = 47.05_in;
 
-        Length long_goal = 47.1_in;
+        auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
+        auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
 
-        units::Pose target_pose = { 26_in * sign_x,
+        units::Pose target_pose = { 24_in * sign_x,
                                     long_goal * sign_y,
-                                    sign_x == -1 ? 0_stDeg : 180_stDeg };
+                                    target_backwards_heading };
 
-        units::Pose other_target_pose = { 24_in * sign_x,
-                                          long_goal * sign_y,
-                                          sign_x == -1 ? 0_stDeg : 180_stDeg };
+        auto exit_condition = [&] -> bool {
+            auto curr_pose = RobotGetPose();
+            bool x_close = units::abs(curr_pose.x) >= 27_in &&
+                           units::abs(curr_pose.x) <= 29.5_in;
+            bool y_close = units::abs(curr_pose.y) >= 43_in &&
+                           units::abs(curr_pose.y) <= 51_in;
+            //
+            bool theta_close =
+              units::abs(angleError(target_forwards_heading,
+                                    curr_pose.orientation)) <= 25_stDeg;
 
-        if (from_matchloader)
-            mb.arc(target_pose, -1.3)
-                .reverse()
-                // .drive_chainErrorTolerance()
-                .setChainTime(0_sec)
-                .drive_minVolt(0.2_volt) |
+            return x_close && y_close && theta_close;
+        };
+
+        // turn towards 24, settle at 48
+        if (!with_swing) {
+            mb.moveTo(target_pose)
+                .drive_vel_mp_setMaxAccel(110_inps2)
+                .only_x(true, 28_in)
+                .closeThreshold(10_in)
+                .timeout(2_sec)
+                .reverse() |
               chain;
-        else
-            mb.turnTo(target_pose).reverse().setChainTime(0_sec) | chain;
+        } else {
+            mb.moveTo(17_in * sign_x, 54.5_in * sign_y)
+                .reverse()
+                .drive_vel_minVel(50_inps)
+                .setChainTime(0_sec) |
+              chain;
 
-        mb.boomerang(target_pose).reverse() | chain;
+            // mb.turnTo(21.8_in, 47_in)
+            mb.turnTo(target_backwards_heading)
+                .reverse()
+                .direction(AngularDirection::RIGHT)
+                .radius(-10.5_in / 2)
+                .timeout(2.6_sec) |
+              chain;
+        }
 
-        Length slow_dist = 12_in;
-        Length score_dist = 7.5_in;
+        chain.waitOr(exit_condition);
 
-        chain.waitUntil([&] -> bool {
-            return RobotGetPose().distanceTo(target_pose) < slow_dist;
-        });
+        // regardless of getting stuck or not we perform the same action
 
-        // exit current boomerang
-        chain.exitAll();
-
-        // go into new which is slower
-        mb.boomerang(target_pose)
-            .drive_maxVolt(0.5_volt)
-            .reverse()
-
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            // .drive_maxVolt(0.25_volt)
-            .drive_velocityTolerance(03_inps)
-            .drive_errorTolerance(6_in)
-            .drive_toleranceDuration(0_sec)
-            .setChainTime(0_sec)
-
-          // .closeThreshold(100_in)
-          // .timeout(5_sec)
-          // .drive_toleranceDuration(100_sec)
-          // .drive_largeToleranceDuration(100_sec)
-          // .turn_kp(turn_drive_pid.get_kp() * 2)
-          // .turn_kd(turn_drive_pid.get_kd() * 0.5)
-          | chain;
-
-        mb.boomerang(other_target_pose)
-            // .drive_maxVolt(0.3_volt)
-            .reverse()
-            .closeThreshold(100_in)
-            .timeout(5_sec)
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            .drive_ki(0)
-            .turn_kp(turn_drive_pid.get_kp() * 1.0)
-            .turn_kd(turn_drive_pid.get_kd() * 0.8) |
-          chain;
-
-        chain.waitUntil(closeEnough(target_pose, score_dist));
         intake::score_long();
-        pros::delay(to_msec(score_time));
+        // let move to point settle a bit
+        pros::delay(100);
         chain.exitAll();
-        // intake::set(intake::intake_disabled);
-        // drivetrain.moveTank(0_volt, 0_volt);
+        // queue aligning motion
+        mb.turnTo(target_forwards_heading).radius(-4.0_in) | chain;
+
+        pros::delay(units::max(to_msec(score_time) - 100, 0));
+        chain.exitAll();
     };
 
     /* START AUTON */
@@ -251,13 +206,10 @@ void run_auton() {
 
     // its a run here, so we can do these things
     intake::in();
-    // turn to and go to matchloader
     matchloader::down();
-    mb.turnTo(make_matchloader_point(-1, l)).turn_toleranceDuration(25_msec) |
-      run;
 
-    matchload(-1, l, 0.30_sec);
-    score_long_goal(-1, l, 1_sec, true);
+    matchload(-1, l, 0.35_sec);
+    score_long_goal(-1, l, 1_sec);
 
     matchloader::up();
 
@@ -271,44 +223,20 @@ void run_auton() {
             wings::down();
             mb.boomerang(-8.0, 37, 0)
                 .reverse()
-                .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
+                // .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
                 .drive_toleranceDuration(100_sec)
                 .drive_largeToleranceDuration(100_sec)
                 // .timeout(100_sec) |
                 .timeout(100_sec) |
               chain;
 
-            // mb.boomerang(-9, 37, 340)
-            //     .reverse()
-            //     .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .drive_toleranceDuration(100_sec)
-            //     .drive_largeToleranceDuration(100_sec)
-            //     // .timeout(100_sec) |
-            //     .timeout(100_sec) |
-            //   chain;
-
-            // mb.turnTo(340)
-            //     .reverse()
-            //     // .turn_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .turn_toleranceDuration(100_sec)
-            //     .turn_largeToleranceDuration(100_sec)
-            //     // .timeout(100_sec) |
-            //     .timeout(100_sec) |
-            //   chain;
-
         } else {
             mb.moveTo(-35.737, -36.7) | chain;
             mb.turnTo(0) | chain;
             wings::down();
-            // mb.moveTo(-9, -37.2)
-            //     .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .drive_toleranceDuration(100_sec)
-            //     .drive_largeToleranceDuration(100_sec)
-            //     .timeout(100_sec) |
-            //   run;
 
             mb.boomerang(-8.6, -37.2, 0)
-                .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
+                // .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
                 .drive_toleranceDuration(10.500_sec)
                 .drive_largeToleranceDuration(100_sec)
                 .timeout(100_sec) |
