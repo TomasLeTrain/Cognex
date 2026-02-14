@@ -21,6 +21,7 @@
 #include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
+#include "units/units.hpp"
 #include <iostream>
 #include <optional>
 
@@ -49,6 +50,33 @@ void run_auton() {
 
     Length long_goal = 47.1_in;
     Length normal_match = 46.7_in;
+
+    auto moveVel = [](Voltage left_vol, Voltage right_vol, Time timeout) {
+        Time start_time = now();
+        decltype(controllers) curr_controllers = controllers;
+        double left_pct = left_vol.internal();
+        double right_pct = right_vol.internal();
+
+        double wanted_linear = (left_pct + right_pct) / 2.0;
+        double wanted_angular = (right_pct - left_pct) / 2.0;
+
+        LinearVelocity max_vel = 76_inps;
+        AngularVelocity max_ang_vel = rad * max_vel / (10.5_in * 0.5);
+
+        DifferentialSpeeds target { max_vel * wanted_linear,
+                                    max_ang_vel * wanted_angular };
+
+        while (true) {
+            bool timeout_done = timeoutDone(timeout, start_time);
+
+            auto result =
+              curr_controllers.velocity_feedforward.update(target, 20_msec);
+            drivetrain.moveTank(result.left_voltage, result.right_voltage);
+
+            if (timeout_done) break;
+            pros::delay(20);
+        }
+    };
 
     auto make_matchloader_point = [](double sign_x,
                                      double sign_y) -> units::V2Position {
@@ -81,16 +109,30 @@ void run_auton() {
 
         Time motion_start_time = now();
 
-        mb.moveTo(func)
+        std::cout << "func: " << func().x.convert(in) << " "
+                  << func().y.convert(in) << " "
+                  << func().orientation.convert(deg) << std::endl;
+
+        mb.turnTo(func()) | run;
+        // mb.moveTo(func)
+        mb.moveTo(func())
             // if it takes longer it most likely got stuck
             .timeout(1.5_sec)
             .drive_vel_accelSlew(110_inps2)
             // .turn_vel_kd(linear_angular_vel_pid.get_kd() * 1.01)
-            .turn_vel_kd(14.10)
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
-            .drive_vel_mp_setMaxAccel(70_inps2) |
-          async;
+            .drive_vel_mp_setMaxAccel(70_inps2)
+            .executeBeforeMotion([&] {
+                std::cout << "after turn pos: " << RobotGetPose().x.convert(in)
+                          << " " << RobotGetPose().y.convert(in) << " "
+                          << RobotGetPose().orientation.convert(deg)
+                          << std::endl;
+                std::cout << "after turn func: " << func().x.convert(in) << " "
+                          << func().y.convert(in) << " "
+                          << func().orientation.convert(deg) << std::endl;
+            }) |
+          chain;
 
         Length matchload_start_distance = 13_in;
 
@@ -110,16 +152,16 @@ void run_auton() {
             return close && forwards_close;
         };
 
-        auto wait_result = async.waitOr(custom_exit_condition, 3_sec);
+        auto wait_result = chain.waitOr(custom_exit_condition, 3_sec);
 
         if (wait_result == blazing::AsyncExecutorBase::motionFinished ||
             wait_result == blazing::AsyncExecutorBase::timeoutFinished) {
             // custom condition did not trigger, meaning we got stuck or
             // something else went wrong. Don't wait just exit
-            async.exitAll();
+            chain.exitAll();
         } else {
             // got to matcloader successfully, start matchloading
-            async.exitAll();
+            chain.exitAll();
             // passive voltage forwards since motion might oscilate
             drivetrain.moveTank(0.13_volt, 0.13_volt);
             pros::delay(to_msec(matchload_time));
@@ -129,7 +171,8 @@ void run_auton() {
     auto score_long_goal = [](double sign_x,
                               double sign_y,
                               Time score_time,
-                              bool with_swing = false) {
+                              bool with_swing = false,
+                              Time slow_score_time = 0_sec) {
         // turn to goal, reversed
         Length long_goal = 47.05_in;
 
@@ -174,13 +217,12 @@ void run_auton() {
                 // since point is farther away no point in trying this
                 .drive_vel_minVel(50_inps)
                 .lead(0.12)
-                // .drive_chainErrorTolerance(0_in)
-                // .drive_chainErrorTolerance(10_in)
-                // .chainHalfcircleTolerance(std::nullopt)
-                // use half circle exit for better exit conditions?
-                // .chainHalfcircleTolerance(1_in, 5_in)
-                .setChainTime(10_msec) |
-              chain;
+              // .drive_chainErrorTolerance(0_in)
+              // .drive_chainErrorTolerance(10_in)
+              // .chainHalfcircleTolerance(std::nullopt)
+              // use half circle exit for better exit conditions?
+              // .chainHalfcircleTolerance(1_in, 5_in)
+              | chain;
 
             // mb.turnTo(21.8_in, 47_in)
             mb.turnTo(target_backwards_heading)
@@ -202,7 +244,27 @@ void run_auton() {
         // queue aligning motion
         mb.turnTo(target_forwards_heading).radius(-4.0_in) | chain;
 
-        pros::delay(units::max(to_msec(score_time) - 100, 0));
+        if (to_msec(slow_score_time) < 2.0) {
+            // not active
+            pros::delay(units::max(to_msec(score_time) - 100, 0));
+        } else {
+            // if not zero
+            Time start_time = now();
+            bool timeout_done = false;
+            while (true) {
+                timeout_done = timeoutDone(score_time, start_time);
+                if (timeout_done) break;
+            }
+
+            if (timeout_done) {
+                // never found blue balls, just give up and move on
+            } else {
+                // score slighlty slower
+                intake::score_long(1.0, 0.7);
+                pros::delay(to_msec(slow_score_time));
+            }
+        }
+
         chain.exitAll();
     };
 
@@ -212,19 +274,22 @@ void run_auton() {
 
     intake::in();
 
-    mb.moveTo(-23.11, 17.613) | chain;
+    mb.moveTo(-22, 18.1) | chain;
 
     mb.turnTo(-11.6, 11.0).reverse() | chain;
-    mb.moveTo(-11.6, 11.0).reverse() | chain;
+    mb.moveTo(-11.6, 11.0).reverse().executeAfterMotion([] {
+        drivetrain.moveTank(-0.15_volt, -0.15_volt);
+    }) |
+      chain;
 
     // align tech
-    mb.turnTo(135)
-        .radius(-5_in)
-        // infinite time motion
-        .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec)
-        .timeout(4_sec) |
-      chain;
+    // mb.turnTo(135)
+    //     .radius(-5_in)
+    //     // infinite time motion
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .timeout(4_sec) |
+    //   chain;
 
     chain.waitUntil(closeEnough({ -11.6_in, 11.0_in }, 4_in));
 
@@ -246,7 +311,7 @@ void run_auton() {
       // .drive_toleranceDuration(0_sec)
       | run;
 
-    matchload(-1, 1, 1.5_sec);
+    matchload(-1, 1, 2.0_sec);
 
     // go away from matchloader
     mb.moveTo(-30, 56.5)
@@ -260,8 +325,7 @@ void run_auton() {
         .executeAfterMotion([] {
             // up matchloader here to avoid getting stuck in the swing
             matchloader::up();
-        })
-        .setChainTime(0_sec) |
+        }) |
       chain;
 
     // swing is chained, so no waiting here
@@ -275,9 +339,9 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(1, 1, 1.5_sec);
+    matchload(1, 1, 2.0_sec);
 
-    score_long_goal(1, 1, 2_sec);
+    score_long_goal(1, 1, 0.7_sec, false, 1.5_sec);
 
     matchloader::up();
 
@@ -291,38 +355,33 @@ void run_auton() {
     // --- BLUE PARK --- //
     // sprint straight towards second park
     mb.moveTo(58, 20) | chain;
-    mb.turnTo(270).radius(4_in).executeBeforeMotion([] {
-        // retract to go over park
-        // doesn't matter for turn since its heading based
-        // doing it during the motion makes it so we don't ahve to wait for the
-        // odom to lift up
-        odom_retract::retractOdom();
-        horizontal_tracker.setDisabled(true);
-    }) |
-      chain;
+    mb.turnTo(270).radius(4_in) | chain;
     chain.wait();
 
     drivetrain.moveTank(0.2_volt, 0.25_volt);
     // move closer
+    odom_retract::retractOdom();
+    horizontal_tracker.setDisabled(true);
 
-    pros::delay(400);
+    pros::delay(330);
 
     // now going for park
     intake::in();
 
     // get over first part of park
-    drivetrain.moveTank(0.53_volt, 0.63_volt);
-    pros::delay(300);
-    drivetrain.moveTank(0.4_volt, 0.5_volt);
-    pros::delay(1200);
-    drivetrain.moveTank(0.2_volt, 0.3_volt);
-    pros::delay(600);
+    moveVel(0.53_volt, 0.63_volt, 350_msec);
+    moveVel(0.4_volt, 0.5_volt, 1200_msec);
+    moveVel(0.2_volt, 0.3_volt, 800_msec);
+
     // pull down matchloader only at the pure end
+    drivetrain.moveTank(0_volt, 0_volt);
     matchloader::down();
 
     // enable odom again
     odom_retract::lowerOdom();
     horizontal_tracker.setDisabled(false);
+    // give it time to matchload downwards
+    pros::delay(100);
 
     // move backwards towards the park again
     // also gives time to relocalize
@@ -334,30 +393,36 @@ void run_auton() {
     // reset our pose
     LaserResets({ &left_laser_model, &back_laser_model });
 
-    // use inertial from before, turn left
-    // before going pull it up
     matchloader::up();
-    mb.moveTo(40.625, -17.751) | chain;
-    mb.turnTo(23.11, -17.751) | chain;
-    mb.moveTo(23.11, -17.713) | chain;
+    mb.moveTo(40.625, -18.0) | chain;
+    mb.turnTo(23.11, -18.0) | chain;
+    mb.moveTo(23.11, -18.0) | chain;
 
     mb.turnTo(11.6, -11.0).reverse() | chain;
-    mb.moveTo(11.6, -11.0).reverse() | chain;
-
-    // align tech
-    mb.turnTo(135)
-        .reverse()
-        .radius(-5_in)
-        // infinite time motion
-        .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec)
-        .timeout(4_sec) |
+    mb.moveTo(11.6, -11.0).reverse().executeAfterMotion([] {
+        drivetrain.moveTank(-0.15_volt, -0.15_volt);
+    }) |
       chain;
 
-    chain.waitUntil(closeEnough({ -11.6_in, 11.0_in }, 4_in));
-    // start scoring?
+    // align tech
+    // mb.turnTo(135)
+    //     .reverse()
+    //     .radius(-5_in)
+    //     // infinite time motion
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .timeout(4_sec) |
+    //   chain;
+
+    chain.waitUntil(closeEnough({ 11.6_in, -11.0_in }, 4_in));
+    // start scoring decently fast
     intake::score_middle();
-    pros::delay(3000);
+    pros::delay(2000);
+
+    // score last balls slower
+    intake::score_middle(1.0, 0.2);
+    pros::delay(2000);
+
     chain.exitAll();
 
     mb.moveTo(43.02, -46)
@@ -372,22 +437,21 @@ void run_auton() {
         }) |
       run;
 
-    matchload(1, -1, 1.5_sec);
+    matchload(1, -1, 2.0_sec);
 
     // go away from matchloader
-    mb.moveTo(30.692, -57)
+    mb.moveTo(30.692, -56.5)
         .reverse()
         .closeThreshold(4_in)
         .drive_vel_minVel(50_inps)
         // can sacrifice cross track here for speed
-        .customAngularLinearFunc([](Angle angle) -> double {
-            return units::cos(angle);
-        })
+        // .customAngularLinearFunc([](Angle angle) -> double {
+        //     return units::cos(angle);
+        // })
         .executeAfterMotion([] {
             // up matchloader here to avoid getting stuck in the swing
             matchloader::up();
-        })
-        .setChainTime(0_sec) |
+        }) |
       chain;
 
     // uses swing to score on long
@@ -400,29 +464,28 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(-1, -1, 1.5_sec);
+    matchload(-1, -1, 2.0_sec);
 
-    score_long_goal(-1, -1, 2_sec);
+    // score_long_goal(-1, -1, 1.5_sec, false, 1000_msec);
+    score_long_goal(-1, -1, 0.7_sec, false, 1.5_sec);
 
     // intake any balls in the way and shoot them out on the way to the park
     intake::score_long();
 
     // finally park
-
     matchloader::up();
-    mb.moveTo(-59, -20) | chain;
-    mb.turnTo(90).radius(4_in).executeBeforeMotion([] {
-        // retract to go over park
-        // doesn't matter for turn since its heading based
-        // doing it during the motion makes it so we don't ahve to wait for the
-        // odom to lift up
-        odom_retract::retractOdom();
-        horizontal_tracker.setDisabled(true);
-    }) |
-      chain;
+    mb.moveTo(-58, -20) | chain;
+    mb.turnTo(90).radius(4.3_in) | chain;
     chain.wait();
 
-    drivetrain.moveTank(0.5_volt, 0.5_volt);
+    // get close to it
+    odom_retract::retractOdom();
+    horizontal_tracker.setDisabled(true);
+    drivetrain.moveTank(0.2_volt, 0.2_volt);
+    pros::delay(300);
+
+    // move into it
+    drivetrain.moveTank(0.43_volt, 0.5_volt);
     pros::delay(900);
     drivetrain.moveTank(0.0_volt, 0.0_volt);
 

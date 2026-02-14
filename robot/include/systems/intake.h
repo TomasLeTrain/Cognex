@@ -1,5 +1,9 @@
 #pragma once
 
+#include "apis.h"
+//
+
+#include "auton_globals.h"
 #include "pros/motors.hpp"
 #include "units/units.hpp"
 
@@ -9,6 +13,12 @@ void setDriverColorSort(bool enabled);
 
 bool motorJammed(pros::Motor& motor);
 bool motorSlowed(pros::Motor& motor);
+
+namespace colors {
+std::optional<alliance_t> getMiddleColor();
+
+void update();
+}; // namespace colors
 
 namespace pistons {
 enum top_state_t {

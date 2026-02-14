@@ -126,11 +126,20 @@ void opcontrol() {
     // turn_vel_pid_tuning();
     // return;
 
+    // linear_kv_ks_tuner();
+    // angular_ka_kp_ki_tuner();
+	// angular_kv_ks_tuner();
+    // return;
+
     //
     // turn_pid_tuning();
     // odom_offset_tuning();
     // odom_diameter_tuning();
     // return;
+
+	// turn_vel_pid_tuning();
+	// drive_vel_pid_tuning();
+	// return;
 
     // matchloader::init(false);
     // return;

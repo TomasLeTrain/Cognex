@@ -40,7 +40,7 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 // inertial sensor
 // vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
 // vexmaps::ScaledIMU imu(11, 361.568120941 / 360.0);
-vexmaps::ScaledIMU imu(20, (360.0 + 2.1) / 360.0);
+vexmaps::ScaledIMU imu(20, (360.0 + 1.5) / 360.0);
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
 // vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
@@ -409,7 +409,36 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
   lyfast::VelocityControllerParams {
 
-    .left_Kv = 0.420125 * volt / mps,
+    // 		left:
+    // kv: 0.422793_kg_m_s^-2_A^-1, ks: 0.0711986 volt
+    // right:
+    // kv: 0.424936_kg_m_s^-2_A^-1, ks: 0.0685188 volt
+    //
+    // copiable data:
+    //
+    // .left_Kv = 0.422793 * volt / mps,
+    // .left_Ks = 0.0711986 * volt,
+    //
+    // .right_Kv = 0.424936 * volt / mps,
+    // .right_Ks = 0.0685188 * volt,
+    //
+    // type: LINEAR
+    // left:
+    // kv: 0.408968_kg_m_s^-2_A^-1, ks: 0.0839419 volt
+    // right:
+    // kv: 0.424259_kg_m_s^-2_A^-1, ks: 0.0741647 volt
+    //
+    // copiable data:
+    //
+    // .left_Kv = 0.408968 * volt / mps,
+    // .left_Ks = 0.0839419 * volt,
+    //
+    // .right_Kv = 0.424259 * volt / mps,
+    // .right_Ks = 0.0741647 * volt,
+    //
+    // mu
+
+    .left_Kv = 0.421 * volt / mps,
 
     // length kp and ka term create a feedback loop intenuating noise
     // .left_Ka = 0.09 * volt / mps2,
@@ -422,9 +451,9 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
     .left_Kp = 0.7 * volt / mps,
     .left_Ki = 4.0 * volt / m,
 
-    .right_Kv = 0.422079 * volt / mps,
+    .right_Kv = 0.43 * volt / mps,
     // .right_Ka = 0.09 * volt / mps2,
-    .right_Ka = 0.07 * volt / mps2,
+    .right_Ka = 0.075 * volt / mps2,
     // .right_Ka = 0.0 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
@@ -462,7 +491,7 @@ blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
 blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
   lyfast::VelocityControllerParams {
 
-    .left_Kv = 0.471609 * volt / mps,
+    .left_Kv = 0.47 * volt / mps,
     // .left_Ka = 0.0986881348841 * volt / mps2,
     .left_Ka = 0.03 * volt / mps2,
     // .left_Ka = 0.0 * volt / mps2,
@@ -475,6 +504,18 @@ blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
     // .left_Kp = 0.915472273416 * volt / mps,
     // .left_Ki = 2.09538143189 * volt / m,
 
+    // from autotuner:
+
+    // 		.left_Ka = -0.0895945 * volt / mps2,
+    // // lambda factor: 0.6
+    // .left_Kp = 1.14286 * volt / mps,
+    // .left_Ki = -8.74697 * volt / m,
+    //
+    // .right_Ka = 0.125267 * volt / mps2,
+    // // lambda factor: 0.6
+    // .right_Kp = 0.91148 * volt / mps,
+    // .right_Ki = 3.97933 * volt / m,
+
     // .left_Kp = 0.0 * volt / mps,
     .left_Kp = 0.3 * volt / mps,
     // .left_Ki = 0.0 * volt / m,
@@ -482,7 +523,8 @@ blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
 
     .right_Kv = 0.475 * volt / mps,
     // .right_Ka = 0.10128620282 * volt / mps2,
-    .right_Ka = 0.03 * volt / mps2,
+    // .right_Ka = 0.03 * volt / mps2,
+    .right_Ka = 0.047 * volt / mps2,
     .right_Ks = 0.08 * volt,
 
     // .right_Kp = 0.968620056451 * volt / mps,
@@ -613,7 +655,7 @@ PID<Length, AngularVelocity> lateral_vel_pid(0.7,
 //                                              1_radps);
 
 PID<Angle, AngularVelocity>
-  linear_angular_vel_pid(13.90,
+  linear_angular_vel_pid(14.00,
                          0.0,
                          15.5,
                          to_stRad(10_stDeg), // windup range
@@ -786,7 +828,9 @@ AsyncExecutor async;
 // };
 
 // ChainedExecutor chain(100_msec, chain_lerp);
-ChainedExecutor chain(0_msec);
+
+// avoids a division by zero
+ChainedExecutor chain(5_msec);
 
 // custom cos-like func
 double angular_linear_func(Angle angle) {

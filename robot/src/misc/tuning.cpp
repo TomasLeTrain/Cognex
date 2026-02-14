@@ -556,7 +556,7 @@ void drive_vel_pid_tuning() {
                 // .drive_vel_kp(curr_kp)
                 // .drive_vel_ki(curr_ki)
                 // .drive_vel_kd(curr_kd)
-                // .drive_vel_accelSlew(curr_accel_slew)
+                .drive_vel_accelSlew(110_inps2)
 
                 // .turn_vel_kp(0)
                 // .turn_vel_ki(0)
@@ -770,17 +770,17 @@ void drive_vel_pid_tuning() {
 }
 
 void turn_vel_pid_tuning() {
-    double target_theta = 180;
+    double target_theta = 90;
     // by how much we can increase or decrease
-    double target_theta_delta = 44;
+    double target_theta_delta = 45;
 
     double curr_kp = turn_heading_vel_pid.get_kp() / turn_heading_vel_pid.UKP;
     double curr_ki = turn_heading_vel_pid.get_ki() / turn_heading_vel_pid.UKI;
     double curr_kd = turn_heading_vel_pid.get_kd() / turn_heading_vel_pid.UKD;
 
-    double kp_delta = 0.15;
+    double kp_delta = 0.10;
     double ki_delta = 0.01;
-    double kd_delta = 0.25;
+    double kd_delta = 0.20;
 
     pros::delay(2000);
 
@@ -789,6 +789,17 @@ void turn_vel_pid_tuning() {
 
         RobotSetPose(0, 0, 0);
         auto start_time = from_msec(pros::millis());
+
+
+        mb.turnTo(target_theta)
+            // .turn_vel_maxVel(200_degps)
+            // .direction(AngularDirection::RIGHT)
+            // .radius(-10.5_in)
+            // .turn_vel_kp(curr_kp)
+            // .turn_vel_ki(curr_ki)
+            // .turn_vel_kd(curr_kd)
+            .timeout(3.0_sec) |
+          run;
 
         // mb_vel.moveTo(-48_in, 3_in)
         //     .reverse()
@@ -847,8 +858,8 @@ void turn_vel_pid_tuning() {
         //   run;
 
         // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-        RobotSetPose(48, 48, 0);
-        mb.turnTo(47, 47).timeout(3.0_sec) | run;
+        // RobotSetPose(48, 48, 0);
+        // mb.turnTo(47, 47).timeout(3.0_sec) | run;
 
         controller.rumble(".");
 

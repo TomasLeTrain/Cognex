@@ -155,6 +155,38 @@ bool motorSlowed(pros::Motor& motor) {
             std::fabs(motor.get_actual_velocity()) < thresh_vel);
 }
 
+namespace colors {
+std::optional<alliance_t> middle_color;
+
+std::optional<alliance_t> colorDetected(pros::Optical& sensor) {
+    // detect color from color sensor
+    std::optional<alliance_t> result = std::nullopt;
+
+    // just say no balls are being detected
+    if (!sensor.is_installed()) return result;
+
+    double color_sensor_hue = sensor.get_hue();
+
+    // intake senses something
+    if (sensor.get_proximity() > 200) {
+        if (color_sensor_hue > 280 || color_sensor_hue < 100)
+            result = alliance_t::red;
+        else if (color_sensor_hue > 120 && color_sensor_hue < 280)
+            result = alliance_t::blue;
+    }
+
+    return result;
+}
+
+std::optional<alliance_t> getMiddleColor() {
+    return middle_color;
+}
+
+void update() {
+    middle_color = colorDetected(middle_intake_color_sensor);
+}
+}; // namespace colors
+
 namespace pistons {
 pros::Mutex mutex;
 
@@ -596,7 +628,7 @@ void update() {
 
     else if (score_bottom_height) {
         score_bottom();
-		// manually put it down for now
+        // manually put it down for now
         pistons::intake_down();
     }
 
@@ -657,14 +689,15 @@ void init(bool driver) {
       },
       "top motor task");
 
-    pros::Task driver_update_task(
+    pros::Task simple_tasks_intake(
       [] {
           while (true) {
               driver::update();
+              colors::update();
               pros::delay(10);
           }
       },
-      "intake driver task");
+      "simple intake tasks");
 
     tasks_active = true;
 }

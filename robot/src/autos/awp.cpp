@@ -158,8 +158,7 @@ void run_auton() {
         } else {
             mb.moveTo(17_in * sign_x, 54.5_in * sign_y)
                 .reverse()
-                .drive_vel_minVel(50_inps)
-                .setChainTime(0_sec) |
+                .drive_vel_minVel(50_inps) |
               chain;
 
             // mb.turnTo(21.8_in, 47_in)
@@ -217,14 +216,12 @@ void run_auton() {
 
     mb.moveTo(-1_tile, -1_tile)
         // .drive_minVolt(0.5_volt)
-        .drive_vel_minVel(50_inps)
-        .setChainTime(0_sec) |
+        .drive_vel_minVel(50_inps) |
       chain;
 
     mb.moveTo(-1_tile, 1_tile)
         // already going fast from previous motion, slew can be faster
-        .drive_vel_accelSlew(300_inps)
-        .setChainTime(0_sec) |
+        .drive_vel_accelSlew(300_inps) |
       chain;
 
     // mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y).reverse() | chain;
