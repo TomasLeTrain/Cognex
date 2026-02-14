@@ -64,7 +64,7 @@ void run_auton() {
 
     units::V2Position centerBallOne = { -24_in, 24_in };
 
-    units::V2Position centerTopGoalFirst = { -7.9_in, 7.4_in };
+    units::V2Position centerTopGoalFirst = { -9.5_in, 8.0_in };
     // units::V2Position centerBottomGoalFirst = { -10.3_in, -11_in };
     units::V2Position centerBottomGoalFirst = { -12.4_in, -13.4_in };
 
@@ -229,75 +229,74 @@ void run_auton() {
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
-    mb.moveTo(-48, (match1 - 0.1_in) * l) | run;
+    mb.moveTo(-48, match1 * l) | run;
 
     // its a run here, so we can do these things
     intake::in();
-    // turn to and go to matchloader
-    matchloader::down();
-    mb.turnTo(make_matchloader_point(-1, l)).turn_toleranceDuration(25_msec) |
-      run;
 
-    matchload(-1, l, 0.30_sec);
+    matchload(-1, l, 0.35_sec);
     score_long_goal(-1, l, 1_sec);
 
     matchloader::up();
 
     intake::in();
 
+    mb.moveTo(-23.5, 23.4 * l).drive_vel_mp_setMaxAccel(80_inps2) | chain;
+
     if (bl) {
-        mb.moveTo(-23.5, 23.4 * l).drive_maxVolt(0.45_volt) | async;
+        // middle
+        mb.turnTo(-11.574, 11.5 * l).reverse() | chain;
+        mb.moveTo(-11.574, 11.5 * l).reverse() | chain;
 
-        async.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 10_in));
+        chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 10_in));
         matchloader::down();
 
-        async.wait();
+        chain.waitUntil(closeEnough(centerTopGoalFirst, 4_in));
 
-        mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y).reverse() | chain;
-
-        mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
-            .reverse()
-            .k_lat(0.3)
-            .drive_maxVolt(0.5_volt)
-            .executeBeforeMotion([] {
-                pros::Task([] {
-                    matchloader::down();
-                    pros::delay(220);
-                    matchloader::up();
-                });
-            }) |
-          chain;
-
-        chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
+        // start scoring
         intake::score_middle();
-        pros::delay(1500);
+        // give time for it to settle
+        pros::delay(300);
         chain.exitAll();
+
+        // align tech
+        mb.turnTo(135)
+            .radius(-5_in)
+            // infinite time motion
+            .turn_toleranceDuration(100_sec)
+            .turn_largeToleranceDuration(100_sec)
+            .timeout(4_sec) |
+          chain;
+
+        // score more time
+        pros::delay(800);
+
+        chain.exitAll();
+
     } else {
-        mb.moveTo(-23.6, 23.6 * l) | async;
-
-        async.waitUntil(closeEnough({ -23.6_in, 23.6_in * l }, 10_in));
-        matchloader::down();
-
-        async.wait();
-
-        mb.turnTo(0, 0) | run;
-
-        mb.moveTo(centerBottomGoalFirst.x, centerBottomGoalFirst.y)
-            .k_lat(0.3)
-            .drive_maxVolt(0.3_volt)
-            .executeBeforeMotion([] {
-                // pros::Task([] {
-                // pros::delay(200);
-                matchloader::up();
-                // });
+        // bottom
+        mb.moveTo(-11.097, 11.691 * bl)
+            .closeThreshold(4_in)
+            .executeAfterMotion([] {
+                intake::score_bottom();
             }) |
           chain;
-        mb.turnTo(0, 0) | run;
 
-        chain.waitUntil(closeEnough({ -8_in, 8_in * l }, 5.5_in));
-        // score but with slightly less power
-        intake::score_bottom(-0.3);
-        pros::delay(1400);
+        auto top_middle_scoring_indx = chain.getCurrentIndex();
+
+        // align tech
+        mb.turnTo(45)
+            .radius(5_in)
+            .turn_toleranceDuration(100_sec)
+            .turn_largeToleranceDuration(100_sec)
+            .timeout(4_sec) |
+          chain;
+
+        chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 10_in));
+        matchloader::down();
+
+        chain.waitUntilIndex(top_middle_scoring_indx);
+        pros::delay(2000);
         chain.exitAll();
     }
 }

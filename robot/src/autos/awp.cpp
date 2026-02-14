@@ -229,11 +229,13 @@ void run_auton() {
 
     // mb.turnTo(centerTopGoalFirst.x, centerTopGoalFirst.y).reverse() | chain;
 
-    mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
-        .reverse()
-        .closeThreshold(4_in)
-      // .drive_vel_maxVel(40_inps)
-      | chain;
+    // mb.moveTo(centerTopGoalFirst.x, centerTopGoalFirst.y)
+    //     .reverse()
+    //     .closeThreshold(4_in)
+    //   // .drive_vel_maxVel(40_inps)
+    //   | chain;
+    // mb.turnTo(11.574, -11.401).reverse() | chain;
+    mb.moveTo(11.574, -11.5).reverse() | chain;
 
     chain.waitUntil(closeEnough({ -1_tile, -1_tile }, 7_in));
     intake::in();
@@ -246,8 +248,15 @@ void run_auton() {
     pros::delay(300);
     chain.exitAll();
 
-    // align well
-    mb.turnTo(135).radius(-4.0_in) | async;
+    // align tech
+    mb.turnTo(135)
+        .reverse()
+        .radius(-5_in)
+        // infinite time motion
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .timeout(4_sec) |
+      async;
 
     // score more time
     pros::delay(800);

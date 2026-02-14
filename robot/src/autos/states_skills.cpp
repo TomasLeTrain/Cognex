@@ -22,6 +22,7 @@
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include <iostream>
+#include <optional>
 
 // do not do anything outside here!
 
@@ -161,10 +162,21 @@ void run_auton() {
                 .reverse() |
               chain;
         } else {
-            mb.moveTo(17_in * sign_x, 54.5_in * sign_y)
+            // aims for point
+            // mb.moveTo(17_in * sign_x, 55.1_in * sign_y)
+            mb.boomerang(17_in * sign_x,
+                         55_in * sign_y,
+                         // reverse of actual when scoring
+                         target_forwards_heading)
                 .reverse()
+                // since point is farther away no point in trying this
                 .drive_vel_minVel(50_inps)
-                .setChainTime(0_sec) |
+                // .drive_chainErrorTolerance(0_in)
+                // .drive_chainErrorTolerance(10_in)
+                // .chainHalfcircleTolerance(std::nullopt)
+                // use half circle exit for better exit conditions?
+                // .chainHalfcircleTolerance(1_in, 5_in)
+                .setChainTime(10_msec) |
               chain;
 
             // mb.turnTo(21.8_in, 47_in)
@@ -195,6 +207,8 @@ void run_auton() {
 
     RobotSetPose(-46.7, 0.0, 180);
 
+    intake::in();
+
     // start by going into the park
 
     // disable odom
@@ -216,7 +230,7 @@ void run_auton() {
 
         bool distance_exit = false;
 
-        if (measured <= 40_mm) {
+        if (measured <= 90_mm) {
             // reading intake, ignore
         } else {
             if (measured <= 130_mm) {
@@ -263,7 +277,7 @@ void run_auton() {
     pros::delay(3000);
 
     drivetrain.moveTank(-1_volt, -1_volt);
-    pros::delay(170);
+    pros::delay(140);
     intake::in();
 
     // got towards matchloader at other end
@@ -277,14 +291,14 @@ void run_auton() {
     matchload(-1, 1, 1.5_sec);
 
     // go away from matchloader
-    mb.moveTo(-28, 56)
+    mb.moveTo(-30, 56.5)
         .reverse()
         .closeThreshold(4_in)
         .drive_vel_minVel(50_inps)
-        // can sacrifice cross track here for speed
-        .customAngularLinearFunc([](Angle angle) -> double {
-            return units::cos(angle);
-        })
+        // can sacrifice cross track here for speed (???)
+        // .customAngularLinearFunc([](Angle angle) -> double {
+        //     return units::cos(angle);
+        // })
         .executeAfterMotion([] {
             // up matchloader here to avoid getting stuck in the swing
             matchloader::up();
@@ -342,7 +356,7 @@ void run_auton() {
 
         bool distance_exit = false;
 
-        if (measured <= 40_mm) {
+        if (measured <= 90_mm) {
             // reading intake, ignore
         } else {
             if (measured <= 130_mm) {
@@ -364,7 +378,16 @@ void run_auton() {
     setSmootherAlphas(0.3, 0.2);
     front_laser_model.setMaxDistanceDifference(7_in);
     drivetrain.moveTank(0.2_volt, 0.2_volt);
-    pros::delay(500);
+    pros::delay(200);
+
+    // reset halfwaay through with the front to get roughly where we are
+    // ignore bad measurements from intake or matchloader
+    if (from_mm(front_distance.get()) > 4_in) {
+        LaserResets({ &front_laser_model });
+    }
+
+    pros::delay(300);
+
     resetSmootherConfig();
     resetMaxDistanceThresholdAll();
 
@@ -375,7 +398,7 @@ void run_auton() {
     // use inertial from before, turn left
     mb.turnTo(29.545, -16.952) | chain;
     mb.moveTo(29.545, -16.952) | chain;
-    mb.turnTo(12.574, -12.401).reverse() | chain;
+    mb.turnTo(11.574, -11.401).reverse() | chain;
     mb.moveTo(11.574, -11.5).reverse() | chain;
 
     auto top_middle_scoring_indx = chain.getCurrentIndex();
@@ -411,7 +434,7 @@ void run_auton() {
     matchload(1, -1, 1.5_sec);
 
     // go away from matchloader
-    mb.moveTo(30.692, -56)
+    mb.moveTo(30.692, -57)
         .reverse()
         .closeThreshold(4_in)
         .drive_vel_minVel(50_inps)

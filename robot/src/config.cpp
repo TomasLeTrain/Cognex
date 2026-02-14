@@ -40,7 +40,7 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 // inertial sensor
 // vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
 // vexmaps::ScaledIMU imu(11, 361.568120941 / 360.0);
-vexmaps::ScaledIMU imu(11, (360.0 + 2.1) / 360.0);
+vexmaps::ScaledIMU imu(20, (360.0 + 2.1) / 360.0);
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
 // vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 

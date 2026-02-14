@@ -37,10 +37,12 @@ void testing_auton_func() {
     // selected_auton = "match first 7 split";
     // selected_auton = "seven split";
 
+    // setFieldSide(field_side_t::right);
     setFieldSide(field_side_t::left);
     setAlliance(alliance_t::red);
     // setAuton("awp");
-    setAuton("skills");
+    // setAuton("skills");
+    setAuton("seven split");
 
     // std::cout << "calling selected auto" << std::endl;
     auto selected_auton_function = auton_list[selected_auton];
@@ -48,7 +50,7 @@ void testing_auton_func() {
 }
 
 void autonomous() {
-    std::cout << "called ato" << std::endl;
+    std::cout << "called a8to" << std::endl;
 
     // initialize subsystems
     intake::init(false);

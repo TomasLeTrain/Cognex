@@ -202,7 +202,7 @@ void run_auton() {
     // pull wing up to avoid any collision with game objects (bad for cog?)
     RobotSetPose(-48.2, 16.3 * l, angle);
 
-    mb.moveTo(-48, (match1 - 0.1_in) * l) | run;
+    mb.moveTo(-48, match1 * l) | run;
 
     // its a run here, so we can do these things
     intake::in();
@@ -225,6 +225,7 @@ void run_auton() {
                 .reverse()
                 // .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
                 .drive_toleranceDuration(100_sec)
+                .drive_vel_mp_setMaxAccel(70_inps2)
                 .drive_largeToleranceDuration(100_sec)
                 // .timeout(100_sec) |
                 .timeout(100_sec) |
@@ -238,6 +239,7 @@ void run_auton() {
             mb.boomerang(-8.6, -37.2, 0)
                 // .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
                 .drive_toleranceDuration(10.500_sec)
+                .drive_vel_mp_setMaxAccel(70_inps2)
                 .drive_largeToleranceDuration(100_sec)
                 .timeout(100_sec) |
               chain;

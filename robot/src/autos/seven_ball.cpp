@@ -42,7 +42,7 @@ void run_auton() {
 
     Length match1 = normal_match;
 
-    units::V2Position centerTopGoalFirst = { -7.9_in, 7.4_in };
+    units::V2Position centerTopGoalFirst = { -9.5_in, 8.0_in };
     units::V2Position centerBottomGoalFirst = { -11_in, -11_in };
 
     bool winging = true;
@@ -196,7 +196,6 @@ void run_auton() {
         chain.exitAll();
     };
 
-
     double angle = bl ? 0 : 0;
 
     intake::in();
@@ -212,25 +211,25 @@ void run_auton() {
     // only intake bottom balls to save time
     intake::in();
 
-    mb.moveTo(-23.5, 21.4 * l).drive_maxVolt(0.45_volt) | chain;
+    mb.moveTo(-23.5, 23.4 * l).drive_vel_mp_setMaxAccel(80_inps2) | chain;
 
-    chain.waitUntil(closeEnough({ -25.5_in, 23.4_in * l }, 9.0_in));
+    chain.waitUntil(closeEnough({ -23.5_in, 23.4_in * l }, 9.0_in));
     matchloader::down();
 
     chain.wait();
 
-    mb.moveTo(-48, (match1)*l).reverse() | run;
+    mb.turnTo(-48, match1 * l) | chain;
+    mb.moveTo(-48, match1 * l) | chain;
+    chain.wait();
 
     // its a run here, so we can do these things
     intake::in();
 
     // turn to and go to matchloader
     matchloader::down();
-    mb.turnTo(make_matchloader_point(-1, l)).turn_toleranceDuration(25_msec) |
-      run;
 
-    matchload(-1, l, 0.30_sec);
-    score_long_goal(-1, l, 2.0_sec);
+    matchload(-1, l, 0.35_sec);
+    score_long_goal(-1, l, 1.5_sec);
 
     matchloader::up();
 
@@ -239,10 +238,12 @@ void run_auton() {
             mb.moveTo(-35.737, 37.1) | chain;
             mb.turnTo(0).reverse() | chain;
             wings::down();
+
             mb.boomerang(-9, 37, 0)
                 .reverse()
-                .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
+                // .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
                 .drive_toleranceDuration(100_sec)
+                .drive_vel_mp_setMaxAccel(70_inps2)
                 .drive_largeToleranceDuration(100_sec)
                 .timeout(100_sec) |
               chain;
@@ -251,16 +252,11 @@ void run_auton() {
             mb.moveTo(-35.737, -36.7) | chain;
             mb.turnTo(0) | chain;
             wings::down();
-            // mb.moveTo(-9, -37.2)
-            //     .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
-            //     .drive_toleranceDuration(100_sec)
-            //     .drive_largeToleranceDuration(100_sec)
-            //     .timeout(100_sec) |
-            //   run;
 
             mb.boomerang(-8.7, -37.2, 0)
-                .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
+                // .drive_maxVolt(fast_wing ? 1.0_volt : slow_wing_speed)
                 .drive_toleranceDuration(100_sec)
+                .drive_vel_mp_setMaxAccel(70_inps2)
                 .drive_largeToleranceDuration(100_sec)
                 .timeout(100_sec) |
               chain;

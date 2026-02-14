@@ -72,10 +72,14 @@ class IntakeVelocityController {
             moveVoltage(std::get<Voltage>(m_target));
             return;
         }
+        AngularVelocity target = std::get<AngularVelocity>(m_target);
+
+        m_motor->move_velocity(to_rpm(target));
+
+        return;
+
         // else we are using velocity control
         // TODO: what to do if motor unplugs??
-
-        AngularVelocity target = std::get<AngularVelocity>(m_target);
 
         AngularVelocity measurement = getMeasurement();
 
@@ -592,6 +596,8 @@ void update() {
 
     else if (score_bottom_height) {
         score_bottom();
+		// manually put it down for now
+        pistons::intake_down();
     }
 
     else if (scoreLong) {
