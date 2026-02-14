@@ -120,7 +120,7 @@ void out();
 void score_long(float bottom_speed = 1.0, float top_speed = 1.0);
 
 // default is fast on bottom, scores slower on top motor for middle goal
-void score_middle(float bottom_speed = 1.0, float top_speed = 0.4);
+void score_middle(float bottom_speed = 1.0, float top_speed = 0.3);
 
 // even slower scoring middle
 void score_middle_slow();

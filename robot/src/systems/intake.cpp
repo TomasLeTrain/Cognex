@@ -528,7 +528,7 @@ void score_long(float bottom_speed, float top_speed) {
 }
 
 // defaults:
-// score_middle -> bottom_speed = 1.0, top_speed = 0.4
+// score_middle -> bottom_speed = 1.0, top_speed = 0.3
 void score_middle(float bottom_speed, float top_speed) {
     // set_pct(bottom_speed, top_speed);
     bottom::set_pct(bottom_speed);

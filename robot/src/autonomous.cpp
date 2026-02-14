@@ -41,8 +41,8 @@ void testing_auton_func() {
     setFieldSide(field_side_t::left);
     setAlliance(alliance_t::red);
     // setAuton("awp");
-    // setAuton("skills");
-    setAuton("seven split");
+    setAuton("skills");
+    // setAuton("seven split");
 
     // std::cout << "calling selected auto" << std::endl;
     auto selected_auton_function = auton_list[selected_auton];
