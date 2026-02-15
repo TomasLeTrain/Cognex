@@ -201,13 +201,21 @@ SECTIONS
    *(.bss)
    *(.bss.*)
    *(.gnu.linkonce.b.*)
-   *(COMMON)
+   /* *(COMMON) */
    __bss_end = .;
 } > RAM
 
 _SDA_BASE_ = __sdata_start + ((__sbss_end - __sdata_start) / 2 );
 
 _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
+
+
+.stack (NOLOAD) : ALIGN(8) {
+	_stack_end = .;
+	. += _STACK_SIZE;
+	__stack = .;
+	_stack_start = .;
+} > RAM
 
 /* Generate Stack and Heap definitions */
 

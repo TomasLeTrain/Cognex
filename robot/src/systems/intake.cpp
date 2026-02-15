@@ -211,7 +211,7 @@ void set_bottom(bottom_state_t bottom_state) {
 
 void update() {
     std::lock_guard lock(mutex);
-    gate_intake_piston.set_value(top == passthrough);
+    gate_intake_piston.set_value(top == blocking);
     middle_intake_piston.set_value(middle == aligned_middle);
     bottom_intake_piston.set_value(bottom == up);
 }
