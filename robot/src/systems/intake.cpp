@@ -168,10 +168,10 @@ std::optional<alliance_t> colorDetected(pros::Optical& sensor) {
     double color_sensor_hue = sensor.get_hue();
 
     // intake senses something
-    if (sensor.get_proximity() > 200) {
-        if (color_sensor_hue > 280 || color_sensor_hue < 100)
+    if (sensor.get_proximity() > 250) {
+        if (color_sensor_hue > 300 || color_sensor_hue < 100)
             result = alliance_t::red;
-        else if (color_sensor_hue > 120 && color_sensor_hue < 280)
+        else if (color_sensor_hue > 120 && color_sensor_hue <= 300)
             result = alliance_t::blue;
     }
 
@@ -289,9 +289,13 @@ bool antijam_active = true;
 // amount of time we antijam
 Time antijam_timeout = 100_msec;
 
+Time antijam_outtake_timeout = 100_msec;
+
 // allows intake the settle right after antijamming, possibly avoids triggering
 // antijam immediately afterwards even if jam is cleared
 Time settle_time = 500_msec;
+
+bool outtake_antijam = false;
 
 void set_pct(Voltage new_pct) {
     std::lock_guard lock(mutex);
@@ -318,6 +322,11 @@ void set_antijam(bool active) {
     antijam_active = active;
 }
 
+void set_outtake_antijam(bool active) {
+    std::lock_guard lock(mutex);
+    outtake_antijam = active;
+}
+
 // directly updates hardware
 // should only be used by update function
 void hardware_move_pct(Voltage pct) {
@@ -340,10 +349,15 @@ void update() {
 
     if (antijam_active && bottom_jammed) {
         // move bottom at 0 speed
-        hardware_move_pct(0.0_volt);
-
-        // scoring antijam action
-        pros::delay(to_msec(antijam_timeout));
+        if (outtake_antijam) {
+            hardware_move_pct(-1.0_volt);
+            // scoring antijam action
+            pros::delay(to_msec(antijam_outtake_timeout));
+        } else {
+            hardware_move_pct(0.0_volt);
+            // scoring antijam action
+            pros::delay(to_msec(antijam_timeout));
+        }
 
         // afterwards move as normal, give it time to setttle
         Time start_move_normal = now();
@@ -384,7 +398,7 @@ IntakeVelocityController controller(&top_motor, vel_controller_params);
 
 std::variant<Voltage, AngularVelocity> target;
 
-bool antijam_active = true;
+bool antijam_active = false;
 
 // latest time since we started scoring
 // used to stop antijam from running for the first 200_msec of scoring
@@ -396,7 +410,7 @@ Time score_start_time = 0_sec;
 Time initial_timeout = 200_msec;
 
 // amount of time we antijam
-Time antijam_timeout = 100_msec;
+Time antijam_timeout = 120_msec;
 
 // allows intake the settle right after antijamming, possibly avoids triggering
 // antijam immediately afterwards even if jam is cleared
@@ -480,12 +494,12 @@ void update() {
                     hardware_update();
                     pros::delay(10);
                 }
+                return;
             }
         }
-    } else {
-        // no antijam active, move like normal
-        hardware_update();
     }
+    // if not antijam then hardware updates
+    hardware_update();
 }
 
 } // namespace top
@@ -551,12 +565,21 @@ void out() {
     top::set_scoring(false);
 }
 
-void score_long(float bottom_speed, float top_speed) {
+void score_long_no_outtake(float bottom_speed, float top_speed) {
     set_pct(bottom_speed, top_speed);
 
     pistons::score_top_aligned();
     pistons::intake_down();
     top::set_scoring(true);
+}
+
+void score_long(float bottom_speed, float top_speed) {
+    // outtake first
+    set_pct(0, -1);
+    pros::delay(100);
+
+    // score
+    score_long_no_outtake(bottom_speed, top_speed);
 }
 
 // defaults:
@@ -595,8 +618,12 @@ void score_bottom_slow() {
 }
 
 namespace driver {
+bool was_scoring = false;
+
 void update() {
     if (!is_driver) return;
+
+    // CANNOT RETURN AFTER THIS POINT FOR WAS SCORING
 
     // update states based on driver input
     bool driver_intake = controller.get_digital(controls::L1);
@@ -633,12 +660,20 @@ void update() {
     }
 
     else if (scoreLong) {
-        score_long();
+        if (was_scoring) {
+            // do nothing?
+        } else {
+            score_long();
+            was_scoring = true;
+        }
     } else {
         motors_disabled();
         pistons::gate_blocked();
         pistons::intake_down();
     }
+
+    // not scoring anymore
+    if (was_scoring && !scoreLong) was_scoring = false;
 }
 } // namespace driver
 
@@ -692,8 +727,8 @@ void init(bool driver) {
     pros::Task simple_tasks_intake(
       [] {
           while (true) {
-              driver::update();
               colors::update();
+              driver::update();
               pros::delay(10);
           }
       },

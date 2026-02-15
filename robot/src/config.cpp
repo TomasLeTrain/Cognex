@@ -78,13 +78,13 @@ pros::Rotation sideways_odom_rotation(18);
 pros::Distance front_distance(4);
 pros::Distance back_distance(8);
 pros::Distance left_distance(3);
-pros::Distance right_distance(7);
+pros::Distance right_distance(10);
 
 // cor + cor_offsets = geometric
 units::V2Position odom_cor_offsets = { 0.0_in, 0_in };
 
 // geometric -> cor
-units::V2Position dist_cor_offsets = { 0.5_in, 0_in };
+units::V2Position dist_cor_offsets = { 0.6_in, 0_in };
 
 constexpr units::Pose distToCor(units::Pose dist_pose) {
     return { dist_pose - dist_cor_offsets, dist_pose.orientation };
@@ -118,8 +118,13 @@ double back_distance_scale_factor = 0.98238;
 Length back_distance_scale_offset = 0.0964698_in;
 
 // no sunlight: 0.975042
-double right_distance_scale_factor = 0.975042;
-Length right_distance_scale_offset = 0.395641_in;
+// double right_distance_scale_factor = 0.975042;
+// Length right_distance_scale_offset = 0.395641_in;
+
+double right_distance_scale_factor = 0.980205233729;
+Length right_distance_scale_offset = 0.302946477017_in;
+
+
 
 /* vexmaps configuration */
 
@@ -133,7 +138,7 @@ tracker_config_t forwards_tracker_config = {
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.991_in,
     // geometric are -2.5, meaning cor is 0.5_in forwards from geometric center
-    .offset = -3.0_in,
+    .offset = -3.17_in,
 };
 
 /* drivetrain / pid configuration */

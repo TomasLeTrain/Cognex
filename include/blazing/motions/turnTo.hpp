@@ -53,6 +53,7 @@ class turnToBase : public Motion<ControllersType,
     std::optional<TurnToState> m_state;
 
     Length m_radius = 0.0_in;
+    std::optional<LinearVelocity> constant_velocity;
 
     bool m_velocity_based = false;
 
@@ -227,8 +228,13 @@ class turnToBase : public Motion<ControllersType,
                 }
 
                 // calculates linear based on the capped angular to keep ratio
-                LinearVelocity linear_vel =
-                  units::abs(angular_vel) * m_radius / rad;
+
+                LinearVelocity linear_vel = 0_inps;
+                if (constant_velocity.has_value()) {
+                    linear_vel = constant_velocity.value();
+                } else {
+                    linear_vel = units::abs(angular_vel) * m_radius / rad;
+                }
 
                 // if constexpr (hasLinearVelocityClamp<ControllersType>) {
                 //     linear_vel =
@@ -265,7 +271,8 @@ class turnToBase : public Motion<ControllersType,
                 //           << angular_error.internal() << " "
                 //           << target.linear_velocity.internal() << " "
                 //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " << right_vel.internal()
+                //           << left_vel.internal() << " " <<
+                //           right_vel.internal()
                 //           << " " << left_voltage.internal() << " "
                 //           << right_voltage.internal() << " "
                 //           << actual_volt_left.internal() << " "
@@ -366,6 +373,12 @@ class turnToBase : public Motion<ControllersType,
 
     motionChanger radius(Length radius) {
         this->m_radius = radius;
+        return DerivedReturnType;
+    }
+
+    motionChanger constantVelocity(std::optional<LinearVelocity> vel) {
+        this->constant_velocity = vel;
+
         return DerivedReturnType;
     }
 

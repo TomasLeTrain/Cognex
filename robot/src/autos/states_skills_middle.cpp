@@ -70,41 +70,16 @@ void matchload(double sign_x, double sign_y, Time matchload_time) {
     // make sure we are matchloading
     matchloader::down();
 
-    // Time motion_start_time = now();
-
-    // std::cout << "func: " << func().x.convert(in) << " " <<
-    // func().y.convert(in)
-    //           << " " << func().orientation.convert(deg) << std::endl;
-
-    // auto turn_func_point = func();
     mb.turnTo(func()) | run;
-    // mb.moveTo(func)
-
-    // auto func_point = func();
-
-    // std::cout << "finished turn, new func point " << func_point.x.convert(in)
-    //           << " " << func_point.y.convert(in) << " "
-    //           << func_point.orientation.convert(deg) << std::endl;
-    // pros::delay(200);
 
     mb.moveTo(func())
         // if it takes longer it most likely got stuck
         .timeout(1.5_sec)
         .drive_vel_accelSlew(110_inps2)
-        // .turn_vel_kd(linear_angular_vel_pid.get_kd() * 1.01)
         .drive_toleranceDuration(100_sec)
         .drive_largeToleranceDuration(100_sec)
-        .drive_vel_mp_setMaxAccel(70_inps2)
-      // .executeBeforeMotion([&] {
-      //     std::cout << "after turn pos: " << RobotGetPose().x.convert(in)
-      //               << " " << RobotGetPose().y.convert(in) << " "
-      //               << RobotGetPose().orientation.convert(deg) << std::endl;
-      //     std::cout << "after turn func: " << func().x.convert(in) << " "
-      //               << func().y.convert(in) << " "
-      //               << func().orientation.convert(deg) << std::endl;
-      // })
-      | async;
-    // async.wait();
+        .drive_vel_mp_setMaxAccel(70_inps2) |
+      async;
 
     Length matchload_start_distance = 13_in;
 
@@ -135,7 +110,7 @@ void matchload(double sign_x, double sign_y, Time matchload_time) {
         // got to matcloader successfully, start matchloading
         async.exitAll();
         // passive voltage forwards since motion might oscilate
-        drivetrain.moveTank(0.2_volt, 0.2_volt);
+        drivetrain.moveTank(0.25_volt, 0.25_volt);
         pros::delay(to_msec(matchload_time));
     }
 }
@@ -192,7 +167,7 @@ void score_long_goal(double sign_x,
     auto exit_condition = [&] -> bool {
         auto curr_pose = RobotGetPose();
         bool x_close = units::abs(curr_pose.x) >= 27_in &&
-                       units::abs(curr_pose.x) <= 29.5_in;
+                       units::abs(curr_pose.x) <= 30.5_in;
         bool y_close =
           units::abs(curr_pose.y) >= 43_in && units::abs(curr_pose.y) <= 51_in;
         //
@@ -207,14 +182,14 @@ void score_long_goal(double sign_x,
     if (!with_swing) {
         mb.moveTo(target_pose)
             .drive_vel_mp_setMaxAccel(110_inps2)
-            .only_x(true, 28_in)
+            .only_x(true, 28_in * sign_x)
             .closeThreshold(10_in)
             .timeout(2_sec)
             .reverse() |
           chain;
     } else {
         // aims for point
-        mb.moveTo(15_in * sign_x, 56_in * sign_y)
+        mb.moveTo(15_in * sign_x, 55.8_in * sign_y)
             // mb.boomerang(16_in * sign_x,
             //              54_in * sign_y,
             //              // reverse of actual when scoring
@@ -241,37 +216,52 @@ void score_long_goal(double sign_x,
             .reverse()
             .direction(AngularDirection::RIGHT)
             .radius(-10.5_in / 2)
-            .timeout(2.6_sec) |
+            .timeout(2.4_sec) |
           chain;
     }
 
     chain.waitOr(exit_condition);
+
+    // exit regardless to have better aligner
+    chain.exitAll();
+
+    pros::delay(10);
+
+    // queue aligning motion
+    mb.turnTo(target_forwards_heading)
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .constantVelocity(-10_inps) |
+      async;
 
     // regardless of getting stuck or not we perform the same action
 
     Time no_color_time = 100_msec;
 
     intake::score_long();
-    // let move to point settle a bit
+    // disregard the color
     pros::delay(to_msec(no_color_time));
-    chain.exitAll();
-    // queue aligning motion
-    mb.turnTo(target_forwards_heading).radius(-4.0_in) | chain;
 
     Time new_score_time = units::max(score_time - no_color_time, 1_msec);
 
     if (to_msec(slow_score_time) < 2.0) {
-        // not active
+        // slow scoring not active
         pros::delay(to_msec(new_score_time));
     } else {
         // if not zero
         Time start_time = now();
         bool timeout_done = false;
+
+        // alliance_t slow_color =
+        //   sign_x == 1 ? alliance_t::blue : alliance_t::red;
+
+        alliance_t slow_color = alliance_t::blue;
+
         while (true) {
             timeout_done = timeoutDone(new_score_time, start_time);
             bool color_found = intake::colors::getMiddleColor()
-                                 .transform([](auto color) {
-                                     return color == alliance_t::blue;
+                                 .transform([slow_color](auto color) {
+                                     return color == slow_color;
                                  })
                                  .value_or(false);
             if (color_found || timeout_done) break;
@@ -282,12 +272,14 @@ void score_long_goal(double sign_x,
             // never found blue balls, just give up and move on
         } else {
             // score slighlty slower
-            intake::score_long(1.0, 0.3);
+            // intake::score_long(1.0, 0.3);
+            controller.rumble(".");
+            intake::score_long_no_outtake(1.0, 0.4);
             pros::delay(to_msec(slow_score_time));
         }
     }
 
-    chain.exitAll();
+    async.exitAll();
 }
 
 void run_auton() {
@@ -306,7 +298,7 @@ void run_auton() {
 
     intake::in();
 
-    mb.moveTo(-23, 18.2) | run;
+    mb.moveTo(-23, 18.5).drive_vel_mp_setMaxAccel(60_inps2) | run;
 
     mb.turnTo(0, 0).reverse() | chain;
     mb.moveTo(-11.6, 11.0).reverse()
@@ -321,18 +313,20 @@ void run_auton() {
 
     // align tech
     mb.turnTo(135)
-        .radius(-5_in)
+        // .radius(-5_in)
+        .constantVelocity(-4_inps)
+
         // infinite time motion
         .turn_toleranceDuration(100_sec)
         .turn_largeToleranceDuration(100_sec)
-        .timeout(4_sec) |
+        .timeout(2_sec) |
       chain;
 
     chain.waitUntil(closeEnough({ -11.6_in, 11.0_in }, 3.5_in));
 
     // start scoring
     // give the other ball time to get to the top
-    pros::delay(200);
+    pros::delay(250);
     // score
     intake::score_middle();
 
@@ -391,7 +385,7 @@ void run_auton() {
 
     matchload(1, 1, 2.0_sec);
 
-    score_long_goal(1, 1, 2.0_sec, false, 1.2_sec);
+    score_long_goal(1, 1, 2.0_sec, false, 1.5_sec);
 
     matchloader::up();
 
@@ -405,8 +399,11 @@ void run_auton() {
 
     // --- BLUE PARK --- //
     // sprint straight towards second park
-    mb.moveTo(58, 20) | chain;
-    mb.turnTo(270).radius(4_in) | chain;
+    mb.moveTo(58, 30) | chain;
+    mb.turnTo(62, 20) | chain;
+    mb.moveTo(62, 20).drive_errorTolerance(1.1_in).drive_toleranceDuration(
+      10_msec) |
+      chain;
     chain.wait();
 
     drivetrain.moveTank(0.2_volt, 0.25_volt);
@@ -424,7 +421,7 @@ void run_auton() {
     moveVel(0.38_volt, 0.48_volt, 1200_msec);
 
     // move forwards a ton to hit matchloader
-    moveVel(0.2_volt, 0.3_volt, 1000_msec);
+    moveVel(0.2_volt, 0.3_volt, 1100_msec);
 
     // stay here a tiny bit
     drivetrain.moveTank(0_volt, 0_volt);
@@ -456,14 +453,36 @@ void run_auton() {
 
     matchloader::up();
     mb.moveTo(40.625, -18.0) | chain;
-    mb.turnTo(23.11, -18.0) | chain;
-    mb.moveTo(23.11, -18.0) | chain;
+    mb.turnTo(23.31, -18.0) | chain;
+    mb.moveTo(23.31, -18.0) | chain;
 
-    mb.turnTo(11.6, -11.0).reverse() | chain;
-    mb.moveTo(11.6, -11.0).reverse().executeAfterMotion([] {
-        drivetrain.moveTank(-0.15_volt, -0.15_volt);
+    mb.turnTo(11.6, -11.0).reverse().executeAfterMotion([] {
+        pros::delay(140);
+        matchloader::down();
+        intake::bottom::set_outtake_antijam(true);
     }) |
       chain;
+    mb.moveTo(11.6, -11.0).reverse() | chain;
+
+    mb.turnTo(135)
+        .reverse()
+        .constantVelocity(-4_inps)
+
+        // infinite time motion
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .timeout(2_sec) |
+      chain;
+
+    // align tech
+    // mb.turnTo(135)
+    //     .reverse()
+    //     .radius(-5_in)
+    //     // infinite time motion
+    //     // .turn_toleranceDuration(100_sec)
+    //     // .turn_largeToleranceDuration(100_sec)
+    //     .timeout(2_sec) |
+    //   chain;
 
     // align tech
     // mb.turnTo(135)
@@ -478,11 +497,14 @@ void run_auton() {
     chain.waitUntil(closeEnough({ 11.6_in, -11.0_in }, 4_in));
     // start scoring decently fast
     intake::score_middle();
-    pros::delay(2000);
+    pros::delay(1000);
+
+    // start going slow
+    controller.rumble(".");
 
     {
         // score slow for 2 seconds
-        Time scoring_slow_time = 2_sec;
+        Time scoring_slow_time = 2.75_sec;
 
         Time start_time = now();
         bool timeout_done = false;
@@ -509,6 +531,7 @@ void run_auton() {
     }
 
     chain.exitAll();
+    intake::bottom::set_outtake_antijam(false);
 
     mb.moveTo(43.02, -46)
         .only_y(true)
@@ -560,26 +583,70 @@ void run_auton() {
     matchload(-1, -1, 2.0_sec);
 
     // score_long_goal(-1, -1, 1.5_sec, false, 1000_msec);
-    score_long_goal(-1, -1, 2.0_sec, false, 1.2_sec);
+    score_long_goal(-1, -1, 2.0_sec, false, 1.5_sec);
+
+    matchloader::up();
 
     // intake any balls in the way and shoot them out on the way to the park
     intake::score_long();
+    mb.turnTo(-1_tile, -1_tile).constantVelocity(-10_inps) | chain;
+    mb.moveTo(-1_tile, -1_tile)
+      // .drive_minVolt(0.5_volt)
+      // .drive_vel_minVel(50_inps)
+      | chain;
+
+    chain.waitUntil(closeEnough({ -1_tile, -1_tile }, 7_in));
+    matchloader::down();
+    intake::in();
+    chain.wait();
+
+    mb.turnTo(0, 0).executeBeforeMotion([] {
+        pros::delay(100);
+        matchloader::up();
+    }) |
+      run;
+
+    mb.moveTo(-12, -12)
+      // .drive_minVolt(0.5_volt)
+      // .drive_vel_minVel(50_inps)
+      | chain;
+
+    mb.turnTo(45)
+        .constantVelocity(5_inps)
+
+        // infinite time motion
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .timeout(2_sec) |
+      chain;
+
+    chain.waitUntil(closeEnough({ -10_in, -10_in }, 4_in));
+
+    intake::score_bottom();
+    pros::delay(1500);
+    chain.exitAll();
 
     // finally park
-    matchloader::up();
-    mb.moveTo(-58.5, -20) | chain;
-    mb.turnTo(90).radius(5_in) | chain;
+    mb.moveTo(-59, -31).reverse() | chain;
+    mb.turnTo(-62, -21) | chain;
+    mb.moveTo(-62, -21).drive_errorTolerance(1.1_in).drive_toleranceDuration(
+      10_msec) |
+      chain;
+    mb.turnTo(90) | chain;
     chain.wait();
 
     // get close to it
     odom_retract::retractOdom();
     horizontal_tracker.setDisabled(true);
     drivetrain.moveTank(0.2_volt, 0.25_volt);
-    pros::delay(300);
+    pros::delay(400);
+    intake::in();
 
     // move into it
-    drivetrain.moveTank(0.43_volt, 0.5_volt);
-    pros::delay(900);
+    // drivetrain.moveTank(0.43_volt, 0.5_volt);
+    moveVel(0.4_volt, 0.5_volt, 0.5_sec);
+    moveVel(0.2_volt, 0.3_volt, 0.73_sec);
+
     drivetrain.moveTank(0.0_volt, 0.0_volt);
 
     // cinema

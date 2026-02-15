@@ -38,11 +38,16 @@ void testing_auton_func() {
     // selected_auton = "seven split";
 
     // setFieldSide(field_side_t::right);
+    // setFieldSide(field_side_t::left);
     setFieldSide(field_side_t::left);
     setAlliance(alliance_t::red);
     // setAuton("awp");
+    // setAuton("awp");
     setAuton("skills");
-    // setAuton("seven split");
+    // setAuton("skills");
+    // setAuton("skills");
+    // setAuton("4 ball");
+    // setAuton("seven ball");
 
     // std::cout << "calling selected auto" << std::endl;
     auto selected_auton_function = auton_list[selected_auton];

@@ -45,10 +45,10 @@ void set_bottom(bottom_state_t bottom_state);
 void update();
 
 // sets the top scoring to be blocked
-void scoring_blocked();
+void gate_blocked();
 
 // sets the top scoring to be passthrough
-void scoring_passthrough();
+void gate_passthrough();
 
 void align_top();
 
@@ -76,6 +76,8 @@ void set_pct(Voltage new_pct);
 void set_pct(float new_pct);
 
 void set_antijam(bool active);
+
+void set_outtake_antijam(bool active);
 
 void update();
 
@@ -125,6 +127,8 @@ void in();
 void intake_middle_balls(float bottom_speed = 1.0, float top_speed = 0.0);
 
 void out();
+
+void score_long_no_outtake(float bottom_speed, float top_speed);
 
 // default is full speed
 void score_long(float bottom_speed = 1.0, float top_speed = 1.0);

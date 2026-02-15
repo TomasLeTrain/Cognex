@@ -126,9 +126,12 @@ void opcontrol() {
     // turn_vel_pid_tuning();
     // return;
 
+	// odom_offset_tuning();
+	// return;
+
     // linear_kv_ks_tuner();
     // angular_ka_kp_ki_tuner();
-	// angular_kv_ks_tuner();
+    // angular_kv_ks_tuner();
     // return;
 
     //
@@ -137,9 +140,9 @@ void opcontrol() {
     // odom_diameter_tuning();
     // return;
 
-	// turn_vel_pid_tuning();
-	// drive_vel_pid_tuning();
-	// return;
+    // turn_vel_pid_tuning();
+    // drive_vel_pid_tuning();
+    // return;
 
     // matchloader::init(false);
     // return;
@@ -160,12 +163,13 @@ void opcontrol() {
 
     // RobotSetPose(48, 48, 0);
     odom_retract::retractOdom();
+
+   // RobotSetPose(-48, 48, 0);
     //
     //
     //
     //
 
-    //    RobotSetPose(28.2378, 47.0146, 0);
     //
     //    pros::delay(3000);
     // pf_model.setDisabled(true);
