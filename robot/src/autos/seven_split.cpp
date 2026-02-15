@@ -357,6 +357,7 @@ void run_auton() {
                 // .timeout(100_sec) |
                 .timeout(100_sec) |
               chain;
+            chain.wait();
         } else {
             mb.moveTo(-35.737, -36.7) | chain;
             mb.turnTo(0) | chain;
@@ -371,6 +372,7 @@ void run_auton() {
                 .drive_largeToleranceDuration(100_sec)
                 .timeout(100_sec) |
               chain;
+            chain.wait();
         }
     }
 }

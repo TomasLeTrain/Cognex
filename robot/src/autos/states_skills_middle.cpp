@@ -239,6 +239,10 @@ void score_long_goal(double sign_x,
     Time no_color_time = 100_msec;
 
     intake::score_long();
+    // pull matchloader down to have antijam
+    matchloader::down();
+    intake::bottom::set_outtake_antijam(true);
+
     // disregard the color
     pros::delay(to_msec(no_color_time));
 
@@ -274,11 +278,12 @@ void score_long_goal(double sign_x,
             // score slighlty slower
             // intake::score_long(1.0, 0.3);
             controller.rumble(".");
-            intake::score_long_no_outtake(1.0, 0.4);
+            intake::score_long_no_outtake(1.0, 0.5);
             pros::delay(to_msec(slow_score_time));
         }
     }
 
+    intake::bottom::set_outtake_antijam(false);
     async.exitAll();
 }
 
@@ -297,6 +302,7 @@ void run_auton() {
     RobotSetPose(-46.8, 13.3, 0);
 
     intake::in();
+    // intake::pistons::align_middle();
 
     mb.moveTo(-23, 18.5).drive_vel_mp_setMaxAccel(60_inps2) | run;
 
@@ -349,7 +355,7 @@ void run_auton() {
       // .drive_toleranceDuration(0_sec)
       | run;
 
-    matchload(-1, 1, 2.0_sec);
+    matchload(-1, 1, 2.5_sec);
 
     // go away from matchloader
     // mb.moveTo(-30, 56.5)
@@ -383,11 +389,12 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(1, 1, 2.0_sec);
+    matchload(1, 1, 2.5_sec);
 
-    score_long_goal(1, 1, 2.0_sec, false, 1.5_sec);
+    score_long_goal(1, 1, 2.0_sec, false, 1.75_sec);
 
     matchloader::up();
+    intake::score_long();
 
     //   pros::Task([] {
     //       // need a bit of time for the last ball on the long goal
@@ -464,9 +471,9 @@ void run_auton() {
       chain;
     mb.moveTo(11.6, -11.0).reverse() | chain;
 
-    mb.turnTo(135)
+    mb.turnTo(135.5)
         .reverse()
-        .constantVelocity(-4_inps)
+        .constantVelocity(-1_inps)
 
         // infinite time motion
         .turn_toleranceDuration(100_sec)
@@ -504,7 +511,7 @@ void run_auton() {
 
     {
         // score slow for 2 seconds
-        Time scoring_slow_time = 2.75_sec;
+        Time scoring_slow_time = 3.0_sec;
 
         Time start_time = now();
         bool timeout_done = false;
@@ -549,7 +556,7 @@ void run_auton() {
         }) |
       run;
 
-    matchload(1, -1, 2.0_sec);
+    matchload(1, -1, 2.5_sec);
 
     // go away from matchloader
     mb.moveTo(30.692, -56.5)
@@ -580,56 +587,57 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(-1, -1, 2.0_sec);
+    matchload(-1, -1, 2.5_sec);
 
     // score_long_goal(-1, -1, 1.5_sec, false, 1000_msec);
-    score_long_goal(-1, -1, 2.0_sec, false, 1.5_sec);
+    score_long_goal(-1, -1, 2.0_sec, false, 1.75_sec);
 
     matchloader::up();
 
     // intake any balls in the way and shoot them out on the way to the park
     intake::score_long();
-    mb.turnTo(-1_tile, -1_tile).constantVelocity(-10_inps) | chain;
-    mb.moveTo(-1_tile, -1_tile)
-      // .drive_minVolt(0.5_volt)
-      // .drive_vel_minVel(50_inps)
-      | chain;
+    // mb.turnTo(-1_tile, -1_tile).constantVelocity(-10_inps) | chain;
+    // mb.moveTo(-1_tile, -1_tile)
+    //   // .drive_minVolt(0.5_volt)
+    //   // .drive_vel_minVel(50_inps)
+    //   | chain;
+    //
+    // chain.waitUntil(closeEnough({ -1_tile, -1_tile }, 7_in));
+    // matchloader::down();
+    // intake::in();
+    // chain.wait();
 
-    chain.waitUntil(closeEnough({ -1_tile, -1_tile }, 7_in));
-    matchloader::down();
-    intake::in();
-    chain.wait();
+    // mb.turnTo(0, 0).executeBeforeMotion([] {
+    //     pros::delay(100);
+    //     matchloader::up();
+    // }) |
+    //   run;
 
-    mb.turnTo(0, 0).executeBeforeMotion([] {
-        pros::delay(100);
-        matchloader::up();
-    }) |
-      run;
-
-    mb.moveTo(-12, -12)
-      // .drive_minVolt(0.5_volt)
-      // .drive_vel_minVel(50_inps)
-      | chain;
-
-    mb.turnTo(45)
-        .constantVelocity(5_inps)
-
-        // infinite time motion
-        .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec)
-        .timeout(2_sec) |
-      chain;
-
-    chain.waitUntil(closeEnough({ -10_in, -10_in }, 4_in));
-
-    intake::score_bottom();
-    pros::delay(1500);
-    chain.exitAll();
+    // mb.moveTo(-12, -12).timeout(1_sec)
+    //   // .drive_minVolt(0.5_volt)
+    //   // .drive_vel_minVel(50_inps)
+    //   | chain;
+    //
+    // mb.turnTo(45)
+    //     .constantVelocity(5_inps)
+    //
+    //     // infinite time motion
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .timeout(2_sec) |
+    //   chain;
+    //
+    // chain.waitUntil(closeEnough({ -11_in, -11_in }, 5_in));
+    //
+    // intake::score_bottom();
+    // pros::delay(1500);
+    // chain.exitAll();
 
     // finally park
-    mb.moveTo(-59, -31).reverse() | chain;
-    mb.turnTo(-62, -21) | chain;
-    mb.moveTo(-62, -21).drive_errorTolerance(1.1_in).drive_toleranceDuration(
+    // mb.moveTo(-59, -31).reverse() | chain;
+    mb.moveTo(-59, -31) | chain;
+    mb.turnTo(-63, -21) | chain;
+    mb.moveTo(-63, -21).drive_errorTolerance(1.1_in).drive_toleranceDuration(
       10_msec) |
       chain;
     mb.turnTo(90) | chain;
@@ -644,11 +652,10 @@ void run_auton() {
 
     // move into it
     // drivetrain.moveTank(0.43_volt, 0.5_volt);
-    moveVel(0.4_volt, 0.5_volt, 0.5_sec);
-    moveVel(0.2_volt, 0.3_volt, 0.73_sec);
+    moveVel(0.48_volt, 0.58_volt, 580_msec);
+    moveVel(0.2_volt, 0.3_volt, 0.63_sec);
 
     drivetrain.moveTank(0.0_volt, 0.0_volt);
-
     // cinema
 }
 

@@ -61,7 +61,7 @@ pros::Optical bottom_intake_color_sensor(21);
 // disable for testing
 // pros::adi::DigitalOut intake_stop_piston('H', true);
 pros::adi::DigitalOut gate_intake_piston('D', true);
-pros::adi::DigitalOut middle_intake_piston('E', false);
+pros::adi::DigitalOut middle_intake_piston('E', true);
 pros::adi::DigitalOut wings_piston('C', false);
 
 pros::adi::DigitalOut matchloader_piston('H', false);
