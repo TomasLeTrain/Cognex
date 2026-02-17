@@ -249,9 +249,10 @@ void run_auton() {
         chain.waitUntil(closeEnough({ -11.6_in, 11.0_in }, 4_in));
         // start scoring
         // wait for balls to come up the intake
-        pros::delay(200);
+        pros::delay(300);
         // score
-        intake::score_middle(1.0, 0.325);
+        intake::score_middle(1.0, 0.4);
+        pros::delay(1200);
         // score for some time
     } else {
         // bottom
@@ -275,6 +276,48 @@ void run_auton() {
         matchloader::down();
         pros::delay(300);
         matchloader::up();
+    }
+
+    bool winging = true;
+	bool fast_wing = false;
+
+    if (winging) {
+        if (bl) {
+			intake::in();
+            mb.moveTo(-35.9, 37.3) | chain;
+            mb.turnTo(0).reverse() | chain;
+            wings::down();
+
+            mb.boomerang(-8.3, 37, 0)
+                .reverse()
+                .drive_maxVolt(fast_wing ? 1_volt : 0.5_volt)
+                // .drive_vel_mp_maxVel(10_inps)
+                // .drive_vel_maxVel(24_inps)
+                // .drive_vel_accelSlew(70_inps2)
+                // .drive_vel_mp_setMaxAccel(fast_wing ? 170_inps2 : 300_inps2)
+                .drive_toleranceDuration(100_sec)
+                .drive_largeToleranceDuration(100_sec)
+                // .timeout(100_sec) |
+                .timeout(100_sec) |
+              chain;
+
+            chain.wait();
+        } else {
+            // mb.moveTo(-35.737, -36.7) | chain;
+            // mb.turnTo(0) | chain;
+            // wings::down();
+
+            // mb.boomerang(-8.1, -37.2, 0)
+            //     .drive_vel_mp_maxVel(fast_wing ? 76_inps : slow_wing_speed)
+            //     .drive_vel_mp_setMaxAccel(fast_wing ? 170_inps2 : 300_inps2)
+            //     .drive_vel_accelSlew(70_inps2)
+            //     // .drive_vel_mp_setMaxAccel(80_inps2)
+            //     .drive_toleranceDuration(10.500_sec)
+            //     .drive_largeToleranceDuration(100_sec)
+            //     .timeout(100_sec) |
+            //   chain;
+            // chain.wait();
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 #include "apis.h"
 //
 
+#include "auton_globals.h"
 #include "autos.h"
 #include "globals.h"
 #include "globals/blazing_globals.h"
@@ -66,6 +67,27 @@ void opcontrol() {
 
     // drive_pid_tuning();
 
+    if (selected_auton == "skills") {
+        // run auto
+        auto prog_task = pros::Task([] {
+            autonomous();
+        });
+
+        while (true) {
+            if (controller.get_digital_new_press(controls::X)) {
+                prog_task.remove();
+
+                pros::delay(20);
+                async.exitAll();
+                pros::delay(20);
+                chain.exitAll();
+                pros::delay(20);
+                break;
+            }
+            pros::delay(10);
+        }
+    }
+
     // findImuOrientation();
 
     // pros::delay(2000);
@@ -126,8 +148,8 @@ void opcontrol() {
     // turn_vel_pid_tuning();
     // return;
 
-	// odom_offset_tuning();
-	// return;
+    // odom_offset_tuning();
+    // return;
 
     // linear_kv_ks_tuner();
     // angular_ka_kp_ki_tuner();
@@ -164,7 +186,7 @@ void opcontrol() {
     // RobotSetPose(48, 48, 0);
     odom_retract::retractOdom();
 
-   // RobotSetPose(-48, 48, 0);
+    // RobotSetPose(-48, 48, 0);
     //
     //
     //

@@ -355,7 +355,7 @@ void run_auton() {
       // .drive_toleranceDuration(0_sec)
       | run;
 
-    matchload(-1, 1, 2.5_sec);
+    matchload(-1, 1, 2.8_sec);
 
     // go away from matchloader
     // mb.moveTo(-30, 56.5)
@@ -389,7 +389,7 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(1, 1, 2.5_sec);
+    matchload(1, 1, 2.8_sec);
 
     score_long_goal(1, 1, 2.0_sec, false, 1.75_sec);
 
@@ -556,7 +556,7 @@ void run_auton() {
         }) |
       run;
 
-    matchload(1, -1, 2.5_sec);
+    matchload(1, -1, 2.8_sec);
 
     // go away from matchloader
     mb.moveTo(30.692, -56.5)
@@ -587,7 +587,7 @@ void run_auton() {
         intake::in();
     });
 
-    matchload(-1, -1, 2.5_sec);
+    matchload(-1, -1, 2.8_sec);
 
     // score_long_goal(-1, -1, 1.5_sec, false, 1000_msec);
     score_long_goal(-1, -1, 2.0_sec, false, 1.75_sec);

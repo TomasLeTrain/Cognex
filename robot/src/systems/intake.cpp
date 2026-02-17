@@ -636,6 +636,9 @@ void update() {
 
     bool unjam = controller.get_digital(controls::X);
 
+    // ONLY USED IN SKILLS
+    // bool score_slow = controller.get_digital(controls::RIGHT_SHIFT);
+
     // one time kill switch
     if (color_sort_driver == true && kill_color_sort) {
         color_sort_driver = false;
@@ -661,9 +664,12 @@ void update() {
 
     else if (scoreLong) {
         if (was_scoring) {
+            // run with no outtake?
             // do nothing?
         } else {
+            // just do normal
             score_long();
+
             was_scoring = true;
         }
     } else {

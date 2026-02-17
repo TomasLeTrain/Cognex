@@ -268,11 +268,11 @@ void run_auton() {
         chain.waitUntil(closeEnough({ -11.6_in, 11.0_in }, 4_in));
         // start scoring
         // wait for balls to come up the intake
-        pros::delay(200);
+        pros::delay(400);
         // score
         intake::score_middle(1.0, 0.35);
         // score for some time
-        pros::delay(1500);
+        pros::delay(1200);
 
         // intake again in a specific way
         {
@@ -341,22 +341,36 @@ void run_auton() {
 
     if (winging) {
         if (bl) {
-            mb.moveTo(-35.737, 37.1) | chain;
+            mb.moveTo(-35.9, 37.3) | chain;
             mb.turnTo(0).reverse() | chain;
             wings::down();
 
+            // mb.boomerang(-8.3, 37, 0)
+            //     .reverse()
+            //     .drive_vel_maxVel(fast_wing ? 76_inps : slow_wing_speed)
+            //     // .drive_vel_mp_maxVel(10_inps)
+            //     // .drive_vel_maxVel(24_inps)
+            //     // .drive_vel_accelSlew(70_inps2)
+            //     .drive_vel_mp_setMaxAccel(fast_wing ? 170_inps2 : 300_inps2)
+            //     .drive_toleranceDuration(100_sec)
+            //     .drive_largeToleranceDuration(100_sec)
+            //     // .timeout(100_sec) |
+            //     .timeout(100_sec) |
+            //   chain;
+
             mb.boomerang(-8.3, 37, 0)
                 .reverse()
-                .drive_vel_maxVel(fast_wing ? 76_inps : slow_wing_speed)
+                .drive_maxVolt(fast_wing ? 1_volt : 0.4_volt)
                 // .drive_vel_mp_maxVel(10_inps)
                 // .drive_vel_maxVel(24_inps)
                 // .drive_vel_accelSlew(70_inps2)
-                .drive_vel_mp_setMaxAccel(fast_wing ? 170_inps2 : 300_inps2)
+                // .drive_vel_mp_setMaxAccel(fast_wing ? 170_inps2 : 300_inps2)
                 .drive_toleranceDuration(100_sec)
                 .drive_largeToleranceDuration(100_sec)
                 // .timeout(100_sec) |
                 .timeout(100_sec) |
               chain;
+
             chain.wait();
         } else {
             mb.moveTo(-35.737, -36.7) | chain;

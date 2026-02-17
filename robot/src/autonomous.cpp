@@ -43,11 +43,14 @@ void testing_auton_func() {
     setAlliance(alliance_t::red);
     // setAuton("awp");
     // setAuton("awp");
-    setAuton("skills");
+    // setAuton("skills");
     // setAuton("skills");
     // setAuton("skills");
     // setAuton("4 ball");
     // setAuton("seven ball");
+    // setAuton("seven split");
+    // setAuton("match first 7 split");
+    setAuton("seven ball");
 
     // std::cout << "calling selected auto" << std::endl;
     auto selected_auton_function = auton_list[selected_auton];
