@@ -653,7 +653,7 @@ void update() {
     }
 
     else if (score_middle_height) {
-        score_middle();
+        score_middle(1.0, 0.5);
     }
 
     else if (score_bottom_height) {

@@ -1,5 +1,6 @@
 #include "apis.h"
 //
+#include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/blazing_globals.h"
 #include "pros/rtos.hpp"
@@ -19,8 +20,8 @@ void driveUpdate() {
 
     float angular_deadband = 3;
     // float angular_curveGain = 1.019;
-    float angular_curveGain = 1.001;
-    float angular_minOutput = 10;
+    float angular_curveGain = 1.03;
+    float angular_minOutput = 12;
 
     bool use_expo = true;
 
@@ -52,13 +53,16 @@ void driveUpdate() {
                                      angular_minOutput));
     }
 
+    auto desired_lin = volt * static_cast<float>(throttle) / 127.0;
+    auto desired_ang = volt * static_cast<float>(turn) / 127.0;
+
     // desaturate?
+    std::array<Voltage, 2> saturated { Voltage(desired_lin + desired_ang),
+                                       Voltage(desired_lin - desired_ang) };
+    auto desaturated = desaturate(saturated, 1_volt);
 
-    int leftPower = throttle + turn;
-    int rightPower = throttle - turn;
-
-    left_motors.move(leftPower);
-    right_motors.move(rightPower);
+    left_motors.move_voltage(12 * to_mvolt(desaturated[0]));
+    right_motors.move_voltage(12 * to_mvolt(desaturated[1]));
 }
 
 // void update() {
