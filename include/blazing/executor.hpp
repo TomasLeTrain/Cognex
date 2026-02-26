@@ -31,8 +31,25 @@ template<typename M>
 constexpr void operator|(M&& motion, Executor& executor) {
     // creates a copy of the temporary motion object and creates one owned by
     // the executor
+    std::cout << "motion operator called" << std::endl;
+    pros::delay(200);
 
     executor.addMotion(std::make_unique<std::decay_t<M>>(std::move(motion)));
+}
+
+template<typename M>
+    requires std::derived_from<std::decay_t<M>, MotionBase>
+constexpr void operator/(M&& motion, Executor& executor) {
+    // creates a copy of the temporary motion object and creates one owned by
+    // the executor
+    std::cout << "motion operator called" << std::endl;
+    pros::delay(200);
+
+    // let unique_ptr take care of the lifetime
+    std::unique_ptr<MotionBase> new_ptr { motion.getPtr() };
+
+    // give ownership to executor
+    executor.addMotion(std::move(new_ptr));
 }
 
 class RunExecutor : public Executor {

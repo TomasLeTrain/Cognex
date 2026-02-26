@@ -115,23 +115,50 @@ void run_auton() {
                   << func().y.convert(in) << " "
                   << func().orientation.convert(deg) << std::endl;
 
+        std::cout << "calling turn" << std::endl;
         mb.turnTo(func()) | run;
         // mb.moveTo(func)
 
         auto func_point = func();
 
+        std::cout << "after the turn, stuff blows up?" << std::endl;
         std::cout << func_point.x.convert(in) << " " << func_point.y.convert(in)
                   << " " << func_point.orientation.convert(deg) << std::endl;
+        std::cout << "async info: " << async.getCurrentIndex() << " "
+                  << async.getFinishedIndex() << " " << async.numQueuedMotions()
+                  << std::endl;
+
+        std::cout << "chain info: " << chain.getCurrentIndex() << " "
+                  << chain.getFinishedIndex() << " " << chain.numQueuedMotions()
+                  << std::endl;
         pros::delay(200);
 
-        mb.moveTo(func_point)
+        std::cout << "about to call moveto" << std::endl;
+
+        // mb.turnTo(func_point)
+        mb.silly_moveTo(func_point)
+            // .timeout(1_sec).velocity_based(true)
+
+            // return std::move(
+            // moveTo
+            // .velocity_based(true)
+            // .customAngularLinearFunc(angular_linear_func)
+            // .k_lat(0.0 * rad / m)
+            // .timeout(3_sec)
+            // );
             // if it takes longer it most likely got stuck
+
             .timeout(1.5_sec)
             .drive_vel_accelSlew(110_inps2)
             // .turn_vel_kd(linear_angular_vel_pid.get_kd() * 1.01)
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
             .drive_vel_mp_setMaxAccel(70_inps2)
+          //
+          //
+          //
+          //
+
           // .executeBeforeMotion([&] {
           //     std::cout << "after turn pos: " << RobotGetPose().x.convert(in)
           //               << " " << RobotGetPose().y.convert(in) << " "
@@ -141,8 +168,14 @@ void run_auton() {
           //               << func().y.convert(in) << " "
           //               << func().orientation.convert(deg) << std::endl;
           // })
-          | async;
-        async.wait();
+
+          / run;
+        std::cout << "finished stuff" << std::endl;
+
+        //   | async;
+        // std::cout << "called moveto" << std::endl;
+        // async.wait();
+        // std::cout << "finished moveto moveto" << std::endl;
 
         // Length matchload_start_distance = 13_in;
         //
@@ -210,9 +243,9 @@ void run_auton() {
         // turn towards 24, settle at 48
         if (!with_swing) {
             mb.moveTo(target_pose)
-                .drive_vel_mp_setMaxAccel(110_inps2)
                 .only_x(true, 28_in)
                 .closeThreshold(10_in)
+                .drive_vel_mp_setMaxAccel(110_inps2)
                 .timeout(2_sec)
                 .reverse() |
               chain;
@@ -294,10 +327,12 @@ void run_auton() {
     /* START AUTON */
 
     RobotSetPose(-46.8, 15, 0);
+    std::cout << "started auto" << std::endl;
 
     intake::in();
 
     mb.moveTo(-23, 18.1) | run;
+    std::cout << "finished first movetO" << std::endl;
 
     mb.turnTo(0, 0).reverse() | chain;
     mb.moveTo(-11.6, 11.0).reverse()
@@ -308,6 +343,7 @@ void run_auton() {
 
     // ???
     mb.distanceAtHeading(2_in, 135) | chain;
+    std::cout << "just called distance at heading" << std::endl;
 
     // align tech
     // mb.turnTo(135)
@@ -328,23 +364,30 @@ void run_auton() {
 
     pros::delay(1300);
     chain.exitAll();
+    std::cout << "exited scoring" << std::endl;
 
     pros::Task([] {
         // need a bit of time for the last ball on the long goal
         // before starting to intake
+        std::cout << "start of task" << std::endl;
         pros::delay(210);
         intake::out();
         // let outtake a bit to clear possible jam
+        std::cout << "before end of outtaking" << std::endl;
         pros::delay(300);
         // intake
         intake::in();
+        std::cout << "end of task" << std::endl;
     });
+    std::cout << "doing silly task stuff" << std::endl;
 
     mb.moveTo(-43.02, 46).only_y(true)
       // .drive_errorTolerance(0.5_in)
       // .drive_toleranceDuration(0_sec)
       | run;
+    std::cout << "running moveto" << std::endl;
 
+    std::cout << "calling matchload" << std::endl;
     matchload(-1, 1, 2.0_sec);
 
     // go away from matchloader

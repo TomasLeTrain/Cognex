@@ -30,7 +30,7 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);

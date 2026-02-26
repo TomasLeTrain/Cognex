@@ -204,7 +204,33 @@ void initialize() {
         return std::move(distanceAtHeading.velocity_based(true).timeout(5_sec));
     });
 
+    mb.setMoveToModifier2([](auto& moveTo) -> void {
+        // std::cout << "modifier doing stuff" << std::endl;
+        printf("new modifier doing stuff\n");
+        fflush(stdout);
+        pros::delay(200);
+
+        // do stuff
+        moveTo.velocity_based(true)
+          .customAngularLinearFunc(angular_linear_func)
+          .k_lat(0.0 * rad / m)
+          .timeout(3_sec);
+    });
+
     mb.setMoveToModifier([](auto&& moveTo) {
+        // std::cout << "modifier doing stuff" << std::endl;
+        printf("modifier doing stuff\n");
+        fflush(stdout);
+        pros::delay(200);
+
+        // return moveTo;
+        // auto tmp = std::move(moveTo);
+        // // tmp.velocity_based(true);
+        // // tmp.customAngularLinearFunc(angular_linear_func);
+        // // tmp.k_lat(0.0 * rad / m);
+        // // tmp.timeout(3_sec);
+        // return tmp;
+
         return std::move(moveTo.velocity_based(true)
                            .customAngularLinearFunc(angular_linear_func)
                            .k_lat(0.0 * rad / m)

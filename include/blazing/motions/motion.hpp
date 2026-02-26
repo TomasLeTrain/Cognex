@@ -11,6 +11,7 @@
 #include "units/units.hpp"
 #include <concepts>
 #include <functional>
+#include <memory>
 #include <optional>
 #include <vector>
 
@@ -48,6 +49,10 @@ struct motionExecutionResult {
 // untemplated class to allow pointers
 class MotionBase {
   public:
+    MotionBase* getPtr() {
+        return this;
+    }
+
     virtual void start_motion_callback() {}
 
     virtual void end_motion_callback() {}
@@ -72,7 +77,10 @@ class MotionBase {
         return std::nullopt;
     }
 
-    virtual ~MotionBase() = default;
+    virtual ~MotionBase() {
+        std::cout << "deleted motion!" << std::endl;
+        pros::delay(200);
+    }
 };
 
 template<typename ControllersType,
@@ -112,6 +120,7 @@ class Motion : public MotionBase {
           tracker(chassis.tracker),
           drivetrain(chassis.drivetrain) {}
 
+    // TODO: ???
     // no copiable
     Motion(const Motion&) = delete;
     Motion& operator=(const Motion&) = delete;

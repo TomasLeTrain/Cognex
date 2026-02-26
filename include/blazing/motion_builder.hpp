@@ -7,6 +7,7 @@
 #include "motions/boomerang.hpp"
 #include "units/Vector2D.hpp"
 #include <iterator>
+#include <memory>
 #include <variant>
 
 namespace blazing {
@@ -40,6 +41,7 @@ class MotionBuilder {
                                              typename Chassis::tolerancesType>;
 
     using MoveToModifier = std::function<moveToType(moveToType&&)>;
+    using MoveToModifier2 = std::function<void(moveToType&)>;
     using TurnToModifier = std::function<turnToType(turnToType&&)>;
     using ArcModifier = std::function<arcType(arcType&&)>;
     using DistanceAtHeadingModifier =
@@ -49,6 +51,9 @@ class MotionBuilder {
     MoveToModifier m_moveToModifier = [](moveToType&& moveTo) {
         return std::move(moveTo);
     };
+
+    MoveToModifier2 m_moveToModifier2 = [](moveToType& moveTo) -> void {};
+
     TurnToModifier m_turnToModifier = [](turnToType&& turnTo) {
         return std::move(turnTo);
     };
@@ -84,6 +89,10 @@ class MotionBuilder {
         m_moveToModifier = customModifier;
     }
 
+    void setMoveToModifier2(MoveToModifier2 customModifier) {
+        m_moveToModifier2 = customModifier;
+    }
+
     void setTurnToModifier(TurnToModifier customModifier) {
         m_turnToModifier = customModifier;
     }
@@ -113,8 +122,31 @@ class MotionBuilder {
 
     [[nodiscard("motion won't be executed unless an executor is used!")]]
     moveToType moveTo(units::V2Position point) {
-        return m_moveToModifier(
-          std::move(blazing::moveTo(controllers, chassis, point)));
+        printf("clling motion builder v1\n");
+        fflush(stdout);
+        pros::delay(200);
+
+        auto motion = blazing::moveTo(controllers, chassis, point);
+
+        // return blazing::moveTo(controllers, chassis, point);
+        // m_moveToModifier(motion);
+
+        return motion;
+    }
+
+    [[nodiscard("motion won't be executed unless an executor is used!")]]
+    moveToType& silly_moveTo(units::V2Position point) {
+        printf("clling motion builder v2\n");
+        fflush(stdout);
+        pros::delay(200);
+
+        // create a new pointer that hopefully eventually gets taken care of
+        moveToType* motion = new moveToType(controllers, chassis, point);
+
+		// pass through modifier func
+        m_moveToModifier2(*motion);
+
+        return *motion;
     }
 
     [[nodiscard("motion won't be executed unless an executor is used!")]]

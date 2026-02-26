@@ -507,5 +507,9 @@ class moveTo
 
         return *this;
     }
+
+    moveTo(const moveTo&) = delete;
+    moveTo(moveTo&&) noexcept = default;
+    moveTo& operator=(moveTo&&) noexcept = default;
 };
 } // namespace blazing
