@@ -114,7 +114,7 @@ void health_task() {
     process_device_dc(right_distance, "Right distance");
 
     process_device_dc(bottom_motor, "Bottom Intake", screen::health::critical);
-    process_device_dc(top_motor, "Top Intake", screen::health::critical);
+    process_device_dc(lever_motor, "Top Intake", screen::health::critical);
 
     // now check tracking subsystems
     if (auto curr_pose = model_manager.getPose();

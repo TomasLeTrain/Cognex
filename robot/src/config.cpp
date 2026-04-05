@@ -22,15 +22,15 @@ using namespace vexmaps;
 // clang-format off
 // motor groups
 
-int8_t left_front = 15;
-int8_t left_middle = -14;
+int8_t left_front = -14;
+int8_t left_middle = -13;
 int8_t left_back = -12;
 
-int8_t right_front = -17;
-int8_t right_middle = 16;
+int8_t right_front = 16;
+int8_t right_middle = 17;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -50,9 +50,9 @@ vexmaps::ScaledIMU imu(20, (360.0 + 1.5) / 360.0);
 
 // disable for testing
 pros::Motor
-  bottom_motor(-5, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+  bottom_motor(9, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::Motor
-  top_motor(-9, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+  lever_motor(-1, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
 
 pros::Optical middle_intake_color_sensor(6);
 pros::Optical bottom_intake_color_sensor(21);
@@ -124,21 +124,19 @@ Length back_distance_scale_offset = 0.0964698_in;
 double right_distance_scale_factor = 0.980205233729;
 Length right_distance_scale_offset = 0.302946477017_in;
 
-
-
 /* vexmaps configuration */
 
 // tracker configs - same signs as lemlib
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.991_in,
     // geometric is also 0
-    .offset = -0.08_in,
+    .offset = 0.5_in,
 };
 
 tracker_config_t sideways_tracker_config = {
     .diameter = 1.991_in,
     // geometric are -2.5, meaning cor is 0.5_in forwards from geometric center
-    .offset = -3.17_in,
+    .offset = -2.6_in,
 };
 
 /* drivetrain / pid configuration */

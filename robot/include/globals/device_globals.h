@@ -21,7 +21,7 @@ extern vexmaps::ScaledIMU imu;
 
 // intake motors
 extern pros::Motor bottom_motor;
-extern pros::Motor top_motor;
+extern pros::Motor lever_motor;
 
 extern pros::Optical middle_intake_color_sensor;
 extern pros::Optical bottom_intake_color_sensor;

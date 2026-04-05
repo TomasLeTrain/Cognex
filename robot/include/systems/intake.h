@@ -83,16 +83,17 @@ void update();
 
 } // namespace bottom
 
-namespace top {
+namespace lever {
 void set_pct(Voltage new_pct);
-
-void set_pct(float new_pct);
-
-void set_antijam(bool active);
-
-// update scoring status, used by antijam
-// updating does not affect antijam active state
-void set_scoring(bool is_scoring);
+// void set_pct(Voltage new_pct);
+//
+// void set_pct(float new_pct);
+//
+// void set_antijam(bool active);
+//
+// // update scoring status, used by antijam
+// // updating does not affect antijam active state
+// void set_scoring(bool is_scoring);
 
 // update can be blocking if antijam or color sort are active
 // while blocking it also locks the mutex

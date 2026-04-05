@@ -22,7 +22,7 @@
 // H_AUTON(roboticon_skills)
 // H_AUTON(roboticon_quals)
 //
-H_AUTON(four_ball)
+// H_AUTON(four_ball)
 //
 // H_AUTON(max_skills)
 //
@@ -37,15 +37,15 @@ H_AUTON(four_ball)
 // H_AUTON(sunshine_elims)
 // H_AUTON(ninesix_skills)
 
-H_AUTON(qual_match_first)
-H_AUTON(seven_split)
-H_AUTON(awp)
-H_AUTON(seven_ball)
-
-H_AUTON(elims_nineball_split)
-
-H_AUTON(states_skills)
-
+// H_AUTON(qual_match_first)
+// H_AUTON(seven_split)
+// H_AUTON(awp)
+// H_AUTON(seven_ball)
+//
+// H_AUTON(elims_nineball_split)
+//
+// H_AUTON(states_skills)
+//
 // special disabled auton that does nothing
 namespace disabled_auton {
 inline void run_auton() {}
