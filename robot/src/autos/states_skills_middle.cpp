@@ -134,10 +134,13 @@ void run_auton() {
         pros::delay(200);
 
         std::cout << "about to call moveto" << std::endl;
+        pros::delay(200);
 
         // mb.turnTo(func_point)
-        mb.silly_moveTo(func_point)
-            // .timeout(1_sec).velocity_based(true)
+        // mb.silly_moveTo(func_point)
+        mb.moveTo(func_point)
+            .timeout(1_sec)
+            .velocity_based(true)
 
             // return std::move(
             // moveTo
@@ -154,22 +157,20 @@ void run_auton() {
             .drive_toleranceDuration(100_sec)
             .drive_largeToleranceDuration(100_sec)
             .drive_vel_mp_setMaxAccel(70_inps2)
-          //
-          //
-          //
-          //
 
-          // .executeBeforeMotion([&] {
-          //     std::cout << "after turn pos: " << RobotGetPose().x.convert(in)
-          //               << " " << RobotGetPose().y.convert(in) << " "
-          //               << RobotGetPose().orientation.convert(deg)
-          //               << std::endl;
-          //     std::cout << "after turn func: " << func().x.convert(in) << " "
-          //               << func().y.convert(in) << " "
-          //               << func().orientation.convert(deg) << std::endl;
-          // })
+            .executeBeforeMotion([&] {
+                std::cout << "after turn pos: " << RobotGetPose().x.convert(in)
+                          << " " << RobotGetPose().y.convert(in) << " "
+                          << RobotGetPose().orientation.convert(deg)
+                          << std::endl;
+                std::cout << "after turn func: " << func().x.convert(in) << " "
+                          << func().y.convert(in) << " "
+                          << func().orientation.convert(deg) << std::endl;
+            })
 
-          / run;
+          // / run;
+          | run;
+
         std::cout << "finished stuff" << std::endl;
 
         //   | async;

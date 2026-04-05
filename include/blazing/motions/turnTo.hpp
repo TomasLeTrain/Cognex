@@ -87,14 +87,14 @@ class turnToBase : public Motion<ControllersType,
         Time delta_time = deltaTime(state.last_time);
 
         const Angle heading = [&] -> Angle {
-            const Angle heading = this->tracker.getAngle();
+            const Angle heading = this->tracker->getAngle();
             return reversed ? reverseAngle(heading) : heading;
         }();
 
         // defaults to std::nullopt if tracker does not implements getPosition
         const std::optional<units::V2Position> position = [this] {
             if constexpr (positionTracker<TrackerType>)
-                return this->tracker.getPosition();
+                return this->tracker->getPosition();
             else
                 return std::nullopt;
         }();
@@ -156,7 +156,7 @@ class turnToBase : public Motion<ControllersType,
         // update tolerances
         this->tolerances.angularErrorToleranceUpdate(angular_error);
         this->tolerances.angularVelocityToleranceUpdate(
-          this->tracker.getAngularVelocity());
+          this->tracker->getAngularVelocity());
 
         state.settled = false;
 
@@ -194,7 +194,7 @@ class turnToBase : public Motion<ControllersType,
         // finished if any of the available tolerances or timeout are
         // triggered
         if (result.finished) {
-            this->drivetrain.moveArcade(0_volt, 0_volt);
+            this->drivetrain->moveArcade(0_volt, 0_volt);
             // returns immediately to avoid more movement
             return result;
         }
@@ -252,9 +252,9 @@ class turnToBase : public Motion<ControllersType,
                 // TODO: apply voltage clamp/slew? probably not
 
                 auto [left_vel, right_vel] =
-                  this->drivetrain.getDrivetrainVelocities();
+                  this->drivetrain->getDrivetrainVelocities();
                 auto [actual_volt_left, actual_volt_right] =
-                  this->drivetrain.getDrivetrainVoltages();
+                  this->drivetrain->getDrivetrainVoltages();
                 //
 
                 // std::cout << std::fixed;
@@ -265,7 +265,8 @@ class turnToBase : public Motion<ControllersType,
                 //           << angular_error.internal() << " "
                 //           << target.linear_velocity.internal() << " "
                 //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " << right_vel.internal()
+                //           << left_vel.internal() << " " <<
+                //           right_vel.internal()
                 //           << " " << left_voltage.internal() << " "
                 //           << right_voltage.internal() << " "
                 //           << actual_volt_left.internal() << " "
@@ -273,7 +274,7 @@ class turnToBase : public Motion<ControllersType,
                 //           << 0 << " " << heading.convert(deg) << " "
                 //           << angular_error.internal() << std::endl;
 
-                this->drivetrain.moveTank(left_voltage, right_voltage);
+                this->drivetrain->moveTank(left_voltage, right_voltage);
 
                 // we return here, so none of the below code executes
                 return result;
@@ -307,7 +308,7 @@ class turnToBase : public Motion<ControllersType,
         // don't apply linear slew or clamp to keep ratio
         // slew and clamp on the angle should be used instead
 
-        this->drivetrain.moveArcade(linear_output, angular_output);
+        this->drivetrain->moveArcade(linear_output, angular_output);
 
         return result;
     }

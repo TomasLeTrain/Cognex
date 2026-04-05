@@ -140,89 +140,71 @@ void initialize() {
     // pros::delay(50);
 
     // velocity mb
-    mb_vel.setTurnToModifier([](auto&& turnTo) {
-        return std::move(
-          turnTo
-            .velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
+    mb_vel.setTurnToModifier([](auto turnTo) -> void {
+        turnTo
+          ->velocity_based(true)
+          // speecifically uses turn heading pid instead of drive pid
+          .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+          .withVelocityFeedforwardController(turn_vel_controller)
+          .timeout(3_sec);
     });
 
-    mb_vel.setArcModifier([](auto&& arc) -> auto {
-        return std::move(
-          arc
-            .velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
+    mb_vel.setArcModifier([](auto arc) -> void {
+        arc
+          ->velocity_based(true)
+          // speecifically uses turn heading pid instead of drive pid
+          .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+          .withVelocityFeedforwardController(turn_vel_controller)
+          .timeout(3_sec);
     });
 
-    mb_vel.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
-        return std::move(distanceAtHeading.velocity_based(true).timeout(5_sec));
+    mb_vel.setDistanceAtHeadingModifier([](auto distanceAtHeading) -> void {
+        distanceAtHeading->velocity_based(true).timeout(5_sec);
     });
 
-    mb_vel.setMoveToModifier([](auto&& moveTo) {
-        return std::move(moveTo.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m)
-                           .timeout(3_sec));
-    });
-
-    mb_vel.setBoomerangModifier([](auto&& boomerang) {
-        return std::move(boomerang.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m, true)
-                           .timeout(5_sec));
-    });
-
-    // actually vel but just set them to change all autos
-    mb.setTurnToModifier([](auto&& turnTo) {
-        return std::move(
-          turnTo
-            .velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
-    });
-
-    mb.setArcModifier([](auto&& arc) -> auto {
-        return std::move(
-          arc
-            .velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
-    });
-
-    //
-    mb.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
-        return std::move(distanceAtHeading.velocity_based(true).timeout(5_sec));
-    });
-
-    mb.setMoveToModifier2([](auto& moveTo) -> void {
-        // std::cout << "modifier doing stuff" << std::endl;
-        printf("new modifier doing stuff\n");
+    mb_vel.setMoveToModifier([](auto moveTo) -> void {
+        printf("vel mb modifier doing stuff\n");
         fflush(stdout);
         pros::delay(200);
 
-        // do stuff
-        moveTo.velocity_based(true)
+        moveTo->velocity_based(true)
           .customAngularLinearFunc(angular_linear_func)
           .k_lat(0.0 * rad / m)
           .timeout(3_sec);
     });
 
-    mb.setMoveToModifier([](auto&& moveTo) {
-        // std::cout << "modifier doing stuff" << std::endl;
-        printf("modifier doing stuff\n");
-        fflush(stdout);
-        pros::delay(200);
+    mb_vel.setBoomerangModifier([](auto boomerang) -> void {
+        boomerang->velocity_based(true)
+          .customAngularLinearFunc(angular_linear_func)
+          .k_lat(0.0 * rad / m, true)
+          .timeout(5_sec);
+    });
 
+    // actually vel but just set them to change all autos
+    mb.setTurnToModifier([](auto turnTo) -> void {
+        turnTo
+          ->velocity_based(true)
+          // speecifically uses turn heading pid instead of drive pid
+          .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+          .withVelocityFeedforwardController(turn_vel_controller)
+          .timeout(3_sec);
+    });
+
+    mb.setArcModifier([](auto arc) -> void {
+        arc
+          ->velocity_based(true)
+          // speecifically uses turn heading pid instead of drive pid
+          .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+          .withVelocityFeedforwardController(turn_vel_controller)
+          .timeout(3_sec);
+    });
+
+    //
+    mb.setDistanceAtHeadingModifier([](auto distanceAtHeading) -> void {
+        distanceAtHeading->velocity_based(true).timeout(5_sec);
+    });
+
+    mb.setMoveToModifier([](auto moveTo) -> void {
         // return moveTo;
         // auto tmp = std::move(moveTo);
         // // tmp.velocity_based(true);
@@ -231,17 +213,17 @@ void initialize() {
         // // tmp.timeout(3_sec);
         // return tmp;
 
-        return std::move(moveTo.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m)
-                           .timeout(3_sec));
+        moveTo->velocity_based(true)
+          .customAngularLinearFunc(angular_linear_func)
+          .k_lat(0.0 * rad / m)
+          .timeout(3_sec);
     });
 
-    mb.setBoomerangModifier([](auto&& boomerang) {
-        return std::move(boomerang.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m, true)
-                           .timeout(5_sec));
+    mb.setBoomerangModifier([](auto boomerang) -> void {
+        boomerang->velocity_based(true)
+          .customAngularLinearFunc(angular_linear_func)
+          .k_lat(0.0 * rad / m, true)
+          .timeout(5_sec);
     });
 
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
