@@ -9,8 +9,12 @@
 // structs for helping specify configs
 struct drivetrain_config_t {
     Length track_width;
+    Length track_radius;
     Length wheel_diameter;
     AngularVelocity rpm;
+    FLinearVelocity max_velocity;
+    FAngularVelocity max_angular_velocity;
+    Time input_delay;
 };
 
 struct linear_pid_config_t {
@@ -65,6 +69,13 @@ struct tolerances_config_t {
 };
 
 extern drivetrain_config_t drivetrain_config;
+
+// lqr settings
+extern std::array<float, 3> Q;
+extern std::array<float, 2> simple_Q;
+extern std::array<float, 2> simple_R;
+extern std::array<float, 2> R;
+extern LinearVelocity lqr_minimum_velocity;
 
 extern linear_pid_config_t linear_pid_config;
 extern angular_pid_config_t angular_pid_config;

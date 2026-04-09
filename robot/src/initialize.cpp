@@ -4,12 +4,115 @@
 #include "controller_ui/controller_auton_selector.h"
 #include "globals.h"
 #include "globals/blazing_globals.h"
+#include "globals/config.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
 #include "health_daemon.h"
 #include "main.h"
 #include "screen/screen.h"
 #include <mutex>
+#include <string>
+
+// task with critical timing that allows gathering consistent data
+void timeCriticalTask() {
+    // code section taken from sylib:
+    // https://github.com/sy1vi3/sylib/blob/5b2eef6812f65b4305b74e415d3a570c10213fff/src/sylib/system.cpp
+
+    // A 1ms loop will actually take around 1040 or 960 microseconds, always
+    // alternating. Over 3ms, the total length of time in micros should be
+    // either around 3040 or 960 Daemon needs to start on a cycle to be
+    // directly opposite of vexBackgroundProcessing()
+    // vexBackgroundProcessing always runs after a short cycle, meaning the
+    // sylib daemon needs to start after a long cycle Values offset by 20 to
+    // give room for error, the groupings are very tight so it shouldnt
+    // matter
+
+    constexpr std::uint64_t LONG_MICROS_CYCLE_LENGTH = 1040 - 20;
+    constexpr std::uint64_t AVERAGE_MICROS_CYCLE_LENGTH = 1000;
+    constexpr std::uint64_t DIFFERENCE_BETWEEN_AVERAGE_AND_LONG =
+      LONG_MICROS_CYCLE_LENGTH - AVERAGE_MICROS_CYCLE_LENGTH;
+
+    uint32_t systemTime = pros::millis();
+    uint32_t detectorPreviousTime = pros::millis();
+    uint64_t systemTimeMicros = pros::micros();
+    uint64_t prevMicros = systemTimeMicros;
+
+    int frameCount = 0;
+
+    std::cout << "starting task: " << pros::micros() << std::endl;
+
+    do {
+        systemTimeMicros = pros::micros();
+        detectorPreviousTime = systemTime;
+        prevMicros = systemTimeMicros;
+        pros::Task::delay_until(&systemTime, 3);
+    } while (
+      (pros::micros() - prevMicros) >
+      (((systemTime - detectorPreviousTime) * AVERAGE_MICROS_CYCLE_LENGTH) -
+       DIFFERENCE_BETWEEN_AVERAGE_AND_LONG));
+    /*
+    NOW WE'RE TIMED CORRECTLY, STARTING DAEMON
+    */
+
+    std::cout << "timed correctly: " << pros::micros() << '\n';
+
+    while (1) {
+        {
+            frameCount++;
+
+            // do stuff here
+            if (frameCount % 5 == 0) {
+                uint32_t curr_time = pros::millis();
+                tracker.update();
+
+                LinearVelocity forwards_velocity =
+                  model_manager.getLocalVelocityVector().x;
+
+                // not using forwards velocity since its offset is not
+                // guaranteed to be zero
+                // LinearVelocity forwards_velocity =
+                //   toLinear(from_degps(forwards_odom_rotation.get_velocity()),
+                //            1.991_in);
+
+                AngularVelocity angular_velocity =
+                  -from_degps(imu.get_gyro_rate().z);
+
+                LinearVelocity left_vel =
+                  forwards_velocity -
+                  angular_velocity * drivetrain_config.track_radius / rad;
+                LinearVelocity right_vel =
+                  forwards_velocity +
+                  angular_velocity * drivetrain_config.track_radius / rad;
+
+                LeftRightSpeeds measurement { left_vel, right_vel };
+
+                // update plant
+                drivetrain_plant.setMeasurement(measurement);
+                drivetrain_plant.updateToTimestamp(curr_time);
+                auto curr_drivetrain_voltages =
+                  drivetrain_plant.getCommandedVoltages();
+
+                left_motors.move_voltage(
+                  12 * to_mvolt(curr_drivetrain_voltages.left_voltage));
+                right_motors.move_voltage(
+                  12 * to_mvolt(curr_drivetrain_voltages.right_voltage));
+            }
+
+            pros::Task::delay_until(&systemTime, 2);
+        }
+    }
+}
+
+void startTimeCriticalTask() {
+    static bool daemonStarted = false;
+    if (!daemonStarted) {
+        pros::Task managerTask(timeCriticalTask,
+                               15, // very high priority
+                               TASK_STACK_DEPTH_DEFAULT,
+                               "time critical task");
+        daemonStarted = true;
+    }
+}
 
 void initialize() {
     // initialize screens
@@ -19,6 +122,8 @@ void initialize() {
     // controller_ui::init();
 
     int imu_notif = screen::health::add_init_notif("calibrating imu");
+
+    startTimeCriticalTask();
 
     // imu calibration
     int attempt = 1;
@@ -78,6 +183,12 @@ void initialize() {
     async.init();
     chain.init();
 
+	// Each temperature level limits the motor current:
+	// 1 = 50% current,
+	// 2 = 25% current,
+	// 3 = 12.5% current,
+	// 4 = 0% current.
+
     // pros::delay(50);
 
     screen::health::update_init_notif_severity(init_executors_notif,
@@ -88,16 +199,6 @@ void initialize() {
       screen::health::add_init_notif("initializing tracker");
     // pros::delay(50);
 
-    // blazing tracker task
-    pros::Task(
-      [&]() {
-          while (true) {
-              tracker.update();
-              pros::delay(10);
-          }
-      },
-      "blazing tracker");
-
     screen::health::update_init_notif_severity(init_tracker_notif,
                                                screen::health::succeed);
 
@@ -106,116 +207,42 @@ void initialize() {
     int init_motion_defaults_notif =
       screen::health::add_init_notif("initializing motion defaults");
 
-    // pros::delay(50);
-
-    // default a timeout
-    // mb.setTurnToModifier([](auto&& turnTo) {
-    //     return std::move(
-    //       turnTo
-    //         // speecifically uses turn heading pid instead of drive pid
-    //         .withAngularFeedbackController(turn_heading_pid)
-    //         .timeout(5_sec));
-    // });
-
-    // mb.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
-    //     return std::move(distanceAtHeading.timeout(5_sec));
-    // });
-    //
-    // mb.setMoveToModifier([](auto&& moveTo) {
-    //     // return moveTo.customAngularLinearFunc(angular_linear_func);
-    //     return std::move(moveTo.k_lat(0.15 * rad / m).timeout(3_sec));
-    //     // return moveTo.timeout(3_sec);
-    //     // .customAngularLinearFunc(angular_linear_func);
-    // });
-    //
-    // mb.setBoomerangModifier([](auto&& boomerang) {
-    //     // return boomerang.customAngularLinearFunc(angular_linear_func);
-    //     // return boomerang.k_lat();
-    //     return std::move(boomerang.k_lat(0.15 * rad / m,
-    //     true).timeout(5_sec));
-    //     // .customAngularLinearFunc(angular_linear_func);
-    // });
-
-    // std::cout << "vel modifiers" << std::endl;
-    // pros::delay(50);
-
-    // velocity mb
-    mb_vel.setTurnToModifier([](auto&& turnTo) {
-        return std::move(
-          turnTo
-            .velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
-    });
-
-    mb_vel.setArcModifier([](auto&& arc) -> auto {
-        return std::move(
-          arc
-            .velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
-    });
-
-    mb_vel.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
-        return std::move(distanceAtHeading.velocity_based(true).timeout(5_sec));
-    });
-
-    mb_vel.setMoveToModifier([](auto&& moveTo) {
-        return std::move(moveTo.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m)
-                           .timeout(3_sec));
-    });
-
-    mb_vel.setBoomerangModifier([](auto&& boomerang) {
-        return std::move(boomerang.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m, true)
-                           .timeout(5_sec));
-    });
-
     // actually vel but just set them to change all autos
-    mb.setTurnToModifier([](auto&& turnTo) {
-        return std::move(
+    mb.setTurnToModifier([](auto turnTo) {
+        std::ignore =
           turnTo
-            .velocity_based(true)
+            ->velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
             .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
+            .timeout(3_sec);
     });
 
-    mb.setArcModifier([](auto&& arc) -> auto {
-        return std::move(
+    mb.setArcModifier([](auto arc) -> auto {
+        std::ignore =
           arc
-            .velocity_based(true)
+            ->velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
             .withAngularVelocityFeedbackController(turn_heading_vel_pid)
-            .withVelocityFeedforwardController(turn_vel_controller)
-            .timeout(3_sec));
+            .timeout(3_sec);
     });
 
     //
-    mb.setDistanceAtHeadingModifier([](auto&& distanceAtHeading) {
-        return std::move(distanceAtHeading.velocity_based(true).timeout(5_sec));
+    mb.setDistanceAtHeadingModifier([](auto distanceAtHeading) {
+        std::ignore = distanceAtHeading->velocity_based(true).timeout(3_sec);
     });
 
-    mb.setMoveToModifier([](auto&& moveTo) {
-        return std::move(moveTo.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m)
-                           .timeout(3_sec));
+    mb.setMoveToModifier([](auto moveTo) {
+        std::ignore = moveTo->velocity_based(true)
+                        .customAngularLinearFunc(angular_linear_func)
+                        .k_lat(std::nullopt)
+                        .timeout(3_sec);
     });
 
-    mb.setBoomerangModifier([](auto&& boomerang) {
-        return std::move(boomerang.velocity_based(true)
-                           .customAngularLinearFunc(angular_linear_func)
-                           .k_lat(0.0 * rad / m, true)
-                           .timeout(5_sec));
+    mb.setBoomerangModifier([](auto boomerang) {
+        std::ignore = boomerang->velocity_based(true)
+                        .customAngularLinearFunc(angular_linear_func)
+                        .k_lat(std::nullopt, true)
+                        .timeout(5_sec);
     });
 
     screen::health::update_init_notif_severity(init_motion_defaults_notif,
@@ -264,14 +291,18 @@ void initialize() {
               pf_model.setCustomParticles(particles);
               pf_model.setCustomPrediction(smoother_model.getPose());
 
-              pf_model.setCustomData(std::format(
-                "vel:{:.5f},{:.5f}\n"
-                "alphas:{:.5f},{:.5f}",
-                model_manager.getLocalVelocityVector().x.convert(inps),
-                model_manager.getLocalVelocityVector().y.convert(inps),
-                // model_manager.getAngularVelocity().convert(degps),
-                smoother_model.getAlphas().x,
-                smoother_model.getAlphas().y));
+              std::stringstream str;
+              str << std::fixed << std::setprecision(5);
+              str << "vel:";
+              str << model_manager.getLocalVelocityVector().x.convert(inps);
+              str << ",";
+              str << model_manager.getLocalVelocityVector().y.convert(inps);
+              str << "\nalphas:";
+              str << smoother_model.getAlphas().x.internal();
+              str << ",";
+              str << smoother_model.getAlphas().y.internal();
+
+              pf_model.setCustomData(str.str());
 
               pros::delay(10);
           }

@@ -100,7 +100,7 @@ class boomerang : public Motion<ControllersType,
                         .crossed_sideways = false,
                         .close = false,
                         .initial_side = std::nullopt,
-                        .prev_position = this->tracker.getPosition() };
+                        .prev_position = this->tracker->getPosition() };
             // done to prevent values like delta_time being 0
             return std::nullopt;
         }
@@ -111,10 +111,10 @@ class boomerang : public Motion<ControllersType,
         // should never equal 0_sec
         Time delta_time = deltaTime(state.last_time);
 
-        const units::V2Position position = this->tracker.getPosition();
+        const units::V2Position position = this->tracker->getPosition();
 
         const Angle heading = [&] {
-            const Angle heading = this->tracker.getAngle();
+            const Angle heading = this->tracker->getAngle();
             return reversed ? reverseAngle(heading) : heading;
         }();
 
@@ -238,7 +238,7 @@ class boomerang : public Motion<ControllersType,
         // update tolerances if they are included
         this->tolerances.linearErrorToleranceUpdate(linear_error);
         this->tolerances.linearVelocityToleranceUpdate(
-          this->tracker.getLinearVelocity());
+          this->tracker->getLinearVelocity());
         this->tolerances.linearHalfcircleToleranceUpdate(
           position,
           target_pose,
@@ -267,7 +267,7 @@ class boomerang : public Motion<ControllersType,
 
         // finished if any of the available tolerances or timeout are triggered
         if (result.finished) {
-            this->drivetrain.moveArcade(0_volt, 0_volt);
+            this->drivetrain->moveArcade(0_volt, 0_volt);
             // returns immediately to avoid more movement
             return result;
         }
@@ -275,11 +275,7 @@ class boomerang : public Motion<ControllersType,
         // only evaluate velocity based if we have all the requirements
         if constexpr (hasLinearVelocityFeedback<ControllersType> &&
                       hasAngularVelocityFeedback<ControllersType> &&
-                      TankDrivetrain<DrivetrainType> &&
-                      // has velocity feedforward
-                      requires(ControllersType controller) {
-                          controller.velocity_feedforward;
-                      }) {
+                      VelocityArcadeDrivetrain<DrivetrainType>) {
             if (m_velocity_based) {
                 LinearVelocity linear_vel =
                   this->controllers.linear_velocity_feedback.update(
@@ -334,41 +330,46 @@ class boomerang : public Motion<ControllersType,
 
                 DifferentialSpeeds target { linear_vel, angular_vel };
 
-                // pass velocities into feedforward
-                auto [left_voltage, right_voltage] =
-                  this->controllers.velocity_feedforward.update(target,
-                                                                delta_time);
-
-                // TODO: apply voltage clamp/slew? probably not
-
-                auto [left_vel, right_vel] =
-                  this->drivetrain.getDrivetrainVelocities();
-                auto [actual_volt_left, actual_volt_right] =
-                  this->drivetrain.getDrivetrainVoltages();
-
-                // std::cout << std::fixed;
-                // std::cout << std::setprecision(5);
-                //
-                // std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
-                //              "av_l/av_r/x/y/theta/t_err: "
-                //           << linear_error.internal() << " "
-                //           << target.linear_velocity.internal() << " "
-                //           << target.angular_velocity.internal() << " "
-                //           << left_vel.internal() << " " <<
-                //           right_vel.internal()
-                //           << " " << left_voltage.internal() << " "
-                //           << right_voltage.internal() << " "
-                //           << actual_volt_left.internal() << " "
-                //           << actual_volt_right.internal() << " "
-                //           << position.x.convert(in) << " "
-                //           << position.y.convert(in) << " "
-                //           << projected_cte_error.convert(in) << " "
-                //           << angular_error.internal() << std::endl;
-
-                this->drivetrain.moveTank(left_voltage, right_voltage);
-
-                // we return here, so none of the below code executes
+                this->drivetrain->moveArcade(target.linear_velocity,
+                                             target.angular_velocity);
                 return result;
+
+                // // pass velocities into feedforward
+                // auto [left_voltage, right_voltage] =
+                //   this->controllers.velocity_feedforward.update(target,
+                //                                                 delta_time);
+                //
+                // // TODO: apply voltage clamp/slew? probably not
+                //
+                // auto [left_vel, right_vel] =
+                //   this->drivetrain->getDrivetrainVelocities();
+                // auto [actual_volt_left, actual_volt_right] =
+                //   this->drivetrain->getDrivetrainVoltages();
+                //
+                // // std::cout << std::fixed;
+                // // std::cout << std::setprecision(5);
+                // //
+                // // std::cout <<
+                // "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
+                // //              "av_l/av_r/x/y/theta/t_err: "
+                // //           << linear_error.internal() << " "
+                // //           << target.linear_velocity.internal() << " "
+                // //           << target.angular_velocity.internal() << " "
+                // //           << left_vel.internal() << " " <<
+                // //           right_vel.internal()
+                // //           << " " << left_voltage.internal() << " "
+                // //           << right_voltage.internal() << " "
+                // //           << actual_volt_left.internal() << " "
+                // //           << actual_volt_right.internal() << " "
+                // //           << position.x.convert(in) << " "
+                // //           << position.y.convert(in) << " "
+                // //           << projected_cte_error.convert(in) << " "
+                // //           << angular_error.internal() << std::endl;
+                //
+                // this->drivetrain->moveTank(left_voltage, right_voltage);
+                //
+                // // we return here, so none of the below code executes
+                // return result;
             } else {
                 // assert to warn user?
                 // assert("want to use velocity but don't have
@@ -448,7 +449,7 @@ class boomerang : public Motion<ControllersType,
               this->controllers.angular_slew.apply(angular_output, delta_time);
         }
 
-        this->drivetrain.moveArcade(linear_output, angular_output);
+        this->drivetrain->moveArcade(linear_output, angular_output);
 
         return result;
     }

@@ -3,7 +3,7 @@
 #include "blazing/utils.hpp"
 #include "lyfast/geometry/curve.hpp"
 #include "lyfast/motion_profiling/constraints.hpp"
-#include "lyfast/motor_dynamics.hpp"
+#include "lyfast/utils/motor_dynamics.hpp"
 #include "pros/rtos.h"
 #include "units/Angle.hpp"
 #include "units/Pose.hpp"
@@ -20,7 +20,17 @@ namespace mp {
 
 struct PointConstraint {
     // spline time or length based
-    std::variant<float, FLength> timeframe;
+    std::variant<float, FLength> keyframe;
+
+    std::optional<FLinearVelocity> vel = std::nullopt;
+    std::optional<FLinearAcceleration> accel = std::nullopt;
+    std::optional<FLinearAcceleration> decel = std::nullopt;
+};
+
+struct RangeConstraint {
+    // spline time or length based
+    std::variant<float, FLength> left_keyframe;
+    std::variant<float, FLength> right_keyframe;
 
     std::optional<FLinearVelocity> vel = std::nullopt;
     std::optional<FLinearAcceleration> accel = std::nullopt;
@@ -51,29 +61,59 @@ struct MotionPoint {
           heading(heading),
           arc_length(arc_length),
           spline_time(spline_time) {}
+
+    FDifferentialSpeeds calculateSpeeds() const {
+        return { vel, unit_cast<AngularVelocity>(vel * curvature) };
+    }
+
+    units::FPose pose() const {
+        return { point, heading };
+    }
 };
 
 class Trajectory {
-
   public:
-    std::vector<FLinearVelocity> max_kin_vel_debug;
-    std::vector<FLinearVelocity> max_turn_vel_debug;
-    std::vector<FLinearVelocity> max_friction_vel_debug;
+    struct debugInfo {
+        FLinearVelocity max_kin_vel;
+        FLinearVelocity max_turn_vel;
+        FLinearVelocity max_friction_vel;
 
-    std::vector<FLinearVelocity> forwards_pass_debug;
-    std::vector<FLinearVelocity> backwards_pass_debug;
+        FLinearVelocity forwards_pass;
+        FLinearVelocity backwards_pass;
 
-    std::vector<FLinearAcceleration> max_kin_accel_debug;
-    std::vector<FLinearAcceleration> max_turn_accel_debug;
-    std::vector<FLinearAcceleration> max_kin_decel_debug;
-    std::vector<FLinearAcceleration> max_turn_decel_debug;
+        FLinearAcceleration max_kin_accel;
+        FLinearAcceleration max_turn_accel;
+        FLinearAcceleration max_kin_decel;
+        FLinearAcceleration max_turn_decel;
 
-    std::vector<FLinearVelocity> final_vels_debug;
+        FLinearVelocity final_vels;
+    };
 
   private:
-    geometry::Curve* curve;
+    std::vector<debugInfo> m_debug_info;
 
+    std::shared_ptr<geometry::Curve> curve;
+    Constraints m_constraints;
+    FLinearVelocity m_start_vel, m_end_vel;
+
+    std::vector<MotionPoint> m_points;
+
+    // change in distance between points
+    FLength m_delta_distance;
+
+    std::vector<PointConstraint> m_point_constraints;
+    std::vector<RangeConstraint> m_range_constraints;
+    bool m_debug_enabled;
+
+  private:
+    // computes the path and motion profile
     void compute();
+
+    // finds an index given a constraint keyframe (spline time or length)
+    size_t indexByKeyframe(std::variant<float, FLength>& keyframe);
+
+    // applies extra given point/range constraints
+    void applyPointAndRangeConstraints();
 
     // computes the isolated constraints
     // These constraints do not depend on any other points
@@ -87,51 +127,76 @@ class Trajectory {
     // performs a forward pass to keep max deceleration constraints
     void backwardsPass();
 
+    // computes travel time for all the points
     void setTravelTimes();
 
   public:
-    Constraints constraints;
-    FLinearVelocity start_vel, end_vel;
+    // returns the curve the motion profile is using
+    std::shared_ptr<geometry::Curve> getCurve();
 
-    std::vector<MotionPoint> points;
+    Constraints getConstraints() const;
+    FLength getDeltaDistance() const;
 
-    // change in distance between points
-    FLength delta_distance;
+    const std::vector<debugInfo>& getDebugInfo() const;
+    const std::vector<MotionPoint>& getPoints() const;
 
-    std::vector<PointConstraint> point_constraints;
+    const std::vector<PointConstraint>& getPointConstraints() const;
+    const std::vector<RangeConstraint>& getRangeConstraints() const;
+    bool getDebugEnabled() const;
 
-    // total time that the motion should take
-    FTime travel_time;
+    FLinearVelocity getStartVelocity() const;
+    FLinearVelocity getEndVelocity() const;
 
-    FLength getTotalDistance();
+    // returns the index of the point with a given distance, rounded to the
+    // nearest index
+    int indexByDistance(FLength distance, int start_ind = 0) const;
 
-    int get_index_by_distance(Length distance);
-    int get_index_by_time(Time time);
+    // returns the index of the point with a given time, rounded to the
+    // nearest index
+    int indexByTime(FTime time, int start_ind = 0) const;
 
-    DifferentialSpeeds get_vel_by_time(Time time);
-    Time getTotalTime();
+    // returns the index of the point on the curve closest to the given point.
+    // The point found has an index greater than start_ind and at most a
+    // max_dist distance from start_ind. resolution is used to search for the
+    // point in the given max_dist window, reducing increases lookup time and
+    // may no neccesarily increase precision (can get to within index precision)
+    int indexByClosestPoint(geometry::Point point,
+                            int start_ind = 0,
+                            FLength max_lookahead_dist = FLength(INFINITY),
+                            FLength resolution = 1_in) const;
 
-    int findClosestPointIndex(geometry::Point point) {
-        Length best = Length(INFINITY);
-        double result = 0;
+    // return total arc length of the path
+    FLength getTotalDistance() const;
 
-        for (size_t i = 0; i < points.size(); i++) {
-            auto& motion_point = points[i];
-            Length curr_distance = point.distanceTo(motion_point.point);
-            if (curr_distance < best) {
-                best = curr_distance;
-                result = i;
-            }
-        }
-        return result;
-    }
+    // return total calculated travel time of the path
+    FTime getTotalTime() const;
 
-    Trajectory(geometry::Curve* curve,
+    // returns total number of points
+    size_t getNumPoints() const;
+
+    // returns const reference to point at specified index
+    const MotionPoint& getPoint(int index) const;
+
+    // sanitizes a given index to be within a valid range
+    size_t sanitizeIndex(int index) const;
+
+    // returns first motion point
+    const MotionPoint& getMotionStartPoint() const;
+
+    // returns last motion point
+    const MotionPoint& getMotionEndPoint() const;
+
+    // returns the target linear/angular velocities at some index
+    FDifferentialSpeeds differentialVelocitiesByIndex(int index) const;
+
+    Trajectory(std::shared_ptr<geometry::Curve> curve,
                Constraints constraints,
                std::vector<PointConstraint> point_constraints,
+               std::vector<RangeConstraint> range_constraints,
                LinearVelocity start_vel,
                LinearVelocity end_vel,
-               Length change_in_distance);
+               Length change_in_distance,
+               bool debug_enabled = false);
 };
 } // namespace mp
 } // namespace lyfast

@@ -3,13 +3,8 @@
 #include "apis.h"
 //
 
-#include "liblvgl/core/lv_obj_pos.h"
-#include "liblvgl/misc/lv_anim.h"
-#include "liblvgl/misc/lv_area.h"
-#include "liblvgl/widgets/image/lv_image.h"
 #include "pros/apix.h" // IWYU pragma: keep
 #include <math.h>
-#include <stdio.h>
 
 LV_IMAGE_DECLARE(monkey_75x_img);
 

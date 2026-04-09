@@ -11,9 +11,26 @@ namespace blazing {
 namespace lyfast {
 namespace geometry {
 class Curve {
+  protected:
+    FLength m_total_distance;
+    std::array<Point, 2> m_endpoints;
+
   public:
-    FLength total_distance;
-    std::array<Point, 2> endpoints;
+    virtual FLength getTotalDistance() {
+        return m_total_distance;
+    }
+
+    virtual std::array<Point, 2> getEndpoints() {
+        return m_endpoints;
+    }
+
+    virtual Point getFirstEndpoint() {
+        return m_endpoints[0];
+    }
+
+    virtual Point getLastEndpoint() {
+        return m_endpoints[1];
+    }
 
     /**
      * @brief sample point of curve at sample time t
@@ -56,13 +73,21 @@ class Curve {
     // gets time by distance
     virtual float t_by_s(FLength target) = 0;
 
+    // old impl to find closest curve point to some point
     virtual double findClosestPointT(Point point) = 0;
 
+    // searches equidistantly through the curve
+    // somewhat expensive as it calculates arc length many times
+    virtual double tByClosestPoint(geometry::Point point,
+                                   double start_t = 0,
+                                   FLength max_look_dist = FLength(INFINITY),
+                                   FLength resolution = 1_in);
+
     Curve(Point first_endpoint, Point last_endpoint)
-        : endpoints({ first_endpoint, last_endpoint }) {}
+        : m_endpoints({ first_endpoint, last_endpoint }) {}
 
     Curve(std::array<Point, 2> endpoints)
-        : endpoints(endpoints) {}
+        : m_endpoints(endpoints) {}
 
     virtual ~Curve() = default;
 };

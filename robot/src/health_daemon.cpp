@@ -10,6 +10,7 @@
 #include "pros/device.hpp"
 #include "screen/screen.h"
 #include "vexmaps/api.hpp"
+#include <string>
 
 namespace health_daemon {
 // avoids spamming notifications
@@ -52,8 +53,10 @@ void health_task() {
                 port_dc[port] = true;
 
                 screen::health::add_notification(
-                  std::format("Port {}: Motor unplugged!", port),
-                  std::format("Motor on {} motor group.", motor_group_name),
+                  // clang-format off
+                  "Port " + std::to_string(port) + ": Motor unplugged!",
+                  "Motor on " + motor_group_name + " motor group.",
+                  // clang-format on
                   screen::health::critical);
                 criticalErrorTriggered();
             }
@@ -73,9 +76,8 @@ void health_task() {
               update_dc(device);
 
               screen::health::add_notification(
-                std::format("Port {}: {} unplugged!",
-                            device.get_port(),
-                            device_name),
+                "Port " + std::to_string(device.get_port()) + ": " +
+                  device_name + " unplugged!",
                 custom_mesg,
                 severity);
               if (severity == screen::health::critical)
@@ -92,7 +94,7 @@ void health_task() {
         !imu_invalid) {
         imu_invalid = true;
         screen::health::add_notification(
-          std::format("Port {}: IMU returns INF!", imu.get_port()),
+          "Port " + std::to_string(imu.get_port()) + ": IMU returns INF!",
           "VERY BAD!",
           screen::health::critical);
         criticalErrorTriggered();

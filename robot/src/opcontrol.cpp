@@ -1,27 +1,13 @@
 #include "apis.h"
 //
 
-#include "auton_globals.h"
-#include "autos.h"
 #include "globals.h"
-#include "globals/blazing_globals.h"
-#include "globals/device_globals.h"
-#include "globals/vexmaps_globals.h"
-#include "lyfast/system_identification.hpp"
 #include "main.h"
-#include "pros/abstract_motor.hpp"
-#include "pros/imu.h"
-#include "pros/motor_group.hpp"
-#include "pros/rtos.hpp"
-#include "screen/screen.h"
 #include "systems/drivetrain.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 #include "systems/odom_retract.h"
-#include "systems/piston.h"
-#include "systems/sysid.h"
 #include "systems/wings.h"
-#include "tuning.h"
 
 void findImuOrientation() {
     pros::imu_orientation_e_t imu_orientation = imu.get_physical_orientation();
@@ -65,9 +51,9 @@ void opcontrol() {
     // return;
     //
 
-	// pros::delay(2000);
-	// odom_offset_tuning();
-	// return;
+    // pros::delay(2000);
+    // odom_offset_tuning();
+    // return;
 
     // drive_pid_tuning();
 

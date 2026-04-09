@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 namespace blazing {
 
 // simple struct to simplify passing around these values
@@ -9,10 +10,8 @@ struct Chassis {
     using trackerType = TrackerType;
     using tolerancesType = TolerancesType;
 
-    // WARNING: it is assumed drivetrain and tracker are global variables or
-    // have lifetimes thorughout the entire program duration
-    DrivetrainType& drivetrain;
-    TrackerType& tracker;
+	DrivetrainType* drivetrain;
+    TrackerType* tracker;
 
     TolerancesType tolerances;
 };

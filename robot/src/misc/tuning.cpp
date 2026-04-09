@@ -88,8 +88,7 @@ void odom_offset_tuning() {
     Time last_measurement_time = now();
 
     while (true) {
-        left_motors.move_voltage(-12000 * pct);
-        right_motors.move_voltage(12000 * pct);
+        drivetrain.moveTank(-0.5_volt, 0.5_volt);
 
         // units::V2Position deltas = { forwards_tracker.getDelta(),
         //                              sideways_tracker.getDelta() };
@@ -467,19 +466,13 @@ void drive_pid_tuning() {
 }
 
 void drive_vel_pid_tuning() {
-    // disable to ensure we don't have sudden pose changes
     pf_model.setDisabled(true);
 
     Length target_distance = 24_in;
     Length target_distance_delta = 8_in;
 
-    // double curr_kp = linear_vel_pid.get_kp() / linear_vel_pid.UKP;
-    // double curr_ki = linear_vel_pid.get_ki() / linear_vel_pid.UKI;
-    // double curr_kd = linear_vel_pid.get_kd() / linear_vel_pid.UKD;
-
-    // double curr_kp = lateral_vel_pid.get_kp() / lateral_vel_pid.UKP;
-    // double curr_ki = lateral_vel_pid.get_ki() / lateral_vel_pid.UKI;
-    // double curr_kd = lateral_vel_pid.get_kd() / lateral_vel_pid.UKD;
+    // Length target_lateral_distance = 2_in;
+    Length target_lateral_distance = 24_in;
 
     double curr_kp =
       linear_angular_vel_pid.get_kp() / linear_angular_vel_pid.UKP;
@@ -488,52 +481,51 @@ void drive_vel_pid_tuning() {
     double curr_kd =
       linear_angular_vel_pid.get_kd() / linear_angular_vel_pid.UKD;
 
-    LinearAcceleration curr_accel_slew = 1000_mps2;
-    Number curr_k_lat = 0.0;
+    LinearAcceleration curr_accel_slew = 170_inps2;
+    LinearAcceleration curr_max_accel = linear_mp_feedback.getMaxAccel();
+
+    // Number curr_k_lat = 0.0;
 
     double kp_delta = 0.1;
-    double ki_delta = 0.01;
+    // double ki_delta = 0.01;
     double kd_delta = 0.1;
 
     LinearAcceleration slew_delta = 5_inps2;
-    Number k_lat_delta = 0.01;
+    LinearAcceleration accel_delta = 5_inps2;
 
-    // Length target_lateral_distance = 24_in;
-    Length target_lateral_distance = 2_in;
-
-    bool k_lat_config_active = false;
-
+    bool config_swapped = false;
     bool reversed = false;
 
-    // units::Pose start_pose = { -24_in, -24_in, 0_stDeg };
-    units::Pose start_pose = { 0_in, 0_in, 0_stDeg };
-
-    RobotSetPose(start_pose);
+    units::V2Position start_position = { 0_in, 0_in };
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
-    while (true) {
-        drivetrain.setBrakeMode(pros::MotorBrake::hold);
-        if (!reversed) RobotSetPose(0, 0, 0);
-        // RobotSetPose(0, 0, 90);
-        else
-            RobotSetPose(0, 0, 180);
+    std::cout << std::fixed << std::setprecision(3);
 
-        std::cout << std::format("start is {:.3f} {:.3f}",
-                                 RobotGetPose().x.convert(in),
-                                 RobotGetPose().y.convert(in))
-                  << std::endl;
+    while (true) {
+        units::V2Position target_position =
+          start_position +
+          units::V2Position { target_distance, target_lateral_distance };
+
+        drivetrain.setBrakeMode(pros::MotorBrake::hold);
+        if (!reversed)
+            RobotSetPose({ start_position, 0_stDeg });
+        else
+            RobotSetPose({ start_position, 180_stDeg });
+
+        std::cout << "start is " << RobotGetPose().x.convert(in) << " "
+                  << RobotGetPose().y.convert(in) << std::endl;
 
         auto start_time = from_msec(pros::millis());
 
         if (reversed) {
             // RobotSetPose(2 * target_distance.convert(in), 0, 0);
-            mb_vel
-                .moveTo(start_pose.x + target_distance, start_pose.y)
+            mb.moveTo(target_position)
                 // .drive_vel_kp(curr_kp)
                 // .drive_vel_ki(curr_ki)
                 // .drive_vel_kd(curr_kd)
-                // .drive_vel_accelSlew(curr_accel_slew)
+                .drive_vel_accelSlew(curr_accel_slew)
+                .drive_vel_mp_setMaxAccel(curr_max_accel)
 
                 // .lateral_vel_kp(curr_kp)
                 // .lateral_vel_ki(curr_ki)
@@ -542,6 +534,7 @@ void drive_vel_pid_tuning() {
                 .turn_vel_kp(curr_kp)
                 .turn_vel_ki(curr_ki)
                 .turn_vel_kd(curr_kd)
+                .timeout(3.3_sec)
 
                 //
                 // .k_lat(0)
@@ -550,13 +543,12 @@ void drive_vel_pid_tuning() {
               | run;
         } else {
             // RobotSetPose(0, 0, 0);
-            mb_vel
-                .moveTo(start_pose.x + target_distance,
-                        start_pose.y + target_lateral_distance)
+            mb.moveTo(target_position)
                 // .drive_vel_kp(curr_kp)
                 // .drive_vel_ki(curr_ki)
                 // .drive_vel_kd(curr_kd)
-                .drive_vel_accelSlew(110_inps2)
+                .drive_vel_accelSlew(curr_accel_slew)
+                .drive_vel_mp_setMaxAccel(curr_max_accel)
 
                 // .turn_vel_kp(0)
                 // .turn_vel_ki(0)
@@ -573,97 +565,64 @@ void drive_vel_pid_tuning() {
                 .timeout(3.3_sec)
               // .drive_errorTolerance(0_in)
 
-              // .k_lat(curr_k_lat)
               // .closeThreshold(7_in)
               | run;
-
-            // mb_vel
-            //     .boomerang(start_pose.x + target_distance,
-            //                start_pose.y + target_lateral_distance,
-            //                0)
-            //     // .drive_vel_kp(curr_kp)
-            //     // .drive_vel_ki(curr_ki)
-            //     // .drive_vel_kd(curr_kd)
-            //     // .drive_vel_accelSlew(curr_accel_slew)
-            //
-            //     // .turn_vel_kp(0)
-            //     // .turn_vel_ki(0)
-            //     // .turn_vel_kd(0)
-            //     //
-            //     .drive_vel_maxVel(20_inps)
-            //     .timeout(3.3_sec)
-            //   // .drive_errorTolerance(0_in)
-            //
-            //   // .k_lat(curr_k_lat)
-            //   // .closeThreshold(7_in)
-            //   | run;
         }
 
         controller.rumble(".");
 
-        auto end_time = from_msec(pros::millis());
+        const auto end_time = from_msec(pros::millis());
 
-        auto time_difference = end_time - start_time;
+        const auto time_difference = end_time - start_time;
 
-        auto curr_pose = RobotGetPose();
-        auto error_vec =
-          units::V2Position(start_pose.x + target_distance,
-                            start_pose.y + target_lateral_distance) -
-          curr_pose;
+        const auto curr_pose = RobotGetPose();
+        const auto error_vec = target_position - curr_pose;
+
+        std::cout << "final error: " << error_vec.magnitude().convert(in)
+                  << ", x: " << error_vec.x.convert(in)
+                  << ", y: " << error_vec.y.convert(in) << std::endl;
 
         auto local_error_vec = error_vec.rotatedBy(-curr_pose.orientation);
 
-        auto total_error = error_vec.magnitude();
-        auto forwards_error = error_vec.x;
-        auto sideways_error = error_vec.y;
-
-        std::cout << std::format("final error: {:.3f}, x: {:.3f}, y: {:.3f}",
-                                 total_error.convert(in),
-                                 forwards_error.convert(in),
-                                 sideways_error.convert(in))
+        std::cout << "final local error: "
+                  << local_error_vec.magnitude().convert(in)
+                  << ", forwards: " << local_error_vec.x.convert(in)
+                  << ", sideways: " << local_error_vec.y.convert(in)
                   << std::endl;
 
-        std::cout
-          << std::format(
-               "final local error: {:.3f}, forwards: {:.3f}, sideways: {:.3f}",
-               local_error_vec.magnitude().convert(in),
-               local_error_vec.x.convert(in),
-               local_error_vec.y.convert(in))
-          << std::endl;
+        // clang-format off
+        std::cout << "position: "
+				  << curr_pose.x.convert(in) << " "
+                  << curr_pose.y.convert(in) << " "
+                  << curr_pose.orientation.convert(deg) << std::endl;
+        // clang-format on
 
-        std::cout << std::format("position: {:.3f} {:.3f} {:.3f}",
-                                 curr_pose.x.convert(in),
-                                 curr_pose.y.convert(in),
-                                 curr_pose.orientation.convert(deg))
-                  << std::endl;
-
-        std::cout << std::format("took {:.4f} time to finish turn",
-                                 time_difference.convert(sec))
-                  << std::endl;
+        std::cout << "took " << time_difference.convert(sec)
+                  << " time to finish turn" << std::endl;
 
         while (
           !controller.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_A)) {
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_LEFT)) {
                 target_distance -= target_distance_delta;
-                std::cout << std::format("decreased target to {:.3f}",
-                                         target_distance.convert(in))
-                          << std::endl;
+                std::cout << "decreased target to "
+                          << target_distance.convert(in) << std::endl;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_B)) {
+                // move back
                 if (reversed) {
-                    mb.moveTo(start_pose.x, start_pose.y)
+                    mb.moveTo(start_position)
+                        .timeout(2_sec)
                         .closeThreshold(7_in)
-                        .drive_maxVolt(0.6_volt) |
-
-                      async;
+                      // .drive_vel_maxVel(20_inps)
+                      | async;
                 } else {
-                    mb.moveTo(start_pose.x, start_pose.y)
-                        .drive_maxVolt(0.6_volt)
-
+                    mb.moveTo(start_position)
+                        .timeout(3_sec)
                         .closeThreshold(7_in)
+                        // .drive_vel_maxVel(20_inps)
                         .reverse() |
                       async;
                 }
@@ -673,90 +632,72 @@ void drive_vel_pid_tuning() {
                   pros::E_CONTROLLER_DIGITAL_X)) {
 
                 // turns around
-                if (reversed) {
-                    mb.turnTo(0) | async;
-                } else {
-                    mb.turnTo(180) | async;
-                }
-
-                reversed = !reversed;
+                // if (reversed) {
+                //     mb.turnTo(0) | async;
+                // } else {
+                //     mb.turnTo(180) | async;
+                // }
+                //
+                // reversed = !reversed;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_Y)) {
-                k_lat_config_active = !k_lat_config_active;
+                config_swapped = !config_swapped;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_RIGHT)) {
                 target_distance += target_distance_delta;
-                std::cout << std::format("increased target to {:.3f}",
-                                         target_distance.convert(in))
-                          << std::endl;
+                std::cout << "increased target to "
+                          << target_distance.convert(in) << std::endl;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_L2)) {
                 curr_kp -= kp_delta;
-                std::cout << std::format("decreased kp to {:.3f}", curr_kp)
-                          << std::endl;
+                std::cout << "decreased kp to " << curr_kp << std::endl;
             }
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_L1)) {
                 curr_kp += kp_delta;
-                std::cout << std::format("increased kp to {:.3f}", curr_kp)
-                          << std::endl;
+                std::cout << "increased kp to " << curr_kp << std::endl;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_R2)) {
                 curr_kd -= kd_delta;
-                std::cout << std::format("decreased kd to {:.3f}", curr_kd)
-                          << std::endl;
+                std::cout << "decreased kd to " << curr_kd << std::endl;
             }
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_R1)) {
                 curr_kd += kd_delta;
-                std::cout << std::format("increased kd to {:.3f}", curr_kd)
-                          << std::endl;
+                std::cout << "increased kd to " << curr_kd << std::endl;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_UP)) {
-                if (k_lat_config_active) {
-                    curr_k_lat += k_lat_delta;
-                    std::cout << std::format("increased klat to {:.3f}",
-                                             curr_k_lat.internal())
-                              << std::endl;
-                    // curr_ki += ki_delta;
-                    // std::cout << std::format("increased ki to {:.3f}",
-                    // curr_ki)
-                    //           << std::endl;
+                if (config_swapped) {
+                    curr_max_accel += accel_delta;
+                    std::cout << "increased max accel to "
+                              << curr_max_accel.internal() << std::endl;
                 } else {
-
                     curr_accel_slew += slew_delta;
-                    std::cout << std::format("increased slew to {:.3f}",
-                                             curr_accel_slew.internal())
-                              << std::endl;
+                    std::cout << "increased slew to "
+                              << curr_accel_slew.internal() << std::endl;
                 }
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_DOWN)) {
-                if (k_lat_config_active) {
-                    curr_k_lat -= k_lat_delta;
-                    std::cout << std::format("decreased klat to {:.3f}",
-                                             curr_k_lat.internal())
-                              << std::endl;
-                    // curr_ki -= ki_delta;
-                    // std::cout << std::format("decreased ki to {:.3f}",
-                    // curr_ki)
-                    //           << std::endl;
+                if (config_swapped) {
+                    curr_max_accel -= accel_delta;
+                    std::cout << "decreased max accel to "
+                              << curr_max_accel.internal() << std::endl;
                 } else {
                     curr_accel_slew -= slew_delta;
-                    std::cout << std::format("decreased slew to {:.3f}",
-                                             curr_accel_slew.internal())
-                              << std::endl;
+                    std::cout << "decreased slew to "
+                              << curr_accel_slew.internal() << std::endl;
                 }
             }
             // kp = 7
@@ -784,20 +725,21 @@ void turn_vel_pid_tuning() {
 
     pros::delay(2000);
 
+    std::cout << std::fixed << std::setprecision(3);
+
     while (true) {
-        matchloader::down();
+        // matchloader::down();
 
         RobotSetPose(0, 0, 0);
         auto start_time = from_msec(pros::millis());
-
 
         mb.turnTo(target_theta)
             // .turn_vel_maxVel(200_degps)
             // .direction(AngularDirection::RIGHT)
             // .radius(-10.5_in)
-            // .turn_vel_kp(curr_kp)
-            // .turn_vel_ki(curr_ki)
-            // .turn_vel_kd(curr_kd)
+            .turn_vel_kp(curr_kp)
+            .turn_vel_ki(curr_ki)
+            .turn_vel_kd(curr_kd)
             .timeout(3.0_sec) |
           run;
 
@@ -863,75 +805,66 @@ void turn_vel_pid_tuning() {
 
         controller.rumble(".");
 
-        auto end_time = from_msec(pros::millis());
+        const auto end_time = from_msec(pros::millis());
 
-        auto time_difference = end_time - start_time;
+        const auto time_difference = end_time - start_time;
 
-        std::cout << std::format("final error was {:.3f}",
-                                 target_theta - tracker.getAngle().convert(deg))
+        std::cout << "final error was "
+                  << target_theta - RobotGetPose().orientation.convert(deg)
                   << std::endl;
 
-        std::cout << std::format("position: {:.2f} {:.2f} {:.4f}",
-                                 tracker.getPosition().x.convert(in),
-                                 tracker.getPosition().y.convert(in),
-                                 tracker.getAngle().convert(deg))
-                  << std::endl;
+        // clang-format off
+        std::cout << "position: "
+				  << RobotGetPose().x.convert(in) << " "
+                  << RobotGetPose().y.convert(in) << " "
+                  << RobotGetPose().orientation.convert(deg) << std::endl;
+        // clang-format on
 
-        std::cout << std::format("took {:.4f} time to finish turn",
-                                 time_difference.convert(msec))
-                  << std::endl;
+        std::cout << "took " << time_difference.convert(sec)
+                  << " time to finish turn" << std::endl;
 
         while (
           !controller.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_A)) {
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_LEFT)) {
                 target_theta -= target_theta_delta;
-                std::cout << std::format("decreased to {}", target_theta)
-                          << std::endl;
+                std::cout << "decreased to " << target_theta << std::endl;
             }
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_RIGHT)) {
                 target_theta += target_theta_delta;
-                std::cout << std::format("increased to {}", target_theta)
-                          << std::endl;
+                std::cout << "increased to " << target_theta << std::endl;
             }
 
             if (controller.get_digital_new_release(controls::DOWN)) {
                 curr_ki -= ki_delta;
-                std::cout << std::format("ki - to {}", curr_ki) << std::endl;
+                std::cout << "ki - to " << curr_ki << std::endl;
             }
             if (controller.get_digital_new_release(controls::UP)) {
                 curr_ki += ki_delta;
-                std::cout << std::format("ki + to {}", curr_ki) << std::endl;
+                std::cout << "ki + to " << curr_ki << std::endl;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_L2)) {
                 curr_kp -= kp_delta;
-                std::cout << std::format("decreased kp to {:.3f}", curr_kp)
-                          << std::endl;
+                std::cout << "decreased kp to " << curr_kp << std::endl;
             }
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_L1)) {
                 curr_kp += kp_delta;
-                std::cout << std::format("increased kp to {:.3f}", curr_kp)
-                          << std::endl;
+                std::cout << "increased kp to " << curr_kp << std::endl;
             }
 
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_R2)) {
                 curr_kd -= kd_delta;
-                std::cout << std::format("decreased kd to {:.3f}", curr_kd)
-                          << std::endl;
+                std::cout << "decreased kd to " << curr_kd << std::endl;
             }
             if (controller.get_digital_new_release(
                   pros::E_CONTROLLER_DIGITAL_R1)) {
                 curr_kd += kd_delta;
-                std::cout << std::format("increased kd to {:.3f}", curr_kd)
-                          << std::endl;
-            }
-            if (controller.get_digital_new_release(controls::X)) {
-                matchloader::set(!matchloader::get());
+                std::cout << "increased kd to " << curr_kd << std::endl;
             }
 
             pros::delay(10);

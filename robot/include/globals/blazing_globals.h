@@ -8,7 +8,7 @@
 #include "globals/config.h"
 #include "globals/device_globals.h"
 #include "globals/vexmaps_globals.h"
-#include "lyfast/vel_controller.hpp"
+#include "lyfast/controllers/vel_controller.hpp"
 #include "units/Angle.hpp"
 
 using namespace blazing;
@@ -18,7 +18,7 @@ using namespace blazing;
  *
  */
 
-extern DifferentialDrivetrain drivetrain;
+extern lyfast::VelocityDifferentialDrivetrain drivetrain;
 
 extern ForwardsTracker left_motor_tracker;
 extern ForwardsTracker right_motor_tracker;
@@ -51,12 +51,8 @@ extern blazing::lyfast::DifferentialVelocityController
   angular_velocity_controller;
 
 // used exclusively for turning
-extern lyfast::ArcadeVelocityController turn_vel_controller;
-
-extern lyfast::ArcadeVelocityController vel_controller;
-
-extern lyfast::VelocityFeedforward<decltype(vel_controller)>
-  controller_velocity_controller;
+extern blazing::lyfast::DifferentialVelocityController vel_controller;
+extern lyfast::DrivetrainVelocityPlant drivetrain_plant;
 
 // start linear velocity stuff //
 extern PID<Length, LinearVelocity> linear_vel_pid;
@@ -81,38 +77,34 @@ extern PIDAngularVelocityController angular_vel_pid_controller;
 extern AngularVelocitySlewController angular_vel_slew_controller;
 extern AngularVelocityClampController angular_vel_clamp_controller;
 
-// lateral controllers
-extern PID<Length, Voltage> lateral_pid;
-extern PID<Length, AngularVelocity> lateral_vel_pid;
-
-extern LateralVelocityFeedbackController<decltype(lateral_vel_pid)>
-  lateral_vel_controller;
-extern LateralFeedbackController<decltype(lateral_pid)> lateral_controller;
-
 // end angular velocity stuff //
 
-extern Controllers<decltype(linear_pid_controller),
-                   decltype(angular_pid_controller),
-                   decltype(controller_velocity_controller),
-                   decltype(linear_slew),
-                   decltype(angular_slew),
+// path following stuff //
+extern blazing::lyfast::state_space::LTVUnicycleController lqr_controller;
+extern lyfast::PathPoseFeedbackController<decltype(lqr_controller)>
+  path_pose_feedback_controller;
+// end path following stuff //
 
-                   decltype(linear_mp_feedback_controller),
-                   // decltype(linear_vel_pid_controller),
-                   decltype(linear_vel_slew_controller),
-                   decltype(linear_vel_clamp_controller),
+using GlobalControllersT = Controllers<decltype(linear_pid_controller),
+                                       decltype(angular_pid_controller),
+                                       decltype(linear_slew),
+                                       decltype(angular_slew),
 
-                   decltype(angular_vel_pid_controller),
-                   decltype(angular_vel_slew_controller),
-                   decltype(angular_vel_clamp_controller),
+                                       decltype(path_pose_feedback_controller),
 
-                   // lateral controllers
-                   decltype(lateral_controller),
-                   decltype(lateral_vel_controller),
+                                       decltype(linear_mp_feedback_controller),
+                                       // decltype(linear_vel_pid_controller),
+                                       decltype(linear_vel_slew_controller),
+                                       decltype(linear_vel_clamp_controller),
 
-                   decltype(linear_voltage_constraints),
-                   decltype(angular_voltage_constraints)>
-  controllers;
+                                       decltype(angular_vel_pid_controller),
+                                       decltype(angular_vel_slew_controller),
+                                       decltype(angular_vel_clamp_controller),
+
+                                       decltype(linear_voltage_constraints),
+                                       decltype(angular_voltage_constraints)>;
+
+extern GlobalControllersT controllers;
 
 // normal tolerances
 extern Tolerances<decltype(linear_tolerances_config.error),
@@ -173,7 +165,8 @@ extern Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
 
 // extern MotionBuilder<decltype(blazing_chassis), decltype(controllers)> mb;
 extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)> mb;
-extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)> mb_vel;
+// extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
+// mb_vel;
 
 extern ChainedExecutor chain;
 

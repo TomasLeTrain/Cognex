@@ -61,8 +61,7 @@ void driveUpdate() {
                                        Voltage(desired_lin - desired_ang) };
     auto desaturated = desaturate(saturated, 1_volt);
 
-    left_motors.move_voltage(12 * to_mvolt(desaturated[0]));
-    right_motors.move_voltage(12 * to_mvolt(desaturated[1]));
+	drivetrain.moveTank(desaturated[0],desaturated[1]);
 }
 
 // void update() {

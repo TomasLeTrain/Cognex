@@ -394,7 +394,7 @@
                 "version": "3.4.90"
             },
             "blazing": {
-                "location": "/home/tomas/.config/pros/templates/blazing@0.0.19",
+                "location": "/home/tomas/.config/pros/templates/blazing@0.0.23",
                 "metadata": {
                     "origin": "local"
                 },
@@ -409,8 +409,8 @@
                     "include/blazing/motions/turnTo.hpp",
                     "include/blazing/trackers/arc_odom.hpp",
                     "include/blazing/controllers/feedforward/feedforward.hpp",
-                    "include/blazing/controllers/clamp.hpp",
                     "include/blazing/controllers/feedback/feedback.hpp",
+                    "include/blazing/controllers/clamp.hpp",
                     "include/blazing/drivetrains/drivetrain.hpp",
                     "include/blazing/controllers/slew.hpp",
                     "firmware/blazing.a",
@@ -421,17 +421,18 @@
                     "include/blazing/motion_builder.hpp",
                     "include/blazing/controllers/feedback/pid.hpp",
                     "include/blazing/trackers/simple_odom.hpp",
+                    "include/blazing/latex_utils.hpp",
                     "include/blazing/motions/boomerang.hpp",
-                    "include/blazing/executor.hpp",
                     "include/blazing/motions/moveTo.hpp",
+                    "include/blazing/executor.hpp",
                     "include/blazing/motions/motion.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.19"
+                "version": "0.0.23"
             },
             "float_units": {
-                "location": "/home/tomas/.config/pros/templates/float_units@0.7.4",
+                "location": "/home/tomas/.config/pros/templates/float_units@0.7.7",
                 "metadata": {
                     "origin": "local"
                 },
@@ -439,19 +440,19 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.2.1",
                 "system_files": [
-                    "firmware/hot-cold-asset.mk",
-                    "include/units/Temperature.hpp",
+                    "include/units/Vector3D.hpp",
                     "include/units/units.hpp",
+                    "include/units/Vector2D.hpp",
+                    "include/units/Pose.hpp",
                     "firmware/float_units.a",
                     "include/units/Angle.hpp",
-                    "include/units/all.hpp",
-                    "include/units/Pose.hpp",
-                    "include/units/Vector2D.hpp",
-                    "include/units/Vector3D.hpp"
+                    "include/units/Temperature.hpp",
+                    "firmware/hot-cold-asset.mk",
+                    "include/units/all.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.7.4"
+                "version": "0.7.7"
             },
             "kernel": {
                 "location": "/home/tomass/.config/pros/templates/kernel@4.2.1",
@@ -1041,7 +1042,7 @@
                 "version": "9.2.1"
             },
             "lyfast": {
-                "location": "/home/tomas/.config/pros/templates/lyfast@0.0.6",
+                "location": "/home/tomas/.config/pros/templates/lyfast@0.0.7",
                 "metadata": {
                     "origin": "local"
                 },
@@ -1049,25 +1050,42 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.2.1",
                 "system_files": [
+                    "include/lyfast/motions/path_follower.hpp",
+                    "include/lyfast/utils/motor_dynamics.hpp",
+                    "include/lyfast/utils/api.hpp",
+                    "include/lyfast/controllers/ltv_unicycle_controller.hpp",
+                    "include/lyfast/filters/velocity_estimator.hpp",
+                    "include/lyfast/controllers/vel_controller.hpp",
                     "include/lyfast/geometry/cubicBezier.hpp",
-                    "include/lyfast/system_identification.hpp",
-                    "firmware/lyfast.a",
-                    "include/lyfast/geometry/spline.hpp",
-                    "include/lyfast/motion_profiling/mp.hpp",
-                    "include/lyfast/geometry/line.hpp",
                     "include/lyfast/motion_profiling/constraints.hpp",
-                    "include/lyfast/motor_dynamics.hpp",
+                    "include/lyfast/filters/kalman_filter.hpp",
                     "include/lyfast/geometry/primitives.hpp",
-                    "include/lyfast/motion_profiling/simple_mp.hpp",
+                    "include/lyfast/plants/api.hpp",
+                    "include/lyfast/controllers/path_pose_feedback.hpp",
+                    "include/lyfast/sysid/system_identification.hpp",
+                    "include/lyfast/geometry/api.hpp",
+                    "include/lyfast/sysid/api.hpp",
+                    "include/lyfast/filters/ema_filter.hpp",
+                    "include/lyfast/utils/state_space_utils.hpp",
                     "include/lyfast/api.hpp",
+                    "include/lyfast/motions/api.hpp",
+                    "include/lyfast/controllers/mp_feedback.hpp",
+                    "include/lyfast/plants/velocity_plants.hpp",
+                    "include/lyfast/controllers/api.hpp",
+                    "firmware/lyfast.a",
+                    "include/lyfast/motion_profiling/mp.hpp",
+                    "include/lyfast/drivetrains/api.hpp",
+                    "include/lyfast/filters/api.hpp",
+                    "include/lyfast/geometry/spline.hpp",
+                    "include/lyfast/geometry/line.hpp",
+                    "include/lyfast/motion_profiling/simple_mp.hpp",
                     "include/lyfast/geometry/curve.hpp",
-                    "include/lyfast/ramsete.hpp",
-                    "include/lyfast/stanley.hpp",
-                    "include/lyfast/vel_controller.hpp"
+                    "include/lyfast/drivetrains/velocity_differential.hpp",
+                    "include/lyfast/motion_profiling/api.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.6"
+                "version": "0.0.7"
             },
             "misc": {
                 "location": "/home/tomas/.config/pros/templates/misc@0.0.3",

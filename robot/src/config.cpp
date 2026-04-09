@@ -4,9 +4,9 @@
 #include "blazing/controllers/controllers.hpp"
 #include "blazing/controllers/slew.hpp"
 #include "globals.h"
+#include "globals/blazing_globals.h"
 #include "globals/config.h"
-#include "lyfast/mp_feedback.hpp"
-#include "lyfast/vel_controller.hpp"
+#include "lyfast/drivetrains/velocity_differential.hpp"
 #include "pros/abstract_motor.hpp"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
@@ -22,12 +22,12 @@ using namespace vexmaps;
 // clang-format off
 // motor groups
 
-int8_t left_front = -14;
-int8_t left_middle = -13;
+int8_t left_front = 15;
+int8_t left_middle = -14;
 int8_t left_back = -12;
 
-int8_t right_front = 16;
-int8_t right_middle = 17;
+int8_t right_front = -17;
+int8_t right_middle = 16;
 int8_t right_back = 19;
 
 bool vexmaps_logging_enabled = false;
@@ -50,9 +50,9 @@ vexmaps::ScaledIMU imu(20, (360.0 + 1.5) / 360.0);
 
 // disable for testing
 pros::Motor
-  bottom_motor(9, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+  bottom_motor(21, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::Motor
-  lever_motor(-1, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
+  lever_motor(21, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
 
 pros::Optical middle_intake_color_sensor(6);
 pros::Optical bottom_intake_color_sensor(21);
@@ -130,7 +130,7 @@ Length right_distance_scale_offset = 0.302946477017_in;
 tracker_config_t forwards_tracker_config = {
     .diameter = 1.991_in,
     // geometric is also 0
-    .offset = 0.5_in,
+    .offset = 0.0_in,
 };
 
 tracker_config_t sideways_tracker_config = {
@@ -142,27 +142,23 @@ tracker_config_t sideways_tracker_config = {
 /* drivetrain / pid configuration */
 
 // NOTE: remember to update every time the drivetrain changes!
-// TODO: track width is actually closer to 10.5 - 1/8, but everything wnas
-// already tuned to 10.5
 drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
+                                        .track_radius = 10.5_in * 0.5,
                                         .wheel_diameter = 3.25_in,
-                                        .rpm = 450_rpm };
+                                        .rpm = 450_rpm,
+                                        .max_velocity = 76_inps,
+                                        // (max vel / track_width) * 2
+                                        .max_angular_velocity =
+                                          (76_inps / 10.5_in) * 2 * Frad,
+                                        .input_delay = 40_msec };
 
 // units are in inches
-linear_pid_config_t linear_pid_config {
+linear_pid_config_t linear_pid_config { .kp = 7.5,
+                                        .ki = 0.0,
+                                        .kd = 10.3,
 
-    // good for max voltage 100
-    // .kp = 7.5,
-    // .ki = 0.0,
-    // .kd = 10.3,
-
-    .kp = 7.5,
-    .ki = 0.0,
-    .kd = 10.3,
-
-    .windupRange = 7,
-    .maxVoltage = 100
-};
+                                        .windupRange = 7,
+                                        .maxVoltage = 100 };
 
 // units are in degrees
 angular_pid_config_t angular_pid_config {
@@ -186,12 +182,8 @@ angular_pid_config_t matchloader_angular_pid_config {
     .kp = 3.50, .ki = 0.17, .kd = 6.0, .windupRange = 45, .maxVoltage = 127,
 };
 
-// LinearSlewController linear_slew(0.07_volt, 0.06_volt);
 LinearSlewController linear_slew { std::nullopt, 0.2_volt };
-// AngularSlewController angular_slew(0.8_volt);
 AngularSlewController angular_slew {};
-
-// LinearSlewController driver_linear_slew(0.1_volt, 0.09_volt);
 
 LinearVoltageClampController linear_voltage_constraints;
 AngularVoltageClampController angular_voltage_constraints;
@@ -330,11 +322,6 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 //
 //
 // blazing stuff - can keep alone
-DifferentialDrivetrain drivetrain(&left_motors,
-                                  &right_motors,
-                                  drivetrain_config.wheel_diameter,
-                                  drivetrain_config.rpm);
-
 ForwardsTracker left_motor_tracker(&left_motors,
                                    -drivetrain_config.track_width / 2,
                                    drivetrain_config.wheel_diameter,
@@ -364,7 +351,7 @@ ArcOdomTracker tracker(
   { &imu_tracker },
   odom_cor_offsets);
 
-// controller stuff
+// voltage controller stuff
 PID<Length, Voltage> linear_pid(linear_pid_config.kp,
                                 linear_pid_config.ki,
                                 linear_pid_config.kd,
@@ -374,16 +361,6 @@ PID<Length, Voltage> linear_pid(linear_pid_config.kp,
                                 linear_pid_config.timeUnits,
                                 linear_pid_config.inputUnits,
                                 linear_pid_config.outputUnits);
-PID<Length, Voltage> lateral_pid(4.0,
-                                 0.0,
-                                 0.0,
-                                 7, // antiwindup range
-                                 127, // max vel
-                                 std::nullopt, // derivative_alpha
-                                 50_msec,
-                                 1_in,
-                                 Voltage(1.0 / 127.0));
-
 PID<Angle, Voltage> turn_drive_pid(angular_pid_config.kp,
                                    angular_pid_config.ki,
                                    angular_pid_config.kd,
@@ -393,7 +370,6 @@ PID<Angle, Voltage> turn_drive_pid(angular_pid_config.kp,
                                    angular_pid_config.timeUnits,
                                    angular_pid_config.inputUnits,
                                    angular_pid_config.outputUnits);
-
 PID<Angle, Voltage> turn_heading_pid(turn_heading_pid_config.kp,
                                      turn_heading_pid_config.ki,
                                      turn_heading_pid_config.kd,
@@ -403,229 +379,136 @@ PID<Angle, Voltage> turn_heading_pid(turn_heading_pid_config.kp,
                                      turn_heading_pid_config.timeUnits,
                                      turn_heading_pid_config.inputUnits,
                                      turn_heading_pid_config.outputUnits);
-
 PIDLinearController linear_pid_controller(linear_pid);
 PIDAngularController angular_pid_controller(turn_drive_pid);
+// random not used stuff
 
-// REALLY GOOD
-// TODO: could play around with slighlty higher ka?
-blazing::lyfast::DifferentialVelocityController linear_velocity_controller(
-  lyfast::VelocityControllerParams {
+lyfast::DifferentialVelocityControllerParams vel_controller_params {
+	.linear = {
+		// TODO: recalc angular?
+		// .left_Kv = 0.46 * volt / mps,
+		.left_Kv = 0.46 * volt / mps,
+		.left_Ka = 0.09 * volt / mps2,
+		.left_low_target_Kv = 0.4 * volt / mps,
+		.left_low_target_Ka = 0.04 * volt / mps2,
+		// .left_Ks = 0.08 * volt,
+		.left_Ks = 0.04 * volt,
 
-    // 		left:
-    // kv: 0.422793_kg_m_s^-2_A^-1, ks: 0.0711986 volt
-    // right:
-    // kv: 0.424936_kg_m_s^-2_A^-1, ks: 0.0685188 volt
-    //
-    // copiable data:
-    //
-    // .left_Kv = 0.422793 * volt / mps,
-    // .left_Ks = 0.0711986 * volt,
-    //
-    // .right_Kv = 0.424936 * volt / mps,
-    // .right_Ks = 0.0685188 * volt,
-    //
-    // type: LINEAR
-    // left:
-    // kv: 0.408968_kg_m_s^-2_A^-1, ks: 0.0839419 volt
-    // right:
-    // kv: 0.424259_kg_m_s^-2_A^-1, ks: 0.0741647 volt
-    //
-    // copiable data:
-    //
-    // .left_Kv = 0.408968 * volt / mps,
-    // .left_Ks = 0.0839419 * volt,
-    //
-    // .right_Kv = 0.424259 * volt / mps,
-    // .right_Ks = 0.0741647 * volt,
-    //
-    // mu
+		// .right_Kv = 0.49 * volt / mps,
+		.right_Kv = 0.47 * volt / mps,
+		.right_Ka = 0.09 * volt / mps2,
+		.right_low_target_Kv = 0.4 * volt / mps,
+		.right_low_target_Ka = 0.04 * volt / mps2,
+		// .right_Ks = 0.08 * volt,
+		.right_Ks = 0.04 * volt,
 
-    .left_Kv = 0.421 * volt / mps,
+		.Ka_delta_time = 20_msec,
+		.low_target_threshold = 20_inps
+	},
+	.angular = {
+		.left_Kv = 0.90 * volt / mps,
+		// .left_Ka = 0.11 * volt / mps2,
+		.left_Ka = 0.07 * volt / mps2,
+		.left_low_target_Kv = 0.5 * volt / mps,
+		.left_low_target_Ka = 0.0 * volt / mps2,
+		.left_Ks = 0.08 * volt,
 
-    // length kp and ka term create a feedback loop intenuating noise
-    // .left_Ka = 0.09 * volt / mps2,
-    .left_Ka = 0.07 * volt / mps2,
-    // .left_Ka = 0.0 * volt / mps2,
-    .left_Ks = 0.0819155 * volt,
+		.right_Kv = 0.90 * volt / mps,
+		// .right_Ka = 0.11 * volt / mps2,
+		.right_Ka = 0.07 * volt / mps2,
+		.right_low_target_Kv = 0.5 * volt / mps,
+		.right_low_target_Ka = 0.0 * volt / mps2,
+		.right_Ks = 0.08 * volt,
 
-    // .left_Kp = 0.9 * volt / mps,
-    // .left_Kp = 0.3 * volt / mps,
-    .left_Kp = 0.7 * volt / mps,
-    .left_Ki = 4.0 * volt / m,
+		.Ka_delta_time = 20_msec,
+		.low_target_threshold = 2_inps
+	},
+	.linear_pid = {
+		.left_Kp = 0.5 * volt / mps,
+		.left_Kp_close = 0.0 * volt / mps,
+		.left_Kp_low = 0.0 * volt / mps,
+		.left_low_threshold = 7_inps,
+		.left_close_threshold = 0_inps,
+		// .left_Ki = 1.0 * volt / m,
+		.left_Ki = 0.0 * volt / m,
+		.left_Ki_windup = 12_inps,
+		//
+		.left_max_output =  1_volt,
+		.left_tbh_factor =  1.0,
 
-    .right_Kv = 0.43 * volt / mps,
-    // .right_Ka = 0.09 * volt / mps2,
-    .right_Ka = 0.075 * volt / mps2,
-    // .right_Ka = 0.0 * volt / mps2,
-    .right_Ks = 0.08 * volt,
+		.right_Kp = 0.5 * volt / mps,
+		.right_Kp_close = 0.0 * volt / mps,
+		.right_Kp_low = 0.0 * volt / mps,
+		.right_low_threshold = 7_inps,
+		.right_close_threshold = 0_inps,
+		// .right_Ki = 1.0 * volt / m,
+		.right_Ki = 0.0 * volt / m,
+		.right_Ki_windup = 12_inps,
 
-    // .right_Kp = 0.9 * volt / mps,
-    // .right_Kp = 0.3 * volt / mps,
-    .right_Kp = 0.7 * volt / mps,
-    .right_Ki = 4.0 * volt / m,
+		.right_max_output =  1_volt,
+		.right_tbh_factor =  1.0,
 
-    // .left_Kv = 0.420125 * volt / mps,
-    //
-    // // length kp and ka term create a feedback loop intenuating noise
-    // // .left_Ka = 0.02 * volt / mps2,
-    // .left_Ka = 0.0 * volt / mps2,
-    // .left_Ks = 0.0819155 * volt,
-    //
-    // .left_Kp = 0.0 * volt / mps,
-    // .left_Ki = 0.0 * volt / m,
-    //
-    // .right_Kv = 0.422079 * volt / mps,
-    // // .right_Ka = 0.02 * volt / mps2,
-    // .right_Ka = 0.0 * volt / mps2,
-    // .right_Ks = 0.0761917 * volt,
-    //
-    // .right_Kp = 0.0 * volt / mps,
-    // .right_Ki = 0.0 * volt / m,
-  },
-  70_inps,
-  drivetrain_config.track_width,
-  0.8,
-  true, // prioritize angular everywhere?
-  std::ref(drivetrain));
 
-// --- turning vel stuff --- //
-// goated for turning
-blazing::lyfast::DifferentialVelocityController angular_velocity_controller(
-  lyfast::VelocityControllerParams {
-
-    .left_Kv = 0.47 * volt / mps,
-    // .left_Ka = 0.0986881348841 * volt / mps2,
-    .left_Ka = 0.03 * volt / mps2,
-    // .left_Ka = 0.0 * volt / mps2,
-    .left_Ks = 0.08 * volt,
-
-    // lambda 0.6
-    // .left_Kp = 0.915472273416 * volt / mps,
-    // .left_Ki = 5.09538143189 * volt / m,
-    // .left_Kp = 0.915472273416 * volt / mps,
-    // .left_Kp = 0.915472273416 * volt / mps,
-    // .left_Ki = 2.09538143189 * volt / m,
-
-    // from autotuner:
-
-    // 		.left_Ka = -0.0895945 * volt / mps2,
-    // // lambda factor: 0.6
-    // .left_Kp = 1.14286 * volt / mps,
-    // .left_Ki = -8.74697 * volt / m,
-    //
-    // .right_Ka = 0.125267 * volt / mps2,
-    // // lambda factor: 0.6
-    // .right_Kp = 0.91148 * volt / mps,
-    // .right_Ki = 3.97933 * volt / m,
-
-    // .left_Kp = 0.0 * volt / mps,
-    .left_Kp = 0.3 * volt / mps,
-    // .left_Ki = 0.0 * volt / m,
-    .left_Ki = 5.09538143189 * volt / m,
-
-    .right_Kv = 0.475 * volt / mps,
-    // .right_Ka = 0.10128620282 * volt / mps2,
-    // .right_Ka = 0.03 * volt / mps2,
-    .right_Ka = 0.047 * volt / mps2,
-    .right_Ks = 0.08 * volt,
-
-    // .right_Kp = 0.968620056451 * volt / mps,
-    // .right_Kp = 0.968620056451 * volt / mps,
-    // .right_Ki = 2.0578634857 * volt / m,
-    // .right_Kp = 0.0 * volt / mps,
-    .right_Kp = 0.3 * volt / mps,
-    // .right_Ki = 0.0 * volt / m,
-    // .right_Kp = 0.968620056451 * volt / mps,
-    .right_Ki = 5.5578634857 * volt / m,
-  },
-  100_inps,
-  drivetrain_config.track_width,
-  0.85,
-  true, // TODO: shouldn't affect swings?
-  std::ref(drivetrain));
-
-// use arcade since templating uses this type
-lyfast::ArcadeVelocityController turn_vel_controller {
-    // TODO: never need to worry about linear?
-    angular_velocity_controller,
-    angular_velocity_controller,
-    // 100_inps,
-    76_inps, // TODO: turns are still fine?
-    false, // don't prioritize turning to allow swings
-    drivetrain_config.track_width
+		// .left_Kp = 1.5 * volt / mps,
+		// .left_Kp_close = 0.0 * volt / mps,
+		// .left_Kp_low = 0.0 * volt / mps,
+		// .left_low_threshold = 7_inps,
+		// .left_close_threshold = 0_inps,
+		// // .left_Ki = 1.0 * volt / m,
+		// .left_Ki = 0.0 * volt / m,
+		// .left_Ki_windup = 12_inps,
+		// //
+		// .left_max_output =  1_volt,
+		// .left_tbh_factor =  1.0,
+		//
+		// .right_Kp = 1.5 * volt / mps,
+		// .right_Kp_close = 0.0 * volt / mps,
+		// .right_Kp_low = 0.0 * volt / mps,
+		// .right_low_threshold = 7_inps,
+		// .right_close_threshold = 0_inps,
+		// // .right_Ki = 1.0 * volt / m,
+		// .right_Ki = 0.0 * volt / m,
+		// .right_Ki_windup = 12_inps,
+		//
+		// .right_max_output =  1_volt,
+		// .right_tbh_factor =  1.0,
+	},
+	.angular_pid = {
+		// .left_Kp = 1.5 * volt / mps,
+		// .left_Kp_close = 0.0 * volt / mps,
+		// .left_Kp_low = 0.0 * volt / mps,
+		// .left_low_threshold = 10_inps,
+		// .left_close_threshold = 0_inps,
+		// // .left_Ki = 1.5 * volt / m,
+		// .left_Ki = 0.0 * volt / m,
+		// .left_Ki_windup = 12_inps,
+		// //
+		// .left_max_output =  1_volt,
+		// .left_tbh_factor =  1.0,
+		//
+		// .right_Kp = 1.5 * volt / mps,
+		// .right_Kp_close = 0.0 * volt / mps,
+		// .right_Kp_low = 0.0 * volt / mps,
+		// .right_low_threshold = 10_inps,
+		// .right_close_threshold = 0_inps,
+		// // .right_Ki = 1.5 * volt / m,
+		// .right_Ki = 0.0 * volt / m,
+		// .right_Ki_windup = 12_inps,
+		//
+		// .right_max_output =  1_volt,
+		// .right_tbh_factor =  1.0,
+	}
 };
-// --- turning vel stuff --- //
-
-lyfast::ArcadeVelocityController vel_controller {
-    linear_velocity_controller,
-    angular_velocity_controller,
+lyfast::DifferentialVelocityController vel_controller {
+    vel_controller_params,
     76_inps,
-    true, // prioritize angular everywhere?
-    drivetrain_config.track_width
+    drivetrain_config.track_width,
+    false
 };
-
-lyfast::VelocityFeedforward<decltype(vel_controller)>
-  controller_velocity_controller(vel_controller);
-
-// linear velocity stuff
-PID<Length, LinearVelocity>
-  linear_vel_pid(4.700, // kp
-                 0.0,
-                 // 7.000,
-                 7.300, // kd
-                 7, // antiwindup range,
-                 70, // max vel
-                 0.7, // use new measurements with 70% confidence
-                 50_msec,
-                 1_in,
-                 1_inps);
-
-//
-// increased kp to 4.400
-// increased kd to 7.200
-
-//
-// good for 24 and 36 inches, saves 200 msec compred to using 72 (too slow)
-// kp to 4.400
-// kd to 5.100
-
-// good for 48 inches:
-// kp to 4.200
-// kd to 5.800
-
-// good for 72 inches, saves 200 msec compred to using 24 (too fast)
-// kp to 4.200
-// kd to 5.500
-
-// goated, not as aggressive:
-// kp to 3.900
-// kd to 2.500
-//
-// still keeps a lot of contact with the ground:
-// kp to 4.300
-// kd to 3.000
-//
-// aggressive but kinda good lowkey:
-// kp to 6.600
-// kd to 11.400
-//
-// with new moveto and 30 sec outer loop time, with vel controller of kp low ka,
-// very aggrssive
-//
-// increased kp to 4.600
-// increased kd to 1.000
-// increased ki to 0.070
-//
-// not as aggresive, same conditions as before
-// increased kp to 4.100
-// increased kd to 0.000
-// increased ki to 0.090
-
-PIDLinearVelocityController linear_vel_pid_controller(linear_vel_pid);
 
 // mp feedback
-lyfast::mpFeedback<Length> linear_mp_feedback { 76_inps, 110_inps2 };
+lyfast::mpFeedback<Length>
+  linear_mp_feedback(70_inps, 110_inps2, 0.3_in, 0.05_inps / 0.20_in);
 
 LinearVelocityFeedbackController<decltype(linear_mp_feedback)>
   linear_mp_feedback_controller(linear_mp_feedback);
@@ -636,64 +519,27 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 // end linear velocity stuff //
 //
 // used for seeking motions
-// really good for fast move to points, too aggressive
-PID<Length, AngularVelocity> lateral_vel_pid(0.7,
-                                             0.0,
-                                             1.8,
-                                             std::nullopt, // anti windup range
-                                             std::nullopt, // max vel
-                                             0.9, // derivative
-                                             50_msec,
-                                             1_in,
-                                             1_radps);
-
-// PID<Length, AngularVelocity> lateral_vel_pid(0.7,
-//                                              0.0,
-//                                              0.0,
-//                                              std::nullopt, // anti windup
-//                                              range std::nullopt, // max vel
-//                                              0.9, // derivative
-//                                              50_msec,
-//                                              1_in,
-//                                              1_radps);
+PID<Angle, AngularVelocity> linear_angular_vel_pid(
+  12.50,
+  0.0,
+  8.0,
+  to_stRad(10_stDeg), // windup range
+  to_radps(drivetrain_config.max_angular_velocity), // restrict max vel
+  std::nullopt, // derivative alpha
+  50_msec,
+  1_stRad,
+  1_radps);
 
 PID<Angle, AngularVelocity>
-  linear_angular_vel_pid(14.00,
-                         0.0,
-                         15.5,
-                         to_stRad(10_stDeg), // windup range
-                         76, // restrict max vel
-                         std::nullopt, // derivative alpha
-                         50_msec,
-                         1_stRad,
-                         1_radps);
-
-// used only for turning
-PID<Angle, AngularVelocity>
-  turn_heading_vel_pid(19.000,
-                       // 0.01,
+  turn_heading_vel_pid(10.100,
                        0.0,
-                       19.050,
+                       0.600,
                        to_stRad(10_stDeg),
-                       // std::nullopt,
-                       to_radps(rad * 76_inps / (10.5_in * 0.5)), // max speed
+                       to_radps(drivetrain_config.max_angular_velocity),
                        std::nullopt, // derivative alpha
                        50_msec,
                        1_stRad,
                        1_radps);
-
-// less ki, pretty good:
-// increased kp to 20.750
-// ki - 1.1
-// increased kd to 23.500
-//
-// single oscilation, good with antiwindup range of 20 deg
-// decreased kp to 20.750
-// increased kp to 20.900
-// decreased kd to 25.000
-// increased kd to 25.250
-// ki - to 0.5499999999999994
-// ki + to 0.5599999999999994
 
 // start angular velocity stuff
 // PIDAngularVelocityController
@@ -703,64 +549,66 @@ PIDAngularVelocityController angular_vel_pid_controller(linear_angular_vel_pid);
 AngularVelocitySlewController angular_vel_slew_controller {};
 AngularVelocityClampController angular_vel_clamp_controller {};
 
-// lateral controllers
-LateralVelocityFeedbackController<decltype(lateral_vel_pid)>
-  lateral_vel_controller(lateral_vel_pid);
-LateralFeedbackController<decltype(lateral_pid)>
-  lateral_controller(lateral_pid);
-
 // end angular velocity stuff //
 
-Controllers<decltype(linear_pid_controller),
-            decltype(angular_pid_controller),
-            decltype(controller_velocity_controller),
-            decltype(linear_slew),
-            decltype(angular_slew),
+// path following stuff //
 
-            decltype(linear_mp_feedback_controller),
-            // decltype(linear_vel_pid_controller),
-            decltype(linear_vel_slew_controller),
-            decltype(linear_vel_clamp_controller),
+std::array<float, 3> Q { (40_in).internal(),
+                         // (6_in).internal(),
+                         // (5_in).internal(),
+                         (8_in).internal(),
+                         // (1_in).internal(),
+                         // (5_stDeg).internal() };
+                         (180_stDeg).internal() };
 
-            decltype(angular_vel_pid_controller),
-            decltype(angular_vel_slew_controller),
-            decltype(angular_vel_clamp_controller),
+// [x, theta]
+std::array<float, 2> simple_Q { (10000_in).internal(),
+                                (50000_stDeg).internal() };
 
-            // lateral controllers
-            decltype(lateral_controller),
-            decltype(lateral_vel_controller),
+std::array<float, 2> simple_R { (1_inps).internal(),
+                                // max angular velocity
+                                (1_degps).internal() };
 
-            decltype(linear_voltage_constraints),
-            decltype(angular_voltage_constraints)>
-  controllers(
-    // pid controllers
-    linear_pid_controller,
-    angular_pid_controller,
-    controller_velocity_controller,
+std::array<float, 2> R { // max velocity
+                         drivetrain_config.max_velocity.internal(),
+                         // max angular velocity
+                         drivetrain_config.max_angular_velocity.internal()
+};
 
-    // slew controllers
-    linear_slew,
-    angular_slew,
+LinearVelocity lqr_minimum_velocity = 1.0_inps;
 
-    // linear velocity controllers
-    // linear_vel_pid_controller,
-    linear_mp_feedback_controller,
-    linear_vel_slew_controller,
-    linear_vel_clamp_controller,
+blazing::lyfast::state_space::LTVUnicycleController
+  lqr_controller(Q, R, simple_Q, simple_R, 0_msec, lqr_minimum_velocity);
 
-    // angular velocity controllers
-    angular_vel_pid_controller,
-    angular_vel_slew_controller,
-    angular_vel_clamp_controller,
+lyfast::PathPoseFeedbackController<decltype(lqr_controller)>
+  path_pose_feedback_controller(lqr_controller);
+// end path following stuff //
 
-    // lateral controllers
-    lateral_controller,
-    lateral_vel_controller,
+GlobalControllersT controllers(
+  // pid controllers
+  linear_pid_controller,
+  angular_pid_controller,
 
-    // voltage constraints controllers
-    // (included just so they can be set per motion)
-    linear_voltage_constraints,
-    angular_voltage_constraints);
+  // slew controllers
+  linear_slew,
+  angular_slew,
+
+  path_pose_feedback_controller,
+  // linear velocity controllers
+  // linear_vel_pid_controller,
+  linear_mp_feedback_controller,
+  linear_vel_slew_controller,
+  linear_vel_clamp_controller,
+
+  // angular velocity controllers
+  angular_vel_pid_controller,
+  angular_vel_slew_controller,
+  angular_vel_clamp_controller,
+
+  // voltage constraints controllers
+  // (included just so they can be set per motion)
+  linear_voltage_constraints,
+  angular_voltage_constraints);
 
 // normal tolerances
 Tolerances<decltype(linear_tolerances_config.error),
@@ -975,18 +823,32 @@ vexmaps::ModelManager model_manager(
   &smoother_model);
 
 BlazingWrapper vexmaps_tracker(&model_manager);
+// vexmaps stuff end
+
+lyfast::DrivetrainVelocityPlant drivetrain_plant {
+    nullptr,
+    nullptr,
+    vel_controller,
+    drivetrain_config.wheel_diameter
+};
+
+// nothing before this point makes references to the drivetrain
+lyfast::VelocityDifferentialDrivetrain
+  drivetrain(&left_motors,
+             &right_motors,
+             &drivetrain_plant,
+             drivetrain_config.track_width);
 
 Chassis<decltype(drivetrain), decltype(vexmaps_tracker), decltype(tolerances)>
-  vexmaps_chassis(drivetrain, vexmaps_tracker, tolerances);
+  vexmaps_chassis(&drivetrain, &vexmaps_tracker, tolerances);
 
 Chassis<decltype(drivetrain), decltype(tracker), decltype(tolerances)>
-  blazing_chassis(drivetrain, tracker, tolerances);
+  blazing_chassis(&drivetrain, &tracker, tolerances);
 
 MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
   mb(vexmaps_chassis, controllers);
 
-MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
-  mb_vel(vexmaps_chassis, controllers);
-
+// MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
+//   mb_vel(vexmaps_chassis, controllers);
 // MotionBuilder<decltype(blazing_chassis), decltype(controllers)>
 //   mb(blazing_chassis, controllers);

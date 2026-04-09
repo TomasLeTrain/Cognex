@@ -1,7 +1,6 @@
 #include "apis.h"
 //
 
-#include "liblvgl/lvgl.h"
 #include "screen.h"
 
 namespace screen {

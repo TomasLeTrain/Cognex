@@ -1,18 +1,9 @@
 #include "apis.h"
 //
 
-#include "auton_globals.h"
-#include "autos.h"
-#include "liblvgl/core/lv_obj_pos.h"
-#include "liblvgl/core/lv_obj_style.h"
-#include "liblvgl/core/lv_obj_tree.h"
-#include "liblvgl/display/lv_display.h"
-#include "liblvgl/draw/lv_draw_rect.h"
-#include "liblvgl/font/lv_font.h"
-#include "liblvgl/font/lv_symbol_def.h"
-#include "liblvgl/lv_conf_internal.h"
-#include "liblvgl/misc/lv_palette.h"
 #include "screen.h"
+#include "autons_list.h"
+#include "auton_globals.h"
 #include <map>
 
 namespace screen {

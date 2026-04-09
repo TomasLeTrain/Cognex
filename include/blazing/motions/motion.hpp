@@ -93,9 +93,9 @@ class Motion : public MotionBase {
     ControllersType controllers;
     TolerancesType tolerances;
 
-    // these are taken by reference
-    TrackerType& tracker;
-    DrivetrainType& drivetrain;
+    // these are taken by pointer
+    TrackerType* tracker;
+    DrivetrainType* drivetrain;
 
   protected:
     std::optional<Time> chain_time = std::nullopt;
@@ -112,18 +112,10 @@ class Motion : public MotionBase {
           tracker(chassis.tracker),
           drivetrain(chassis.drivetrain) {}
 
-    // no copiable
-    Motion(const Motion&) = delete;
-    Motion& operator=(const Motion&) = delete;
-
-    // movable
-    Motion(Motion&&) noexcept = default;
-    Motion& operator=(Motion&&) noexcept = default;
-
     // attempt to override chain functions
     bool setEnabledDrivetrain(bool enabled) override {
         if constexpr (MotionChainableDrivetrain<DrivetrainType>) {
-            drivetrain.setEnabled(enabled);
+            drivetrain->setEnabled(enabled);
             return true;
         }
         return false;
@@ -131,14 +123,14 @@ class Motion : public MotionBase {
 
     std::optional<std::vector<Voltage>> getVoltagesDrivetrain() override {
         if constexpr (MotionChainableDrivetrain<DrivetrainType>) {
-            return drivetrain.getVoltages();
+            return drivetrain->getVoltages();
         }
         return std::nullopt;
     };
 
     bool moveVoltagesDrivetrain(std::vector<Voltage> voltages) override {
         if constexpr (MotionChainableDrivetrain<DrivetrainType>) {
-            drivetrain.moveVoltages(voltages);
+            drivetrain->moveVoltages(voltages);
             return true;
         }
         return false;
@@ -758,34 +750,6 @@ class LinearMotion {
     motionChangerT drive_vel_mp_setMaxAccel(T max_accel) {
         ThisDerived->controllers.linear_velocity_feedback.setMaxAccel(
           max_accel);
-        return DerivedReturnType;
-    }
-
-    // lateral pid
-    motionChangerT lateral_vel_kp(T kp) {
-        ThisDerived->controllers.lateral_velocity_feedback.set_kp(kp);
-        return DerivedReturnType;
-    }
-
-    motionChangerT lateral_vel_ki(T ki) {
-        ThisDerived->controllers.lateral_velocity_feedback.set_ki(ki);
-        return DerivedReturnType;
-    }
-
-    motionChangerT lateral_vel_kd(T kd) {
-        ThisDerived->controllers.lateral_velocity_feedback.set_kd(kd);
-        return DerivedReturnType;
-    }
-
-    motionChangerT lateral_vel_windupRange(T windupRange) {
-        ThisDerived->controllers.lateral_velocity_feedback.set_windupRange(
-          windupRange);
-        return DerivedReturnType;
-    }
-
-    motionChangerT lateral_vel_PIDmaxVel(T maxVel) {
-        ThisDerived->controllers.lateral_velocity_feedback.set_maxOutput(
-          maxVel);
         return DerivedReturnType;
     }
 };

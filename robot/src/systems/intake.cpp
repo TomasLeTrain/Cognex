@@ -4,7 +4,6 @@
 #include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/device_globals.h"
-#include "lyfast/vel_controller.hpp"
 #include "pros/device.hpp"
 #include "pros/motors.hpp"
 #include "pros/rtos.hpp"
@@ -19,112 +18,112 @@
 
 namespace intake {
 
-class IntakeVelocityController {
-  private:
-    pros::Motor* m_motor;
-    lyfast::SimpleVelocityControllerParams<AngularVelocity> m_params;
-    double m_alpha = 0.9;
-
-    std::variant<Voltage, AngularVelocity> m_target;
-
-    std::optional<AngularVelocity> last_error = std::nullopt;
-    std::optional<AngularVelocity> last_measurement = std::nullopt;
-    Angle integral = 0.0 * deg;
-
-    AngularVelocity getMeasurement() {
-        auto curr_measurement = m_motor->get_actual_velocity() * rpm;
-        AngularVelocity result;
-        if (last_measurement.has_value()) {
-            // low pass filter the velocity
-            result =
-              // TODO: depends on how much time from last measurement?
-              last_measurement.value() * (1 - m_alpha) +
-              m_alpha * curr_measurement;
-        } else {
-            result = curr_measurement;
-        }
-
-        last_measurement = curr_measurement;
-
-        return result;
-    }
-
-    void moveVoltage(Voltage target_voltage) {
-        m_motor->move_voltage(to_mvolt(target_voltage) * 12);
-    }
-
-  public:
-    IntakeVelocityController(
-      pros::Motor* motor,
-      lyfast::SimpleVelocityControllerParams<AngularVelocity> params,
-      double alpha = 0.9)
-        : m_motor(motor),
-          m_params(params),
-          m_alpha(alpha) {}
-
-    void setTarget(std::variant<Voltage, AngularVelocity> target) {
-        m_target = target;
-    }
-
-    void update(Time duration) {
-        if (std::holds_alternative<Voltage>(m_target)) {
-            // useful for full speed commands
-            moveVoltage(std::get<Voltage>(m_target));
-            return;
-        }
-        AngularVelocity target = std::get<AngularVelocity>(m_target);
-
-        m_motor->move_velocity(to_rpm(target));
-
-        return;
-
-        // else we are using velocity control
-        // TODO: what to do if motor unplugs??
-
-        AngularVelocity measurement = getMeasurement();
-
-        AngularVelocity error = target - measurement;
-
-        Angle current_integral = integral;
-
-        if (last_error)
-            // use trapezoidal approximation
-            current_integral += (error + *last_error) * duration / 2.0;
-        else
-            // use Riemann sum approximation
-            current_integral += error * duration;
-
-        Voltage result {
-            // kv
-            target * m_params.Kv +
-              // ks
-              units::sgn(target) * m_params.Ks +
-              // kp
-              m_params.Kp * error +
-              // ki
-              m_params.Ki * current_integral,
-        };
-
-        if (
-          // currently saturating
-          units::abs(result) >= m_params.max_output &&
-          // output going in direct of error
-          units::sgn(error) == units::sgn(result)) {
-            // clamping, slever integral windup
-            // no need to update integral to current integral
-        } else {
-            // not saturating, update integral
-            integral = current_integral;
-        }
-
-        result =
-          units::clamp(result, -m_params.max_output, m_params.max_output);
-
-        last_error = error;
-
-        moveVoltage(result);
-    }
-};
+// class IntakeVelocityController {
+//   private:
+//     pros::Motor* m_motor;
+//     lyfast::SimpleVelocityControllerParams<AngularVelocity> m_params;
+//     double m_alpha = 0.9;
+//
+//     std::variant<Voltage, AngularVelocity> m_target;
+//
+//     std::optional<AngularVelocity> last_error = std::nullopt;
+//     std::optional<AngularVelocity> last_measurement = std::nullopt;
+//     Angle integral = 0.0 * deg;
+//
+//     AngularVelocity getMeasurement() {
+//         auto curr_measurement = m_motor->get_actual_velocity() * rpm;
+//         AngularVelocity result;
+//         if (last_measurement.has_value()) {
+//             // low pass filter the velocity
+//             result =
+//               // TODO: depends on how much time from last measurement?
+//               last_measurement.value() * (1 - m_alpha) +
+//               m_alpha * curr_measurement;
+//         } else {
+//             result = curr_measurement;
+//         }
+//
+//         last_measurement = curr_measurement;
+//
+//         return result;
+//     }
+//
+//     void moveVoltage(Voltage target_voltage) {
+//         m_motor->move_voltage(to_mvolt(target_voltage) * 12);
+//     }
+//
+//   public:
+//     IntakeVelocityController(
+//       pros::Motor* motor,
+//       lyfast::SimpleVelocityControllerParams<AngularVelocity> params,
+//       double alpha = 0.9)
+//         : m_motor(motor),
+//           m_params(params),
+//           m_alpha(alpha) {}
+//
+//     void setTarget(std::variant<Voltage, AngularVelocity> target) {
+//         m_target = target;
+//     }
+//
+//     void update(Time duration) {
+//         if (std::holds_alternative<Voltage>(m_target)) {
+//             // useful for full speed commands
+//             moveVoltage(std::get<Voltage>(m_target));
+//             return;
+//         }
+//         AngularVelocity target = std::get<AngularVelocity>(m_target);
+//
+//         m_motor->move_velocity(to_rpm(target));
+//
+//         return;
+//
+//         // else we are using velocity control
+//         // TODO: what to do if motor unplugs??
+//
+//         AngularVelocity measurement = getMeasurement();
+//
+//         AngularVelocity error = target - measurement;
+//
+//         Angle current_integral = integral;
+//
+//         if (last_error)
+//             // use trapezoidal approximation
+//             current_integral += (error + *last_error) * duration / 2.0;
+//         else
+//             // use Riemann sum approximation
+//             current_integral += error * duration;
+//
+//         Voltage result {
+//             // kv
+//             target * m_params.Kv +
+//               // ks
+//               units::sgn(target) * m_params.Ks +
+//               // kp
+//               m_params.Kp * error +
+//               // ki
+//               m_params.Ki * current_integral,
+//         };
+//
+//         if (
+//           // currently saturating
+//           units::abs(result) >= m_params.max_output &&
+//           // output going in direct of error
+//           units::sgn(error) == units::sgn(result)) {
+//             // clamping, slever integral windup
+//             // no need to update integral to current integral
+//         } else {
+//             // not saturating, update integral
+//             integral = current_integral;
+//         }
+//
+//         result =
+//           units::clamp(result, -m_params.max_output, m_params.max_output);
+//
+//         last_error = error;
+//
+//         moveVoltage(result);
+//     }
+// };
 
 bool is_driver = false;
 bool tasks_active = false;
@@ -267,18 +266,19 @@ void score_middle_aligned() {
 
 namespace bottom {
 pros::Mutex mutex;
+//
+// lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params
+// {
+//     .Kv = (1_volt / 600_rpm),
+//     // not really used
+//     .Ka = 0.0 * volt / radps2,
+//     .Ks = 0.02 * volt,
+//     // .Kp = 1_volt / 100_rpm,
+//     .Kp = 0.2_volt / 100_rpm,
+//     .Ki = 1.0 * volt / rad,
+// };
 
-lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params {
-    .Kv = (1_volt / 600_rpm),
-    // not really used
-    .Ka = 0.0 * volt / radps2,
-    .Ks = 0.02 * volt,
-    // .Kp = 1_volt / 100_rpm,
-    .Kp = 0.2_volt / 100_rpm,
-    .Ki = 1.0 * volt / rad,
-};
-
-IntakeVelocityController controller(&bottom_motor, vel_controller_params);
+// IntakeVelocityController controller(&bottom_motor, vel_controller_params);
 
 std::variant<Voltage, AngularVelocity> target;
 // Voltage pct;
@@ -334,10 +334,12 @@ void hardware_move_pct(Voltage pct) {
 }
 
 void hardware_update() {
-    controller.setTarget(target);
-
-    // TODO: make sure its actually this update rate
-    controller.update(10_msec);
+    if (std::holds_alternative<Voltage>(target))
+        hardware_move_pct(std::get<Voltage>(target));
+    // controller.setTarget(target);
+    //
+    // // TODO: make sure its actually this update rate
+    // controller.update(10_msec);
 }
 
 // update can be blocking if antijam or color sort are active
@@ -364,6 +366,7 @@ void update() {
         while (!timeoutDone(settle_time, start_move_normal)) {
             if (std::holds_alternative<Voltage>(target) &&
                 // want to slever intake, stop immediately
+                // slever means to stop
                 units::abs(get<Voltage>(target).internal()) <= 0.01) {
                 break;
             }
@@ -383,6 +386,120 @@ void update() {
 
 namespace lever {
 pros::Mutex mutex;
+
+enum DiscreteLeverState {
+    following_profile,
+    position_reset,
+    going_down,
+    down,
+    going_up,
+    up
+};
+
+struct LeverVelocityProfile {
+    std::function<float(float)> m_f;
+
+    LeverVelocityProfile(std::function<float(float)> f) {
+        m_f = f;
+    }
+
+    // returns the desired target velocity at angle theta in range [0,1]
+    float f(float theta) {
+        return m_f(theta);
+    }
+
+    // determines when the profile is finished with a motion
+    // if finished, returns a discrete lever state to go back to
+    // TODO: or maybe a target theta?
+    std::optional<DiscreteLeverState> finished(float theta) {}
+};
+
+class LeverController {
+  public:
+    std::variant<DiscreteLeverState, float, LeverVelocityProfile> m_target;
+
+    void setTarget(
+      std::variant<DiscreteLeverState, float, LeverVelocityProfile> target) {
+        m_target = target;
+    }
+
+    void hardware_update(Voltage voltage) {
+        lever_motor.move_voltage(12 * to_mvolt(voltage));
+    }
+
+    void init() {
+        // should get run once before running update?
+    }
+
+    void update() {
+        // lever_position = motor_position * position_to_theta_mult
+        float position_to_theta_mult = 1;
+        float zero_motor_position = lever_motor.get_position();
+        float current_motor_position = lever_motor.get_position();
+        float motor_position_delta =
+          current_motor_position - zero_motor_position;
+
+        float lever_position = motor_position_delta * position_to_theta_mult;
+
+        const bool stalling = motorJammed(lever_motor);
+
+        if (std::holds_alternative<DiscreteLeverState>(m_target)) {
+            auto target_state = std::get<DiscreteLeverState>(m_target);
+            // TODO: move to be modifiable
+            const Voltage action_voltage = 1_volt;
+
+            Voltage applied_voltage;
+            if (target_state == down || target_state == up) {
+                // not moving, keep 0 voltage with motor hold
+                applied_voltage = 0_volt;
+            } else if (target_state == going_down) {
+                // going down with action_voltage
+                applied_voltage = -action_voltage;
+
+                // when close enough to the bottom switch to wanting to reset
+                if (lever_position < 0.1) {
+                    target_state = DiscreteLeverState::position_reset;
+                }
+            } else if (target_state == going_up) {
+                // go up with action voltage
+                applied_voltage = action_voltage;
+
+                // TODO: determine when its fully up
+                if (lever_position > 0.9 && stalling) {
+                    // lever fully up?
+                    target_state = up;
+                }
+            } else if (target_state == position_reset) {
+                // TODO: determine
+                applied_voltage = -0.5_volt;
+                if (stalling) {
+                    zero_motor_position = lever_motor.get_position();
+                    lever_position = 0;
+                    target_state = down;
+                }
+            }
+
+            hardware_update(applied_voltage);
+        } else if (std::holds_alternative<float>(m_target)) {
+            // use some sort of control to move lever to target, possibly pid?
+        } else if (std::holds_alternative<LeverVelocityProfile>(m_target)) {
+            // follow profile with some sort of way
+            LeverVelocityProfile profile =
+              std::get<LeverVelocityProfile>(m_target);
+
+            auto desired_vel = profile.f(lever_position);
+
+            // TODO: follow desired vel with some controller
+			auto finished = profile.finished(lever_position);
+			if(finished.has_value()){
+				// switch to the desired discrete state
+				m_target = finished.value();
+			}
+        }
+    }
+};
+
+LeverController controller;
 
 // lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params
 // {
@@ -506,7 +623,7 @@ void set_antijam(bool active) {
 void update() {
     std::lock_guard lock(mutex);
 
-    // bool jam = motorJammed(lever_motor);
+    // TODO: put motor to hold on the lever
 
     if (target_up) {
         lever_motor.move_voltage(12000);
