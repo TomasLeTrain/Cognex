@@ -44,14 +44,12 @@ void matchload(double sign_x, double sign_y, Time matchload_time) {
 
     auto make_machloader_pose = [](units::V2FPosition target,
                                    Length distance) -> units::Pose {
-        // auto target_angle = target.angleTo(RobotGetPose());
-        auto final_point =
-          target + distance * (RobotGetPose() - target).normalize();
+        const auto error_unit_vector = (RobotGetPose() - target).normalize();
+        auto final_point = target + distance * error_unit_vector;
 
         return units::Pose { final_point, final_point.angleTo(target) };
     };
 
-    Length normal_match = 46.7_in;
     units::V2Position target_Point = make_matchloader_point(sign_x, sign_y);
 
     // 11 is barely achievable - 0.1 less than achievable
@@ -82,16 +80,17 @@ void matchload(double sign_x, double sign_y, Time matchload_time) {
     Length matchload_start_distance = 13_in;
 
     auto custom_exit_condition = [&] -> bool {
-        auto curr_pose = RobotGetPose();
-        auto error = (target_Point - curr_pose);
-        auto local_error = error.rotatedBy(-curr_pose.orientation);
+        const auto curr_pose = RobotGetPose();
+        const auto error = (target_Point - curr_pose);
+        const auto [forwards_error, sideways_error] =
+          error.rotatedBy(-curr_pose.orientation);
 
-        bool close = error.magnitude() <
-                     // trigger only if closes to the matchloader
-                     matchload_start_distance + 5_in;
+        const bool close = error.magnitude() <
+                           // trigger only if closes to the matchloader
+                           matchload_start_distance + 5_in;
 
-        bool forwards_close =
-          units::abs(local_error.x) < matchload_start_distance;
+        const bool forwards_close =
+          units::abs(forwards_error) < matchload_start_distance;
 
         // use forwards error and
         return close && forwards_close;
@@ -99,14 +98,17 @@ void matchload(double sign_x, double sign_y, Time matchload_time) {
 
     auto wait_result = async.waitOr(custom_exit_condition, 3_sec);
 
-    if (wait_result == blazing::AsyncExecutorBase::motionFinished ||
-        wait_result == blazing::AsyncExecutorBase::timeoutFinished) {
+    if (wait_result == AsyncExecutorBase::motionFinished ||
+        wait_result == AsyncExecutorBase::timeoutFinished) {
         // custom condition did not trigger, meaning we got stuck or
         // something else went wrong. Don't wait just exit
         async.exitAll();
     } else {
         // got to matcloader successfully, start matchloading
         async.exitAll();
+        // no motions should be executing here, so setting the voltage instantly
+        // should be fine
+
         // passive voltage forwards since motion might oscilate
         drivetrain.moveTank(0.2_volt, 0.2_volt);
         pros::delay(to_msec(matchload_time));
@@ -117,65 +119,69 @@ void score_long_goal(double sign_x, double sign_y, Time score_time) {
     // turn to goal, reversed
     Length long_goal = 47.0_in;
 
-    auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
-    auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
-    auto boomerang_heading = sign_x == -1 ? 170_stDeg : 350_stDeg;
+    mb.moveTo(30_in, long_goal) | run;
 
-    units::Pose target_pose = { 24_in * sign_x,
-                                long_goal * sign_y,
-                                target_backwards_heading };
+    // auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
+    // auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
+    // auto boomerang_heading = sign_x == -1 ? 170_stDeg : 350_stDeg;
 
-    auto exit_condition = [&] -> bool {
-        auto curr_pose = RobotGetPose();
-        bool x_close =
-          units::abs(curr_pose.x) >= 27_in && units::abs(curr_pose.x) <= 40_in;
-        bool y_close =
-          units::abs(curr_pose.y) >= 43_in && units::abs(curr_pose.y) <= 51_in;
-        //
-        bool theta_close =
-          units::abs(angleError(target_forwards_heading,
-                                curr_pose.orientation)) <= 25_stDeg;
-
-        // return x_close && y_close && theta_close;
-        return x_close;
-    };
-
-    mb.moveTo(target_pose)
-        .drive_vel_mp_setMaxAccel(110_inps2)
-        .only_x(true, 28_in * sign_x)
-        .closeThreshold(7_in)
-        .turn_kp(13.9)
-        .timeout(2_sec)
-        .reverse() |
-      chain;
-
-    chain.waitUntil(exit_condition);
-
-    // regardless of getting stuck or not we perform the same action
-    intake::score_long();
-
-	pros::delay(200);
-
-    // exit regardless to have better aligner
-    chain.exitAll();
-
-    pros::delay(10);
-
-    // queue aligning motion
-    mb.turnTo(target_forwards_heading)
-        .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec)
-        .timeout(0.3_sec)
-        .radius(-10.5_in / 2) |
-      async;
-    mb.turnTo(target_forwards_heading)
-        .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec)
-        .constantVelocity(-15_inps) |
-      async;
-    pros::delay(to_msec(score_time));
-
-    async.exitAll();
+    // units::Pose target_pose = { 24_in * sign_x,
+    //                             long_goal * sign_y,
+    //                             target_backwards_heading };
+    //
+    // auto exit_condition = [&] -> bool {
+    //     auto curr_pose = RobotGetPose();
+    //     bool x_close =
+    //       units::abs(curr_pose.x) >= 27_in && units::abs(curr_pose.x) <=
+    //       40_in;
+    //     // bool y_close =
+    //     //   units::abs(curr_pose.y) >= 43_in && units::abs(curr_pose.y) <=
+    //     //   51_in;
+    //     // //
+    //     // bool theta_close =
+    //     //   units::abs(angleError(target_forwards_heading,
+    //     //                         curr_pose.orientation)) <= 25_stDeg;
+    //
+    //     // return x_close && y_close && theta_close;
+    //     return x_close;
+    // };
+    //
+    // mb.moveTo(target_pose)
+    //     // .drive_vel_mp_setMaxAccel(110_inps2)
+    //     .only_x(true, 28_in * sign_x)
+    //     .closeThreshold(7_in)
+    //     // .turn_kp(13.9)
+    //     .timeout(2_sec)
+    //     .reverse() |
+    //   chain;
+    //
+    // chain.waitUntil(exit_condition);
+    //
+    // // regardless of getting stuck or not we perform the same action
+    // intake::score_long();
+    //
+    // pros::delay(200);
+    //
+    // // exit regardless to have better aligner
+    // chain.exitAll();
+    //
+    // pros::delay(10);
+    //
+    // // queue aligning motion
+    // mb.turnTo(target_forwards_heading)
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .timeout(0.3_sec)
+    //     .radius(-10.5_in / 2) |
+    //   async;
+    // mb.turnTo(target_forwards_heading)
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .constantVelocity(-15_inps) |
+    //   async;
+    // pros::delay(to_msec(score_time));
+    //
+    // async.exitAll();
 }
 
 void run_auton() {
@@ -190,19 +196,21 @@ void run_auton() {
     // start auton
     RobotSetPose(-46.57, -14, 90);
 
+    std::cout << "Stated auto: " << std::endl;
+
     intake::in();
 
-    bool pushing = false;
+    bool pushing = true;
 
     if (pushing) mb.moveTo(-46.57, -4.7).timeout(1.2_sec) | chain;
 
     mb.moveTo(-46.376, -46.1)
         .only_y(true)
         .reverse()
-        .drive_errorTolerance(2.0_in)
-        .customAngularLinearFunc([](Angle angle) {
-            return units::cos(angle);
-        })
+        // .drive_errorTolerance(2.0_in)
+        // .customAngularLinearFunc([](Angle angle) {
+        //     return units::cos(angle);
+        // })
         .timeout(1.3_sec) |
       chain;
     chain.wait();
@@ -214,9 +222,11 @@ void run_auton() {
 
     // mb.turnTo(-1_tile, -1_tile).radius(-1.2) | chain;
 
+    // small swing
     drivetrain.moveTank(1.0_volt, -0.8_volt);
     pros::delay(200);
 
+    // turn towards balls
     mb.turnTo(-1_tile, -1_tile)
         .constantVelocity(-10_inps)
         .turn_errorTolerance(10.0_stDeg)
@@ -225,7 +235,9 @@ void run_auton() {
         .turn_chainErrorTolerance(10_stDeg) |
       chain;
 
+    // move towards lower left balls
     mb.moveTo(-1_tile, -1_tile)
+        // assume already going with some momentum
         .drive_vel_accelSlew(300_inps)
         .executeAfterMotion([] {
             intake::in();
@@ -234,9 +246,9 @@ void run_auton() {
       chain;
 
     mb.moveTo(-1_tile, 1_tile)
-        // already going fast from previous motion, slew can be faster
         .drive_vel_mp_maxVel(57_inps)
         // .drive_vel_mp_setMaxAccel(70_inps2)
+        // already going fast from previous motion, slew can be faster
         .drive_vel_accelSlew(300_inps) |
       chain;
 
@@ -249,6 +261,8 @@ void run_auton() {
     //   | chain;
     // mb.turnTo(11.574, -11.401).reverse() | chain;
     mb.moveTo(-11.7, 11.0).reverse() | chain;
+
+    // turn towards correct heading
     mb.turnTo(135)
         .constantVelocity(-5_inps)
 
@@ -267,33 +281,18 @@ void run_auton() {
     // wait for balls to come up the intake
     pros::delay(200);
     // score
-    intake::score_middle(1.0, 0.35);
+    intake::score_middle();
     // score for some time
-    pros::delay(1350);
+    pros::delay(1000);
 
-    // intake again in a specific way
-    {
-        intake::bottom::set_pct(1.0);
-        intake::top::set_pct(-1.0);
-        // leave intake down, but lower hood
-        intake::pistons::gate_blocked();
-    }
+    // stop scoring, intake again
+    intake::in();
 
-    pros::delay(100);
+    // exit any remaining motions
     chain.exitAll();
 
     // go towards matchloader
-    mb.moveTo(-48_in, 46).drive_errorTolerance(2.0_in).only_y(true) | chain;
-    // wait a tiny bit more
-    pros::delay(150);
-    // stop intake motor to go back too much
-    intake::pistons::align_top();
-    pros::delay(150);
-    // intake::top::set_pct(0.0);
-    // align up
-    intake::in();
-
-    chain.wait();
+    mb.moveTo(-48_in, 46).drive_errorTolerance(2.0_in).only_y(true) | run;
 
     // turn to and go to matchloader
 

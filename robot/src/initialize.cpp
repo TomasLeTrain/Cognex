@@ -96,6 +96,11 @@ void timeCriticalTask() {
                   12 * to_mvolt(curr_drivetrain_voltages.left_voltage));
                 right_motors.move_voltage(
                   12 * to_mvolt(curr_drivetrain_voltages.right_voltage));
+                std::cout << "moving: "
+                          << curr_drivetrain_voltages.left_voltage.internal()
+                          << " "
+                          << curr_drivetrain_voltages.right_voltage.internal()
+                          << std::endl;
             }
 
             pros::Task::delay_until(&systemTime, 2);
@@ -122,8 +127,6 @@ void initialize() {
     // controller_ui::init();
 
     int imu_notif = screen::health::add_init_notif("calibrating imu");
-
-    startTimeCriticalTask();
 
     // imu calibration
     int attempt = 1;
@@ -157,6 +160,9 @@ void initialize() {
                                                    screen::health::succeed);
     }
 
+    // initialize task only after imu has been init since tracker requires it
+    startTimeCriticalTask();
+
     // make the imu return data as fast as possible?
     // imu.set_data_rate(5);
 
@@ -183,11 +189,11 @@ void initialize() {
     async.init();
     chain.init();
 
-	// Each temperature level limits the motor current:
-	// 1 = 50% current,
-	// 2 = 25% current,
-	// 3 = 12.5% current,
-	// 4 = 0% current.
+    // Each temperature level limits the motor current:
+    // 1 = 50% current,
+    // 2 = 25% current,
+    // 3 = 12.5% current,
+    // 4 = 0% current.
 
     // pros::delay(50);
 
@@ -315,13 +321,14 @@ void initialize() {
     //           screen::health::set_console_text(
     //             std::format("vexmaps pose: {:.4f} {:.4f}\n"
     //                         "motion model pose: {:.4f} {:.4f}\n"
-    //                         "blazing pose: {:.4f} {:.4f}\n",
+    //                         "blazing pose: {:.4f} {:.4f} {:.4f}\n",
     //                         vexmaps_tracker.getPosition().x.convert(in),
     //                         vexmaps_tracker.getPosition().y.convert(in),
     //                         pf_motion_model.getPose().x.convert(in),
     //                         pf_motion_model.getPose().y.convert(in),
     //                         tracker.getPosition().x.convert(in),
-    //                         tracker.getPosition().y.convert(in)));
+    //                         tracker.getPosition().y.convert(in),
+    //                         tracker.getAngle().convert(deg)));
     //
     //           pros::delay(50);
     //       }

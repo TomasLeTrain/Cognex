@@ -4,6 +4,7 @@
 #include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/device_globals.h"
+#include "pros/abstract_motor.hpp"
 #include "pros/device.hpp"
 #include "pros/motors.hpp"
 #include "pros/rtos.hpp"
@@ -17,113 +18,6 @@
 #include <variant>
 
 namespace intake {
-
-// class IntakeVelocityController {
-//   private:
-//     pros::Motor* m_motor;
-//     lyfast::SimpleVelocityControllerParams<AngularVelocity> m_params;
-//     double m_alpha = 0.9;
-//
-//     std::variant<Voltage, AngularVelocity> m_target;
-//
-//     std::optional<AngularVelocity> last_error = std::nullopt;
-//     std::optional<AngularVelocity> last_measurement = std::nullopt;
-//     Angle integral = 0.0 * deg;
-//
-//     AngularVelocity getMeasurement() {
-//         auto curr_measurement = m_motor->get_actual_velocity() * rpm;
-//         AngularVelocity result;
-//         if (last_measurement.has_value()) {
-//             // low pass filter the velocity
-//             result =
-//               // TODO: depends on how much time from last measurement?
-//               last_measurement.value() * (1 - m_alpha) +
-//               m_alpha * curr_measurement;
-//         } else {
-//             result = curr_measurement;
-//         }
-//
-//         last_measurement = curr_measurement;
-//
-//         return result;
-//     }
-//
-//     void moveVoltage(Voltage target_voltage) {
-//         m_motor->move_voltage(to_mvolt(target_voltage) * 12);
-//     }
-//
-//   public:
-//     IntakeVelocityController(
-//       pros::Motor* motor,
-//       lyfast::SimpleVelocityControllerParams<AngularVelocity> params,
-//       double alpha = 0.9)
-//         : m_motor(motor),
-//           m_params(params),
-//           m_alpha(alpha) {}
-//
-//     void setTarget(std::variant<Voltage, AngularVelocity> target) {
-//         m_target = target;
-//     }
-//
-//     void update(Time duration) {
-//         if (std::holds_alternative<Voltage>(m_target)) {
-//             // useful for full speed commands
-//             moveVoltage(std::get<Voltage>(m_target));
-//             return;
-//         }
-//         AngularVelocity target = std::get<AngularVelocity>(m_target);
-//
-//         m_motor->move_velocity(to_rpm(target));
-//
-//         return;
-//
-//         // else we are using velocity control
-//         // TODO: what to do if motor unplugs??
-//
-//         AngularVelocity measurement = getMeasurement();
-//
-//         AngularVelocity error = target - measurement;
-//
-//         Angle current_integral = integral;
-//
-//         if (last_error)
-//             // use trapezoidal approximation
-//             current_integral += (error + *last_error) * duration / 2.0;
-//         else
-//             // use Riemann sum approximation
-//             current_integral += error * duration;
-//
-//         Voltage result {
-//             // kv
-//             target * m_params.Kv +
-//               // ks
-//               units::sgn(target) * m_params.Ks +
-//               // kp
-//               m_params.Kp * error +
-//               // ki
-//               m_params.Ki * current_integral,
-//         };
-//
-//         if (
-//           // currently saturating
-//           units::abs(result) >= m_params.max_output &&
-//           // output going in direct of error
-//           units::sgn(error) == units::sgn(result)) {
-//             // clamping, slever integral windup
-//             // no need to update integral to current integral
-//         } else {
-//             // not saturating, update integral
-//             integral = current_integral;
-//         }
-//
-//         result =
-//           units::clamp(result, -m_params.max_output, m_params.max_output);
-//
-//         last_error = error;
-//
-//         moveVoltage(result);
-//     }
-// };
 
 bool is_driver = false;
 bool tasks_active = false;
@@ -155,7 +49,9 @@ bool motorSlowed(pros::Motor& motor) {
 }
 
 namespace colors {
-std::optional<alliance_t> middle_color;
+std::optional<alliance_t> lower_color;
+std::optional<alliance_t> upper_color;
+pros::Mutex mutex;
 
 std::optional<alliance_t> colorDetected(pros::Optical& sensor) {
     // detect color from color sensor
@@ -177,12 +73,17 @@ std::optional<alliance_t> colorDetected(pros::Optical& sensor) {
     return result;
 }
 
-std::optional<alliance_t> getMiddleColor() {
-    return middle_color;
+std::optional<alliance_t> getLowerColor() {
+    return lower_color;
+}
+
+std::optional<alliance_t> getUpperColor() {
+    return upper_color;
 }
 
 void update() {
-    middle_color = colorDetected(middle_intake_color_sensor);
+    lower_color = colorDetected(lower_intake_color_sensor);
+    upper_color = colorDetected(upper_intake_color_sensor);
 }
 }; // namespace colors
 
@@ -215,12 +116,12 @@ void update() {
     bottom_intake_piston.set_value(bottom == up);
 }
 
-// sets the lever scoring to be blocked
+// sets the top scoring to be blocked
 void gate_blocked() {
     set_top(blocking);
 }
 
-// sets the lever scoring to be passthrough
+// sets the top scoring to be passthrough
 void gate_scoring() {
     set_top(passthrough);
 }
@@ -241,91 +142,53 @@ void intake_down() {
     set_bottom(down);
 }
 
-// helper functions for various configurations
-void blocked_lever_aligned() {
-    gate_blocked();
-    align_top();
-}
-
-void blocked_middle_aligned() {
-    gate_blocked();
-    align_middle();
-}
-
-void score_lever_aligned() {
-    gate_scoring();
-    align_top();
-}
-
-void score_middle_aligned() {
-    gate_scoring();
-    align_middle();
-}
-
 } // namespace pistons
 
 namespace bottom {
 pros::Mutex mutex;
-//
-// lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params
-// {
-//     .Kv = (1_volt / 600_rpm),
-//     // not really used
-//     .Ka = 0.0 * volt / radps2,
-//     .Ks = 0.02 * volt,
-//     // .Kp = 1_volt / 100_rpm,
-//     .Kp = 0.2_volt / 100_rpm,
-//     .Ki = 1.0 * volt / rad,
-// };
 
-// IntakeVelocityController controller(&bottom_motor, vel_controller_params);
-
-std::variant<Voltage, AngularVelocity> target;
-// Voltage pct;
-// AngularVelocity target_rpm;
-
-bool antijam_active = true;
-
-// amount of time we antijam
-Time antijam_timeout = 100_msec;
-
-Time antijam_outtake_timeout = 100_msec;
-
-// allows intake the settle right after antijamming, possibly avoids triggering
-// antijam immediately afterwards even if jam is cleared
-Time settle_time = 500_msec;
+Voltage target;
 
 bool outtake_antijam = false;
 
-void set_pct(Voltage new_pct) {
-    std::lock_guard lock(mutex);
-    target = new_pct;
+bool m_outtaking = false;
+Voltage m_outtaking_voltage = -1_volt;
+
+// outtaking voltage should be negative!!!
+void setOuttaking(bool outtaking, Voltage outtaking_voltage = -1_volt) {
+    m_outtaking = outtaking;
+    m_outtaking_voltage = -units::abs(outtaking_voltage);
 }
 
-void set_pct(float new_pct) {
-    std::lock_guard lock(mutex);
-    target = new_pct * volt;
-}
+// void set_pct(Voltage new_pct) {
+//     std::lock_guard lock(mutex);
+//     target = new_pct;
+// }
+//
+// void set_pct(float new_pct) {
+//     std::lock_guard lock(mutex);
+//     target = new_pct * volt;
+// }
 
-void set_rpm(AngularVelocity new_rpm) {
-    std::lock_guard lock(mutex);
-    target = new_rpm;
-}
+// void set_rpm(AngularVelocity new_rpm) {
+//     std::lock_guard lock(mutex);
+//     target = new_rpm;
+// }
+//
+// void set_rpm_pct(float new_vel_pct) {
+//     std::lock_guard lock(mutex);
+//     target = new_vel_pct * 600_rpm;
+// }
+//
+// void set_antijam(bool active) {
+//     std::lock_guard lock(mutex);
+//     antijam_active = active;
+// }
 
-void set_rpm_pct(float new_vel_pct) {
-    std::lock_guard lock(mutex);
-    target = new_vel_pct * 600_rpm;
-}
-
-void set_antijam(bool active) {
-    std::lock_guard lock(mutex);
-    antijam_active = active;
-}
-
-void set_outtake_antijam(bool active) {
-    std::lock_guard lock(mutex);
-    outtake_antijam = active;
-}
+// void set_outtake_antijam(bool active) {
+//     std::lock_guard lock(mutex);
+//     outtake_antijam = active;
+// }
 
 // directly updates hardware
 // should only be used by update function
@@ -333,13 +196,8 @@ void hardware_move_pct(Voltage pct) {
     bottom_motor.move_voltage(12 * to_mvolt(pct));
 }
 
-void hardware_update() {
-    if (std::holds_alternative<Voltage>(target))
-        hardware_move_pct(std::get<Voltage>(target));
-    // controller.setTarget(target);
-    //
-    // // TODO: make sure its actually this update rate
-    // controller.update(10_msec);
+void hardware_update(Voltage voltage) {
+    hardware_move_pct(voltage);
 }
 
 // update can be blocking if antijam or color sort are active
@@ -347,39 +205,59 @@ void hardware_update() {
 void update() {
     std::lock_guard lock(mutex);
 
-    bool bottom_jammed = motorJammed(bottom_motor);
+    // entirely determined by the lever state?
+    // bool bottom_jammed = motorJammed(bottom_motor);
 
-    if (antijam_active && bottom_jammed) {
-        // move bottom at 0 speed
-        if (outtake_antijam) {
-            hardware_move_pct(-1.0_volt);
-            // scoring antijam action
-            pros::delay(to_msec(antijam_outtake_timeout));
-        } else {
-            hardware_move_pct(0.0_volt);
-            // scoring antijam action
-            pros::delay(to_msec(antijam_timeout));
-        }
+    auto lever_state = lever::getTarget();
+    float lever_position = lever::getLeverPosition();
 
-        // afterwards move as normal, give it time to setttle
-        Time start_move_normal = now();
-        while (!timeoutDone(settle_time, start_move_normal)) {
-            if (std::holds_alternative<Voltage>(target) &&
-                // want to slever intake, stop immediately
-                // slever means to stop
-                units::abs(get<Voltage>(target).internal()) <= 0.01) {
-                break;
-            }
-            hardware_update();
-            pros::delay(10);
-        }
-
-        // afterwards goes through update again, if still jammed then
-        // antijams again
+    if (lever_position > 0.2) {
+        // lever is up, no case in which we want to be intaking
+        hardware_update(-0.5_volt);
     } else {
-        // no antijam active, move like normal
-        hardware_update();
+        // want to be either intaking or outtaking
+        // only case for outtaking is when scoring or taking all the balls out
+        if (m_outtaking) {
+            hardware_update(m_outtaking_voltage);
+        } else {
+            // intake with full speed to keep balls in, even if in a disabled
+            // state
+            hardware_update(1_volt);
+        }
     }
+
+    //
+    // if (antijam_active && bottom_jammed) {
+    //     // move bottom at 0 speed
+    //     if (outtake_antijam) {
+    //         hardware_move_pct(-1.0_volt);
+    //         // scoring antijam action
+    //         pros::delay(to_msec(antijam_outtake_timeout));
+    //     } else {
+    //         hardware_move_pct(0.0_volt);
+    //         // scoring antijam action
+    //         pros::delay(to_msec(antijam_timeout));
+    //     }
+    //
+    //     // afterwards move as normal, give it time to setttle
+    //     Time start_move_normal = now();
+    //     while (!timeoutDone(settle_time, start_move_normal)) {
+    //         if (std::holds_alternative<Voltage>(target) &&
+    //             // want to stop intake, stop immediately
+    //             // slever means to stop
+    //             units::abs(get<Voltage>(target).internal()) <= 0.01) {
+    //             break;
+    //         }
+    //         hardware_update();
+    //         pros::delay(10);
+    //     }
+    //
+    //     // afterwards goes through update again, if still jammed then
+    //     // antijams again
+    // } else {
+    //     // no antijam active, move like normal
+    //     hardware_update();
+    // }
 }
 
 } // namespace bottom
@@ -387,394 +265,231 @@ void update() {
 namespace lever {
 pros::Mutex mutex;
 
-enum DiscreteLeverState {
-    following_profile,
-    position_reset,
-    going_down,
-    down,
-    going_up,
-    up
-};
+LeverVelocityProfile::LeverVelocityProfile(std::function<float(float)> f)
+    : m_f(f) {}
 
-struct LeverVelocityProfile {
-    std::function<float(float)> m_f;
+// returns the desired target velocity at angle theta in range [0,1]
+float LeverVelocityProfile::velocity(float theta) {
+    return m_f(theta);
+}
 
-    LeverVelocityProfile(std::function<float(float)> f) {
-        m_f = f;
+// determines when the profile is finished with a motion
+// if finished, returns a discrete lever state to go back to
+// TODO: or maybe a target theta?
+std::optional<DiscreteLeverState> LeverVelocityProfile::finished(float theta) {}
+
+std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile> m_target;
+
+// lever_position = motor_position * position_to_theta_mult
+float position_to_theta_mult = 1;
+float zero_motor_position;
+float lever_position;
+
+// TODO: move to be modifiable
+Voltage action_voltage = 1_volt;
+
+void setActionVoltage(Voltage actionVoltage) {
+    action_voltage = actionVoltage;
+}
+
+void setTarget(
+  std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile>
+    target) {
+    m_target = target;
+}
+
+std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile>
+getTarget() {
+    return m_target;
+}
+
+float getLeverPosition() {
+    return lever_position;
+}
+
+void hardware_update(Voltage voltage) {
+    lever_motor.move_voltage(12 * to_mvolt(voltage));
+}
+
+void controller_init() {
+    // should get run once before running update?
+    zero_motor_position = lever_motor.get_position();
+}
+
+void controller_update() {
+    lever_position = (lever_motor.get_position() - zero_motor_position) *
+                     position_to_theta_mult;
+
+    const bool stalling = motorJammed(lever_motor);
+
+    if (std::holds_alternative<Voltage>(m_target)) {
+        // move with the desired voltage
+        hardware_update(std::get<Voltage>(m_target));
     }
+    if (std::holds_alternative<DiscreteLeverState>(m_target)) {
+        auto target_state = std::get<DiscreteLeverState>(m_target);
 
-    // returns the desired target velocity at angle theta in range [0,1]
-    float f(float theta) {
-        return m_f(theta);
-    }
+        Voltage applied_voltage;
+        if (target_state == down || target_state == up) {
+            // not moving, keep 0 voltage with motor hold
+            applied_voltage = 0_volt;
+        } else if (target_state == going_down) {
+            // going down with action_voltage
+            applied_voltage = -action_voltage;
 
-    // determines when the profile is finished with a motion
-    // if finished, returns a discrete lever state to go back to
-    // TODO: or maybe a target theta?
-    std::optional<DiscreteLeverState> finished(float theta) {}
-};
-
-class LeverController {
-  public:
-    std::variant<DiscreteLeverState, float, LeverVelocityProfile> m_target;
-
-    void setTarget(
-      std::variant<DiscreteLeverState, float, LeverVelocityProfile> target) {
-        m_target = target;
-    }
-
-    void hardware_update(Voltage voltage) {
-        lever_motor.move_voltage(12 * to_mvolt(voltage));
-    }
-
-    void init() {
-        // should get run once before running update?
-    }
-
-    void update() {
-        // lever_position = motor_position * position_to_theta_mult
-        float position_to_theta_mult = 1;
-        float zero_motor_position = lever_motor.get_position();
-        float current_motor_position = lever_motor.get_position();
-        float motor_position_delta =
-          current_motor_position - zero_motor_position;
-
-        float lever_position = motor_position_delta * position_to_theta_mult;
-
-        const bool stalling = motorJammed(lever_motor);
-
-        if (std::holds_alternative<DiscreteLeverState>(m_target)) {
-            auto target_state = std::get<DiscreteLeverState>(m_target);
-            // TODO: move to be modifiable
-            const Voltage action_voltage = 1_volt;
-
-            Voltage applied_voltage;
-            if (target_state == down || target_state == up) {
-                // not moving, keep 0 voltage with motor hold
-                applied_voltage = 0_volt;
-            } else if (target_state == going_down) {
-                // going down with action_voltage
-                applied_voltage = -action_voltage;
-
-                // when close enough to the bottom switch to wanting to reset
-                if (lever_position < 0.1) {
-                    target_state = DiscreteLeverState::position_reset;
-                }
-            } else if (target_state == going_up) {
-                // go up with action voltage
-                applied_voltage = action_voltage;
-
-                // TODO: determine when its fully up
-                if (lever_position > 0.9 && stalling) {
-                    // lever fully up?
-                    target_state = up;
-                }
-            } else if (target_state == position_reset) {
-                // TODO: determine
-                applied_voltage = -0.5_volt;
-                if (stalling) {
-                    zero_motor_position = lever_motor.get_position();
-                    lever_position = 0;
-                    target_state = down;
-                }
+            // when close enough to the bottom switch to wanting to reset
+            if (lever_position < 0.1) {
+                target_state = DiscreteLeverState::position_reset;
             }
+        } else if (target_state == going_up) {
+            // go up with action voltage
+            applied_voltage = action_voltage;
 
-            hardware_update(applied_voltage);
-        } else if (std::holds_alternative<float>(m_target)) {
-            // use some sort of control to move lever to target, possibly pid?
-        } else if (std::holds_alternative<LeverVelocityProfile>(m_target)) {
-            // follow profile with some sort of way
-            LeverVelocityProfile profile =
-              std::get<LeverVelocityProfile>(m_target);
+            // condition for stopping going up is stalling while close to
+            // the target end
+            if (lever_position > 0.9 && stalling) {
+                // lever fully up?
+                target_state = up;
+            }
+        } else if (target_state == position_reset) {
+            // TODO: determine
+            applied_voltage = -0.5_volt;
+            if (stalling) {
+                // reset motor position and switch to being down
+                zero_motor_position = lever_motor.get_position();
+                target_state = down;
+            }
+        }
 
-            auto desired_vel = profile.f(lever_position);
+        hardware_update(applied_voltage);
+    } else if (std::holds_alternative<float>(m_target)) {
+        // use some sort of control to move lever to target, possibly pid?
 
-            // TODO: follow desired vel with some controller
-			auto finished = profile.finished(lever_position);
-			if(finished.has_value()){
-				// switch to the desired discrete state
-				m_target = finished.value();
-			}
+        float position_target = std::get<float>(m_target);
+
+    } else if (std::holds_alternative<LeverVelocityProfile>(m_target)) {
+        // follow profile with some sort of way
+        LeverVelocityProfile profile = std::get<LeverVelocityProfile>(m_target);
+
+        auto desired_vel = profile.velocity(lever_position);
+
+        // TODO: follow desired vel with some controller
+        auto finished = profile.finished(lever_position);
+        if (finished.has_value()) {
+            // switch to the desired discrete state
+            m_target = finished.value();
         }
     }
-};
-
-LeverController controller;
-
-// lyfast::SimpleVelocityControllerParams<AngularVelocity> vel_controller_params
-// {
-//     .Kv = (1_volt / 600_rpm),
-//     // not really used
-//     .Ka = 0.0 * volt / radps2,
-//     .Ks = 0.02 * volt,
-//     // .Kp = 1_volt / 100_rpm,
-//     .Kp = 0.2_volt / 100_rpm,
-//     .Ki = 1.0 * volt / rad,
-// };
-
-// IntakeVelocityController controller(&lever_motor, vel_controller_params);
-
-// float close_threshold = 10.f / 100.f;
-// float position;
-// float target_position = 0;
+}
 
 bool target_up = false;
-
-// motor position when lever is down. should get recalibrated with every
-// reset
-// float motor_position_offset = 0;
-//
-// // turns the whole motor range into a number from 0-1
-// float motor_position_factor = 1;
-//
-// // while true hardware update does nothing
-// bool manual_voltage_control = false;
-//
-// Voltage hardware_target;
-// // AngularVelocity target_speed;
-//
-// bool antijam_active = false;
-
-// latest time since we started scoring
-// used to slever antijam from running for the first 200_msec of scoring
-// bool scoring
-bool m_is_scoring = false;
 Time score_start_time = 0_sec;
 
-// void set_target(float new_target) {
-//     std::lock_guard lock(mutex);
-//     // target_position = new_target;
-// }
-
-void set_target(bool up) {
-    std::lock_guard lock(mutex);
-    if (!target_up && up) score_start_time = now();
-    target_up = up;
-}
-
-void set_antijam(bool active) {
-    std::lock_guard lock(mutex);
-    // antijam_active = active;
-}
-
-// update scoring status, used by antijam
-// updating does not affect antijam active state
-// void set_scoring(bool is_scoring) {
-//     std::lock_guard lock(mutex);
-//     m_is_scoring = is_scoring;
-//     if (m_is_scoring) score_start_time = now();
-// }
-
-// resets position offset - MAKE SURE LEVER IS DOWN!
-// void resetPositionOffset() {
-//     motor_position_offset = lever_motor.get_position();
-// }
-//
-// void setManualVoltageControl(bool enabled) {
-//     std::lock_guard lock(mutex);
-//
-//     // stop any logic of controlling lever
-//     manual_voltage_control = enabled;
-// }
-
-// make sure manual voltage control is enabled for this to take effect
-// void setHardwareTarget(Voltage voltage_target) {
-//     std::lock_guard lock(mutex);
-//
-//     // stop any logic of controlling lever
-//     hardware_target = voltage_target;
-// }
-
-// should be called to reset the lever position. useful every time lever is down
-// void positionOffsetRoutine() {
-//     // stop any logic of controlling lever
-//     setManualVoltageControl(true);
-//
-//     // purposely stall the motor
-//     setHardwareTarget(-0.5_volt);
-//
-//     // waits until it stalls
-//     while (!motorJammed(lever_motor)) {
-//         pros::delay(10);
-//     }
-//
-//     // reset the position offset
-//     resetPositionOffset();
-//
-//     // go back to auto controlled
-//     setManualVoltageControl(false);
-// }
-
-// void updatePosition() {
-//     // get new position
-//     float motor_reported_position = lever_motor.get_position();
-//
-//     position =
-//       motor_position_factor * (motor_reported_position -
-//       motor_position_offset);
-// }
-//
-// void hardware_update() {
-//     lever_motor.move_voltage(12 * to_mvolt(hardware_target));
-// }
-
-// update can be blocking if antijam or color sort are active
-// while blocking it also locks the mutex
+// should not really be blocking
 void update() {
     std::lock_guard lock(mutex);
 
-    // TODO: put motor to hold on the lever
+    lever_motor.set_brake_mode(pros::MotorBrake::hold);
 
-    if (target_up) {
-        lever_motor.move_voltage(12000);
-    } else {
-        if (timeoutDone(1_sec, score_start_time)) {
-            lever_motor.move_voltage(0);
-        } else {
-            lever_motor.move_voltage(-12000);
-        }
-    }
-
-    // if not antijam then hardware updates
-    // updatePosition();
-    //
-    // if (!manual_voltage_control) {
-    //     float error = target_position - position;
-    //
-    //     if (units::abs(error) < close_threshold) {
-    //         // close enough, give minimal voltage in direction of error
-    //         hardware_target = 0.2 * units::sgn(error) * volt;
-    //         // else use simple bang bang controller
-    //     } else {
-    //         hardware_target = units::sgn(error) * volt;
-    //     }
-    // }
-    //
-    // hardware_update();
+    controller_update();
 }
 
 } // namespace lever
 
-// some more helper functions to make declaring states easier
-//
-// sets pct for both intake motors
-void set_pct(auto pct) {
-    bottom::set_pct(pct);
-    // lever::set_pct(pct);
-}
-
-// sets pct for both intake motors
-void set_pct(auto bottom, auto lever) {
-    bottom::set_pct(bottom);
-    // lever::set_pct(top);
-}
-
-// sets antijam for both
-void set_antijam(bool active) {
-    lever::set_antijam(true);
-    bottom::set_antijam(true);
-}
-
-// sets antijam for both
-void set_antijam(bool bottom_active, bool lever_active) {
-    lever::set_antijam(true);
-    bottom::set_antijam(true);
-}
-
 //
 // common intake states are defined here
 //
+
+// sets the target of the lever such that eventually it reaches the down state
+// and stays there
+void continuous_lever_down() {
+    // go max voltage down
+    lever::setActionVoltage(1.0_volt);
+
+    auto current_lever_target = lever::getTarget();
+    if (std::holds_alternative<lever::DiscreteLeverState>(
+          current_lever_target) &&
+        std::get<lever::DiscreteLeverState>(current_lever_target) ==
+          lever::down) {
+        // already down, change nothing
+    } else {
+        lever::setTarget(lever::going_down);
+    }
+}
+
+// sets the target of the lever such that eventually it reaches the down state
+// and stays there
+void continuous_lever_up(Voltage actionVoltage) {
+    auto current_lever_target = lever::getTarget();
+    if (std::holds_alternative<lever::DiscreteLeverState>(
+          current_lever_target) &&
+        std::get<lever::DiscreteLeverState>(current_lever_target) ==
+          lever::up) {
+        // already down, change nothing
+    } else {
+        lever::setTarget(lever::going_up);
+    }
+}
+
+//
 // only pauses motors, does not change piston states
 void motors_disabled() {
-    set_pct(0.0);
-    lever::set_target(false);
+    continuous_lever_down();
+    bottom::setOuttaking(false);
 }
 
 void in() {
-    set_pct(1.0);
-    lever::set_target(false);
+    continuous_lever_down();
+    bottom::setOuttaking(false);
+
     // does not set alignment
+    pistons::align_top();
     pistons::gate_blocked();
     pistons::intake_down();
-    pistons::align_top();
-}
-
-void intake_middle_balls(float bottom_speed, float lever_speed) {
-    set_pct(bottom_speed, lever_speed);
-
-    pistons::gate_blocked();
-    pistons::intake_down();
-    pistons::align_top();
-    lever::set_target(false);
 }
 
 void out() {
-    set_pct(-1.0);
-    lever::set_target(false);
-    // does not set alignment
+    continuous_lever_down();
+    bottom::setOuttaking(true, -1_volt);
+
+    // align top so all blocks come out
+    pistons::align_top();
     pistons::gate_blocked();
     pistons::intake_down();
 }
 
-void score_long_no_outtake(float bottom_speed, float lever_speed) {
-    set_pct(bottom_speed, lever_speed);
+void score_long(Voltage actionVoltage) {
+    continuous_lever_up(actionVoltage);
+    bottom::setOuttaking(false);
 
-    pistons::score_lever_aligned();
+    pistons::align_top();
+    pistons::gate_scoring();
     pistons::intake_down();
-    lever::set_target(true);
-}
-
-void score_long(float bottom_speed, float lever_speed) {
-    // outtake first
-    set_pct(0, -1);
-    pros::delay(100);
-
-    // score
-    score_long_no_outtake(bottom_speed, lever_speed);
 }
 
 // defaults:
-// score_middle -> bottom_speed = 1.0, lever_speed = 0.3
-void score_middle(float bottom_speed, float lever_speed) {
-    // set_pct(bottom_speed, lever_speed);
-    bottom::set_pct(bottom_speed);
-    // use speed for the lever
-    lever::set_target(true);
+void score_middle(Voltage actionVoltage) {
+    continuous_lever_up(actionVoltage);
+    bottom::setOuttaking(false);
 
-    pistons::score_middle_aligned();
+    pistons::align_middle();
+    pistons::gate_scoring();
     pistons::intake_down();
 }
 
-void score_middle_slow() {
-    // score middle even slower
-    score_middle(1.0, 0.25);
-}
-
 // defaults: bottom_speed = -0.5,  lever_speed = -1.0
-void score_bottom(float bottom_speed, float lever_speed) {
-    // set_pct(bottom_speed, lever_speed);
-    // set_pct(bottom_speed, lever_speed);
-    bottom::set_rpm_pct(bottom_speed);
-    lever::set_target(false);
-    // use speed for the lever
-    // lever::set_pct(top_speed);
+void score_bottom() {
+    continuous_lever_down();
+    bottom::setOuttaking(true, -0.5_volt);
 
-    // only updates bottom piston, no need to update others
+    pistons::align_top();
+    pistons::gate_blocked();
     pistons::intake_up();
 }
 
-void score_bottom_slow() {
-    score_middle(-0.3, -1.0);
-}
-
 namespace driver {
-bool was_scoring = false;
-
 void update() {
     if (!is_driver) return;
-
-    // CANNOT RETURN AFTER THIS POINT FOR WAS SCORING
-
     // update states based on driver input
     bool driver_intake = controller.get_digital(controls::L1);
 
@@ -782,19 +497,16 @@ void update() {
     bool score_middle_height = controller.get_digital(controls::R2);
     bool scoreLong = controller.get_digital(controls::R1);
 
-    bool kill_color_sort = controller.get_digital_new_press(controls::LEFT);
+    // bool kill_color_sort = controller.get_digital_new_press(controls::LEFT);
 
     bool unjam = controller.get_digital(controls::X);
 
-    // ONLY USED IN SKILLS
-    // bool score_slow = controller.get_digital(controls::RIGHT_SHIFT);
-
     // one time kill switch
-    if (color_sort_driver == true && kill_color_sort) {
-        color_sort_driver = false;
-    }
+    // if (color_sort_driver == true && kill_color_sort) {
+    //     color_sort_driver = false;
+    // }
 
-    else if (unjam) {
+    if (unjam) {
         out();
     }
 
@@ -803,31 +515,21 @@ void update() {
     }
 
     else if (score_middle_height) {
-        score_middle(1.0, 0.7);
+        score_middle();
     }
 
     else if (score_bottom_height) {
-        score_bottom(-0.6, -1.0);
+        score_bottom();
     }
 
     else if (scoreLong) {
-        if (was_scoring) {
-            // run with no outtake?
-            // do nothing?
-        } else {
-            // just do normal
-            score_long();
-
-            was_scoring = true;
-        }
+        score_long();
     } else {
         motors_disabled();
+        // alignment is not set when disabled
         pistons::gate_blocked();
         pistons::intake_down();
     }
-
-    // not scoring anymore
-    if (was_scoring && !scoreLong) was_scoring = false;
 }
 } // namespace driver
 
@@ -844,7 +546,8 @@ void init(bool driver) {
         }
     };
 
-    setup_color_sensor(middle_intake_color_sensor);
+    setup_color_sensor(lower_intake_color_sensor);
+    setup_color_sensor(upper_intake_color_sensor);
 
     // don't make another task
     if (tasks_active) return;

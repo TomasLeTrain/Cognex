@@ -64,6 +64,7 @@ class VelocityDifferentialDrivetrain : public ChainableDrivetrain {
                     AngularVelocity angular_velocity,
                     TargetFeedType feed_type = {}) {
         // TODO: saturate here or offload to controller?
+		std::cout << "moveArcade" << std::endl;
         m_plant->setTarget(
           DifferentialSpeeds { linear_velocity, angular_velocity },
           feed_type);

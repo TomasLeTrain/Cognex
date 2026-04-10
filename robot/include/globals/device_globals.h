@@ -23,8 +23,8 @@ extern vexmaps::ScaledIMU imu;
 extern pros::Motor bottom_motor;
 extern pros::Motor lever_motor;
 
-extern pros::Optical middle_intake_color_sensor;
-extern pros::Optical bottom_intake_color_sensor;
+extern pros::Optical lower_intake_color_sensor;
+extern pros::Optical upper_intake_color_sensor;
 
 // pistons
 extern pros::adi::DigitalOut gate_intake_piston;

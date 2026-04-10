@@ -1,6 +1,7 @@
 #include "apis.h"
 //
 
+#include "autos.h"
 #include "globals.h"
 #include "main.h"
 #include "systems/drivetrain.h"
@@ -192,6 +193,9 @@ void opcontrol() {
 
     // runs exclusively inside opcontrol to guarantee it does not interfer with
     // autos (stopped automatically when not in driver mode)
+
+    // RobotSetPose(48, -48, 0);
+
     while (true) {
         base::driveUpdate();
 

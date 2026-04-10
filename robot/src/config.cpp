@@ -3,6 +3,7 @@
 
 #include "blazing/controllers/controllers.hpp"
 #include "blazing/controllers/slew.hpp"
+#include "blazing/executor.hpp"
 #include "globals.h"
 #include "globals/blazing_globals.h"
 #include "globals/config.h"
@@ -30,8 +31,9 @@ int8_t right_front = -17;
 int8_t right_middle = 16;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
+// bool custom_particling = false;
 
 pros::MotorGroup left_motors({ left_front, left_middle, left_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
@@ -54,8 +56,8 @@ pros::Motor
 pros::Motor
   lever_motor(21, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
 
-pros::Optical middle_intake_color_sensor(6);
-pros::Optical bottom_intake_color_sensor(21);
+pros::Optical lower_intake_color_sensor(6);
+pros::Optical upper_intake_color_sensor(21);
 
 // pistons
 // disable for testing
@@ -84,7 +86,7 @@ pros::Distance right_distance(10);
 units::V2Position odom_cor_offsets = { 0.0_in, 0_in };
 
 // geometric -> cor
-units::V2Position dist_cor_offsets = { 0.6_in, 0_in };
+units::V2Position dist_cor_offsets = { 0.5_in, 0_in };
 
 constexpr units::Pose distToCor(units::Pose dist_pose) {
     return { dist_pose - dist_cor_offsets, dist_pose.orientation };
@@ -323,11 +325,11 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 //
 // blazing stuff - can keep alone
 ForwardsTracker left_motor_tracker(&left_motors,
-                                   -drivetrain_config.track_width / 2,
+                                   -drivetrain_config.track_radius,
                                    drivetrain_config.wheel_diameter,
                                    drivetrain_config.rpm);
 ForwardsTracker right_motor_tracker(&right_motors,
-                                    drivetrain_config.track_width / 2,
+                                    drivetrain_config.track_radius,
                                     drivetrain_config.wheel_diameter,
                                     drivetrain_config.rpm);
 
@@ -681,7 +683,9 @@ AsyncExecutor async;
 // ChainedExecutor chain(100_msec, chain_lerp);
 
 // avoids a division by zero
-ChainedExecutor chain(5_msec);
+AsyncExecutor chain([](blazing::motionExecutionResult result) {
+    return result.inChainTolerance.value_or(false);
+});
 
 // custom cos-like func
 double angular_linear_func(Angle angle) {

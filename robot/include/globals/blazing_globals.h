@@ -168,8 +168,7 @@ extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)> mb;
 // extern MotionBuilder<decltype(vexmaps_chassis), decltype(controllers)>
 // mb_vel;
 
-extern ChainedExecutor chain;
-
+extern AsyncExecutor chain;
 // motion things
 
 // custom cos-like func

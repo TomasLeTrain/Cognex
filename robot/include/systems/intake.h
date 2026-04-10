@@ -15,8 +15,10 @@ bool motorJammed(pros::Motor& motor);
 bool motorSlowed(pros::Motor& motor);
 
 namespace colors {
-std::optional<alliance_t> getMiddleColor();
+std::optional<alliance_t> colorDetected(pros::Optical& sensor);
 
+std::optional<alliance_t> getLowerColor();
+std::optional<alliance_t> getUpperColor();
 void update();
 }; // namespace colors
 
@@ -37,9 +39,7 @@ enum bottom_state_t {
 };
 
 void set_top(top_state_t top_state);
-
 void set_middle(middle_state_t middle_state);
-
 void set_bottom(bottom_state_t bottom_state);
 
 void update();
@@ -48,104 +48,92 @@ void update();
 void gate_blocked();
 
 // sets the top scoring to be passthrough
-void gate_passthrough();
+void gate_scoring();
 
 void align_top();
-
 void align_middle();
-
 void intake_up();
-
 void intake_down();
-
-// helper functions for various configurations
-void blocked_top_aligned();
-
-void blocked_middle_aligned();
-
-void score_top_aligned();
-
-void score_middle_aligned();
 
 } // namespace pistons
 
 namespace bottom {
-
 void set_pct(Voltage new_pct);
-
 void set_pct(float new_pct);
-
+// void set_rpm(AngularVelocity new_rpm);
+// void set_rpm_pct(float new_vel_pct);
 void set_antijam(bool active);
-
 void set_outtake_antijam(bool active);
-
-void update();
 
 } // namespace bottom
 
 namespace lever {
-void set_pct(Voltage new_pct);
-// void set_pct(Voltage new_pct);
+enum DiscreteLeverState {
+    following_profile,
+    position_reset,
+    going_down,
+    down,
+    going_up,
+    up
+};
+
+struct LeverVelocityProfile {
+    std::function<float(float)> m_f;
+
+    LeverVelocityProfile(std::function<float(float)> f);
+
+    // returns the desired target velocity at angle theta in range [0,1]
+    float velocity(float theta);
+
+    // determines when the profile is finished with a motion
+    // if finished, returns a discrete lever state to go back to
+    // TODO: or maybe a target theta?
+    std::optional<DiscreteLeverState> finished(float theta);
+};
+
+void setActionVoltage(Voltage actionVoltage);
+
+void setTarget(
+  std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile>
+    target);
+std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile>
+getTarget();
+float getLeverPosition();
+
+void hardware_update(Voltage voltage);
+
+} // namespace lever
+
 //
-// void set_pct(float new_pct);
+// common intake states are defined here
 //
-// void set_antijam(bool active);
-//
-// // update scoring status, used by antijam
-// // updating does not affect antijam active state
-// void set_scoring(bool is_scoring);
 
-// update can be blocking if antijam or color sort are active
-// while blocking it also locks the mutex
-void update();
+// sets the target of the lever such that eventually it reaches the down state
+// and stays there
+void continuous_lever_down();
 
-} // namespace top
+// sets the target of the lever such that eventually it reaches the down state
+// and stays there
+void continuous_lever_up(Voltage actionVoltage = 1_volt);
 
-void init(bool driver);
-
-// sets pct for both intake motors
-void set_pct(auto pct);
-
-// sets pct for both intake motors
-void set_pct(auto bottom, auto top);
-
-// sets antijam for both
-void set_antijam(bool active);
-
-// sets antijam for both
-void set_antijam(bool bottom_active, bool top_active);
-
-//
-//
 //
 // only pauses motors, does not change piston states
 void motors_disabled();
 
 void in();
-
-// useful for intaking balls only for bottom goal
-// defaults to bottom full speed, top disabled
-void intake_middle_balls(float bottom_speed = 1.0, float top_speed = 0.0);
-
 void out();
 
-void score_long_no_outtake(float bottom_speed, float top_speed);
+void score_long(Voltage actionVoltage = 1_volt);
 
-// default is full speed
-void score_long(float bottom_speed = 1.0, float top_speed = 1.0);
+void score_middle(Voltage actionVoltage = 0.5_volt);
 
-// default is fast on bottom, scores slower on top motor for middle goal
-void score_middle(float bottom_speed = 1.0, float top_speed = 0.3);
-
-// even slower scoring middle
-void score_middle_slow();
-
-// defaults to fast on top, slower on bottom
-void score_bottom(float bottom_speed = -0.5, float top_speed = -1.0);
-
-void score_bottom_slow();
+void score_bottom();
 
 namespace driver {
-void update();
+// void update();
 } // namespace driver
-}; // namespace intake
+
+// initializes pistons, lever, and bottom systems
+void init(bool driver);
+
+} // namespace intake
