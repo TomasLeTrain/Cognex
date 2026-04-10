@@ -281,7 +281,7 @@ std::optional<DiscreteLeverState> LeverVelocityProfile::finished(float theta) {}
 std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile> m_target;
 
 // lever_position = motor_position * position_to_theta_mult
-float position_to_theta_mult = 1;
+float position_to_theta_mult = 1 / 0.842;
 float zero_motor_position;
 float lever_position;
 
@@ -311,10 +311,10 @@ void hardware_update(Voltage voltage) {
     lever_motor.move_voltage(12 * to_mvolt(voltage));
 }
 
-void controller_init() {
-    // should get run once before running update?
-    zero_motor_position = lever_motor.get_position();
-}
+// void controller_init() {
+//     // should get run once before running update?
+//     zero_motor_position = lever_motor.get_position();
+// }
 
 void controller_update() {
     lever_position = (lever_motor.get_position() - zero_motor_position) *
@@ -339,7 +339,7 @@ void controller_update() {
 
             // when close enough to the bottom switch to wanting to reset
             if (lever_position < 0.1) {
-                target_state = DiscreteLeverState::position_reset;
+                m_target = DiscreteLeverState::position_reset;
             }
         } else if (target_state == going_up) {
             // go up with action voltage
@@ -347,9 +347,9 @@ void controller_update() {
 
             // condition for stopping going up is stalling while close to
             // the target end
-            if (lever_position > 0.9 && stalling) {
+            if (lever_position > 0.93 && stalling) {
                 // lever fully up?
-                target_state = up;
+                m_target = up;
             }
         } else if (target_state == position_reset) {
             // TODO: determine
@@ -357,7 +357,7 @@ void controller_update() {
             if (stalling) {
                 // reset motor position and switch to being down
                 zero_motor_position = lever_motor.get_position();
-                target_state = down;
+                m_target = down;
             }
         }
 
@@ -409,8 +409,10 @@ void continuous_lever_down() {
     auto current_lever_target = lever::getTarget();
     if (std::holds_alternative<lever::DiscreteLeverState>(
           current_lever_target) &&
-        std::get<lever::DiscreteLeverState>(current_lever_target) ==
-          lever::down) {
+        (std::get<lever::DiscreteLeverState>(current_lever_target) ==
+           lever::down ||
+         std::get<lever::DiscreteLeverState>(current_lever_target) ==
+           lever::position_reset)) {
         // already down, change nothing
     } else {
         lever::setTarget(lever::going_down);
@@ -420,6 +422,9 @@ void continuous_lever_down() {
 // sets the target of the lever such that eventually it reaches the down state
 // and stays there
 void continuous_lever_up(Voltage actionVoltage) {
+    // go max voltage down
+    lever::setActionVoltage(1.0_volt);
+
     auto current_lever_target = lever::getTarget();
     if (std::holds_alternative<lever::DiscreteLeverState>(
           current_lever_target) &&
@@ -435,7 +440,7 @@ void continuous_lever_up(Voltage actionVoltage) {
 // only pauses motors, does not change piston states
 void motors_disabled() {
     continuous_lever_down();
-    bottom::setOuttaking(false);
+    bottom::setOuttaking(true, 0_volt);
 }
 
 void in() {

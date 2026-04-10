@@ -312,8 +312,6 @@ void run_auton() {
     // start auton
     RobotSetPose(-44.365, 0, 180);
 
-    std::cout << "Stated auto: " << std::endl;
-
     intake::in();
 
     mb.moveTo(-15.992, 15.457).reverse() | run;

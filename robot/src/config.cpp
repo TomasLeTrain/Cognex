@@ -23,15 +23,15 @@ using namespace vexmaps;
 // clang-format off
 // motor groups
 
-int8_t left_front = 15;
-int8_t left_middle = -14;
+int8_t left_front = -14;
+int8_t left_middle = -13;
 int8_t left_back = -12;
 
-int8_t right_front = -17;
-int8_t right_middle = 16;
+int8_t right_front = 17;
+int8_t right_middle = 18;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = true;
+bool vexmaps_logging_enabled = false;
 bool custom_particling = true;
 // bool custom_particling = false;
 
@@ -52,9 +52,9 @@ vexmaps::ScaledIMU imu(20, (360.0 + 1.5) / 360.0);
 
 // disable for testing
 pros::Motor
-  bottom_motor(21, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
+  bottom_motor(8, pros::MotorGears::blue, pros::MotorEncoderUnits::rotations);
 pros::Motor
-  lever_motor(21, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
+  lever_motor(-2, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
 
 pros::Optical lower_intake_color_sensor(6);
 pros::Optical upper_intake_color_sensor(21);

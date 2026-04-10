@@ -10,6 +10,7 @@
 #include "health_daemon.h"
 #include "main.h"
 #include "screen/screen.h"
+#include "systems/intake.h"
 #include <mutex>
 #include <string>
 
@@ -99,7 +100,8 @@ void timeCriticalTask() {
                 // std::cout << "moving: "
                 //           << curr_drivetrain_voltages.left_voltage.internal()
                 //           << " "
-                //           << curr_drivetrain_voltages.right_voltage.internal()
+                //           <<
+                //           curr_drivetrain_voltages.right_voltage.internal()
                 //           << std::endl;
             }
 
@@ -319,16 +321,22 @@ void initialize() {
     //   [&] {
     //       while (true) {
     //           screen::health::set_console_text(
-    //             std::format("vexmaps pose: {:.4f} {:.4f}\n"
-    //                         "motion model pose: {:.4f} {:.4f}\n"
-    //                         "blazing pose: {:.4f} {:.4f} {:.4f}\n",
-    //                         vexmaps_tracker.getPosition().x.convert(in),
-    //                         vexmaps_tracker.getPosition().y.convert(in),
-    //                         pf_motion_model.getPose().x.convert(in),
-    //                         pf_motion_model.getPose().y.convert(in),
-    //                         tracker.getPosition().x.convert(in),
-    //                         tracker.getPosition().y.convert(in),
-    //                         tracker.getAngle().convert(deg)));
+    //             std::format("position: {:.4f}",
+    //                         intake::lever::getLeverPosition()));
+    //
+    //           // 0.7411
+    //
+    //           // screen::health::set_console_text(
+    //           //   std::format("vexmaps pose: {:.4f} {:.4f}\n"
+    //           //               "motion model pose: {:.4f} {:.4f}\n"
+    //           //               "blazing pose: {:.4f} {:.4f} {:.4f}\n",
+    //           //               vexmaps_tracker.getPosition().x.convert(in),
+    //           //               vexmaps_tracker.getPosition().y.convert(in),
+    //           //               pf_motion_model.getPose().x.convert(in),
+    //           //               pf_motion_model.getPose().y.convert(in),
+    //           //               tracker.getPosition().x.convert(in),
+    //           //               tracker.getPosition().y.convert(in),
+    //           //               tracker.getAngle().convert(deg)));
     //
     //           pros::delay(50);
     //       }
