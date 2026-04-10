@@ -112,13 +112,14 @@ class AsyncExecutorBase : public Executor {
 
 class AsyncExecutor : public AsyncExecutorBase {
   public:
-    using CustomExitConditionT = std::function<bool(motionExecutionResult)>;
+    using CustomExitConditionT =
+      std::function<bool(motionExecutionResult, AsyncExecutor*)>;
 
   private:
     std::queue<std::unique_ptr<MotionBase>> motions;
 
     CustomExitConditionT m_custom_exit_condition =
-      [](motionExecutionResult result) -> bool {
+      [](motionExecutionResult result, AsyncExecutor* executor) -> bool {
         return false;
     };
 

@@ -180,10 +180,16 @@ class distanceAtHeading
         if constexpr (hasChainLinearTolerance<TolerancesType>) {
             updateTolerance(result.inChainTolerance,
                             this->tolerances.chain_linear.withinTolerance());
+
+            // NOTE: don't remove, this resets the tolerances
+            this->tolerances.chain_linear.finished();
         }
         if constexpr (hasChainAngularTolerance<TolerancesType>) {
             updateTolerance(result.inChainTolerance,
                             this->tolerances.chain_angular.withinTolerance());
+
+            // NOTE: don't remove, this resets the tolerances
+            this->tolerances.chain_angular.finished();
         }
 
         result.finished = state.linear_settled && state.angular_settled;
@@ -263,7 +269,8 @@ class distanceAtHeading
                 // // std::cout << std::fixed;
                 // // std::cout << std::setprecision(5);
                 // //
-                // // std::cout << "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
+                // // std::cout <<
+                // "dist/lin/ang/drive_left/drive_right/tv_l/tv_r/"
                 // //              "av_l/av_r/x/y/theta/t_err: "
                 // //           << linear_error.internal() << " "
                 // //           << target.linear_velocity.internal() << " "

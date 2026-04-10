@@ -580,7 +580,6 @@ class DifferentialVelocityController {
     }
 
     LeftRightVoltages update(LeftRightSpeeds measurement, Time duration) {
-		std::cout << "vel_update" << std::endl;
         LinearVelocity linear =
           (measurement.left_vel + measurement.right_vel) / 2;
         LinearVelocity angular =

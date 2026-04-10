@@ -208,7 +208,6 @@ class DrivetrainVelocityPlant {
     uint32_t m_last_update_timestamp;
 
     LeftRightVoltages controllerUpdate(Time duration) {
-        std::cout << "controllerUpdate" << std::endl;
         return m_controller.update(getEstimatedSpeeds(), duration);
     }
 
@@ -236,19 +235,10 @@ class DrivetrainVelocityPlant {
 
     void update(Time dt) {
         std::lock_guard lock(m_mutex);
-        std::cout << "update: "
-                  << (std::holds_alternative<DifferentialSpeeds>(m_target) ?
-                        "differential " :
-                        " ")
-                  << (std::holds_alternative<LeftRightVoltages>(m_target) ?
-                        "voltage" :
-                        "")
-                  << std::endl;
 
         if (std::holds_alternative<LeftRightVoltages>(m_target)) {
             m_commanded_voltages = std::get<LeftRightVoltages>(m_target);
         } else if (std::holds_alternative<DifferentialSpeeds>(m_target)) {
-            std::cout << "controllerUpdate: " << dt.convert(msec) << std::endl;
             m_commanded_voltages = controllerUpdate(dt);
         }
 
@@ -274,13 +264,11 @@ class DrivetrainVelocityPlant {
         // if they differ in the type they hold
         if (new_target.index() != m_target.index() && new_target_is_vel) {
             // resets controller if we go from voltage to velocity
-            std::cout << "reset controller" << std::endl;
             m_controller.reset();
         }
 
         // update target for controller, if being used
         if (new_target_is_vel) {
-            std::cout << "new_target_is_vel" << std::endl;
             m_controller.setTarget(std::get<DifferentialSpeeds>(new_target),
                                    feedforward_type);
         }

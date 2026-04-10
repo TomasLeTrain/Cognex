@@ -197,6 +197,9 @@ class moveTo
         if constexpr (hasChainLinearTolerance<TolerancesType>) {
             result.inChainTolerance =
               this->tolerances.chain_linear.withinTolerance();
+
+            // NOTE: don't remove, this resets the tolerances
+            this->tolerances.chain_linear.finished();
         }
 
         // check timeout

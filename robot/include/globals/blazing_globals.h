@@ -127,8 +127,9 @@ extern Tolerances<decltype(angular_tolerances_config.large_error),
   largeAngularTolerances;
 
 // chain tolerances
-extern Tolerances<decltype(linear_tolerances_config.chain_error),
-                  decltype(linear_tolerances_config.chain_halfCircle)>
+extern Tolerances<decltype(linear_tolerances_config.chain_error)
+                  // ,decltype(linear_tolerances_config.chain_halfCircle)
+                  >
   chainLinearTolerances;
 
 extern Tolerances<decltype(angular_tolerances_config.chain_error)>

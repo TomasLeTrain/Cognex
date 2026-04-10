@@ -175,7 +175,9 @@ class turnToBase : public Motion<ControllersType,
         if constexpr (hasChainAngularTolerance<TolerancesType>) {
             result.inChainTolerance =
               this->tolerances.chain_angular.withinTolerance();
-            // doesn't get used to check if finished
+
+            // NOTE: don't remove, this resets the tolerances
+            this->tolerances.chain_angular.finished();
         }
 
         // when chaining we would like to chain immediately

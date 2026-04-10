@@ -15,13 +15,13 @@ class ToleranceBase {
 
     void updateInTolerance(std::optional<bool> tolerance,
                            bool stop_instantly = false) {
-        if (in_tolerance.has_value()) {
-            if (tolerance.has_value())
+        m_stop_instantly |= stop_instantly;
+        if (tolerance.has_value()) {
+            if (in_tolerance.has_value()) {
                 in_tolerance = in_tolerance.value() && tolerance.value();
-            m_stop_instantly |= stop_instantly;
-        } else {
-            if (tolerance.has_value()) in_tolerance = tolerance.value();
-            m_stop_instantly = stop_instantly;
+            } else {
+                in_tolerance = tolerance.value();
+            }
         }
     }
 };

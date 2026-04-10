@@ -96,11 +96,11 @@ void timeCriticalTask() {
                   12 * to_mvolt(curr_drivetrain_voltages.left_voltage));
                 right_motors.move_voltage(
                   12 * to_mvolt(curr_drivetrain_voltages.right_voltage));
-                std::cout << "moving: "
-                          << curr_drivetrain_voltages.left_voltage.internal()
-                          << " "
-                          << curr_drivetrain_voltages.right_voltage.internal()
-                          << std::endl;
+                // std::cout << "moving: "
+                //           << curr_drivetrain_voltages.left_voltage.internal()
+                //           << " "
+                //           << curr_drivetrain_voltages.right_voltage.internal()
+                //           << std::endl;
             }
 
             pros::Task::delay_until(&systemTime, 2);

@@ -202,7 +202,7 @@ tolerances_config_t<Length> linear_tolerances_config {
     .large_velocity { 30_inps },
 
     .chain_duration = 1_sec,
-    .chain_error { 6_in },
+    .chain_error { 3_in },
 };
 
 tolerances_config_t<Angle> angular_tolerances_config {
@@ -348,7 +348,8 @@ ArcOdomTracker tracker(
   // forward trackers
   { &forwards_tracker, &left_motor_tracker, &right_motor_tracker },
   // sideways trackers
-  { &sideways_tracker },
+  // { &sideways_tracker },
+  {},
   // imus
   { &imu_tracker },
   odom_cor_offsets);
@@ -522,9 +523,9 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 //
 // used for seeking motions
 PID<Angle, AngularVelocity> linear_angular_vel_pid(
-  12.50,
+  14.50,
   0.0,
-  8.0,
+  10.0,
   to_stRad(10_stDeg), // windup range
   to_radps(drivetrain_config.max_angular_velocity), // restrict max vel
   std::nullopt, // derivative alpha
@@ -643,11 +644,12 @@ Tolerances<decltype(angular_tolerances_config.large_error),
                          angular_tolerances_config.large_velocity);
 
 // chain tolerances
-Tolerances<decltype(linear_tolerances_config.chain_error),
-           decltype(linear_tolerances_config.chain_halfCircle)>
+Tolerances<decltype(linear_tolerances_config.chain_error)
+           // , decltype(linear_tolerances_config.chain_halfCircle)
+           >
   chainLinearTolerances(linear_tolerances_config.chain_duration,
-                        linear_tolerances_config.chain_error,
-                        linear_tolerances_config.chain_halfCircle
+                        linear_tolerances_config.chain_error
+                        // linear_tolerances_config.chain_halfCircle
                         // linear_tolerances_config.chain_velocity
   );
 
@@ -683,8 +685,10 @@ AsyncExecutor async;
 // ChainedExecutor chain(100_msec, chain_lerp);
 
 // avoids a division by zero
-AsyncExecutor chain([](blazing::motionExecutionResult result) {
-    return result.inChainTolerance.value_or(false);
+AsyncExecutor chain([](blazing::motionExecutionResult result,
+                       AsyncExecutor* executor) {
+    return (executor->numQueuedMotions() > 1) &&
+           result.inChainTolerance.value_or(false);
 });
 
 // custom cos-like func
@@ -748,7 +752,7 @@ vexmaps::VerticalOdometryTracker
 
 // if the tracker is not installed the list can be left empty -> tracker = {};
 std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers = {
-    &horizontal_tracker
+    // &horizontal_tracker
 };
 std::initializer_list<VerticalOdometryTracker*> vertical_trackers = {
     &vertical_tracker
