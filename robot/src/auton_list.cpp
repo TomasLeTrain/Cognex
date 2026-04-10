@@ -13,6 +13,6 @@ std::unordered_map<std::string, std::function<void()>> auton_list = {
 	// L_AUTON(qual_match_first, "match first 7 split")
 	// L_AUTON(seven_ball,"seven ball")
 	//
-	// L_AUTON(states_skills,"skills")
+	L_AUTON(skills,"skills")
 };
 // clang-format on

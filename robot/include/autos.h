@@ -38,8 +38,6 @@ void LaserResets(std::vector<vexmaps::DistanceSensorModel*> enabled_lasers,
                  bool x = true,
                  bool y = true);
 
-
-
 /**
  * @brief creates function which returns true when robot is within threshold
  * distance to target. Can be used for async/chain motions:
@@ -91,3 +89,15 @@ std::function<bool()> closeEnough(units::V2Position target, Length threshold);
  */
 std::function<bool()>
 closeEnough(double target_x, double target_y, double threshold);
+
+std::shared_ptr<lyfast::geometry::Line>
+line(float x0, float y0, float x1, float y1);
+
+std::shared_ptr<lyfast::geometry::CubicBezier> curve(float x0,
+                                                     float y0,
+                                                     float x1,
+                                                     float y1,
+                                                     float x2,
+                                                     float y2,
+                                                     float x3,
+                                                     float y3);

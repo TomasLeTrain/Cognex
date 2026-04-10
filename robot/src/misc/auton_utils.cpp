@@ -145,3 +145,26 @@ std::function<bool()>
 closeEnough(double target_x, double target_y, double threshold) {
     return closeEnough({ target_x * in, target_y * in }, threshold * in);
 }
+
+std::shared_ptr<lyfast::geometry::Line>
+line(float x0, float y0, float x1, float y1) {
+    return std::make_shared<lyfast::geometry::Line>(
+      units::V2FPosition { from_in(x0), from_in(y0) },
+      units::V2FPosition { from_in(x1), from_in(y1) });
+}
+
+std::shared_ptr<lyfast::geometry::CubicBezier> curve(float x0,
+                                                     float y0,
+                                                     float x1,
+                                                     float y1,
+                                                     float x2,
+                                                     float y2,
+                                                     float x3,
+                                                     float y3) {
+    return std::make_shared<lyfast::geometry::CubicBezier>(
+      units::V2FPosition { from_in(x0), from_in(y0) },
+      units::V2FPosition { from_in(x1), from_in(y1) },
+      units::V2FPosition { from_in(x2), from_in(y2) },
+      units::V2FPosition { from_in(x3), from_in(y3) });
+}
+

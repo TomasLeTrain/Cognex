@@ -18,7 +18,7 @@ void testing_auton_func() {
     setFieldSide(field_side_t::left);
     setAlliance(alliance_t::red);
 
-    setAuton("awp");
+    setAuton("skills");
 
     auto selected_auton_function = auton_list[selected_auton];
     selected_auton_function();

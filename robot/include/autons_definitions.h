@@ -40,6 +40,7 @@
 // H_AUTON(qual_match_first)
 // H_AUTON(seven_split)
 H_AUTON(awp)
+H_AUTON(skills)
 // H_AUTON(seven_ball)
 //
 // H_AUTON(elims_nineball_split)

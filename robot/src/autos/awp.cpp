@@ -119,7 +119,7 @@ void score_long_goal(double sign_x, double sign_y, Time score_time) {
     // turn to goal, reversed
     Length long_goal = 47.0_in;
 
-    mb.moveTo(30_in * sign_x, long_goal * sign_y).reverse() | run;
+    mb.moveTo(35_in * sign_x, long_goal * sign_y).reverse() | run;
 
     // auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
     // auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
@@ -184,147 +184,6 @@ void score_long_goal(double sign_x, double sign_y, Time score_time) {
     // async.exitAll();
 }
 
-std::shared_ptr<lyfast::geometry::Line>
-line(float x0, float y0, float x1, float y1) {
-    return std::make_shared<lyfast::geometry::Line>(
-      units::V2FPosition { from_in(x0), from_in(y0) },
-      units::V2FPosition { from_in(x1), from_in(y1) });
-}
-
-std::shared_ptr<lyfast::geometry::CubicBezier> curve(float x0,
-                                                     float y0,
-                                                     float x1,
-                                                     float y1,
-                                                     float x2,
-                                                     float y2,
-                                                     float x3,
-                                                     float y3) {
-    return std::make_shared<lyfast::geometry::CubicBezier>(
-      units::V2FPosition { from_in(x0), from_in(y0) },
-      units::V2FPosition { from_in(x1), from_in(y1) },
-      units::V2FPosition { from_in(x2), from_in(y2) },
-      units::V2FPosition { from_in(x3), from_in(y3) });
-}
-
-namespace skills_paths {
-auto start_TO_in_red_park = line(-44.125, 0.039, -61.257, 0.363);
-auto in_red_park_TO_out_of_red = line(-61.257, 0.363, -44.365, 0.235);
-auto out_of_red_TO_get_blue_middle =
-  curve(-44.365, 0.235, -30.572, -0.922, -16.487, 8.767, -17.78, 17.656);
-auto get_blue_middle_TO_score_middle = line(-17.78, 17.656, -13.179, 12.513);
-auto score_middle_TO_ull =
-  curve(-13.179, 12.513, -30.308, 27.086, -32.253, 47.2, -37.891, 47.2);
-auto ull_TO_uls = line(-37.891, 47.2, -30.06, 47.2);
-auto uls_TO_ulm = line(-30.06, 47.2, -57.173, 46.6);
-auto ulm_TO_url1 =
-  curve(-57.173, 46.6, -37.078, 46.6, -49.792, 67.874, 22.979, 59.339);
-auto url1_TO_End_Control =
-  curve(22.979, 59.339, 30.56, 58.034, 34.696, 53.895, 36, 47.2);
-auto End_Control_TO_urls = line(36, 47.2, 30.2, 47.2);
-auto urls_TO_urm = line(30.2, 47.2, 56.959, 46.6);
-auto urm_TO_urls2 = line(56.959, 46.6, 30.2, 47.2);
-auto urls2_TO_ur_cluster =
-  curve(30.2, 47.2, 40.083, 46.256, 27.22, 37.467, 30.776, 31.164);
-auto ur_cluster_TO_blue_park = line(30.776, 31.164, 44.859, -0.234);
-auto blue_park_TO_in_blue_park = line(44.859, -0.234, 61.945, -0.234);
-auto in_blue_park_TO_blue_park2 = line(61.945, -0.234, 45.304, -0.056);
-auto blue_park2_TO_go_bottom = line(45.304, -0.056, 16.95, 18.346);
-auto go_bottom_TO_bottom_score = line(16.95, 18.346, 11.967, 12.295);
-auto bottom_score_TO_back_bottom = line(11.967, 12.295, 16.594, 16.389);
-auto back_bottom_TO_dr_cluster = line(16.594, 16.389, 23.741, -23.427);
-auto dr_cluster_TO_drl =
-  curve(23.741, -23.427, 36.435, -44.03, 35.082, -47.2, 39.523, -47.2);
-auto drl_TO_drls = line(39.523, -47.2, 29.949, -47.2);
-auto drls_TO_drm = line(29.949, -47.2, 57.098, -47.059);
-auto drm_TO_dll =
-  curve(57.098, -47.059, 25.566, -46.6, 48.236, -64.96, -22.032, -60.53);
-auto dll_TO_dls =
-  curve(-22.032, -60.53, -37.44, -60.465, -45.449, -47.829, -31.435, -47.2);
-auto dls_TO_dlm = line(-31.435, -47.2, -56.502, -47.295);
-auto dlm_TO_dls2 = line(-56.502, -47.295, -31.435, -47.2);
-auto dls2_TO_ending =
-  curve(-31.435, -47.2, -66.497, -47.2, -61.239, -20.894, -62.307, -0.693);
-} // namespace skills_paths
-
-void silly() {
-    using namespace blazing::lyfast;
-    using namespace blazing::lyfast::geometry;
-    using namespace blazing::lyfast::mp;
-
-    std::shared_ptr<geometry::Spline> spline_ptr { new Spline(
-      { skills_paths::ulm_TO_url1, skills_paths::url1_TO_End_Control }) };
-
-    // auto start_position = spline_ptr->getFirstEndpoint();
-    // auto start_angle = spline_ptr->df(0).getAngle();
-    // arc_pose_tracker.setPose({ start_position, start_angle });
-
-    RobotConstraints robot_constraints(
-      10.5_in, // track with
-      // 0.05, // friction coeff - should tune?
-      1.00, // friction coeff - should tune?
-      3.25_in, // wheel diameter
-      389_rpm, // max ang vel - determined somewhat from data
-      6.7_kg, // about 14.8 lbs
-      // 1.36f); // motor count - determined somewhat from data
-      // 2.5f); // motor count - determined somewhat from data
-      3.0f); // motor count - determined somewhat from data
-
-    LinearConstraints linear_constraints(
-      70_inps, // max vel - for testing
-      // 20.0_inps2, // max accel - for testing
-      10000.0_inps2, // max accel - for testing
-      // 150_inps2 // max decel - for testing also
-      200_inps2 // max decel - for testing also
-    );
-    //
-    // // TODO: what is the difference between angular accel/decel?
-    // AngularConstraints
-    // angular_constraints(2.0_radps, 1.3_radps2, 1.3_radps2);
-    AngularConstraints angular_constraints(2.0_radps,
-                                           // 1.3_radps2,
-                                           // 1.3_radps2
-
-                                           2.0_radps2,
-                                           2.0_radps2);
-    //
-    Constraints constraints(robot_constraints,
-                            linear_constraints,
-                            angular_constraints);
-    //
-    // bool debug = true;
-    bool debug = false;
-    //
-    std::shared_ptr<Trajectory> test_trajectory(
-      new Trajectory(spline_ptr,
-                     constraints,
-                     {},
-                     {},
-                     // some initial velocity for it to move?
-                     // TODO: could there be a place on the curve that also has
-                     // a velof zero? if so this would also have the same issue?
-                     0_inps,
-                     0_inps,
-                     0.1_in,
-                     debug));
-
-    // trajectoryDebugPrint(test_trajectory.get());
-
-    // print out final trajectory and debug info
-
-    // drivetrain.setBrakeMode(pros::v5::MotorBrake::hold);
-
-    // std::cout << "running path!" << std::endl;
-    // use path follow to follow the path
-    lyfast::PathFollow(controllers, vexmaps_chassis, test_trajectory)
-        // .drive_toleranceDuration(100_sec)
-        // .drive_largeToleranceDuration(100_sec)
-        .lookahead(20_msec + drivetrain_config.input_delay)
-        .reverse()
-        // .parameterization(blazing::lyfast::time_based)
-        .timeout(5_sec) |
-      run;
-}
-
 void run_auton() {
     // runs before anything else
     pre_auton();
@@ -364,8 +223,8 @@ void run_auton() {
     // mb.turnTo(-1_tile, -1_tile).radius(-1.2) | chain;
 
     // small swing
-    drivetrain.moveTank(1.0_volt, -0.8_volt);
-    pros::delay(200);
+    // drivetrain.moveTank(1.0_volt, -0.8_volt);
+    // pros::delay(200);
 
     // turn towards balls
     mb.turnTo(-1_tile, -1_tile)
@@ -400,7 +259,7 @@ void run_auton() {
     //     .closeThreshold(4_in)
     //   // .drive_vel_maxVel(40_inps)
     //   | chain;
-    // mb.turnTo(11.574, -11.401).reverse() | chain;
+    mb.turnTo(11.574, -11.401).reverse() | chain;
     mb.moveTo(-11.7, 11.0).reverse() | chain;
 
     // turn towards correct heading
@@ -438,9 +297,7 @@ void run_auton() {
     // turn to and go to matchloader
 
     matchload(-1, 1, 0.5_sec);
-    silly();
-
-    // score_long_goal(-1, 1, 1_sec);
+    score_long_goal(-1, 1, 1_sec);
 }
 
 } // namespace awp

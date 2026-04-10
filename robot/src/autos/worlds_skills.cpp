@@ -1,39 +1,32 @@
 /**
  * @file
- * @brief auto file template. copy paste this file, change the name and then add
- * it to "autos.h"
- */
+ * @brief :)))) */
 
 #include "apis.h"
 //
-#include "auton_globals.h"
 #include "autos.h"
-#include "blazing/executor.hpp"
 #include "blazing/utils.hpp"
 #include "globals.h"
 #include "globals/blazing_globals.h"
 #include "globals/config.h"
 #include "globals/device_globals.h"
-#include "globals/vexmaps_globals.h"
-#include "pros/abstract_motor.hpp"
+#include "lyfast/motion_profiling/mp.hpp"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 #include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
+#include "units/Vector2D.hpp"
 #include <iostream>
-#include <optional>
+#include <tuple>
 
-// do not do anything outside here!
-
-namespace states_skills {
+namespace skills {
 
 void pre_auton() {
     // set the robot state to match expectations
     // done in case driver or such is run before auto
     wings::up();
-    // odom_retract::lowerOdom();
-    odom_retract::retractOdom();
+    odom_retract::lowerOdom();
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
@@ -41,454 +34,374 @@ void pre_auton() {
     intake::setAutonColorSort(false);
 }
 
-void run_auton() {
-    // runs before anything else
-    pre_auton();
-
-    // do whatever you want here
-    // units::V2Position centerTopGoalFirst = { -9.5_in, 8.0_in };
-    //
-    // Length long_goal = 47.1_in;
-    // Length normal_match = 46.7_in;
-
+void matchload(double sign_x, double sign_y, Time matchload_time) {
     auto make_matchloader_point = [](double sign_x,
                                      double sign_y) -> units::V2Position {
         Length normal_match = 46.7_in;
         return { 67.4_in * sign_x, normal_match * sign_y };
     };
 
-    auto matchload = [make_matchloader_point](double sign_x,
-                                              double sign_y,
-                                              Time matchload_time) {
-        auto make_machloader_pose = [](units::V2FPosition target,
-                                       Length distance) -> units::Pose {
-            const auto error_unit_vector =
-              (RobotGetPose() - target).normalize();
-            auto final_point = target + distance * error_unit_vector;
+    auto make_machloader_pose = [](units::V2FPosition target,
+                                   Length distance) -> units::Pose {
+        const auto error_unit_vector = (RobotGetPose() - target).normalize();
+        auto final_point = target + distance * error_unit_vector;
 
-            return units::Pose { final_point, final_point.angleTo(target) };
-        };
-
-        // Length normal_match = 46.7_in;
-        units::V2Position target_Point = make_matchloader_point(sign_x, sign_y);
-        Length target_dist = 11_in;
-
-        auto func = [&] -> units::Pose {
-            return make_machloader_pose(target_Point, target_dist);
-        };
-
-        // make sure we are matchloading
-        matchloader::down();
-
-        // Time motion_start_time = now();
-
-        mb.moveTo(func)
-            // if it takes longer it most likely got stuck
-            .timeout(1.5_sec)
-            .drive_vel_accelSlew(110_inps2)
-            .drive_toleranceDuration(100_sec)
-            .drive_largeToleranceDuration(100_sec)
-            .drive_vel_mp_setMaxAccel(70_inps2) |
-          async;
-
-        Length matchload_start_distance = 13_in;
-
-        auto custom_exit_condition = [&] -> bool {
-            const auto curr_pose = RobotGetPose();
-            const auto error = (target_Point - curr_pose);
-            const auto [forwards_error, sideways_error] =
-              error.rotatedBy(-curr_pose.orientation);
-
-            const bool close =
-              error.magnitude() < matchload_start_distance + 5_in;
-
-            const bool forwards_close =
-              units::abs(forwards_error) < matchload_start_distance;
-
-            // use forwards error and
-            return close && forwards_close;
-        };
-
-        auto wait_result = async.waitOr(custom_exit_condition, 3_sec);
-
-        if (wait_result == AsyncExecutorBase::motionFinished ||
-            wait_result == AsyncExecutorBase::timeoutFinished) {
-            // custom condition did not trigger, meaning we got stuck or
-            // something else went wrong. Don't wait just exit
-            async.exitAll();
-        } else {
-            // got to matcloader successfully, start matchloading
-            async.exitAll();
-            // no motions should be executing here, so setting the voltage
-            // instantly should be fine
-
-            // passive voltage forwards since motion might oscilate
-            drivetrain.moveTank(0.2_volt, 0.2_volt);
-            pros::delay(to_msec(matchload_time));
-        }
+        return units::Pose { final_point, final_point.angleTo(target) };
     };
 
-    auto score_long_goal = [](double sign_x,
-                              double sign_y,
-                              Time score_time,
-                              bool with_swing = false) {
-        // turn to goal, reversed
-        Length long_goal = 47.05_in;
+    units::V2Position target_Point = make_matchloader_point(sign_x, sign_y);
 
-        auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
-        auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
+    // 11 is barely achievable - 0.1 less than achievable
+    Length target_dist = 10.9_in;
 
-        units::Pose target_pose = { 24_in * sign_x,
-                                    long_goal * sign_y,
-                                    target_backwards_heading };
-
-        auto exit_condition = [&] -> bool {
-            auto curr_pose = RobotGetPose();
-            bool x_close = units::abs(curr_pose.x) >= 27_in &&
-                           units::abs(curr_pose.x) <= 29.5_in;
-            bool y_close = units::abs(curr_pose.y) >= 43_in &&
-                           units::abs(curr_pose.y) <= 51_in;
-            //
-            bool theta_close =
-              units::abs(angleError(target_forwards_heading,
-                                    curr_pose.orientation)) <= 25_stDeg;
-
-            return x_close && y_close && theta_close;
-        };
-
-        // turn towards 24, settle at 48
-        if (!with_swing) {
-            mb.moveTo(target_pose)
-                .drive_vel_mp_setMaxAccel(110_inps2)
-                .only_x(true, 28_in)
-                .closeThreshold(10_in)
-                .timeout(2_sec)
-                .reverse() |
-              chain;
-        } else {
-            // aims for point
-            // mb.moveTo(17_in * sign_x, 55.1_in * sign_y)
-            mb.boomerang(17_in * sign_x,
-                         55_in * sign_y,
-                         // reverse of actual when scoring
-                         target_forwards_heading)
-                .reverse()
-                // since point is farther away no point in trying this
-                .drive_vel_minVel(50_inps)
-                // .drive_chainErrorTolerance(0_in)
-                // .drive_chainErrorTolerance(10_in)
-                // .chainHalfcircleTolerance(std::nullopt)
-                // use half circle exit for better exit conditions?
-                // .chainHalfcircleTolerance(1_in, 5_in)
-                .setChainTime(10_msec) |
-              chain;
-
-            // mb.turnTo(21.8_in, 47_in)
-            mb.turnTo(target_backwards_heading)
-                .reverse()
-                .direction(AngularDirection::RIGHT)
-                .radius(-10.5_in / 2)
-                .timeout(2.6_sec) |
-              chain;
-        }
-
-        chain.waitOr(exit_condition);
-
-        // regardless of getting stuck or not we perform the same action
-
-        intake::score_long();
-        // let move to point settle a bit
-        pros::delay(100);
-        chain.exitAll();
-        // queue aligning motion
-        mb.turnTo(target_forwards_heading).radius(-4.0_in) | chain;
-
-        pros::delay(units::max(to_msec(score_time) - 100, 0));
-        chain.exitAll();
+    auto func = [&] -> units::Pose {
+        return make_machloader_pose(target_Point, target_dist);
     };
 
-    /* START AUTON */
+    // make sure we are matchloading
+    matchloader::down();
 
-    RobotSetPose(-46.7, 0.0, 180);
-
-    intake::in();
-
-    // start by going into the park
-
-    // disable odom
-    odom_retract::retractOdom();
-    horizontal_tracker.setDisabled(true);
-
-    drivetrain.moveTank(1.0_volt, 1.0_volt);
-    pros::delay(200);
-    drivetrain.moveTank(0.5_volt, 1.5_volt);
-    pros::delay(200);
-    drivetrain.moveTank(0.2_volt, 0.2_volt);
-
-    Time first_park_start_time = now();
-
-    while (true) {
-        Length measured = from_mm(front_distance.get());
-
-        bool timeout_done = timeoutDone(3_sec, first_park_start_time);
-
-        bool distance_exit = false;
-
-        if (measured <= 90_mm) {
-            // reading intake, ignore
-        } else {
-            if (measured <= 130_mm) {
-                distance_exit = true;
-            }
-        }
-
-        if (timeout_done || distance_exit) break;
-        pros::delay(10);
-    }
-
-    drivetrain.moveTank(-0.5_volt, -0.5_volt);
-    pros::delay(800);
-
-    // enable odom again
-    odom_retract::lowerOdom();
-    horizontal_tracker.setDisabled(false);
-
-    // go back again towards the park to reset?
-    setSmootherAlphas(0.3, 0.2);
-    front_laser_model.setMaxDistanceDifference(7_in);
-    drivetrain.moveTank(0.2_volt, 0.2_volt);
-    pros::delay(500);
-    resetSmootherConfig();
-    resetMaxDistanceThresholdAll();
-
-    intake::in();
-
-    // swing back a bit
-    drivetrain.moveTank(0_volt, -1_volt);
-    pros::delay(300);
-    mb.moveTo(-39, -19.2).reverse() | chain;
-
-    mb.moveTo(-22.414, -17.062).drive_vel_minVel(20_inps) | chain;
-    mb.moveTo(-11.097, -11.691).closeThreshold(4_in).executeAfterMotion([] {
-        intake::score_bottom();
-    }) |
-      chain;
-    // align tech
-    mb.turnTo(45).radius(5_in) | chain;
-
-    chain.wait();
-
-    pros::delay(3000);
-
-    drivetrain.moveTank(-1_volt, -1_volt);
-    pros::delay(140);
-    intake::in();
-
-    // got towards matchloader at other end
-    // mb.turnTo(-43.02, 44.349) | run;
-    mb.moveTo(-43.02, 45.5)
-        .only_y(true)
-        // .drive_errorTolerance(0.5_in)
-        .drive_toleranceDuration(0_sec) |
+    mb.turnTo(func())
+        .turn_toleranceDuration(0_sec)
+        .turn_errorTolerance(4.0_stDeg)
+        .turn_velocityTolerance(400_radps) |
       run;
 
-    matchload(-1, 1, 1.5_sec);
+    mb.moveTo(func())
+        // if it takes longer it most likely got stuck
+        .timeout(1.5_sec)
+        .drive_vel_accelSlew(110_inps2)
+        .drive_toleranceDuration(100_sec)
+        .drive_largeToleranceDuration(100_sec)
+        .drive_vel_mp_setMaxAccel(70_inps2) |
+      async;
 
-    // go away from matchloader
-    mb.moveTo(-30, 56.5)
-        .reverse()
-        .closeThreshold(4_in)
-        .drive_vel_minVel(50_inps)
-        // can sacrifice cross track here for speed (???)
-        // .customAngularLinearFunc([](Angle angle) -> double {
-        //     return units::cos(angle);
-        // })
-        .executeAfterMotion([] {
-            // up matchloader here to avoid getting stuck in the swing
-            matchloader::up();
-        })
-        .setChainTime(0_sec) |
-      chain;
+    Length matchload_start_distance = 13_in;
 
-    // swing is chained, so no waiting here
-    // uses swing to score on long
-    score_long_goal(1, 1, 2_sec, true);
+    auto custom_exit_condition = [&] -> bool {
+        const auto curr_pose = RobotGetPose();
+        const auto error = (target_Point - curr_pose);
+        const auto [forwards_error, sideways_error] =
+          error.rotatedBy(-curr_pose.orientation);
 
-    pros::Task([] {
-        // need a bit of time for the last ball on the long goal
-        // before starting to intake
-        pros::delay(200);
-        intake::in();
-    });
+        const bool close = error.magnitude() <
+                           // trigger only if closes to the matchloader
+                           matchload_start_distance + 5_in;
 
-    matchload(1, 1, 1.5_sec);
+        const bool forwards_close =
+          units::abs(forwards_error) < matchload_start_distance;
 
-    score_long_goal(1, 1, 2_sec);
+        // use forwards error and
+        return close && forwards_close;
+    };
 
-    matchloader::up();
+    auto wait_result = async.waitOr(custom_exit_condition, 3_sec);
 
-    pros::Task([] {
-        // need a bit of time for the last ball on the long goal
-        // before starting to intake
-        pros::delay(200);
-        intake::in();
-    });
+    if (wait_result == AsyncExecutorBase::motionFinished ||
+        wait_result == AsyncExecutorBase::timeoutFinished) {
+        // custom condition did not trigger, meaning we got stuck or
+        // something else went wrong. Don't wait just exit
+        async.exitAll();
+    } else {
+        // got to matcloader successfully, start matchloading
+        async.exitAll();
+        // no motions should be executing here, so setting the voltage instantly
+        // should be fine
 
-    // --- SECOND PARK --- //
-    // sprint straight towards second park
-    mb.moveTo(41.142, 0) | run;
-    mb.turnTo(0) | run;
-
-    // disable odom
-    odom_retract::retractOdom();
-    horizontal_tracker.setDisabled(true);
-
-    // align against the park while having some speed
-    drivetrain.moveTank(0.3_volt, 0.3_volt);
-    pros::delay(300);
-
-    drivetrain.moveTank(0.5_volt, 0.5_volt);
-    pros::delay(700);
-    drivetrain.moveTank(0.2_volt, 0.2_volt);
-
-    Time second_park_start_time = now();
-
-    while (true) {
-        Length measured = from_mm(front_distance.get());
-
-        bool timeout_done = timeoutDone(3_sec, second_park_start_time);
-
-        bool distance_exit = false;
-
-        if (measured <= 90_mm) {
-            // reading intake, ignore
-        } else {
-            if (measured <= 130_mm) {
-                distance_exit = true;
-            }
-        }
-
-        if (timeout_done || distance_exit) break;
-        pros::delay(10);
+        // passive voltage forwards since motion might oscilate
+        drivetrain.moveTank(0.2_volt, 0.2_volt);
+        pros::delay(to_msec(matchload_time));
     }
-    drivetrain.moveTank(-0.5_volt, -0.5_volt);
-    pros::delay(800);
-
-    // enable odom again
-    odom_retract::lowerOdom();
-    horizontal_tracker.setDisabled(false);
-
-    // go back again towards the park to reset?
-    setSmootherAlphas(0.3, 0.2);
-    front_laser_model.setMaxDistanceDifference(7_in);
-    drivetrain.moveTank(0.2_volt, 0.2_volt);
-    pros::delay(200);
-
-    // reset halfwaay through with the front to get roughly where we are
-    // ignore bad measurements from intake or matchloader
-    if (from_mm(front_distance.get()) > 4_in) {
-        LaserResets({ &front_laser_model });
-    }
-
-    pros::delay(300);
-
-    resetSmootherConfig();
-    resetMaxDistanceThresholdAll();
-
-    // swing back a bit
-    drivetrain.moveTank(-1.0_volt, -1.0_volt);
-    pros::delay(200);
-
-    // use inertial from before, turn left
-    mb.turnTo(29.545, -16.952) | chain;
-    mb.moveTo(29.545, -16.952) | chain;
-    mb.turnTo(11.574, -11.401).reverse() | chain;
-    mb.moveTo(11.574, -11.5).reverse() | chain;
-
-    auto top_middle_scoring_indx = chain.getCurrentIndex();
-
-    // align tech
-    mb.turnTo(135)
-        .reverse()
-        .radius(-5_in)
-        // infinite time motion
-        .turn_toleranceDuration(100_sec)
-        .turn_largeToleranceDuration(100_sec)
-        .timeout(4_sec) |
-      chain;
-
-    chain.waitUntilIndex(top_middle_scoring_indx);
-    // start scoring?
-    intake::score_middle();
-    pros::delay(3000);
-    chain.exitAll();
-
-    mb.moveTo(43.02, -46)
-        .only_y(true)
-        .drive_errorTolerance(1.3_in)
-        .drive_toleranceDuration(0_sec)
-        .executeBeforeMotion([] {
-            // wait a bit before starting to intake again to not interrept balls
-            // that were just scored
-            pros::delay(300);
-            intake::in();
-        }) |
-      run;
-
-    matchload(1, -1, 1.5_sec);
-
-    // go away from matchloader
-    mb.moveTo(30.692, -57)
-        .reverse()
-        .closeThreshold(4_in)
-        .drive_vel_minVel(50_inps)
-        // can sacrifice cross track here for speed
-        .customAngularLinearFunc([](Angle angle) -> double {
-            return units::cos(angle);
-        })
-        .executeAfterMotion([] {
-            // up matchloader here to avoid getting stuck in the swing
-            matchloader::up();
-        })
-        .setChainTime(0_sec) |
-      chain;
-
-    // uses swing to score on long
-    score_long_goal(-1, -1, 2_sec, true);
-
-    pros::Task([] {
-        // need a bit of time for the last ball on the long goal
-        // before starting to intake
-        pros::delay(200);
-        intake::in();
-    });
-
-    matchload(-1, -1, 1.5_sec);
-
-    score_long_goal(-1, -1, 2_sec);
-
-    // intake any balls in the way and shoot them out on the way to the park
-    intake::score_long();
-
-    // finally park
-
-    matchloader::up();
-    mb.moveTo(-59, -20) | chain;
-    mb.turnTo(90).radius(4_in).executeBeforeMotion([] {
-        // retract to go over park
-        // doesn't matter for turn since its heading based
-        // doing it during the motion makes it so we don't ahve to wait for the
-        // odom to lift up
-        odom_retract::retractOdom();
-    }) |
-      chain;
-    chain.wait();
-
-    drivetrain.moveTank(0.5_volt, 0.5_volt);
-    pros::delay(900);
-    drivetrain.moveTank(0.0_volt, 0.0_volt);
-
-    // cinema
 }
 
-} // namespace states_skills
+void score_long_goal(double sign_x, double sign_y, Time score_time) {
+    // turn to goal, reversed
+    Length long_goal = 47.0_in;
+
+    mb.moveTo(35_in * sign_x, long_goal * sign_y).reverse() | run;
+
+    // auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
+    // auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
+    // auto boomerang_heading = sign_x == -1 ? 170_stDeg : 350_stDeg;
+
+    // units::Pose target_pose = { 24_in * sign_x,
+    //                             long_goal * sign_y,
+    //                             target_backwards_heading };
+    //
+    // auto exit_condition = [&] -> bool {
+    //     auto curr_pose = RobotGetPose();
+    //     bool x_close =
+    //       units::abs(curr_pose.x) >= 27_in && units::abs(curr_pose.x) <=
+    //       40_in;
+    //     // bool y_close =
+    //     //   units::abs(curr_pose.y) >= 43_in && units::abs(curr_pose.y) <=
+    //     //   51_in;
+    //     // //
+    //     // bool theta_close =
+    //     //   units::abs(angleError(target_forwards_heading,
+    //     //                         curr_pose.orientation)) <= 25_stDeg;
+    //
+    //     // return x_close && y_close && theta_close;
+    //     return x_close;
+    // };
+    //
+    // mb.moveTo(target_pose)
+    //     // .drive_vel_mp_setMaxAccel(110_inps2)
+    //     .only_x(true, 28_in * sign_x)
+    //     .closeThreshold(7_in)
+    //     // .turn_kp(13.9)
+    //     .timeout(2_sec)
+    //     .reverse() |
+    //   chain;
+    //
+    // chain.waitUntil(exit_condition);
+    //
+    // // regardless of getting stuck or not we perform the same action
+    // intake::score_long();
+    //
+    // pros::delay(200);
+    //
+    // // exit regardless to have better aligner
+    // chain.exitAll();
+    //
+    // pros::delay(10);
+    //
+    // // queue aligning motion
+    // mb.turnTo(target_forwards_heading)
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .timeout(0.3_sec)
+    //     .radius(-10.5_in / 2) |
+    //   async;
+    // mb.turnTo(target_forwards_heading)
+    //     .turn_toleranceDuration(100_sec)
+    //     .turn_largeToleranceDuration(100_sec)
+    //     .constantVelocity(-15_inps) |
+    //   async;
+    // pros::delay(to_msec(score_time));
+    //
+    // async.exitAll();
+}
+
+std::shared_ptr<lyfast::geometry::Spline> makeSpline(
+  const std::vector<std::shared_ptr<lyfast::geometry::Curve>>& curves) {
+    return std::shared_ptr<lyfast::geometry::Spline> {
+        new lyfast::geometry::Spline(curves)
+    };
+}
+
+namespace skills_paths {
+auto start_TO_in_red_park = line(-44.125, 0.039, -61.257, 0.363);
+auto in_red_park_TO_out_of_red = line(-61.257, 0.363, -44.365, 0);
+auto out_of_red_TO_get_blue_middle = line(-44.365, 0, -14.475, 8.582);
+auto get_blue_middle_TO_End_Control = line(-14.475, 8.582, -15.992, 15.457);
+auto End_Control_TO_score_middle = line(-15.992, 15.457, -13.179, 12.513);
+auto score_middle_TO_ull = line(-13.179, 12.513, -41.032, 46.515);
+auto ull_TO_uls = line(-41.032, 46.515, -30.06, 46.931);
+auto uls_TO_ulm = line(-30.06, 46.931, -57.173, 46.6);
+auto ulm_TO_url1 =
+  curve(-57.173, 46.6, -37.078, 46.6, -49.519, 65.882, 22.979, 59.5);
+auto url1_TO_urls = line(22.979, 59.5, 38.085, 46.543);
+auto urls_TO_urm = line(38.085, 46.543, 56.959, 46.195);
+auto urm_TO_urls2 = line(56.959, 46.195, 30.3, 46.442);
+auto urls2_TO_End_Control = line(30.3, 46.442, 36.735, 45.597);
+auto End_Control_TO_ur_cluster =
+  curve(36.735, 45.597, 38.483, 43.58, 35.403, 36.383, 30.449, 30.352);
+auto ur_cluster_TO_End_Control = line(30.449, 30.352, 34.897, 33.991);
+auto End_Control_TO_blue_park = line(34.897, 33.991, 44.859, -0.234);
+auto blue_park_TO_in_blue_park = line(44.859, -0.234, 61.945, -0.234);
+auto in_blue_park_TO_blue_park2 = line(61.945, -0.234, 45.304, -0.056);
+auto blue_park2_TO_go_bottom = line(45.304, -0.056, 16.95, 18.346);
+auto go_bottom_TO_bottom_score = line(16.95, 18.346, 11.967, 12.295);
+auto bottom_score_TO_back_bottom = line(11.967, 12.295, 16.594, 16.389);
+auto back_bottom_TO_dr_cluster = line(16.594, 16.389, 23.741, -23.427);
+auto dr_cluster_TO_drl = line(23.741, -23.427, 39.523, -46.844);
+auto drl_TO_drls = line(39.523, -46.844, 29.949, -47.059);
+auto drls_TO_drm = line(29.949, -47.059, 57.173, -46.6);
+auto drm_TO_dll =
+  curve(57.173, -46.6, 37.078, -46.6, 49.519, -65.882, -22.979, -59.5);
+auto dll_TO_dls = line(-22.979, -59.5, -35.563, -47.505);
+auto dls_TO_dlm = line(-35.563, -47.505, -56.502, -47.295);
+auto dlm_TO_dls2 = line(-56.502, -47.295, -30.812, -46.393);
+auto dls2_TO_ending =
+  curve(-30.812, -46.393, -65.874, -35.503, -61.239, -20.894, -62.307, -0.693);
+} // namespace skills_paths
+
+auto long_match_curve_top = skills_paths::ulm_TO_url1;
+auto long_match_curve_bottom = skills_paths::drm_TO_dll;
+auto park_curve = skills_paths::dls2_TO_ending;
+
+std::shared_ptr<lyfast::mp::Trajectory>
+makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve) {
+    using namespace blazing::lyfast;
+    using namespace blazing::lyfast::geometry;
+    using namespace blazing::lyfast::mp;
+
+    RobotConstraints robot_constraints(
+      10.5_in, // track with
+      // 0.05, // friction coeff - should tune?
+      1.00, // friction coeff - should tune?
+      3.25_in, // wheel diameter
+      389_rpm, // max ang vel - determined somewhat from data
+      6.7_kg, // about 14.8 lbs
+      // 1.36f); // motor count - determined somewhat from data
+      // 2.5f); // motor count - determined somewhat from data
+      3.0f); // motor count - determined somewhat from data
+
+    LinearConstraints linear_constraints(
+      70_inps, // max vel - for testing
+      // 20.0_inps2, // max accel - for testing
+      10000.0_inps2, // max accel - for testing
+      // 150_inps2 // max decel - for testing also
+      200_inps2 // max decel - for testing also
+    );
+    //
+    // // TODO: what is the difference between angular accel/decel?
+    // AngularConstraints
+    // angular_constraints(2.0_radps, 1.3_radps2, 1.3_radps2);
+    AngularConstraints angular_constraints(2.0_radps,
+                                           // 1.3_radps2,
+                                           // 1.3_radps2
+
+                                           2.0_radps2,
+                                           2.0_radps2);
+    //
+    Constraints constraints(robot_constraints,
+                            linear_constraints,
+                            angular_constraints);
+    //
+    // bool debug = true;
+    bool debug = false;
+    //
+    std::shared_ptr<Trajectory> trajectory(
+      new Trajectory(curve,
+                     constraints,
+                     {},
+                     {},
+                     // some initial velocity for it to move?
+                     // TODO: could there be a place on the curve that also has
+                     // a velof zero? if so this would also have the same issue?
+                     0_inps,
+                     0_inps,
+                     0.1_in,
+                     debug));
+    return trajectory;
+}
+
+auto pathFollow(std::shared_ptr<lyfast::mp::Trajectory> trajectory) {
+    auto motion = lyfast::PathFollow(controllers, vexmaps_chassis, trajectory);
+    std::ignore = motion.lookahead(20_msec + drivetrain_config.input_delay)
+                    .reverse()
+                    .timeout(5_sec);
+    return motion;
+}
+
+auto pathFollow(std::shared_ptr<lyfast::geometry::Curve> curve) {
+    return pathFollow(makeTrajectory(curve));
+}
+
+void run_auton() {
+    // runs before anything else
+    pre_auton();
+
+    units::V2Position centerTopGoalFirst = { -9.5_in, 8.0_in };
+
+    Length long_goal = 47.1_in;
+    Length normal_match = 46.7_in;
+
+    // start auton
+    RobotSetPose(-44.365, 0, 180);
+
+    std::cout << "Stated auto: " << std::endl;
+
+    intake::in();
+
+    mb.moveTo(-15.992, 15.457).reverse() | run;
+    // turn to and move to middle goal
+    mb.turnTo(-13.179, 12.513).reverse() | run;
+    mb.moveTo(-13.179, 12.513).reverse() | run;
+
+    // move towards long goal, forwards
+    mb.moveTo(-41.032, long_goal) | run;
+
+    // turn to and move there
+    mb.turnTo(-32.032, long_goal).reverse() | run;
+    mb.moveTo(-32.032, long_goal).reverse() | run;
+
+    // go to matchload
+    matchload(-1, 1, 2.0_sec);
+
+    // follow path to go to other side
+    pathFollow(long_match_curve_top) | run;
+
+    // move towards long goal
+    mb.moveTo(41.032, long_goal).reverse() | run;
+
+    // turn to and move there
+    mb.turnTo(32.032, long_goal).reverse() | run;
+    mb.moveTo(32.032, long_goal).reverse() | run;
+
+    matchload(1, 1, 2_sec);
+    score_long_goal(1, 1, 2_sec);
+
+    // move forwards a tiny amount
+    drivetrain.moveTank(1_volt, 1_volt);
+    pros::delay(120);
+
+    // get one red ball from cluster
+    mb.turnTo(30.449, 30.352) | run;
+    mb.moveTo(30.449, 30.352) | run;
+
+    // go back tiny amount
+    drivetrain.moveTank(-1_volt, -1_volt);
+    pros::delay(100);
+
+    // move towards park
+    mb.turnTo(43, 0) | run;
+    mb.moveTo(43, 0) | run;
+
+    // TODO: get balls from park
+
+    // move from park to score on bottom goal
+    // blows up cluster
+    mb.moveTo(22.754, 22.033).reverse() | run;
+
+    // turn to and score
+    mb.turnTo(11.967, 12.295) | run;
+    mb.moveTo(11.967, 12.295) | run;
+
+    // score
+    pros::delay(3000);
+
+    // go back tiny amount
+    drivetrain.moveTank(-1_volt, -1_volt);
+    pros::delay(130);
+
+    // move towards long goal, forwards
+    mb.moveTo(41.032, -long_goal) | run;
+
+    // turn to and move there
+    mb.turnTo(32.032, -long_goal).reverse() | run;
+    mb.moveTo(32.032, -long_goal).reverse() | run;
+
+    // go to matchload
+    matchload(1, -1, 2.0_sec);
+
+    // follow path to go to other side
+    pathFollow(long_match_curve_bottom) | run;
+
+    // move towards long goal
+    mb.moveTo(-41.032, -long_goal).reverse() | run;
+
+    // turn to and move there
+    mb.turnTo(-32.032, -long_goal).reverse() | run;
+    mb.moveTo(-32.032, -long_goal).reverse() | run;
+
+    matchload(-1, -1, 2_sec);
+    score_long_goal(-1, -1, 2_sec);
+
+    // go park
+    pathFollow(park_curve) | run;
+}
+
+} // namespace skills
