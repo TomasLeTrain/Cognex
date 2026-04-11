@@ -17,6 +17,7 @@
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
+#include "units/units.hpp"
 #include <iostream>
 #include <tuple>
 
@@ -119,6 +120,7 @@ void score_long_goal(double sign_x, double sign_y, Time score_time) {
     Length long_goal = 47.0_in;
 
     mb.moveTo(35_in * sign_x, long_goal * sign_y).reverse() | run;
+    pros::delay(to_msec(score_time));
 
     // auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
     // auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
@@ -210,9 +212,9 @@ auto End_Control_TO_ur_cluster =
 auto ur_cluster_TO_End_Control = line(30.449, 30.352, 34.897, 33.991);
 auto End_Control_TO_blue_park = line(34.897, 33.991, 44.859, -0.234);
 auto blue_park_TO_in_blue_park = line(44.859, -0.234, 61.945, -0.234);
-auto in_blue_park_TO_blue_park2 = line(61.945, -0.234, 45.304, -0.056);
-auto blue_park2_TO_go_bottom = line(45.304, -0.056, 16.95, 18.346);
-auto go_bottom_TO_bottom_score = line(16.95, 18.346, 11.967, 12.295);
+auto in_blue_park_TO_blue_park2 = line(61.945, -0.234, 45.304, 0);
+auto blue_park2_TO_go_bottom = line(45.304, 0, 22.754, 22.033);
+auto go_bottom_TO_bottom_score = line(22.754, 22.033, 11.967, 12.295);
 auto bottom_score_TO_back_bottom = line(11.967, 12.295, 16.594, 16.389);
 auto back_bottom_TO_dr_cluster = line(16.594, 16.389, 23.741, -23.427);
 auto dr_cluster_TO_drl = line(23.741, -23.427, 39.523, -46.844);
@@ -224,55 +226,55 @@ auto dll_TO_dls = line(-22.979, -59.5, -35.563, -47.505);
 auto dls_TO_dlm = line(-35.563, -47.505, -56.502, -47.295);
 auto dlm_TO_dls2 = line(-56.502, -47.295, -30.812, -46.393);
 auto dls2_TO_ending =
-  curve(-30.812, -46.393, -65.874, -35.503, -61.239, -20.894, -62.307, -0.693);
+  curve(-30.812, -46.393, -56.961, -45.178, -62.556, -25.552, -62.556, -18.105);
 } // namespace skills_paths
 
 auto long_match_curve_top = skills_paths::ulm_TO_url1;
 auto long_match_curve_bottom = skills_paths::drm_TO_dll;
 auto park_curve = skills_paths::dls2_TO_ending;
 
+lyfast::mp::RobotConstraints
+  robot_constraints(10.5_in, // track with
+                             // 0.05, // friction coeff - should tune?
+                    1.00, // friction coeff - should tune?
+                    3.25_in, // wheel diameter
+                    389_rpm, // max ang vel - determined somewhat from data
+                    6.7_kg, // about 14.8 lbs
+                    // 1.36f); // motor count - determined somewhat from data
+                    // 2.5f); // motor count - determined somewhat from data
+                    3.0f); // motor count - determined somewhat from data
+
+lyfast::mp::LinearConstraints
+  linear_constraints(70_inps, // max vel - for testing
+                              // 20.0_inps2, // max accel - for testing
+                     10000.0_inps2, // max accel - for testing
+                     // 150_inps2 // max decel - for testing also
+                     200_inps2 // max decel - for testing also
+  );
+//
+// // TODO: what is the difference between angular accel/decel?
+// AngularConstraints
+// angular_constraints(2.0_radps, 1.3_radps2, 1.3_radps2);
+lyfast::mp::AngularConstraints angular_constraints(2.0_radps,
+                                                   // 1.3_radps2,
+                                                   // 1.3_radps2
+
+                                                   2.0_radps2,
+                                                   2.0_radps2);
+//
+lyfast::mp::Constraints
+  constraints(robot_constraints, linear_constraints, angular_constraints);
+
 std::shared_ptr<lyfast::mp::Trajectory>
-makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve) {
+makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve,
+               LinearVelocity end_speed = 0_inps) {
     using namespace blazing::lyfast;
     using namespace blazing::lyfast::geometry;
     using namespace blazing::lyfast::mp;
-
-    RobotConstraints robot_constraints(
-      10.5_in, // track with
-      // 0.05, // friction coeff - should tune?
-      1.00, // friction coeff - should tune?
-      3.25_in, // wheel diameter
-      389_rpm, // max ang vel - determined somewhat from data
-      6.7_kg, // about 14.8 lbs
-      // 1.36f); // motor count - determined somewhat from data
-      // 2.5f); // motor count - determined somewhat from data
-      3.0f); // motor count - determined somewhat from data
-
-    LinearConstraints linear_constraints(
-      70_inps, // max vel - for testing
-      // 20.0_inps2, // max accel - for testing
-      10000.0_inps2, // max accel - for testing
-      // 150_inps2 // max decel - for testing also
-      200_inps2 // max decel - for testing also
-    );
-    //
-    // // TODO: what is the difference between angular accel/decel?
-    // AngularConstraints
-    // angular_constraints(2.0_radps, 1.3_radps2, 1.3_radps2);
-    AngularConstraints angular_constraints(2.0_radps,
-                                           // 1.3_radps2,
-                                           // 1.3_radps2
-
-                                           2.0_radps2,
-                                           2.0_radps2);
-    //
-    Constraints constraints(robot_constraints,
-                            linear_constraints,
-                            angular_constraints);
     //
     // bool debug = true;
     bool debug = false;
-    //
+
     std::shared_ptr<Trajectory> trajectory(
       new Trajectory(curve,
                      constraints,
@@ -282,7 +284,7 @@ makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve) {
                      // TODO: could there be a place on the curve that also has
                      // a velof zero? if so this would also have the same issue?
                      0_inps,
-                     0_inps,
+                     end_speed,
                      0.1_in,
                      debug));
     return trajectory;
@@ -290,9 +292,8 @@ makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve) {
 
 auto pathFollow(std::shared_ptr<lyfast::mp::Trajectory> trajectory) {
     auto motion = lyfast::PathFollow(controllers, vexmaps_chassis, trajectory);
-    std::ignore = motion.lookahead(20_msec + drivetrain_config.input_delay)
-                    .reverse()
-                    .timeout(5_sec);
+    std::ignore =
+      motion.lookahead(20_msec + drivetrain_config.input_delay).timeout(5_sec);
     return motion;
 }
 
@@ -301,6 +302,7 @@ auto pathFollow(std::shared_ptr<lyfast::geometry::Curve> curve) {
 }
 
 void run_auton() {
+    std::cout << "running skills" << std::endl;
     // runs before anything else
     pre_auton();
 
@@ -314,32 +316,52 @@ void run_auton() {
 
     intake::in();
 
-    mb.moveTo(-15.992, 15.457).reverse() | run;
+    mb.moveTo(-15.992, 15.0).reverse().drive_chainErrorTolerance(1_in) | chain;
     // turn to and move to middle goal
-    mb.turnTo(-13.179, 12.513).reverse() | run;
-    mb.moveTo(-13.179, 12.513).reverse() | run;
+    mb.turnTo(-12.179, 11.513).reverse().turn_chainErrorTolerance(5_stDeg) |
+      chain;
+    mb.moveTo(-12.179, 11.513).reverse() | chain;
+
+    chain.wait();
+
+    // score
+    pros::delay(3000);
 
     // move towards long goal, forwards
-    mb.moveTo(-41.032, long_goal) | run;
+    mb.moveTo(-41.032, long_goal).drive_chainErrorTolerance(1_in) | chain;
 
     // turn to and move there
-    mb.turnTo(-32.032, long_goal).reverse() | run;
-    mb.moveTo(-32.032, long_goal).reverse() | run;
+    mb.turnTo(-32.032, long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
+      chain;
+    mb.moveTo(-32.032, long_goal).reverse() | chain;
+    chain.wait();
+
+    pros::delay(1000);
 
     // go to matchload
     matchload(-1, 1, 2.0_sec);
 
     // follow path to go to other side
-    pathFollow(long_match_curve_top) | run;
+    pathFollow(makeTrajectory(long_match_curve_top, 40_inps)).reverse() | chain;
 
     // move towards long goal
-    mb.moveTo(41.032, long_goal).reverse() | run;
+    // coming from fast moving, slew shouldn't apply
+    mb.moveTo(41.032, long_goal)
+        .drive_vel_accelSlew(300_inps)
+        .drive_chainErrorTolerance(1_in)
+        .reverse() |
+      chain;
+    chain.wait();
 
     // turn to and move there
-    mb.turnTo(32.032, long_goal).reverse() | run;
-    mb.moveTo(32.032, long_goal).reverse() | run;
+    mb.turnTo(32.032, long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
+      chain;
+    mb.moveTo(32.032, long_goal).reverse() | chain;
+    chain.wait();
 
-    matchload(1, 1, 2_sec);
+    pros::delay(1000);
+
+    matchload(1, 1, 1.6_sec);
     score_long_goal(1, 1, 2_sec);
 
     // move forwards a tiny amount
@@ -347,26 +369,31 @@ void run_auton() {
     pros::delay(120);
 
     // get one red ball from cluster
-    mb.turnTo(30.449, 30.352) | run;
-    mb.moveTo(30.449, 30.352) | run;
+    mb.turnTo(30.449, 30.352).turn_chainErrorTolerance(5_stDeg) | chain;
+    mb.moveTo(30.449, 30.352) | chain;
+    chain.wait();
 
     // go back tiny amount
     drivetrain.moveTank(-1_volt, -1_volt);
     pros::delay(100);
 
     // move towards park
-    mb.turnTo(43, 0) | run;
-    mb.moveTo(43, 0) | run;
+    mb.turnTo(41, 0).turn_chainErrorTolerance(5_stDeg) | chain;
+    mb.moveTo(41, 0) | chain;
+    mb.turnTo(0) | chain;
+    chain.wait();
 
     // TODO: get balls from park
 
     // move from park to score on bottom goal
     // blows up cluster
-    mb.moveTo(22.754, 22.033).reverse() | run;
+    mb.moveTo(22.754, 22.033).reverse().drive_chainErrorTolerance(1.5_in) |
+      chain;
 
     // turn to and score
-    mb.turnTo(11.967, 12.295) | run;
-    mb.moveTo(11.967, 12.295) | run;
+    mb.turnTo(11.967, 12.295).turn_chainErrorTolerance(5_stDeg) | chain;
+    mb.moveTo(11.967, 12.295) | chain;
+    chain.wait();
 
     // score
     pros::delay(3000);
@@ -376,26 +403,41 @@ void run_auton() {
     pros::delay(130);
 
     // move towards long goal, forwards
-    mb.moveTo(41.032, -long_goal) | run;
+    mb.moveTo(41.032, -long_goal).drive_chainErrorTolerance(1_in) | chain;
 
     // turn to and move there
-    mb.turnTo(32.032, -long_goal).reverse() | run;
-    mb.moveTo(32.032, -long_goal).reverse() | run;
+    mb.turnTo(32.032, -long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
+      chain;
+    mb.moveTo(32.032, -long_goal).reverse() | chain;
+    chain.wait();
+
+    pros::delay(1000);
 
     // go to matchload
-    matchload(1, -1, 2.0_sec);
+    matchload(1, -1, 1.6_sec);
 
     // follow path to go to other side
-    pathFollow(long_match_curve_bottom) | run;
+    pathFollow(makeTrajectory(long_match_curve_bottom, 40_inps)).reverse() |
+      chain;
 
     // move towards long goal
-    mb.moveTo(-41.032, -long_goal).reverse() | run;
+    // coming from fast moving, slew shouldn't apply
+    mb.moveTo(-41.032, -long_goal)
+        .drive_vel_accelSlew(300_inps)
+        .drive_chainErrorTolerance(1_in)
+        .reverse() |
+      chain;
+    chain.wait();
 
     // turn to and move there
-    mb.turnTo(-32.032, -long_goal).reverse() | run;
-    mb.moveTo(-32.032, -long_goal).reverse() | run;
+    mb.turnTo(-32.032, -long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
+      chain;
+    mb.moveTo(-32.032, -long_goal).reverse() | chain;
+    chain.wait();
 
-    matchload(-1, -1, 2_sec);
+    pros::delay(1000);
+
+    matchload(-1, -1, 1.6_sec);
     score_long_goal(-1, -1, 2_sec);
 
     // go park

@@ -1,0 +1,5012 @@
+Not sending analytics for this command.
+
+Established terminal connection
+
+
+
+         _+=+_
+      .-`  .  `-.          8888888b.  8888888b.   .d88888b.   .d8888b.
+   _+`     "     `+_       888   Y88b 888   Y88b d88P" "Y88b d88P  Y88b
+  \\\sssssssssssss///      888    888 888    888 888     888 Y88b.
+     .ss\  *  /ss.         888   d88P 888   d88P 888     888  "Y888b.
+ .+bm  .s  *  s.  md+.     8888888P"  8888888P"  888     888     "Y88b.
+.hMMMMs .  *  . sMMMMh.    888        888 T88b   888     888       "888
+ `\hMMMb \ | / dMMMh:      888        888  T88b  Y88b. .d88P Y88b  d88P
+   -SNMNo  -  oNMNs-       888        888   T88b  "Y88888P"   "Y8888P"
+     `+dMh\./dMd/
+        `:yNy:`                      Powered by PROS for VEX V5
+           "                Copyright (c) Purdue University ACM SIGBots
+Version:        4.2.1     Platform:  V1.1.5 (b18)     Uptime:    0.000 s
+Compiled:   Jan  1 1980 00:00:00     Directory:                        
+
+
+bouncing done
+health done
+auton done
+calibrated!
+starting task: 2320238
+initializing odom model
+timed correctly: 2323112
+initializing pf model
+initializing smoother model
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0806,17,0,false,0
+back:386.822,0,1,true,0
+right:67.065,13,0,false,0
+end distances
+start particles
+end particles
+total weight: 146.672531, time taken: 451, timestamp: 2435
+things done:1,1,1,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0806,17,0,true,0
+back:386.822,0,1,true,0
+right:66.9492,13,0,false,0
+end distances
+start particles
+end particles
+total weight: 1829.027588, time taken: 332, timestamp: 2445
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0806,17,0,true,0
+back:386.822,0,1,true,0
+right:66.9492,13,0,true,0
+end distances
+start particles
+end particles
+total weight: 1829.027588, time taken: 262, timestamp: 2455
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0806,17,0,false,0
+back:386.822,0,1,true,0
+right:66.9492,13,0,true,0
+end distances
+start particles
+end particles
+total weight: 1639.536011, time taken: 328, timestamp: 2465
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0806,17,0,true,0
+back:386.822,0,1,true,0
+right:66.9492,13,0,true,0
+end distances
+start particles
+end particles
+total weight: 1639.536011, time taken: 253, timestamp: 2475
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0806,17,0,true,0
+back:386.822,0,1,true,0
+right:66.9106,11,0,false,0
+end distances
+start particles
+end particles
+total weight: 1811.292358, time taken: 331, timestamp: 2485
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0806,17,0,true,0
+back:386.822,0,1,true,0
+right:66.9106,11,0,true,0
+end distances
+start particles
+end particles
+total weight: 1811.292358, time taken: 256, timestamp: 2495
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.1195,16,0,false,0
+back:386.822,0,1,true,0
+right:66.9106,11,0,true,0
+end distances
+start particles
+end particles
+total weight: 1605.524902, time taken: 327, timestamp: 2505
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.1195,16,0,true,0
+back:386.822,0,1,true,0
+right:67.065,14,0,false,0
+end distances
+start particles
+end particles
+total weight: 1766.998413, time taken: 327, timestamp: 2515
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.1195,16,0,true,0
+back:386.822,0,1,true,0
+right:67.065,14,0,true,0
+end distances
+start particles
+end particles
+total weight: 1766.998413, time taken: 257, timestamp: 2525
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0417,16,0,false,0
+back:386.822,0,1,true,0
+right:67.065,14,0,true,0
+end distances
+start particles
+end particles
+total weight: 1622.125488, time taken: 332, timestamp: 2535
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0417,16,0,true,0
+back:386.822,0,1,true,0
+right:67.065,14,0,false,0
+end distances
+start particles
+end particles
+total weight: 1739.780762, time taken: 330, timestamp: 2545
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0417,16,0,true,0
+back:386.822,0,1,true,0
+right:66.9106,13,0,false,0
+end distances
+start particles
+end particles
+total weight: 1753.494751, time taken: 333, timestamp: 2555
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0417,16,0,true,0
+back:386.822,0,1,true,0
+right:66.9106,13,0,true,0
+end distances
+start particles
+end particles
+total weight: 1753.494751, time taken: 255, timestamp: 2565
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0806,19,0,false,0
+back:386.822,0,1,true,0
+right:66.9106,13,0,true,0
+end distances
+start particles
+end particles
+total weight: 1594.630005, time taken: 326, timestamp: 2575
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0806,19,0,true,0
+back:386.822,0,1,true,0
+right:66.9106,13,0,true,0
+end distances
+start particles
+end particles
+total weight: 1594.630005, time taken: 256, timestamp: 2585
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0806,19,0,true,0
+back:386.822,0,1,true,0
+right:66.9492,11,0,false,0
+end distances
+start particles
+end particles
+total weight: 1737.194702, time taken: 332, timestamp: 2595
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0028,17,0,false,0
+back:386.822,0,1,true,0
+right:66.9492,11,0,true,0
+end distances
+start particles
+end particles
+total weight: 1595.506470, time taken: 328, timestamp: 2605
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5416,63,1,true,0
+left:67.0028,17,0,true,0
+back:386.822,0,1,true,0
+right:66.9492,11,0,true,0
+end distances
+start particles
+end particles
+total weight: 1595.506470, time taken: 254, timestamp: 2615
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5033,63,1,true,0
+left:67.0028,17,0,true,0
+back:386.822,0,1,true,0
+right:67.1035,12,0,false,0
+end distances
+start particles
+end particles
+total weight: 1696.530273, time taken: 331, timestamp: 2625
+things done:1,1,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+start generation
+start distances
+front:20.5033,63,1,true,0
+left:67.0028,17,0,true,0
+back:386.822,0,1,true,0
+right:67.1035,12,0,true,0
+end distances
+start particles
+end particles
+total weight: 1696.530273, time taken: 274, timestamp: 2636
+things done:1,0,0,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+called a8to
+init everything
+callign testin
+start generation
+start distances
+front:20.465,63,1,true,0
+left:67.0806,17,0,false,0
+back:386.822,0,1,true,0
+right:66.7948,15,0,false,0
+end distances
+start particles
+end particles
+total weight: 5517.211914, time taken: 448, timestamp: 2688
+things done:1,1,1,500
+prediction:0.000000,0.000000,0.000000
+
+end generation
+Stated auto: 
+start generation
+start distances
+front:20.5033,63,1,true,0
+left:67.0806,17,1,true,0
+back:386.822,0,1,true,0
+right:66.9106,13,1,true,0
+end distances
+start particles
+-0.0 -0.0 1.0
+0.0 -0.1 1000.0
+0.0 0.0 3000.0
+0.0 0.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 364, timestamp: 2698
+things done:1,0,0,500
+prediction:0.000000,0.126441,0.000028
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+start generation
+start distances
+front:20.5033,63,1,true,0
+left:67.0806,17,1,true,0
+back:386.822,0,1,true,0
+right:66.9106,13,1,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 341, timestamp: 2708
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,90.000259
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+start generation
+start distances
+front:20.5033,63,1,true,0
+left:67.275,16,1,true,0
+back:386.822,0,1,true,0
+right:66.9106,13,1,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 320, timestamp: 2718
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,90.000046
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23622 0.08636 0.00004 0.00000 0.00000 0.00017 0.00017 0.00017 0.00017 -46.57000 -14.00000 89.99982 0.00000
+target: 0.08636 0.00001 
+target: 0.08636 0.00001 
+start generation
+start distances
+front:20.50331,63,1.00000,true,0
+left:67.27500,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,13,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 326, timestamp: 2728
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,90.000038
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00397 0.00000 0.24726 0.24727 
+start generation
+start distances
+front:20.50331,63,1.00000,true,0
+left:67.27500,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,14,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 322, timestamp: 2738
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,89.999825
+vel:-0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+start generation
+start distances
+front:20.50331,63,1.00000,true,0
+left:67.11947,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,14,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 329, timestamp: 2758
+things done:1,0,0,500
+prediction:-46.570000,-14.003127,89.999649
+vel:0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00397 0.00000 0.28180 0.28182 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23622 0.25908 -0.00023 0.00397 0.00397 0.22553 0.21303 0.22553 0.21303 -46.57000 -14.00000 90.00012 -0.00000
+target: 0.25908 -0.00003 
+target: 0.25908 -0.00003 
+start generation
+start distances
+front:20.46500,63,1.00000,true,0
+left:67.11947,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,14,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 319, timestamp: 2768
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,90.000069
+vel:0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.00092 0.44591 0.44588 
+start generation
+start distances
+front:20.46500,63,1.00000,true,0
+left:67.11947,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,14,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 2778
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,90.000122
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.00092 0.44591 0.44588 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23622 0.34544 0.00173 0.00092 -0.00092 0.29361 0.26181 0.29361 0.26181 -46.57000 -14.00000 89.99757 0.00004
+target: 0.34544 0.00023 
+target: 0.34544 0.00023 
+start generation
+start distances
+front:20.46500,63,1.00000,true,0
+left:67.00283,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,14,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 2788
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,90.000046
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.00376 0.52350 0.52373 
+start generation
+start distances
+front:20.46500,63,1.00000,true,0
+left:67.00283,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,14,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 326, timestamp: 2798
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,89.997574
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00772 -0.00334 0.51964 0.51987 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23607 0.43180 0.01350 0.01106 0.00438 0.41767 0.39817 0.41767 0.39817 -46.57000 -13.99392 89.97888 0.00037
+target: 0.43180 0.00180 
+target: 0.43180 0.00180 
+start generation
+start distances
+front:20.50331,63,1.00000,true,0
+left:67.00283,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.10355,13,1.00000,true,0
+end distances
+start particles
+-46.6 -14.0 1.0
+-46.6 -14.0 1000.0
+-46.6 -14.0 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 2808
+things done:1,0,0,500
+prediction:-46.570000,-14.000000,89.989777
+vel:0.30406,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.07745 -0.00256 0.56171 0.56351 
+start generation
+start distances
+front:20.50331,63,1.00000,true,0
+left:67.00283,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.10355,13,1.00000,true,0
+end distances
+start particles
+-46.6 -13.9 1.0
+-46.6 -13.9 1000.0
+-46.6 -13.9 3000.0
+-46.6 -14.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 2818
+things done:1,0,0,500
+prediction:-46.569996,-13.993918,89.978882
+vel:3.04927,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.15910 0.00142 0.52089 0.52269 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.23288 0.51816 0.02531 0.15767 0.16052 0.48611 0.46047 0.48611 0.46047 -46.56992 -13.86865 89.95043 0.00087
+target: 0.51816 0.00338 
+target: 0.51816 0.00338 
+start generation
+start distances
+front:20.50331,63,1.00000,true,0
+left:67.39165,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.10355,13,1.00000,true,0
+end distances
+start particles
+-46.6 -13.9 1.0
+-46.6 -13.9 1000.0
+-46.6 -13.9 3000.0
+-46.6 -13.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 320, timestamp: 2828
+things done:1,0,0,500
+prediction:-46.569973,-13.939014,89.964111
+vel:6.26360,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.19793 0.00625 0.82540 0.83396 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19371 1.02566 -0.14788 0.01349 -0.00555 0.44283 0.54172 0.44283 0.54172 -46.57805 -12.32632 90.46093 -0.00910
+target: 1.02566 -0.01972 
+target: 1.02566 -0.01972 
+start generation
+start distances
+front:19.12419,63,1.00000,true,0
+left:67.08059,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,11,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3028
+things done:1,0,0,500
+prediction:-46.578049,-12.326320,90.446632
+vel:0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.01840 1.00000 1.00000 
+start generation
+start distances
+front:19.12419,63,1.00000,true,0
+left:67.08059,18,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,11,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3038
+things done:1,0,0,500
+prediction:-46.578049,-12.326320,90.460930
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.01271 1.00000 1.00000 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19371 1.02855 -0.06118 0.01271 -0.01271 0.63603 0.47722 0.63603 0.47722 -46.57805 -12.32632 90.35827 -0.00731
+target: 1.02855 -0.00816 
+target: 1.02855 -0.00816 
+start generation
+start distances
+front:18.54955,42,1.00000,true,0
+left:67.08059,18,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.06496,14,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3048
+things done:1,0,0,500
+prediction:-46.578049,-12.326320,90.439133
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.02060 1.00000 1.00000 
+start generation
+start distances
+front:18.54955,42,1.00000,true,0
+left:67.08059,18,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.06496,14,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3058
+things done:1,0,0,500
+prediction:-46.578049,-12.326320,90.358276
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.02245 1.00000 1.00000 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19371 1.03210 -0.01912 0.02245 -0.02245 0.76519 0.69917 0.76519 0.69917 -46.57805 -12.32632 90.23228 -0.00511
+target: 1.03210 -0.00255 
+target: 1.03210 -0.00255 
+start generation
+start distances
+front:18.54955,42,1.00000,true,0
+left:67.11947,18,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.06496,14,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3068
+things done:1,0,0,500
+prediction:-46.578049,-12.326320,90.306328
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00375 -0.03104 1.00000 1.00000 
+start generation
+start distances
+front:18.54955,42,1.00000,true,0
+left:67.11947,18,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.06496,14,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3078
+things done:1,0,0,500
+prediction:-46.578049,-12.326320,90.232277
+vel:0.14769,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.03374 1.00000 1.00000 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19371 1.03811 0.07215 0.03374 -0.03374 0.77156 0.74347 0.77156 0.74347 -46.57806 -12.32632 90.02011 -0.00141
+target: 1.03811 0.00962 
+target: 1.03811 0.00962 
+start generation
+start distances
+front:17.89830,40,1.00000,true,0
+left:67.11947,18,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,12,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3088
+things done:1,0,0,500
+prediction:-46.578064,-12.323366,90.143242
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00000 -0.03232 1.00000 1.00000 
+start generation
+start distances
+front:17.89830,40,1.00000,true,0
+left:67.11947,18,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,12,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 3098
+things done:1,0,0,500
+prediction:-46.578060,-12.326320,90.020111
+vel:-0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00375 -0.03083 1.00000 1.00000 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19363 1.03404 0.18505 0.03458 -0.02708 0.77667 0.77425 0.77667 0.77425 -46.57805 -12.32337 89.72209 0.00379
+target: 1.03404 0.02468 
+target: 1.03404 0.02468 
+start generation
+start distances
+front:17.89830,40,1.00000,true,0
+left:67.04171,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,12,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3108
+things done:1,0,0,500
+prediction:-46.578056,-12.323366,89.872147
+vel:0.14769,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00375 -0.03111 1.00000 1.00000 
+start generation
+start distances
+front:16.67242,61,1.00000,true,0
+left:67.04171,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,12,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3118
+things done:1,0,0,500
+prediction:-46.578056,-12.323366,89.722092
+vel:-0.14769,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00375 -0.03033 1.00000 1.00000 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19371 1.02616 0.25242 0.02658 -0.03408 0.79344 0.79278 0.79344 0.79278 -46.57807 -12.32632 89.43563 0.00879
+target: 1.02616 0.03366 
+target: 1.02616 0.03366 
+start generation
+start distances
+front:16.67242,61,1.00000,true,0
+left:67.04171,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.87200,12,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3128
+things done:1,0,0,500
+prediction:-46.578075,-12.326320,89.576225
+vel:-0.14769,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.03104 0.97283 1.00000 
+start generation
+start distances
+front:16.67242,61,1.00000,true,0
+left:67.04171,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.87200,12,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 3138
+things done:1,0,0,500
+prediction:-46.578075,-12.326320,89.435631
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 -0.03225 0.97283 1.00000 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.19371 1.01839 0.31863 0.03225 -0.03225 0.66356 0.82369 0.66356 0.82369 -46.57807 -12.32632 89.15836 0.01363
+target: 1.01839 0.04249 
+target: 1.01839 0.04249 
+start generation
+start distances
+front:16.67242,61,1.00000,true,0
+left:67.00283,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.87200,12,1.00000,true,0
+end distances
+start particles
+-46.6 -12.3 1.0
+-46.6 -12.3 1000.0
+-46.6 -12.3 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3148
+things done:1,0,0,500
+prediction:-46.578075,-12.326320,89.292259
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.21139 -0.03076 0.85573 0.90841 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:67.00283,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.87200,11,1.00000,true,0
+end distances
+start particles
+-46.6 -12.2 1.0
+-46.6 -12.2 1000.0
+-46.6 -12.2 3000.0
+-46.6 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3158
+things done:1,0,0,500
+prediction:-46.578075,-12.326320,89.158363
+vel:8.32250,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.77760 -0.02799 0.57263 0.62530 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.17816 0.96782 0.42582 0.80559 0.74962 0.46747 0.72258 0.46747 0.72258 -46.56741 -11.71413 88.90921 0.01941
+target: 0.96782 0.05678 
+target: 0.96782 0.05678 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:67.00283,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.87200,11,1.00000,true,0
+end distances
+start particles
+-46.6 -11.7 1.0
+-46.6 -11.7 1000.0
+-46.6 -11.7 3000.0
+-46.6 -12.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3168
+things done:1,0,0,500
+prediction:-46.575436,-12.159890,89.027588
+vel:30.61431,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 1.08013 -0.01754 0.10036 0.31230 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:67.15836,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.87200,11,1.00000,true,0
+end distances
+start particles
+-46.6 -11.3 1.0
+-46.6 -11.3 1000.0
+-46.6 -11.3 3000.0
+-46.6 -11.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3178
+things done:1,0,0,500
+prediction:-46.567410,-11.714127,88.909218
+vel:42.52470,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.81269 -0.00526 0.23408 0.44602 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.16191 0.95118 0.48743 0.81794 0.80743 0.41475 0.56006 0.41475 0.56006 -46.55423 -11.07435 88.73096 0.02462
+target: 0.95118 0.06500 
+target: 0.95118 0.06500 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:67.15836,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.87200,11,1.00000,true,0
+end distances
+start particles
+-46.6 -11.1 1.0
+-46.6 -11.1 1000.0
+-46.6 -11.1 3000.0
+-46.6 -11.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3188
+things done:1,0,0,500
+prediction:-46.559307,-11.309549,88.796623
+vel:31.99560,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.64013 0.07806 0.47095 0.65497 
+start generation
+start distances
+front:13.99080,63,1.00000,true,0
+left:67.15836,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,9,1.00000,true,0
+end distances
+start particles
+-46.5 -10.8 1.0
+-46.5 -10.8 1000.0
+-46.5 -10.8 3000.0
+-46.6 -11.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 318, timestamp: 3198
+things done:1,0,0,500
+prediction:-46.554226,-11.074350,88.730965
+vel:25.20208,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.42278 0.07373 0.57962 0.76364 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.15342 0.92592 0.14879 0.34906 0.49651 0.27703 0.41050 0.27703 0.41050 -46.54696 -10.74153 89.03302 0.01935
+target: 0.92592 0.01984 
+target: 0.92592 0.01984 
+start generation
+start distances
+front:13.99080,63,1.00000,true,0
+left:67.15836,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,9,1.00000,true,0
+end distances
+start particles
+-46.5 -10.7 1.0
+-46.5 -10.7 1000.0
+-46.5 -10.7 3000.0
+-46.5 -10.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3208
+things done:1,0,0,500
+prediction:-46.548222,-10.805630,88.707420
+vel:16.64501,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.20742 0.05597 0.70157 0.73068 
+start generation
+start distances
+front:13.99080,63,1.00000,true,0
+left:66.92507,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,9,1.00000,true,0
+end distances
+start particles
+-46.5 -10.6 1.0
+-46.5 -10.6 1000.0
+-46.5 -10.6 3000.0
+-46.5 -10.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3218
+things done:1,0,0,500
+prediction:-46.546959,-10.741529,89.033028
+vel:8.16612,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.19970 0.05675 0.70544 0.73454 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14945 0.91387 -0.13541 0.14294 0.25645 0.50475 0.56878 0.50475 0.56878 -46.54509 -10.58430 89.63644 0.00882
+target: 0.91387 -0.01806 
+target: 0.91387 -0.01806 
+start generation
+start distances
+front:12.87984,63,1.00000,true,0
+left:66.92507,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,0
+end distances
+start particles
+-46.5 -10.6 1.0
+-46.5 -10.6 1000.0
+-46.5 -10.6 3000.0
+-46.5 -10.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3228
+things done:1,0,0,500
+prediction:-46.545586,-10.642329,89.383820
+vel:7.86207,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.06399 0.07913 0.84010 0.83118 
+start generation
+start distances
+front:12.87984,63,1.00000,true,0
+left:66.92507,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,0
+end distances
+start particles
+-46.5 -10.6 1.0
+-46.5 -10.6 1000.0
+-46.5 -10.6 3000.0
+-46.5 -10.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3238
+things done:1,0,0,500
+prediction:-46.545090,-10.584300,89.636436
+vel:2.51934,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.01743 0.10498 0.88081 0.87189 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14981 0.91496 -0.25141 -0.12241 0.08755 0.66356 0.58708 0.66356 0.58708 -46.54512 -10.59803 90.18661 -0.00078
+target: 0.91496 -0.03353 
+target: 0.91496 -0.03353 
+start generation
+start distances
+front:12.87984,63,1.00000,true,0
+left:67.23612,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,0
+end distances
+start particles
+-46.5 -10.6 1.0
+-46.5 -10.6 1000.0
+-46.5 -10.6 3000.0
+-46.5 -10.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3248
+things done:1,0,0,500
+prediction:-46.545124,-10.591945,89.871719
+vel:-0.68630,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00971 0.14611 0.94488 0.92051 
+start generation
+start distances
+front:12.19028,63,1.00000,true,0
+left:67.23612,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,0
+end distances
+start particles
+-46.5 -10.6 1.0
+-46.5 -10.6 1000.0
+-46.5 -10.6 3000.0
+-46.5 -10.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3258
+things done:1,0,0,500
+prediction:-46.545116,-10.598026,90.186607
+vel:-0.38224,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00971 0.14838 0.93517 0.91080 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14960 0.91430 -0.72039 -0.13867 0.15809 0.64831 0.36975 0.64831 0.36975 -46.54525 -10.59038 91.21509 -0.01873
+target: 0.91430 -0.09606 
+target: 0.91430 -0.09606 
+start generation
+start distances
+front:12.19028,63,1.00000,true,0
+left:67.23612,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.94918,7,1.00000,true,0
+end distances
+start particles
+-46.5 -10.6 1.0
+-46.5 -10.6 1000.0
+-46.5 -10.6 3000.0
+-46.5 -10.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3268
+things done:1,0,0,500
+prediction:-46.545109,-10.599589,90.597588
+vel:0.38224,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.09885 0.10981 1.00000 0.56913 
+start generation
+start distances
+front:12.19028,63,1.00000,true,0
+left:67.23612,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.94918,7,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3278
+things done:1,0,0,500
+prediction:-46.545254,-10.590383,91.215088
+vel:3.89192,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.14740 0.11436 1.00000 0.54486 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14654 0.90490 -1.26807 0.03304 0.26176 0.60161 0.55336 0.60161 0.55336 -46.54908 -10.47438 92.66045 -0.04396
+target: 0.90490 -0.16910 
+target: 0.90490 -0.16910 
+start generation
+start distances
+front:12.19028,63,1.00000,true,0
+left:67.27500,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.94918,7,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3288
+things done:1,0,0,500
+prediction:-46.547165,-10.521779,91.977486
+vel:5.80313,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.06024 0.14142 1.00000 0.43754 
+start generation
+start distances
+front:11.50072,63,1.00000,true,0
+left:67.27500,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.64046,11,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3298
+things done:1,0,0,500
+prediction:-46.549084,-10.474385,92.660446
+vel:2.37164,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 0.14028 1.00000 0.46766 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14635 0.90431 -1.57424 -0.14028 0.14028 0.67725 0.50872 0.67725 0.50872 -46.54908 -10.47438 94.01934 -0.06768
+target: 0.90431 -0.20992 
+target: 0.90431 -0.20992 
+start generation
+start distances
+front:11.50072,63,1.00000,true,0
+left:67.27500,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.64046,11,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3308
+things done:1,0,0,500
+prediction:-46.549084,-10.474385,93.314438
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00397 0.12267 1.00000 0.58470 
+start generation
+start distances
+front:11.50072,63,1.00000,true,0
+left:67.58605,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.64046,11,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3318
+things done:1,0,0,500
+prediction:-46.549084,-10.474385,94.019341
+vel:-0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 0.10867 1.00000 0.58271 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14609 0.90353 -1.86426 -0.10867 0.10867 0.79906 0.49144 0.79906 0.49144 -46.54912 -10.47439 95.30009 -0.09003
+target: 0.90353 -0.24860 
+target: 0.90353 -0.24860 
+start generation
+start distances
+front:10.77285,63,1.00000,true,0
+left:67.58605,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.64046,11,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3328
+things done:1,0,0,500
+prediction:-46.548843,-10.477504,94.693642
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00772 0.10242 1.00000 0.55764 
+start generation
+start distances
+front:10.77285,63,1.00000,true,0
+left:67.58605,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.33173,11,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3338
+things done:1,0,0,500
+prediction:-46.549118,-10.474388,95.300087
+vel:-0.30406,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.01169 0.09688 1.00000 0.55963 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14608 0.90349 -1.98603 -0.10858 0.08519 0.85469 0.56261 0.85469 0.56261 -46.54822 -10.48355 96.28731 -0.10726
+target: 0.90349 -0.26484 
+target: 0.90349 -0.26484 
+start generation
+start distances
+front:10.77285,63,1.00000,true,1
+left:67.58605,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.33173,11,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3348
+things done:1,0,0,500
+prediction:-46.548225,-10.483554,95.827316
+vel:-0.46043,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 0.09333 1.00000 0.62103 
+start generation
+start distances
+front:10.77285,63,1.00000,true,1
+left:67.97487,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.33173,11,1.00000,true,0
+end distances
+start particles
+-46.5 -10.5 1.0
+-46.5 -10.5 1000.0
+-46.5 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3358
+things done:1,0,0,500
+prediction:-46.548225,-10.483554,96.287308
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.02714 0.08239 1.00000 0.60746 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14531 0.90112 -2.08888 -0.05525 0.10953 0.88156 0.56808 0.88156 0.56808 -46.55078 -10.46234 97.06132 -0.12077
+target: 0.90112 -0.27855 
+target: 0.90112 -0.27855 
+start generation
+start distances
+front:9.66189,63,1.00000,true,1
+left:67.97487,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.82660,11,1.00000,true,0
+end distances
+start particles
+-46.6 -10.5 1.0
+-46.6 -10.5 1000.0
+-46.6 -10.5 3000.0
+-46.5 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3368
+things done:1,0,0,500
+prediction:-46.548225,-10.483554,96.695259
+vel:1.06855,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.03111 0.06812 1.00000 0.58915 
+start generation
+start distances
+front:9.66189,63,1.00000,true,1
+left:67.97487,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.82660,11,1.00000,true,0
+end distances
+start particles
+-46.6 -10.5 1.0
+-46.6 -10.5 1000.0
+-46.6 -10.5 3000.0
+-46.6 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3378
+things done:1,0,0,500
+prediction:-46.550785,-10.462337,97.061317
+vel:1.22492,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00772 0.04148 1.00000 0.60085 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.14498 0.90008 -2.13979 -0.03376 0.04920 0.89419 0.59017 0.89419 0.59017 -46.55156 -10.45630 97.62505 -0.13061
+target: 0.90008 -0.28534 
+target: 0.90008 -0.28534 
+start generation
+start distances
+front:9.66189,63,1.00000,true,1
+left:67.97487,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.82660,11,1.00000,true,0
+end distances
+start particles
+-46.6 -10.5 1.0
+-46.6 -10.5 1000.0
+-46.6 -10.5 3000.0
+-46.6 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3388
+things done:1,0,0,500
+prediction:-46.551178,-10.459233,97.371750
+vel:0.30406,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00375 0.01250 1.00000 0.62597 
+start generation
+start distances
+front:9.66189,63,1.00000,true,1
+left:67.97487,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.82660,11,1.00000,true,0
+end distances
+start particles
+-46.6 -10.5 1.0
+-46.6 -10.5 1000.0
+-46.6 -10.5 3000.0
+-46.6 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3398
+things done:1,0,0,500
+prediction:-46.551559,-10.456305,97.625053
+vel:0.14769,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.40932 0.00540 0.97533 0.42319 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.13672 0.87406 -2.04831 0.40392 0.41472 0.89883 0.59600 0.89883 0.59600 -46.59541 -10.13700 97.84915 -0.13452
+target: 0.87406 -0.27314 
+target: 0.87406 -0.27314 
+start generation
+start distances
+front:8.62755,10,1.00000,true,1
+left:67.97487,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.78801,8,1.00000,true,0
+end distances
+start particles
+-46.6 -10.1 1.0
+-46.6 -10.1 1000.0
+-46.6 -10.1 3000.0
+-46.6 -10.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3408
+things done:1,0,0,500
+prediction:-46.551559,-10.456305,97.787697
+vel:16.11508,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.95038 0.03708 0.48994 0.09242 
+start generation
+start distances
+front:8.62755,10,1.00000,true,1
+left:67.97487,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.78801,8,1.00000,true,0
+end distances
+start particles
+-46.7 -9.7 1.0
+-46.7 -9.7 1000.0
+-46.7 -9.7 3000.0
+-46.6 -10.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3418
+things done:1,0,0,500
+prediction:-46.595406,-10.136999,97.849152
+vel:37.41653,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 1.03555 -0.08474 0.44736 0.04983 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.11597 0.80500 -2.02763 1.12029 0.95082 0.69317 0.44644 0.69317 0.44644 -46.70672 -9.32924 97.96099 -0.13647
+target: 0.80500 -0.27038 
+target: 0.80500 -0.27038 
+start generation
+start distances
+front:8.62755,10,1.00000,true,1
+left:67.85822,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.78801,8,1.00000,true,0
+end distances
+start particles
+-46.7 -9.3 1.0
+-46.7 -9.3 1000.0
+-46.7 -9.3 3000.0
+-46.7 -9.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3428
+things done:1,0,0,500
+prediction:-46.653366,-9.714931,97.790451
+vel:40.76985,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.87469 -0.15534 0.29840 -0.24093 
+start generation
+start distances
+front:7.24843,10,1.00000,true,1
+left:67.85822,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.32828,6,1.00000,true,0
+end distances
+start particles
+-46.7 -9.0 1.0
+-46.7 -9.0 1000.0
+-46.7 -9.0 3000.0
+-46.7 -9.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 3438
+things done:1,0,0,500
+prediction:-46.706722,-9.329236,97.960991
+vel:34.43675,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.70589 -0.13666 0.38281 -0.15653 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.10212 0.75541 -1.41907 0.84255 0.56923 0.52394 0.08472 0.52394 0.08472 -46.78094 -8.77840 97.14904 -0.12230
+target: 0.75541 -0.18923 
+target: 0.75541 -0.18923 
+start generation
+start distances
+front:7.24843,10,1.00000,true,0
+left:67.85822,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.32828,6,1.00000,true,0
+end distances
+start particles
+-46.8 -8.8 1.0
+-46.8 -8.8 1000.0
+-46.8 -8.8 3000.0
+-46.7 -9.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3448
+things done:1,0,0,500
+prediction:-46.747665,-9.032682,97.762344
+vel:27.79085,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.84556 -0.12721 -0.07449 0.24051 
+start generation
+start distances
+front:7.24843,10,1.00000,true,0
+left:67.62493,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.32828,6,1.00000,true,0
+end distances
+start particles
+-46.8 -8.4 1.0
+-46.8 -8.4 1000.0
+-46.8 -8.4 3000.0
+-46.8 -8.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3458
+things done:1,0,0,500
+prediction:-46.780941,-8.778400,97.149048
+vel:33.28987,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.96008 -0.37851 -0.13175 0.18324 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.08327 0.68212 -0.97620 1.33860 0.58157 0.30731 0.00222 0.30731 0.00222 -46.86748 -8.02741 95.99275 -0.10212
+target: 0.68212 -0.13018 
+target: 0.68212 -0.13018 
+start generation
+start distances
+front:7.24843,10,1.00000,true,0
+left:67.62493,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.32828,6,1.00000,true,0
+end distances
+start particles
+-46.9 -8.0 1.0
+-46.9 -8.0 1000.0
+-46.9 -8.0 3000.0
+-46.8 -8.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 308, timestamp: 3468
+things done:1,0,0,500
+prediction:-46.829685,-8.371965,96.528999
+vel:37.79861,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.69617 -0.45423 -0.15259 0.11331 
+start generation
+start distances
+front:5.83100,10,1.00000,true,0
+left:67.62493,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.71083,6,1.00000,true,0
+end distances
+start particles
+-46.9 -7.8 1.0
+-46.9 -7.8 1000.0
+-46.9 -7.8 3000.0
+-46.9 -8.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 308, timestamp: 3478
+things done:1,0,0,500
+prediction:-46.867485,-8.027409,95.992752
+vel:27.40836,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.39364 -0.41161 0.07867 0.26458 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07621 0.65257 0.81659 0.80525 -0.01797 -0.07256 0.15314 -0.07256 0.15314 -46.89295 -7.71853 92.66043 -0.04396
+target: 0.65257 0.10889 
+target: 0.65257 0.10889 
+start generation
+start distances
+front:5.83100,10,1.00000,true,0
+left:67.62493,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.71083,6,1.00000,true,0
+end distances
+start particles
+-46.9 -7.7 1.0
+-46.9 -7.7 1000.0
+-46.9 -7.7 3000.0
+-46.9 -7.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3488
+things done:1,0,0,500
+prediction:-46.886089,-7.826726,94.600571
+vel:15.49777,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.17056 -0.26053 -0.56653 1.00000 
+start generation
+start distances
+front:5.83100,10,1.00000,true,0
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.71083,6,1.00000,true,0
+end distances
+start particles
+-46.9 -7.7 1.0
+-46.9 -7.7 1000.0
+-46.9 -7.7 3000.0
+-46.9 -7.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3498
+things done:1,0,0,500
+prediction:-46.892956,-7.718531,92.660439
+vel:6.71503,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.06597 -0.08254 -0.51424 1.00000 
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: 0.07543 0.64922 1.57822 0.14851 -0.01656 -0.05356 0.27394 -0.05356 0.27394 -46.89380 -7.66659 89.44661 0.01213
+target: 0.64922 0.21046 
+target: 0.64922 0.21046 
+start generation
+start distances
+front:4.72004,10,1.00000,true,0
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.44750,6,1.00000,true,0
+end distances
+start particles
+-46.9 -7.7 1.0
+-46.9 -7.7 1000.0
+-46.9 -7.7 3000.0
+-46.9 -7.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 319, timestamp: 3508
+things done:1,0,0,500
+prediction:-46.893738,-7.692656,90.811852
+vel:2.59744,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.03310 -0.00440 0.08676 1.00000 
+start generation
+start distances
+front:4.72004,10,1.00000,true,0
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.44750,6,1.00000,true,0
+end distances
+start particles
+-46.9 -7.7 1.0
+-46.9 -7.7 1000.0
+-46.9 -7.7 3000.0
+-46.9 -7.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3518
+things done:1,0,0,500
+prediction:-46.893795,-7.666594,89.446609
+vel:1.30308,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.05627 0.06584 0.13144 1.00000 
+start generation
+start distances
+front:4.72004,10,1.00000,true,0
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.44750,6,1.00000,true,0
+end distances
+start particles
+-46.9 -7.7 1.0
+-46.9 -7.7 1000.0
+-46.9 -7.7 3000.0
+-46.9 -7.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3528
+things done:1,0,0,500
+prediction:-46.893795,-7.666594,88.914314
+vel:-2.21528,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.97413 -0.08636 0.46727 -0.12211 0.00958 -0.24944 0.64850 -0.24944 0.64850 -46.89552 -7.75206 268.92978 0.03223
+target: -0.08636 0.06231 
+target: -0.08636 0.06231 
+fb: -0.10856 0.11777 -1.00000 -1.00000 
+start generation
+start distances
+front:4.72004,10,1.00000,true,0
+left:66.80842,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.44750,6,1.00000,true,0
+end distances
+start particles
+-46.9 -7.8 1.0
+-46.9 -7.8 1000.0
+-46.9 -7.8 3000.0
+-46.9 -7.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 3538
+things done:1,0,0,500
+prediction:-46.894691,-7.710890,88.772820
+vel:-4.27419,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.08716 0.26693 -1.00000 -1.00000 
+start generation
+start distances
+front:4.72004,10,1.00000,true,0
+left:66.80842,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.40210,13,1.00000,true,0
+end distances
+start particles
+-46.9 -7.8 1.0
+-46.9 -7.8 1000.0
+-46.9 -7.8 3000.0
+-46.9 -7.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3548
+things done:1,0,0,500
+prediction:-46.895519,-7.752060,88.929779
+vel:-3.43151,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.97196 -0.17272 -0.58579 -0.35409 0.17977 -0.02328 0.44008 -0.02328 0.44008 -46.89601 -7.83754 270.45973 0.00557
+target: -0.17272 -0.07811 
+target: -0.17272 -0.07811 
+fb: -0.10856 0.24619 0.35998 -0.84360 
+start generation
+start distances
+front:4.72004,10,1.00000,true,0
+left:66.80842,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.40210,13,1.00000,true,0
+end distances
+start particles
+-46.9 -7.8 1.0
+-46.9 -7.8 1000.0
+-46.9 -7.8 3000.0
+-46.9 -7.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3558
+things done:1,0,0,500
+prediction:-46.895920,-7.779509,89.374397
+vel:-4.27414,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.11452 0.21110 0.35998 -0.84360 
+start generation
+start distances
+front:4.72004,10,1.00000,true,0
+left:66.80842,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.40210,13,1.00000,true,0
+end distances
+start particles
+-46.9 -7.9 1.0
+-46.9 -7.9 1000.0
+-46.9 -7.9 3000.0
+-46.9 -7.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3568
+things done:1,0,0,500
+prediction:-46.896008,-7.837540,90.459740
+vel:-4.50868,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.97060 -0.25908 -1.34334 -0.32562 0.09658 -0.16617 -0.19900 -0.16617 -0.19900 -46.89468 -7.89103 272.52444 -0.03049
+target: -0.25908 -0.17913 
+target: -0.25908 -0.17913 
+fb: -0.06796 0.16187 0.18288 -0.92670 
+start generation
+start distances
+front:5.17975,10,1.00000,true,0
+left:66.80842,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.40210,13,1.00000,true,0
+end distances
+start particles
+-46.9 -7.9 1.0
+-46.9 -7.9 1000.0
+-46.9 -7.9 3000.0
+-46.9 -7.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3578
+things done:1,0,0,500
+prediction:-46.895443,-7.869678,91.559296
+vel:-2.67567,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.12026 0.16209 0.20903 -0.90055 
+start generation
+start distances
+front:5.17975,10,1.00000,true,0
+left:66.80842,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.63365,13,1.00000,true,0
+end distances
+start particles
+-46.9 -8.0 1.0
+-46.9 -8.0 1000.0
+-46.9 -8.0 3000.0
+-46.9 -7.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3588
+things done:1,0,0,500
+prediction:-46.894676,-7.891035,92.524445
+vel:-4.73458,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.96645 -0.34544 -1.42016 -0.28235 0.04183 0.18019 -0.42897 0.18019 -0.42897 -46.88535 -8.05426 273.93252 -0.05525
+target: -0.34544 -0.18938 
+target: -0.34544 -0.18938 
+fb: -0.20764 0.12615 -0.21350 -0.62609 
+start generation
+start distances
+front:5.17975,10,1.00000,true,0
+left:66.80842,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.63365,13,1.00000,true,0
+end distances
+start particles
+-46.9 -8.1 1.0
+-46.9 -8.1 1000.0
+-46.9 -8.1 3000.0
+-46.9 -8.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3598
+things done:1,0,0,500
+prediction:-46.890995,-7.964263,93.240585
+vel:-8.17477,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.26170 0.03828 -0.18647 -0.59906 
+start generation
+start distances
+front:5.17975,10,1.00000,true,0
+left:66.76954,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:41.63365,13,1.00000,true,0
+end distances
+start particles
+-46.9 -8.2 1.0
+-46.9 -8.2 1000.0
+-46.9 -8.2 3000.0
+-46.9 -8.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3608
+things done:1,0,0,500
+prediction:-46.885353,-8.054261,93.932518
+vel:-10.30318,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.96099 -0.43180 -1.41757 -0.29999 -0.22342 0.10589 -0.45447 0.10589 -0.45447 -46.86873 -8.26889 274.80591 -0.07086
+target: -0.43180 -0.18903 
+target: -0.43180 -0.18903 
+fb: -0.27340 -0.07969 -0.29572 -0.63356 
+start generation
+start distances
+front:5.48622,10,1.00000,true,0
+left:66.76954,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.28969,9,1.00000,true,0
+end distances
+start particles
+-46.9 -8.3 1.0
+-46.9 -8.3 1000.0
+-46.9 -8.3 3000.0
+-46.9 -8.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3618
+things done:1,0,0,500
+prediction:-46.876812,-8.169835,94.519798
+vel:-10.76363,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.20963 -0.14234 -0.32761 -0.66545 
+start generation
+start distances
+front:5.48622,10,1.00000,true,0
+left:66.76954,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.28969,9,1.00000,true,0
+end distances
+start particles
+-46.9 -8.3 1.0
+-46.9 -8.3 1000.0
+-46.9 -8.3 3000.0
+-46.9 -8.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3628
+things done:1,0,0,500
+prediction:-46.868732,-8.268889,94.805908
+vel:-8.25300,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.95735 -0.51816 -0.48886 -0.06728 -0.35197 -0.17725 -0.45925 -0.17725 -0.45925 -46.85753 -8.41197 274.01054 -0.05722
+target: -0.51816 -0.06519 
+target: -0.51816 -0.06519 
+fb: -0.18226 -0.15903 -1.00000 -0.46532 
+start generation
+start distances
+front:5.48622,10,1.00000,true,0
+left:66.84730,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.28969,9,1.00000,true,0
+end distances
+start particles
+-46.9 -8.4 1.0
+-46.9 -8.4 1000.0
+-46.9 -8.4 3000.0
+-46.9 -8.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3638
+things done:1,0,0,500
+prediction:-46.863358,-8.334346,94.582367
+vel:-7.17575,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.21139 -0.18588 -1.00000 -0.45076 
+start generation
+start distances
+front:5.37129,10,1.00000,true,0
+left:66.84730,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.28969,9,1.00000,true,0
+end distances
+start particles
+-46.9 -8.5 1.0
+-46.9 -8.5 1000.0
+-46.9 -8.5 3000.0
+-46.9 -8.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3648
+things done:1,0,0,500
+prediction:-46.857529,-8.411965,94.010544
+vel:-8.32247,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.95309 -0.60452 0.14065 -0.02551 -0.39727 -0.33983 -0.54003 -0.33983 -0.54003 -46.84773 -8.57969 272.59132 -0.03266
+target: -0.60452 0.01876 
+target: -0.60452 0.01876 
+fb: -0.21338 -0.22062 -0.91165 -0.89894 
+start generation
+start distances
+front:5.37129,10,1.00000,true,0
+left:66.84730,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.48264,7,1.00000,true,0
+end distances
+start particles
+-46.8 -8.6 1.0
+-46.8 -8.6 1000.0
+-46.8 -8.6 3000.0
+-46.9 -8.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 3658
+things done:1,0,0,500
+prediction:-46.851841,-8.500394,93.345955
+vel:-8.40064,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.24625 -0.23113 -0.89521 -0.88250 
+start generation
+start distances
+front:5.37129,10,1.00000,true,0
+left:66.84730,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.48264,7,1.00000,true,0
+end distances
+start particles
+-46.8 -8.7 1.0
+-46.8 -8.7 1000.0
+-46.8 -8.7 3000.0
+-46.8 -8.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3668
+things done:1,0,0,500
+prediction:-46.847733,-8.579689,92.591324
+vel:-9.69502,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.94747 -0.69088 0.82257 -0.01513 -0.47738 -0.48969 -0.48319 -0.48969 -0.48319 -46.84123 -8.80094 270.70563 0.00016
+target: -0.69088 0.10969 
+target: -0.69088 0.10969 
+fb: -0.28112 -0.20385 -1.00000 -0.54123 
+start generation
+start distances
+front:5.37129,10,1.00000,true,0
+left:66.49737,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:42.48264,7,1.00000,true,0
+end distances
+start particles
+-46.8 -8.8 1.0
+-46.8 -8.8 1000.0
+-46.8 -8.8 3000.0
+-46.8 -8.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3678
+things done:1,0,0,500
+prediction:-46.843460,-8.694108,91.686905
+vel:-11.06759,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.27339 -0.16869 -1.00000 -0.54509 
+start generation
+start distances
+front:5.29468,10,1.00000,true,0
+left:66.49737,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.25455,6,1.00000,true,0
+end distances
+start particles
+-46.8 -8.9 1.0
+-46.8 -8.9 1000.0
+-46.8 -8.9 3000.0
+-46.8 -8.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3688
+things done:1,0,0,500
+prediction:-46.841232,-8.800938,90.705627
+vel:-10.76354,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.94177 -0.77724 1.16439 -0.10470 -0.44209 -0.44608 -0.44092 -0.44608 -0.44092 -46.84196 -9.02541 269.02540 0.02958
+target: -0.77724 0.15527 
+target: -0.77724 0.15527 
+fb: -0.28509 -0.14881 -1.00000 -0.74072 
+start generation
+start distances
+front:5.29468,10,1.00000,true,0
+left:66.49737,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.25455,6,1.00000,true,0
+end distances
+start particles
+-46.8 -9.0 1.0
+-46.8 -9.0 1000.0
+-46.8 -9.0 3000.0
+-46.8 -8.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3698
+things done:1,0,0,500
+prediction:-46.840763,-8.909354,89.788910
+vel:-11.22399,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.28708 -0.14085 -1.00000 -0.73972 
+start generation
+start distances
+front:5.29468,10,1.00000,true,0
+left:66.49737,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.25455,6,1.00000,true,0
+end distances
+start particles
+-46.8 -9.1 1.0
+-46.8 -9.1 1000.0
+-46.8 -9.1 3000.0
+-46.8 -9.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3708
+things done:1,0,0,500
+prediction:-46.841961,-9.025411,89.025406
+vel:-11.30220,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.93526 -0.86360 1.32203 -0.14623 -0.42793 -0.50325 -0.52017 -0.50325 -0.52017 -46.84943 -9.28192 267.74649 0.05219
+target: -0.86360 0.17629 
+target: -0.86360 0.17629 
+fb: -0.32591 -0.12032 -1.00000 -0.87112 
+start generation
+start distances
+front:5.29468,10,1.00000,true,0
+left:66.49737,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.25455,6,1.00000,true,0
+end distances
+start particles
+-46.8 -9.3 1.0
+-46.8 -9.3 1000.0
+-46.8 -9.3 3000.0
+-46.8 -9.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3718
+things done:1,0,0,500
+prediction:-46.844463,-9.135365,88.369492
+vel:-12.83119,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.35107 -0.08637 -1.00000 -0.85854 
+start generation
+start distances
+front:5.48622,10,1.00000,true,0
+left:66.49737,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,11,1.00000,true,0
+end distances
+start particles
+-46.9 -9.4 1.0
+-46.9 -9.4 1000.0
+-46.9 -9.4 3000.0
+-46.8 -9.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3728
+things done:1,0,0,500
+prediction:-46.849434,-9.281921,87.746490
+vel:-13.82155,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.92740 -0.94996 1.43977 -0.26470 -0.43744 -0.68222 -0.58864 -0.68222 -0.58864 -46.86462 -9.59151 266.78581 0.06948
+target: -0.94996 0.19199 
+target: -0.94996 0.19199 
+fb: -0.39366 -0.04887 -1.00000 -0.92551 
+start generation
+start distances
+front:5.48622,10,1.00000,true,0
+left:66.49737,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,11,1.00000,true,0
+end distances
+start particles
+-46.9 -9.6 1.0
+-46.9 -9.6 1000.0
+-46.9 -9.6 3000.0
+-46.9 -9.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3738
+things done:1,0,0,500
+prediction:-46.855160,-9.411584,87.196808
+vel:-15.49824,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.44021 -0.01378 -1.00000 -0.90223 
+start generation
+start distances
+front:5.48622,10,1.00000,true,0
+left:66.41961,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.91059,11,1.00000,true,0
+end distances
+start particles
+-46.9 -9.8 1.0
+-46.9 -9.8 1000.0
+-46.9 -9.8 3000.0
+-46.9 -9.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3748
+things done:1,0,0,500
+prediction:-46.864616,-9.591512,86.785805
+vel:-17.33129,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.91846 -1.03632 1.27189 -0.42644 -0.45399 -0.70875 -0.58350 -0.70875 -0.58350 -46.88572 -9.94359 266.44317 0.07618
+target: -1.03632 0.16961 
+target: -1.03632 0.16961 
+fb: -0.44794 0.00497 -1.00000 -1.00000 
+start generation
+start distances
+front:5.79269,10,1.00000,true,0
+left:66.41961,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.14214,12,1.00000,true,0
+end distances
+start particles
+-46.9 -9.9 1.0
+-46.9 -9.9 1000.0
+-46.9 -9.9 3000.0
+-46.9 -9.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 3758
+things done:1,0,0,500
+prediction:-46.874313,-9.757679,86.534126
+vel:-17.63537,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.54304 0.01825 -1.00000 -1.00000 
+start generation
+start distances
+front:5.79269,10,1.00000,true,0
+left:66.41961,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.14214,12,1.00000,true,0
+end distances
+start particles
+-46.9 -10.2 1.0
+-46.9 -10.2 1000.0
+-46.9 -10.2 3000.0
+-46.9 -9.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3768
+things done:1,0,0,500
+prediction:-46.885723,-9.943586,86.443169
+vel:-21.37963,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90860 -1.12268 1.08880 -0.56130 -0.52479 -0.70222 -0.44592 -0.70222 -0.44592 -46.90978 -10.33221 266.51330 0.07578
+target: -1.12268 0.14519 
+target: -1.12268 0.14519 
+fb: -0.49450 0.02571 -1.00000 -1.00000 
+start generation
+start distances
+front:5.79269,10,1.00000,true,0
+left:66.26408,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.14214,12,1.00000,true,0
+end distances
+start particles
+-46.9 -10.3 1.0
+-46.9 -10.3 1000.0
+-46.9 -10.3 3000.0
+-46.9 -10.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 3778
+things done:1,0,0,500
+prediction:-46.900688,-10.184458,86.447197
+vel:-19.46841,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.29281 0.04155 -1.00000 -1.00000 
+start generation
+start distances
+front:6.36732,10,1.00000,true,0
+left:66.26408,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.14214,12,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3788
+things done:1,0,0,500
+prediction:-46.909775,-10.332211,86.513298
+vel:-11.52815,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90628 -1.20904 0.92347 -0.33437 -0.25126 -0.75939 -0.65928 -0.75939 -0.65928 -46.91525 -10.42379 266.77855 0.07134
+target: -1.20904 0.12314 
+target: -1.20904 0.12314 
+fb: -0.11651 0.05079 -1.00000 -1.00000 
+start generation
+start distances
+front:6.36732,10,1.00000,true,0
+left:66.26408,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.56664,12,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3798
+things done:1,0,0,500
+prediction:-46.914722,-10.414593,86.615730
+vel:-4.58693,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.01545 0.04638 -1.00000 -1.00000 
+start generation
+start distances
+front:6.36732,10,1.00000,true,0
+left:66.26408,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.56664,12,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3808
+things done:1,0,0,500
+prediction:-46.915253,-10.423786,86.778549
+vel:-0.60812,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90620 -1.29540 0.74415 -0.06183 0.03094 -0.76656 -0.75989 -0.76656 -0.75989 -46.91541 -10.42674 267.19992 0.06399
+target: -1.29540 0.09923 
+target: -1.29540 0.09923 
+fb: -0.00375 0.02635 -1.00000 -1.00000 
+start generation
+start distances
+front:6.36732,10,1.00000,true,0
+left:66.14744,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.56664,12,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3818
+things done:1,0,0,500
+prediction:-46.915413,-10.426736,86.987648
+vel:-0.14769,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 0.01591 -1.00000 -1.00000 
+start generation
+start distances
+front:7.09519,10,1.00000,true,0
+left:66.14744,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.48945,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3828
+things done:1,0,0,500
+prediction:-46.915413,-10.426736,87.199928
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90620 -1.38176 0.77882 -0.01591 0.01591 -0.76828 -0.76589 -0.76828 -0.76589 -46.91541 -10.42674 267.41611 0.06022
+target: -1.38176 0.10386 
+target: -1.38176 0.10386 
+fb: 0.00000 0.01783 -1.00000 -1.00000 
+start generation
+start distances
+front:7.09519,10,1.00000,true,0
+left:66.14744,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.48945,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3838
+things done:1,0,0,500
+prediction:-46.915413,-10.426736,87.337288
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00397 0.02003 -1.00000 -1.00000 
+start generation
+start distances
+front:7.09519,10,1.00000,true,0
+left:66.38073,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.48945,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 3848
+things done:1,0,0,500
+prediction:-46.915413,-10.426736,87.416115
+vel:-0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90613 -1.46812 0.76324 -0.02400 0.01606 -0.78592 -0.78367 -0.78592 -0.78367 -46.91555 -10.42986 267.57584 0.05743
+target: -1.46812 0.10178 
+target: -1.46812 0.10178 
+fb: -0.00397 0.01335 -1.00000 -1.00000 
+start generation
+start distances
+front:7.09519,10,1.00000,true,0
+left:66.38073,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.48945,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3858
+things done:1,0,0,500
+prediction:-46.915554,-10.429860,87.489288
+vel:-0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 0.01257 -1.00000 -1.00000 
+start generation
+start distances
+front:8.16784,10,1.00000,true,0
+left:66.38073,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.56664,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3868
+things done:1,0,0,500
+prediction:-46.915554,-10.429860,87.575836
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90613 -1.55448 0.74827 -0.01257 0.01257 -0.79908 -0.80094 -0.79908 -0.80094 -46.91555 -10.42986 267.69845 0.05529
+target: -1.55448 0.09978 
+target: -1.55448 0.09978 
+fb: 0.00000 0.01520 -1.00000 -1.00000 
+start generation
+start distances
+front:8.16784,10,1.00000,true,0
+left:66.38073,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.56664,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 3878
+things done:1,0,0,500
+prediction:-46.915554,-10.429860,87.641273
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 0.02010 -1.00000 -1.00000 
+start generation
+start distances
+front:8.16784,10,1.00000,true,0
+left:66.34185,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.56664,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3888
+things done:1,0,0,500
+prediction:-46.915554,-10.429860,87.698448
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.90613 -1.63636 0.69625 -0.02010 0.02010 -0.80267 -0.80575 -0.80267 -0.80575 -46.91555 -10.42986 267.85151 0.05262
+target: -1.63636 0.09284 
+target: -1.63636 0.09284 
+fb: 0.00000 0.01385 -1.00000 -1.00000 
+start generation
+start distances
+front:9.77682,63,1.00000,true,0
+left:66.34185,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.4 1.0
+-46.9 -10.4 1000.0
+-46.9 -10.4 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3898
+things done:1,0,0,500
+prediction:-46.915554,-10.429860,87.763214
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.18624 0.00213 -1.00000 -1.00000 
+start generation
+start distances
+front:9.77682,63,1.00000,true,0
+left:66.34185,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,11,1.00000,true,0
+end distances
+start particles
+-46.9 -10.6 1.0
+-46.9 -10.6 1000.0
+-46.9 -10.6 3000.0
+-46.9 -10.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 3908
+things done:1,0,0,500
+prediction:-46.915554,-10.429860,87.851509
+vel:-7.33215,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.89114 -1.63800 0.73808 -0.18837 -0.18411 -0.81808 -0.81653 -0.81808 -0.81653 -46.93699 -11.02039 267.93730 0.05199
+target: -1.63800 0.09842 
+target: -1.63800 0.09842 
+fb: -0.75046 0.00270 -1.00000 -1.00000 
+start generation
+start distances
+front:9.77682,63,1.00000,true,0
+left:66.34185,14,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,11,1.00000,true,0
+end distances
+start particles
+-46.9 -11.0 1.0
+-46.9 -11.0 1000.0
+-46.9 -11.0 3000.0
+-46.9 -10.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 3918
+things done:1,0,0,500
+prediction:-46.920956,-10.576404,87.926819
+vel:-29.54577,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.17898 -0.00966 -1.00000 -0.93866 
+start generation
+start distances
+front:9.77682,63,1.00000,true,0
+left:66.26408,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,11,1.00000,true,0
+end distances
+start particles
+-47.0 -11.5 1.0
+-47.0 -11.5 1000.0
+-47.0 -11.5 3000.0
+-46.9 -11.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 3928
+things done:1,0,0,500
+prediction:-46.936989,-11.020386,87.937302
+vel:-46.41665,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.86987 -1.63348 0.82263 -1.16932 -1.18864 -0.87831 -0.88378 -0.87831 -0.88378 -46.96713 -11.85818 267.91040 0.05373
+target: -1.63348 0.10970 
+target: -1.63348 0.10970 
+fb: -1.06468 -0.01456 -1.00000 -0.93359 
+start generation
+start distances
+front:11.11763,63,1.00000,true,0
+left:66.26408,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.75959,9,1.00000,true,0
+end distances
+start particles
+-47.0 -11.9 1.0
+-47.0 -11.9 1000.0
+-47.0 -11.9 3000.0
+-47.0 -11.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 3938
+things done:1,0,0,500
+prediction:-46.954342,-11.504135,87.953972
+vel:-41.91659,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.96207 -0.01861 -1.00000 -0.98490 
+start generation
+start distances
+front:11.11763,63,1.00000,true,0
+left:66.26408,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.75959,9,1.00000,true,0
+end distances
+start particles
+-47.0 -12.3 1.0
+-47.0 -12.3 1000.0
+-47.0 -12.3 3000.0
+-47.0 -11.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 3948
+things done:1,0,0,500
+prediction:-46.967129,-11.858176,87.910400
+vel:-37.87696,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.85233 -1.62420 0.92063 -0.94347 -0.98068 -0.92453 -0.89283 -0.92453 -0.89283 -46.99309 -12.54955 267.76982 0.05731
+target: -1.62420 0.12277 
+target: -1.62420 0.12277 
+fb: -0.87867 -0.03544 -1.00000 -0.97816 
+start generation
+start distances
+front:11.11763,63,1.00000,true,0
+left:66.14744,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.75959,9,1.00000,true,0
+end distances
+start particles
+-47.0 -12.5 1.0
+-47.0 -12.5 1000.0
+-47.0 -12.5 3000.0
+-47.0 -12.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3958
+things done:1,0,0,500
+prediction:-46.982052,-12.261168,87.848129
+vel:-34.59313,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.83961 -0.03495 -1.00000 -0.99769 
+start generation
+start distances
+front:12.57337,63,1.00000,true,0
+left:66.14744,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.91395,11,1.00000,true,0
+end distances
+start particles
+-47.0 -12.9 1.0
+-47.0 -12.9 1000.0
+-47.0 -12.9 3000.0
+-47.0 -12.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3968
+things done:1,0,0,500
+prediction:-46.993088,-12.549552,87.769821
+vel:-33.05546,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.83665 -1.60911 1.06274 -0.80466 -0.87455 -0.86375 -0.70600 -0.86375 -0.70600 -47.01845 -13.16740 267.49763 0.06318
+target: -1.60911 0.14172 
+target: -1.60911 0.14172 
+fb: -0.78533 -0.01058 -1.00000 -0.94637 
+start generation
+start distances
+front:12.57337,63,1.00000,true,0
+left:66.14744,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.91395,11,1.00000,true,0
+end distances
+start particles
+-47.0 -13.2 1.0
+-47.0 -13.2 1000.0
+-47.0 -13.2 3000.0
+-47.0 -12.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3978
+things done:1,0,0,500
+prediction:-47.008015,-12.921767,87.637970
+vel:-30.91837,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.58960 0.02266 -1.00000 -1.00000 
+start generation
+start distances
+front:12.57337,63,1.00000,true,0
+left:66.14744,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.91395,11,1.00000,true,0
+end distances
+start particles
+-47.0 -13.4 1.0
+-47.0 -13.4 1000.0
+-47.0 -13.4 3000.0
+-47.0 -13.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 3988
+things done:1,0,0,500
+prediction:-47.018448,-13.167398,87.497635
+vel:-23.21267,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82782 -1.60623 0.96048 -0.61226 -0.56694 -0.82458 -0.65775 -0.82458 -0.65775 -47.03393 -13.51524 267.47241 0.06430
+target: -1.60623 0.12808 
+target: -1.60623 0.12808 
+fb: -0.44220 0.04510 -1.00000 -1.00000 
+start generation
+start distances
+front:12.57337,63,1.00000,true,0
+left:66.22520,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.91395,11,1.00000,true,0
+end distances
+start particles
+-47.0 -13.5 1.0
+-47.0 -13.5 1000.0
+-47.0 -13.5 3000.0
+-47.0 -13.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 3998
+things done:1,0,0,500
+prediction:-47.028141,-13.385583,87.415092
+vel:-17.40950,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.30252 0.07948 -1.00000 -1.00000 
+start generation
+start distances
+front:13.99080,63,1.00000,true,0
+left:66.22520,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.06832,8,1.00000,true,0
+end distances
+start particles
+-47.0 -13.6 1.0
+-47.0 -13.6 1000.0
+-47.0 -13.6 3000.0
+-47.0 -13.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4008
+things done:1,0,0,500
+prediction:-47.033932,-13.515244,87.472412
+vel:-11.91039,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82321 -1.62967 0.57293 -0.38201 -0.22304 -0.83706 -0.56517 -0.83706 -0.56517 -47.04136 -13.69683 268.01344 0.05520
+target: -1.62967 0.07640 
+target: -1.62967 0.07640 
+fb: -0.23081 0.07131 -1.00000 -1.00000 
+start generation
+start distances
+front:13.99080,63,1.00000,true,0
+left:66.22520,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.06832,8,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 318, timestamp: 4018
+things done:1,0,0,500
+prediction:-47.038574,-13.623563,87.621750
+vel:-9.08699,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.15534 0.09205 -1.00000 -1.00000 
+start generation
+start distances
+front:13.99080,63,1.00000,true,0
+left:66.38073,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.06832,8,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4028
+things done:1,0,0,500
+prediction:-47.041367,-13.696831,88.013443
+vel:-6.11590,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82135 -1.66562 0.25726 -0.24740 -0.06329 -0.86000 -0.74158 -0.86000 -0.74158 -47.04351 -13.77012 268.80781 0.04145
+target: -1.66562 0.03431 
+target: -1.66562 0.03431 
+fb: -0.09312 0.10455 -1.00000 -1.00000 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:66.38073,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.99113,13,1.00000,true,0
+end distances
+start particles
+-47.0 -13.8 1.0
+-47.0 -13.8 1000.0
+-47.0 -13.8 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4038
+things done:1,0,0,500
+prediction:-47.042912,-13.745803,88.367577
+vel:-3.66607,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.03089 0.10732 -1.00000 -1.00000 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:66.38073,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.99113,13,1.00000,true,0
+end distances
+start particles
+-47.0 -13.8 1.0
+-47.0 -13.8 1000.0
+-47.0 -13.8 3000.0
+-47.0 -13.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4048
+things done:1,0,0,500
+prediction:-47.043510,-13.770120,88.807816
+vel:-1.21623,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82101 -1.70935 -0.04672 -0.13822 0.07643 -0.87658 -0.87044 -0.87658 -0.87044 -47.04363 -13.78385 269.74813 0.02505
+target: -1.70935 -0.00623 
+target: -1.70935 -0.00623 
+fb: -0.01743 0.10612 -1.00000 -1.00000 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:66.38073,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.99113,13,1.00000,true,0
+end distances
+start particles
+-47.0 -13.8 1.0
+-47.0 -13.8 1000.0
+-47.0 -13.8 3000.0
+-47.0 -13.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4058
+things done:1,0,0,500
+prediction:-47.043510,-13.770120,89.276909
+vel:-0.68630,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00199 0.10235 -1.00000 -1.00000 
+start generation
+start distances
+front:15.36992,63,1.00000,true,0
+left:66.03079,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.99113,13,1.00000,true,0
+end distances
+start particles
+-47.0 -13.8 1.0
+-47.0 -13.8 1000.0
+-47.0 -13.8 3000.0
+-47.0 -13.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 4068
+things done:1,0,0,500
+prediction:-47.043629,-13.783847,89.748131
+vel:-0.07819,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82221 -1.75219 -0.25807 -0.10434 0.10037 -0.85861 -0.88103 -0.85861 -0.88103 -47.04388 -13.73659 270.64811 0.00932
+target: -1.75219 -0.03441 
+target: -1.75219 -0.03441 
+fb: 0.06002 0.11180 -1.00000 -1.00000 
+start generation
+start distances
+front:16.82565,63,1.00000,true,0
+left:66.03079,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.95254,14,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 4078
+things done:1,0,0,500
+prediction:-47.043625,-13.771684,90.206383
+vel:2.36296,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.10856 0.11585 -1.00000 -1.00000 
+start generation
+start distances
+front:16.82565,63,1.00000,true,0
+left:66.03079,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.95254,14,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4088
+things done:1,0,0,500
+prediction:-47.043888,-13.736588,90.648109
+vel:4.27418,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82356 -1.75636 -0.54152 -0.00728 0.22441 -0.90225 -0.91681 -0.90225 -0.91681 -47.04473 -13.68308 271.62922 -0.00781
+target: -1.75636 -0.07221 
+target: -1.75636 -0.07221 
+fb: 0.06796 0.12416 -1.00000 -1.00000 
+start generation
+start distances
+front:16.82565,63,1.00000,true,0
+left:66.41961,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.95254,14,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4098
+things done:1,0,0,500
+prediction:-47.044662,-13.686208,91.114403
+vel:2.67570,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.00000 0.12458 -1.00000 -1.00000 
+start generation
+start distances
+front:16.82565,63,1.00000,true,0
+left:66.41961,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.95254,14,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 4108
+things done:1,0,0,500
+prediction:-47.044735,-13.683081,91.629219
+vel:0.00000,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82349 -1.70329 -0.88324 -0.12458 0.12458 -0.94178 -0.95219 -0.94178 -0.95219 -47.04463 -13.68621 272.74606 -0.02730
+target: -1.70329 -0.11778 
+target: -1.70329 -0.11778 
+fb: -0.00397 0.11961 -1.00000 -1.00000 
+start generation
+start distances
+front:18.39632,63,1.00000,true,0
+left:66.41961,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.87536,11,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4118
+things done:1,0,0,500
+prediction:-47.044632,-13.686206,92.180695
+vel:-0.15637,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00772 0.20556 -1.00000 -1.00000 
+start generation
+start distances
+front:18.39632,63,1.00000,true,0
+left:66.41961,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.87536,11,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4128
+things done:1,0,0,500
+prediction:-47.044632,-13.686206,92.746063
+vel:-0.30406,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.82341 -1.63173 -1.46642 -0.21328 0.19783 -0.82147 -0.85417 -0.82147 -0.85417 -47.04452 -13.68916 274.29880 -0.05440
+target: -1.63173 -0.19555 
+target: -1.63173 -0.19555 
+fb: -0.00375 0.17338 -0.83440 -1.00000 
+start generation
+start distances
+front:18.39632,63,1.00000,true,0
+left:66.14744,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.87536,11,1.00000,true,0
+end distances
+start particles
+-47.0 -13.7 1.0
+-47.0 -13.7 1000.0
+-47.0 -13.7 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4138
+things done:1,0,0,500
+prediction:-47.044308,-13.692278,93.334709
+vel:-0.14769,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.24052 0.10129 -0.71601 -1.00000 
+start generation
+start distances
+front:20.27346,26,1.00000,true,0
+left:66.14744,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.84013,9,1.00000,true,0
+end distances
+start particles
+-47.0 -13.9 1.0
+-47.0 -13.9 1000.0
+-47.0 -13.9 3000.0
+-47.0 -13.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4148
+things done:1,0,0,500
+prediction:-47.044514,-13.689158,94.298798
+vel:-9.46914,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.80731 -1.56684 -1.79381 -0.34180 -0.13923 -0.76433 -0.84561 -0.76433 -0.84561 -46.98665 -14.32190 275.67572 -0.07985
+target: -1.56684 -0.23920 
+target: -1.56684 -0.23920 
+fb: -0.80695 0.08282 -0.48060 -1.00000 
+start generation
+start distances
+front:20.27346,26,1.00000,true,0
+left:66.14744,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.84013,9,1.00000,true,0
+end distances
+start particles
+-47.0 -14.3 1.0
+-47.0 -14.3 1000.0
+-47.0 -14.3 3000.0
+-47.0 -13.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4158
+things done:1,0,0,500
+prediction:-47.028587,-13.881009,95.193390
+vel:-31.76957,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.08983 0.12771 -0.33916 -1.00000 
+start generation
+start distances
+front:20.27346,26,1.00000,true,1
+left:66.18632,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.84013,9,1.00000,true,0
+end distances
+start particles
+-46.9 -14.7 1.0
+-46.9 -14.7 1000.0
+-46.9 -14.7 3000.0
+-47.0 -14.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4168
+things done:1,0,0,500
+prediction:-46.986649,-14.321899,95.675720
+vel:-42.90686,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.78691 -1.52491 -1.82556 -1.21754 -0.96212 -0.68086 -0.92331 -0.68086 -0.92331 -46.90169 -15.12359 276.51576 -0.09675
+target: -1.52491 -0.24344 
+target: -1.52491 -0.24344 
+fb: -1.02386 0.17757 -0.56938 -1.00000 
+start generation
+start distances
+front:20.27346,26,1.00000,true,1
+left:66.18632,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.84013,9,1.00000,true,0
+end distances
+start particles
+-46.9 -15.1 1.0
+-46.9 -15.1 1000.0
+-46.9 -15.1 3000.0
+-46.9 -14.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4178
+things done:1,0,0,500
+prediction:-46.944355,-14.734996,96.015587
+vel:-40.30933,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.80496 0.18688 -0.67883 -1.00000 
+start generation
+start distances
+front:22.18890,44,1.00000,true,1
+left:66.18632,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.34181,7,1.00000,true,0
+end distances
+start particles
+-46.9 -15.4 1.0
+-46.9 -15.4 1000.0
+-46.9 -15.4 3000.0
+-46.9 -15.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4188
+things done:1,0,0,500
+prediction:-46.901688,-15.123591,96.515755
+vel:-31.69140,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.77724 -1.45298 -2.58443 -0.99184 -0.61809 -0.53814 -0.96833 -0.53814 -0.96833 -46.85364 -15.50384 278.15173 -0.12666
+target: -1.45298 -0.34463 
+target: -1.45298 -0.34463 
+fb: -0.48677 0.16124 -0.20343 -1.00000 
+start generation
+start distances
+front:22.18890,44,1.00000,true,1
+left:66.18632,13,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.34181,7,1.00000,true,0
+end distances
+start particles
+-46.9 -15.5 1.0
+-46.9 -15.5 1000.0
+-46.9 -15.5 3000.0
+-46.9 -15.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4198
+things done:1,0,0,500
+prediction:-46.872501,-15.364728,97.287895
+vel:-19.16419,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.23081 0.09475 -0.33141 -1.00000 
+start generation
+start distances
+front:22.18890,44,1.00000,true,1
+left:66.53625,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.34181,7,1.00000,true,0
+end distances
+start particles
+-46.8 -15.5 1.0
+-46.8 -15.5 1000.0
+-46.8 -15.5 3000.0
+-46.9 -15.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4208
+things done:1,0,0,500
+prediction:-46.853645,-15.503843,98.151726
+vel:-9.08691,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.77366 -1.40076 -2.72473 -0.32556 -0.13606 -0.49211 -0.95664 -0.49211 -0.95664 -46.83148 -15.64423 279.40236 -0.14915
+target: -1.40076 -0.36334 
+target: -1.40076 -0.36334 
+fb: -0.18050 0.03409 -0.66701 -1.00000 
+start generation
+start distances
+front:24.02773,43,1.00000,true,1
+left:66.53625,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.8 -15.6 1.0
+-46.8 -15.6 1000.0
+-46.8 -15.6 3000.0
+-46.8 -15.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4218
+things done:1,0,0,500
+prediction:-46.847511,-15.544738,98.908630
+vel:-7.10624,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.95214 0.00241 -0.28119 -1.00000 
+start generation
+start distances
+front:24.02773,43,1.00000,true,1
+left:66.53625,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.7 -16.3 1.0
+-46.7 -16.3 1000.0
+-46.7 -16.3 3000.0
+-46.8 -15.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4228
+things done:1,0,0,500
+prediction:-46.831478,-15.644227,99.402359
+vel:-37.48600,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.74772 -1.37924 -2.53656 -0.95456 -0.94973 -0.37919 -0.87522 -0.37919 -0.87522 -46.65992 -16.66369 279.64053 -0.15861
+target: -1.37924 -0.33825 
+target: -1.37924 -0.33825 
+fb: -1.31292 0.03239 -0.39415 -0.84115 
+start generation
+start distances
+front:24.02773,43,1.00000,true,1
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.7 -16.7 1.0
+-46.7 -16.7 1000.0
+-46.7 -16.7 3000.0
+-46.7 -16.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4238
+things done:1,0,0,500
+prediction:-46.724277,-16.284260,99.614250
+vel:-51.68987,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.84557 0.08090 -0.62783 -1.00000 
+start generation
+start distances
+front:24.02773,43,1.00000,true,1
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.6 -16.9 1.0
+-46.6 -16.9 1000.0
+-46.6 -16.9 3000.0
+-46.7 -16.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4248
+things done:1,0,0,500
+prediction:-46.659920,-16.663689,99.640526
+vel:-33.29002,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.73069 -1.35273 -2.76693 -0.92647 -0.76466 -0.36806 -0.79822 -0.36806 -0.79822 -46.54393 -17.33324 280.09981 -0.17044
+target: -1.35273 -0.36897 
+target: -1.35273 -0.36897 
+fb: -0.86300 0.05000 -0.34826 -1.00000 
+start generation
+start distances
+front:25.98148,39,1.00000,true,1
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.95926,6,1.00000,true,0
+end distances
+start particles
+-46.5 -17.3 1.0
+-46.5 -17.3 1000.0
+-46.5 -17.3 3000.0
+-46.6 -16.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4258
+things done:1,0,0,500
+prediction:-46.612617,-16.940628,99.747040
+vel:-33.97630,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.93670 0.01371 -0.31141 -1.00000 
+start generation
+start distances
+front:25.98148,39,1.00000,true,1
+left:67.19724,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.95926,6,1.00000,true,0
+end distances
+start particles
+-46.5 -17.7 1.0
+-46.5 -17.7 1000.0
+-46.5 -17.7 3000.0
+-46.5 -17.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4268
+things done:1,0,0,500
+prediction:-46.543930,-17.333241,100.099808
+vel:-36.87787,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.71538 -1.33149 -2.85113 -0.95041 -0.92299 -0.48339 -0.86358 -0.48339 -0.86358 -46.43448 -17.93566 280.43521 -0.18005
+target: -1.33149 -0.38020 
+target: -1.33149 -0.38020 
+fb: -0.77760 -0.00206 -0.45233 -1.00000 
+start generation
+start distances
+front:25.98148,39,1.00000,true,1
+left:67.23612,8,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.95926,6,1.00000,true,0
+end distances
+start particles
+-46.4 -17.9 1.0
+-46.4 -17.9 1000.0
+-46.4 -17.9 3000.0
+-46.5 -17.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4278
+things done:1,0,0,500
+prediction:-46.483768,-17.666842,100.345978
+vel:-30.61430,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.63417 0.04773 -0.52405 -1.00000 
+start generation
+start distances
+front:27.93523,31,1.00000,true,1
+left:67.23612,8,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.88208,6,1.00000,true,0
+end distances
+start particles
+-46.4 -18.2 1.0
+-46.4 -18.2 1000.0
+-46.4 -18.2 3000.0
+-46.4 -17.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4288
+things done:1,0,0,500
+prediction:-46.434479,-17.935665,100.435204
+vel:-24.96752,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.69977 -1.31731 -2.86691 -0.68191 -0.58644 -0.38278 -0.95719 -0.38278 -0.95719 -46.32099 -18.54989 280.57339 -0.18654
+target: -1.31731 -0.38230 
+target: -1.31731 -0.38230 
+fb: -0.79327 0.06940 -0.49275 -1.00000 
+start generation
+start distances
+front:27.93523,31,1.00000,true,1
+left:67.23612,8,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.88208,6,1.00000,true,0
+end distances
+start particles
+-46.3 -18.5 1.0
+-46.3 -18.5 1000.0
+-46.3 -18.5 3000.0
+-46.4 -18.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4298
+things done:1,0,0,500
+prediction:-46.393578,-18.157980,100.413750
+vel:-31.23111,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.98127 0.04546 -0.39875 -1.00000 
+start generation
+start distances
+front:27.93523,31,1.00000,true,1
+left:67.27500,6,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.88208,6,1.00000,true,0
+end distances
+start particles
+-46.3 -18.9 1.0
+-46.3 -18.9 1000.0
+-46.3 -18.9 3000.0
+-46.3 -18.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4308
+things done:1,0,0,500
+prediction:-46.320992,-18.549891,100.573387
+vel:-38.63273,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.68124 -1.28440 -3.30813 -1.02673 -0.93581 -0.47533 -0.97222 -0.47533 -0.97222 -46.18072 -19.28018 281.14577 -0.20181
+target: -1.28440 -0.44114 
+target: -1.28440 -0.44114 
+fb: -0.94442 0.02614 -0.04976 -1.00000 
+start generation
+start distances
+front:27.93523,31,1.00000,true,1
+left:67.27500,6,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:69.88208,6,1.00000,true,0
+end distances
+start particles
+-46.2 -19.3 1.0
+-46.2 -19.3 1000.0
+-46.2 -19.3 3000.0
+-46.3 -18.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4318
+things done:1,0,0,500
+prediction:-46.251335,-18.917427,100.888428
+vel:-37.18193,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.80695 0.02855 -0.11850 -1.00000 
+start generation
+start distances
+front:29.69744,23,1.00000,true,1
+left:67.27500,6,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.1 -19.5 1.0
+-46.1 -19.5 1000.0
+-46.1 -19.5 3000.0
+-46.2 -19.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4328
+things done:1,0,0,500
+prediction:-46.180717,-19.280178,101.145775
+vel:-31.76972,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.66977 -1.26448 -3.29753 -0.83550 -0.77840 -0.39183 -0.99569 -0.39183 -0.99569 -46.09032 -19.73253 281.48073 -0.21121
+target: -1.26448 -0.43973 
+target: -1.26448 -0.43973 
+fb: -0.58585 0.04326 -0.48053 -1.00000 
+start generation
+start distances
+front:29.69744,23,1.00000,true,1
+left:67.27500,6,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.1 -19.7 1.0
+-46.1 -19.7 1000.0
+-46.1 -19.7 3000.0
+-46.1 -19.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4338
+things done:1,0,0,500
+prediction:-46.128952,-19.540920,101.313698
+vel:-23.06498,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.40337 0.04865 -0.57178 -1.00000 
+start generation
+start distances
+front:29.69744,23,1.00000,true,1
+left:67.62493,8,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.1 -19.9 1.0
+-46.1 -19.9 1000.0
+-46.1 -19.9 3000.0
+-46.1 -19.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4348
+things done:1,0,0,500
+prediction:-46.090324,-19.732533,101.480728
+vel:-15.88052,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.66042 -1.23854 -3.55321 -0.45202 -0.35471 -0.18819 -0.99742 -0.18819 -0.99742 -46.01332 -20.10179 282.01394 -0.22363
+target: -1.23854 -0.47382 
+target: -1.23854 -0.47382 
+fb: -0.47905 0.00554 -0.32695 -1.00000 
+start generation
+start distances
+front:31.65120,14,1.00000,true,1
+left:67.62493,8,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-46.0 -20.1 1.0
+-46.0 -20.1 1000.0
+-46.0 -20.1 3000.0
+-46.1 -19.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4358
+things done:1,0,0,500
+prediction:-46.065765,-19.852184,101.717674
+vel:-18.86028,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.01812 -0.04709 -0.05742 -1.00000 
+start generation
+start distances
+front:31.65120,14,1.00000,true,1
+left:67.62493,8,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-45.9 -20.6 1.0
+-45.9 -20.6 1000.0
+-45.9 -20.6 3000.0
+-46.0 -20.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4368
+things done:1,0,0,500
+prediction:-46.013321,-20.101793,102.013947
+vel:-40.08353,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.63640 -1.21990 -3.60028 -0.97103 -1.06521 -0.43358 -0.92553 -0.43358 -0.92553 -45.80981 -21.05130 282.03704 -0.23269
+target: -1.21990 -0.48010 
+target: -1.21990 -0.48010 
+fb: -1.23326 -0.06854 -0.05654 -0.97686 
+start generation
+start distances
+front:31.65120,14,1.00000,true,1
+left:67.62493,8,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-45.8 -21.1 1.0
+-45.8 -21.1 1000.0
+-45.8 -21.1 3000.0
+-45.9 -20.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4378
+things done:1,0,0,500
+prediction:-45.898811,-20.636276,102.171463
+vel:-48.55373,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.17920 -0.06052 -0.08357 -1.00000 
+start generation
+start distances
+front:31.65120,14,1.00000,true,1
+left:68.86914,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-45.7 -21.5 1.0
+-45.7 -21.5 1000.0
+-45.7 -21.5 3000.0
+-45.8 -21.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4388
+things done:1,0,0,500
+prediction:-45.809807,-21.051302,102.037041
+vel:-46.42531,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.60847 -1.21880 -3.39509 -1.11869 -1.23972 -0.19436 -0.90072 -0.19436 -0.90072 -45.58009 -22.15776 281.45861 -0.23322
+target: -1.21880 -0.45274 
+target: -1.21880 -0.45274 
+fb: -1.43517 -0.03353 -0.17584 -0.81142 
+start generation
+start distances
+front:33.22186,19,1.00000,true,1
+left:68.86914,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-45.6 -22.2 1.0
+-45.6 -22.2 1000.0
+-45.6 -22.2 3000.0
+-45.7 -21.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4398
+things done:1,0,0,500
+prediction:-45.705963,-21.544531,101.741890
+vel:-56.50264,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.42744 -0.03125 -0.17971 -0.81528 
+start generation
+start distances
+front:33.22186,19,1.00000,true,1
+left:68.86914,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-45.5 -22.6 1.0
+-45.5 -22.6 1000.0
+-45.5 -22.6 3000.0
+-45.6 -22.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4408
+things done:1,0,0,500
+prediction:-45.580086,-22.157757,101.458611
+vel:-56.19860,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.58376 -1.21058 -3.54094 -1.39619 -1.45870 -0.12628 -0.84306 -0.12628 -0.84306 -45.38443 -23.13870 281.12081 -0.23725
+target: -1.21058 -0.47218 
+target: -1.21058 -0.47218 
+fb: -1.27034 -0.09312 0.04303 -1.00000 
+start generation
+start distances
+front:33.22186,19,1.00000,true,1
+left:68.24704,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:386.17193,0,1.00000,true,0
+end distances
+start particles
+-45.4 -23.1 1.0
+-45.4 -23.1 1000.0
+-45.4 -23.1 3000.0
+-45.5 -22.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4418
+things done:1,0,0,500
+prediction:-45.481956,-22.645954,101.272095
+vel:-50.01321,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.15956 -0.14241 -0.09235 -1.00000 
+start generation
+start distances
+front:34.56267,23,1.00000,true,1
+left:68.24704,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.80154,8,1.00000,true,0
+end distances
+start particles
+-45.3 -23.5 1.0
+-45.3 -23.5 1000.0
+-45.3 -23.5 3000.0
+-45.4 -23.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4428
+things done:1,0,0,500
+prediction:-45.384426,-23.138697,101.120811
+vel:-45.65213,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.56667 -1.22947 -3.07557 -1.01715 -1.30198 -0.17625 -0.77819 -0.17625 -0.77819 -45.25527 -23.81839 280.18524 -0.22802
+target: -1.22947 -0.41013 
+target: -1.22947 -0.41013 
+fb: -0.87866 -0.14845 -0.71404 -1.00000 
+start generation
+start distances
+front:34.56267,23,1.00000,true,1
+left:68.24704,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.80154,8,1.00000,true,0
+end distances
+start particles
+-45.3 -23.8 1.0
+-45.3 -23.8 1000.0
+-45.3 -23.8 3000.0
+-45.3 -23.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4438
+things done:1,0,0,500
+prediction:-45.306412,-23.541958,100.778931
+vel:-34.59304,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.77385 -0.12331 -0.76645 -1.00000 
+start generation
+start distances
+front:34.56267,23,1.00000,true,1
+left:68.24704,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.80154,8,1.00000,true,0
+end distances
+start particles
+-45.2 -24.1 1.0
+-45.2 -24.1 1000.0
+-45.2 -24.1 3000.0
+-45.3 -23.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4448
+things done:1,0,0,500
+prediction:-45.255268,-23.818390,100.185234
+vel:-30.46647,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.55141 -1.24455 -2.71515 -0.65054 -0.89715 -0.12303 -0.93714 -0.12303 -0.93714 -45.15296 -24.42523 278.97760 -0.21306
+target: -1.24455 -0.36206 
+target: -1.24455 -0.36206 
+fb: -0.78157 -0.11734 -0.75420 -1.00000 
+start generation
+start distances
+front:34.56267,23,1.00000,true,1
+left:67.78046,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.80154,8,1.00000,true,0
+end distances
+start particles
+-45.2 -24.4 1.0
+-45.2 -24.4 1000.0
+-45.2 -24.4 3000.0
+-45.2 -24.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4458
+things done:1,0,0,500
+prediction:-45.199112,-24.141756,99.517845
+vel:-30.77054,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.78157 -0.13510 -0.75420 -1.00000 
+start generation
+start distances
+front:35.48209,21,1.00000,true,1
+left:67.78046,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.87872,8,1.00000,true,0
+end distances
+start particles
+-45.1 -24.7 1.0
+-45.1 -24.7 1000.0
+-45.1 -24.7 3000.0
+-45.2 -24.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 4468
+things done:1,0,0,500
+prediction:-45.152958,-24.425228,98.977600
+vel:-30.77059,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.53411 -1.24716 -2.66110 -0.64648 -0.91667 -0.56844 -0.93256 -0.56844 -0.93256 -45.05039 -25.11383 277.97172 -0.20222
+target: -1.24716 -0.35486 
+target: -1.24716 -0.35486 
+fb: -0.88418 -0.15846 -0.51277 -1.00000 
+start generation
+start distances
+front:35.48209,21,1.00000,true,1
+left:67.78046,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.87872,8,1.00000,true,0
+end distances
+start particles
+-45.1 -25.1 1.0
+-45.1 -25.1 1000.0
+-45.1 -25.1 3000.0
+-45.1 -24.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4478
+things done:1,0,0,500
+prediction:-45.103100,-24.749628,98.499535
+vel:-34.81020,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.89411 -0.18688 -0.50780 -1.00000 
+start generation
+start distances
+front:35.48209,21,1.00000,true,1
+left:67.81934,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.87872,8,1.00000,true,0
+end distances
+start particles
+-45.0 -25.4 1.0
+-45.0 -25.4 1000.0
+-45.0 -25.4 3000.0
+-45.1 -25.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4488
+things done:1,0,0,500
+prediction:-45.050388,-25.113829,97.971725
+vel:-35.20110,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.51416 -1.25731 -2.28502 -0.70723 -1.08098 -0.63089 -0.91558 -0.63089 -0.91558 -44.94914 -25.90766 276.60543 -0.18583
+target: -1.25731 -0.30471 
+target: -1.25731 -0.30471 
+fb: -1.01635 -0.19263 -0.68580 -0.89579 
+start generation
+start distances
+front:36.63135,17,1.00000,true,0
+left:67.81934,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.72100,9,1.00000,true,0
+end distances
+start particles
+-44.9 -25.9 1.0
+-44.9 -25.9 1000.0
+-44.9 -25.9 3000.0
+-45.0 -25.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4498
+things done:1,0,0,500
+prediction:-45.005566,-25.446852,97.357948
+vel:-40.01381,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.13264 -0.18205 -0.62766 -0.83765 
+start generation
+start distances
+front:36.63135,17,1.00000,true,0
+left:67.81934,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.72100,9,1.00000,true,0
+end distances
+start particles
+-44.9 -26.3 1.0
+-44.9 -26.3 1000.0
+-44.9 -26.3 3000.0
+-44.9 -25.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4508
+things done:1,0,0,500
+prediction:-44.949139,-25.907660,96.605431
+vel:-44.59196,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.49243 -1.27182 -1.90150 -0.95059 -1.31468 -0.57833 -0.88500 -0.57833 -0.88500 -44.86141 -26.77210 275.01636 -0.16575
+target: -1.27182 -0.25356 
+target: -1.27182 -0.25356 
+fb: -1.10351 -0.18070 -0.72527 -0.83641 
+start generation
+start distances
+front:36.63135,17,1.00000,true,0
+left:67.81934,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.72100,9,1.00000,true,0
+end distances
+start particles
+-44.9 -26.8 1.0
+-44.9 -26.8 1000.0
+-44.9 -26.8 3000.0
+-44.9 -26.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4518
+things done:1,0,0,500
+prediction:-44.902977,-26.332750,95.791489
+vel:-43.44522,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.29151 -0.16692 -0.63127 -0.74241 
+start generation
+start distances
+front:36.63135,17,1.00000,true,0
+left:67.70270,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.72100,9,1.00000,true,0
+end distances
+start particles
+-44.8 -27.3 1.0
+-44.8 -27.3 1000.0
+-44.8 -27.3 3000.0
+-44.9 -26.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4528
+things done:1,0,0,500
+prediction:-44.861412,-26.772104,95.016357
+vel:-50.84683,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.46715 -1.27547 -1.69834 -1.12459 -1.45843 -0.64833 -0.79550 -0.64833 -0.79550 -44.78567 -27.77713 273.51373 -0.14790
+target: -1.27547 -0.22647 
+target: -1.27547 -0.22647 
+fb: -1.28004 -0.16365 -0.53188 -0.76266 
+start generation
+start distances
+front:37.51246,18,1.00000,true,0
+left:67.70270,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,12,1.00000,true,0
+end distances
+start particles
+-44.8 -27.8 1.0
+-44.8 -27.8 1000.0
+-44.8 -27.8 3000.0
+-44.8 -27.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 4538
+things done:1,0,0,500
+prediction:-44.814926,-27.345844,94.248734
+vel:-50.39511,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.13859 -0.13652 -0.60261 -0.83338 
+start generation
+start distances
+front:37.51246,18,1.00000,true,0
+left:67.70270,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,12,1.00000,true,0
+end distances
+start particles
+-44.8 -28.2 1.0
+-44.8 -28.2 1000.0
+-44.8 -28.2 3000.0
+-44.8 -27.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 310, timestamp: 4548
+things done:1,0,0,500
+prediction:-44.785667,-27.777136,93.513733
+vel:-44.82656,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.44503 -1.27952 -1.47939 -1.00208 -1.27511 -0.60383 -0.74225 -0.60383 -0.74225 -44.74214 -28.65555 272.15859 -0.13106
+target: -1.27952 -0.19728 
+target: -1.27952 -0.19728 
+fb: -1.11697 -0.11961 -0.65273 -0.81624 
+start generation
+start distances
+front:37.51246,18,1.00000,true,0
+left:67.89710,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,12,1.00000,true,0
+end distances
+start particles
+-44.7 -28.7 1.0
+-44.7 -28.7 1000.0
+-44.7 -28.7 3000.0
+-44.8 -28.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4558
+things done:1,0,0,500
+prediction:-44.760098,-28.240681,92.801071
+vel:-43.97524,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.99098 -0.09461 -0.71573 -0.87924 
+start generation
+start distances
+front:37.51246,18,1.00000,true,0
+left:67.89710,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.41227,12,1.00000,true,0
+end distances
+start particles
+-44.7 -29.0 1.0
+-44.7 -29.0 1000.0
+-44.7 -29.0 3000.0
+-44.7 -28.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4568
+things done:1,0,0,500
+prediction:-44.742134,-28.655546,92.158592
+vel:-39.01483,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.42629 -1.27618 -1.44028 -0.89637 -1.08559 -0.59528 -0.77153 -0.59528 -0.77153 -44.72088 -29.39887 271.18225 -0.11941
+target: -1.27618 -0.19206 
+target: -1.27618 -0.19206 
+fb: -0.94442 -0.07927 -0.62325 -0.94521 
+start generation
+start distances
+front:38.66173,21,1.00000,true,0
+left:67.89710,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.98777,14,1.00000,true,0
+end distances
+start particles
+-44.7 -29.4 1.0
+-44.7 -29.4 1000.0
+-44.7 -29.4 3000.0
+-44.7 -29.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4578
+things done:1,0,0,500
+prediction:-44.730118,-29.020390,91.615128
+vel:-37.18186,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.04526 -0.06094 -0.57283 -0.89479 
+start generation
+start distances
+front:38.66173,21,1.00000,true,0
+left:67.89710,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.98777,14,1.00000,true,0
+end distances
+start particles
+-44.7 -29.8 1.0
+-44.7 -29.8 1000.0
+-44.7 -29.8 3000.0
+-44.7 -29.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 311, timestamp: 4588
+things done:1,0,0,500
+prediction:-44.720879,-29.398872,91.182251
+vel:-41.15202,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.40506 -1.25383 -1.53932 -0.98432 -1.10620 -0.64236 -0.81719 -0.64236 -0.81719 -44.70828 -30.24023 270.56034 -0.11455
+target: -1.25383 -0.20527 
+target: -1.25383 -0.20527 
+fb: -1.06865 -0.05704 -0.37780 -0.85228 
+start generation
+start distances
+front:38.66173,21,1.00000,true,0
+left:67.78046,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.98777,14,1.00000,true,0
+end distances
+start particles
+-44.7 -30.2 1.0
+-44.7 -30.2 1000.0
+-44.7 -30.2 3000.0
+-44.7 -29.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4598
+things done:1,0,0,500
+prediction:-44.713085,-29.843250,90.827240
+vel:-42.07291,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.14235 -0.08460 -0.34095 -0.81543 
+start generation
+start distances
+front:40.04085,17,1.00000,true,0
+left:67.78046,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,13,1.00000,true,0
+end distances
+start particles
+-44.7 -30.7 1.0
+-44.7 -30.7 1000.0
+-44.7 -30.7 3000.0
+-44.7 -30.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4608
+things done:1,0,0,500
+prediction:-44.708282,-30.240234,90.560341
+vel:-44.97451,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.38232 -1.22404 -1.54247 -1.05776 -1.22695 -0.51828 -0.76572 -0.51828 -0.76572 -44.70314 -31.14127 270.01034 -0.11155
+target: -1.22404 -0.20569 
+target: -1.22404 -0.20569 
+fb: -1.14434 -0.09070 -0.32231 -0.70772 
+start generation
+start distances
+front:40.04085,17,1.00000,true,0
+left:67.78046,15,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,13,1.00000,true,0
+end distances
+start particles
+-44.7 -31.1 1.0
+-44.7 -31.1 1000.0
+-44.7 -31.1 3000.0
+-44.7 -30.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4618
+things done:1,0,0,500
+prediction:-44.704353,-30.742697,90.336700
+vel:-45.05269,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.18494 -0.08424 -0.30201 -0.68742 
+start generation
+start distances
+front:40.04085,17,1.00000,true,0
+left:67.70270,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,13,1.00000,true,0
+end distances
+start particles
+-44.7 -31.7 1.0
+-44.7 -31.7 1000.0
+-44.7 -31.7 3000.0
+-44.7 -31.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 318, timestamp: 4628
+things done:1,0,0,500
+prediction:-44.703148,-31.141272,90.010338
+vel:-46.65113,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.35637 -1.19233 -1.39973 -1.10070 -1.26918 -0.37867 -0.73508 -0.37867 -0.73508 -44.70967 -32.16896 269.25458 -0.10604
+target: -1.19233 -0.18665 
+target: -1.19233 -0.18665 
+fb: -1.30520 -0.07863 -0.28798 -0.50264 
+start generation
+start distances
+front:40.04085,17,1.00000,true,0
+left:67.70270,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.83341,13,1.00000,true,0
+end distances
+start particles
+-44.7 -32.2 1.0
+-44.7 -32.2 1000.0
+-44.7 -32.2 3000.0
+-44.7 -31.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4638
+things done:1,0,0,500
+prediction:-44.704849,-31.675713,89.624878
+vel:-51.38574,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.15206 -0.08005 -0.36455 -0.57921 
+start generation
+start distances
+front:41.68813,18,1.00000,true,0
+left:67.70270,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.60187,11,1.00000,true,0
+end distances
+start particles
+-44.7 -32.6 1.0
+-44.7 -32.6 1000.0
+-44.7 -32.6 3000.0
+-44.7 -32.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4648
+things done:1,0,0,500
+prediction:-44.709675,-32.168957,89.254585
+vel:-45.35672,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.33322 -1.16256 -1.33429 -1.07201 -1.23211 -0.31603 -0.64747 -0.31603 -0.64747 -44.72742 -33.08495 268.56161 -0.10089
+target: -1.16256 -0.17793 
+target: -1.16256 -0.17793 
+fb: -1.16354 -0.08836 -0.31073 -0.58153 
+start generation
+start distances
+front:41.68813,18,1.00000,true,0
+left:67.70270,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.60187,11,1.00000,true,0
+end distances
+start particles
+-44.7 -33.1 1.0
+-44.7 -33.1 1000.0
+-44.7 -33.1 3000.0
+-44.7 -32.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4658
+things done:1,0,0,500
+prediction:-44.716320,-32.582771,88.905701
+vel:-45.80847,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.22951 -0.10214 -0.27774 -0.54854 
+start generation
+start distances
+front:41.68813,18,1.00000,true,0
+left:67.81934,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.60187,11,1.00000,true,1
+end distances
+start particles
+-44.7 -33.6 1.0
+-44.7 -33.6 1000.0
+-44.7 -33.6 3000.0
+-44.7 -33.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4668
+things done:1,0,0,500
+prediction:-44.727425,-33.084953,88.561615
+vel:-48.40598,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.31103 -1.13613 -1.18119 -1.12737 -1.33165 -0.34308 -0.56842 -0.34308 -0.56842 -44.75518 -33.96263 267.76573 -0.09376
+target: -1.13613 -0.15751 
+target: -1.13613 -0.15751 
+fb: -1.11521 -0.11777 -0.38385 -0.53583 
+start generation
+start distances
+front:43.06725,18,1.00000,true,0
+left:67.81934,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.52469,11,1.00000,true,1
+end distances
+start particles
+-44.8 -34.0 1.0
+-44.8 -34.0 1000.0
+-44.8 -34.0 3000.0
+-44.7 -33.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4678
+things done:1,0,0,500
+prediction:-44.740631,-33.550579,88.189857
+vel:-43.90591,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.07042 -0.12743 -0.40625 -0.55822 
+start generation
+start distances
+front:43.06725,18,1.00000,true,0
+left:67.81934,17,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.52469,11,1.00000,true,1
+end distances
+start particles
+-44.8 -34.4 1.0
+-44.8 -34.4 1000.0
+-44.8 -34.4 3000.0
+-44.8 -34.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4688
+things done:1,0,0,500
+prediction:-44.755180,-33.962627,87.765732
+vel:-42.14235,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.28827 -1.11355 -0.91847 -0.94299 -1.19784 -0.33639 -0.54533 -0.33639 -0.54533 -44.79828 -34.86107 266.74127 -0.08259
+target: -1.11355 -0.12248 
+target: -1.11355 -0.12248 
+fb: -1.14235 -0.13673 -0.44859 -0.43495 
+start generation
+start distances
+front:43.06725,18,1.00000,true,0
+left:67.97487,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.52469,11,1.00000,true,1
+end distances
+start particles
+-44.8 -34.9 1.0
+-44.8 -34.9 1000.0
+-44.8 -34.9 3000.0
+-44.8 -34.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4698
+things done:1,0,0,500
+prediction:-44.773804,-34.392769,87.276459
+vel:-44.97440,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.15603 -0.15065 -0.44175 -0.42811 
+start generation
+start distances
+front:43.06725,18,1.00000,true,0
+left:67.97487,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.52469,11,1.00000,true,1
+end distances
+start particles
+-44.8 -35.3 1.0
+-44.8 -35.3 1000.0
+-44.8 -35.3 3000.0
+-44.8 -34.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4708
+things done:1,0,0,500
+prediction:-44.798275,-34.861073,86.741272
+vel:-45.51299,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.26634 -1.09635 -0.60475 -1.00538 -1.30668 -0.39117 -0.51161 -0.39117 -0.51161 -44.85626 -35.72490 265.53890 -0.06758
+target: -1.09635 -0.08064 
+target: -1.09635 -0.08064 
+fb: -1.09954 -0.15918 -0.53917 -0.40245 
+start generation
+start distances
+front:44.63791,15,1.00000,true,0
+left:67.97487,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,1
+end distances
+start particles
+-44.9 -35.7 1.0
+-44.9 -35.7 1000.0
+-44.9 -35.7 3000.0
+-44.8 -35.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4718
+things done:1,0,0,500
+prediction:-44.825565,-35.301544,86.168434
+vel:-43.28900,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.09182 -0.16670 -0.54304 -0.40632 
+start generation
+start distances
+front:44.63791,15,1.00000,true,0
+left:67.97487,16,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,1
+end distances
+start particles
+-44.9 -36.2 1.0
+-44.9 -36.2 1000.0
+-44.9 -36.2 3000.0
+-44.9 -35.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4728
+things done:1,0,0,500
+prediction:-44.856258,-35.724895,85.538902
+vel:-42.98491,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.24357 -1.08049 -0.23254 -0.92511 -1.25852 -0.46319 -0.43975 -0.46319 -0.43975 -44.93692 -36.61917 264.15718 -0.04866
+target: -1.08049 -0.03101 
+target: -1.08049 -0.03101 
+fb: -1.14036 -0.16820 -0.42020 -0.46202 
+start generation
+start distances
+front:44.63791,15,1.00000,true,0
+left:68.44144,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,1
+end distances
+start particles
+-44.9 -36.6 1.0
+-44.9 -36.6 1000.0
+-44.9 -36.6 3000.0
+-44.9 -36.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4738
+things done:1,0,0,500
+prediction:-44.892666,-36.158607,84.865547
+vel:-44.89609,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.17920 -0.17026 -0.40079 -0.44260 
+start generation
+start distances
+front:45.97873,12,1.00000,true,0
+left:68.44144,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.71764,7,1.00000,true,1
+end distances
+start particles
+-45.0 -37.1 1.0
+-45.0 -37.1 1000.0
+-45.0 -37.1 3000.0
+-44.9 -36.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4748
+things done:1,0,0,500
+prediction:-44.936924,-36.619171,84.157181
+vel:-46.42504,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.22098 -1.06487 0.14611 -1.00894 -1.34945 -0.48406 -0.43769 -0.48406 -0.43769 -45.03846 -37.50362 262.70873 -0.02710
+target: -1.06487 0.01948 
+target: -1.06487 0.01948 
+fb: -1.13065 -0.16557 -0.43641 -0.42757 
+start generation
+start distances
+front:45.97873,12,1.00000,true,0
+left:68.44144,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.71764,7,1.00000,true,1
+end distances
+start particles
+-45.0 -37.5 1.0
+-45.0 -37.5 1000.0
+-45.0 -37.5 3000.0
+-45.0 -37.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4758
+things done:1,0,0,500
+prediction:-44.987259,-37.082256,83.436241
+vel:-44.51382,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -1.08012 -0.15555 -0.46168 -0.45284 
+start generation
+start distances
+front:45.97873,12,1.00000,true,0
+left:68.44144,12,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.71764,7,1.00000,true,1
+end distances
+start particles
+-45.1 -37.9 1.0
+-45.1 -37.9 1000.0
+-45.1 -37.9 3000.0
+-45.0 -37.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4768
+things done:1,0,0,500
+prediction:-45.038456,-37.503620,82.708733
+vel:-42.52443,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.19902 -1.04750 0.50774 -0.92457 -1.23567 -0.42878 -0.44917 -0.42878 -0.44917 -45.15885 -38.35957 261.30985 -0.00430
+target: -1.04750 0.06771 
+target: -1.04750 0.06771 
+fb: -1.09777 -0.13843 -0.64826 -0.19931 
+start generation
+start distances
+front:45.97873,12,1.00000,true,0
+left:68.44144,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.71764,7,1.00000,true,0
+end distances
+start particles
+-45.2 -38.4 1.0
+-45.2 -38.4 1000.0
+-45.2 -38.4 3000.0
+-45.1 -37.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4778
+things done:1,0,0,500
+prediction:-45.095181,-37.925854,81.988785
+vel:-43.21943,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.98921 -0.12515 -0.70255 -0.25359 
+start generation
+start distances
+front:47.43446,11,1.00000,true,0
+left:68.44144,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,0
+end distances
+start particles
+-45.2 -38.7 1.0
+-45.2 -38.7 1000.0
+-45.2 -38.7 3000.0
+-45.2 -38.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4788
+things done:1,0,0,500
+prediction:-45.158844,-38.359566,81.309860
+vel:-38.94530,0.00000
+alphas:0.16000,0.16000
+end generation
+dist/lin/ang/drive_left/drive_right/tv_l/tv_r/av_l/av_r/x/y/theta/t_err: -0.17998 -0.97692 0.76688 -0.86406 -1.11436 -0.50683 -0.40294 -0.50683 -0.40294 -45.28019 -39.09939 260.14710 0.01669
+target: -0.97692 0.10226 
+target: -0.97692 0.10226 
+fb: -0.95214 -0.11578 -0.39713 0.09907 
+start generation
+start distances
+front:47.43446,11,1.00000,true,0
+left:68.44144,11,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,1
+end distances
+start particles
+-45.3 -39.1 1.0
+-45.3 -39.1 1000.0
+-45.3 -39.1 3000.0
+-45.2 -38.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4798
+things done:1,0,0,500
+prediction:-45.212105,-38.695923,80.696091
+vel:-37.48587,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.96384 -0.09887 -0.39128 0.10491 
+start generation
+start distances
+front:47.43446,11,1.00000,true,0
+left:68.79138,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:66.79482,8,1.00000,true,1
+end distances
+start particles
+-45.3 -39.4 1.0
+-45.3 -39.4 1000.0
+-45.3 -39.4 3000.0
+-45.3 -39.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4808
+things done:1,0,0,500
+prediction:-45.280190,-39.099388,80.147110
+vel:-37.94632,0.00000
+alphas:0.16000,0.16000
+end generation
+start generation
+start distances
+front:49.19667,11,1.00000,true,0
+left:68.79138,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.10355,8,1.00000,true,1
+end distances
+start particles
+-45.4 -39.8 1.0
+-45.4 -39.8 1000.0
+-45.4 -39.8 3000.0
+-45.3 -39.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 322, timestamp: 4818
+things done:1,0,0,500
+prediction:-45.341572,-39.443718,79.637627
+vel:-37.49461,0.00000
+alphas:0.16000,0.16000
+end generation
+start generation
+start distances
+front:49.19667,11,1.00000,true,0
+left:68.79138,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.10355,8,1.00000,true,1
+end distances
+start particles
+-45.5 -40.3 1.0
+-45.5 -40.3 1000.0
+-45.5 -40.3 3000.0
+-45.4 -39.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4828
+things done:1,0,0,500
+prediction:-45.415066,-39.837048,79.196228
+vel:-42.07288,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -1.07042 0.00653 -1.00000 1.00000 
+start generation
+start distances
+front:49.19667,11,1.00000,true,0
+left:68.79138,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.10355,8,1.00000,true,1
+end distances
+start particles
+-45.6 -40.7 1.0
+-45.6 -40.7 1000.0
+-45.6 -40.7 3000.0
+-45.5 -40.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4838
+things done:1,0,0,500
+prediction:-45.499119,-40.270287,78.844910
+vel:-42.14242,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.95987 0.04503 -1.00000 1.00000 
+start generation
+start distances
+front:49.19667,11,1.00000,true,0
+left:69.14131,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.10355,8,1.00000,true,1
+end distances
+start particles
+-45.6 -41.0 1.0
+-45.6 -41.0 1000.0
+-45.6 -41.0 3000.0
+-45.6 -40.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4848
+things done:1,0,0,500
+prediction:-45.577423,-40.664104,78.663612
+vel:-37.79008,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.96583 0.06279 -1.00000 1.00000 
+start generation
+start distances
+front:50.46087,9,1.00000,true,0
+left:69.14131,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.45086,8,1.00000,true,1
+end distances
+start particles
+-45.7 -41.4 1.0
+-45.7 -41.4 1000.0
+-45.7 -41.4 3000.0
+-45.6 -41.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4858
+things done:1,0,0,500
+prediction:-45.647091,-41.011459,78.654579
+vel:-38.02464,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.87867 -0.10299 -1.00000 1.00000 
+start generation
+start distances
+front:50.46087,9,1.00000,true,0
+left:69.14131,9,1.00000,true,1
+back:386.82157,0,1.00000,true,0
+right:67.45086,8,1.00000,true,1
+end distances
+start particles
+-45.8 -41.7 1.0
+-45.8 -41.7 1000.0
+-45.8 -41.7 3000.0
+-45.7 -41.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4868
+things done:1,0,0,500
+prediction:-45.726463,-41.409855,78.811569
+vel:-34.59311,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.68647 -0.23084 -1.00000 1.00000 
+start generation
+start distances
+front:50.46087,9,1.00000,true,0
+left:68.90802,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:67.45086,8,1.00000,true,1
+end distances
+start particles
+-45.8 -41.9 1.0
+-45.8 -41.9 1000.0
+-45.8 -41.9 3000.0
+-45.8 -41.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4878
+things done:1,0,0,500
+prediction:-45.781250,-41.690193,79.073456
+vel:-27.02641,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.54679 -0.27595 -1.00000 1.00000 
+start generation
+start distances
+front:51.87830,9,1.00000,true,0
+left:68.90802,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.02973,7,1.00000,true,1
+end distances
+start particles
+-45.9 -42.1 1.0
+-45.9 -42.1 1000.0
+-45.9 -42.1 3000.0
+-45.8 -41.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4888
+things done:1,0,0,500
+prediction:-45.829971,-41.940376,78.886993
+vel:-21.52723,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.44418 -0.26579 -1.00000 1.00000 
+start generation
+start distances
+front:51.87830,9,1.00000,true,0
+left:68.90802,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.02973,7,1.00000,true,1
+end distances
+start particles
+-45.9 -42.3 1.0
+-45.9 -42.3 1000.0
+-45.9 -42.3 3000.0
+-45.9 -42.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4898
+things done:1,0,0,500
+prediction:-45.865158,-42.112476,77.999344
+vel:-17.48746,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.40733 -0.24370 -1.00000 1.00000 
+start generation
+start distances
+front:51.87830,9,1.00000,true,0
+left:68.90802,9,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.02973,7,1.00000,true,0
+end distances
+start particles
+-45.9 -42.4 1.0
+-45.9 -42.4 1000.0
+-45.9 -42.4 3000.0
+-45.9 -42.3 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4908
+things done:1,0,0,500
+prediction:-45.903057,-42.282391,76.854752
+vel:-16.03663,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.31223 -0.20925 -1.00000 1.00000 
+start generation
+start distances
+front:51.87830,9,1.00000,true,0
+left:69.41348,7,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.02973,7,1.00000,true,0
+end distances
+start particles
+-46.0 -42.5 1.0
+-46.0 -42.5 1000.0
+-46.0 -42.5 3000.0
+-45.9 -42.4 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 4918
+things done:1,0,0,500
+prediction:-45.937832,-42.424850,75.711922
+vel:-12.29244,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.24228 -0.16678 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:69.41348,7,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.06832,6,1.00000,true,0
+end distances
+start particles
+-46.0 -42.6 1.0
+-46.0 -42.6 1000.0
+-46.0 -42.6 3000.0
+-46.0 -42.5 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4928
+things done:1,0,0,500
+prediction:-45.963223,-42.520752,74.633835
+vel:-9.53861,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.22684 -0.14682 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:69.41348,7,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.06832,6,1.00000,true,0
+end distances
+start particles
+-46.0 -42.7 1.0
+-46.0 -42.7 1000.0
+-46.0 -42.7 3000.0
+-46.0 -42.6 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 4938
+things done:1,0,0,500
+prediction:-45.988224,-42.608841,73.675652
+vel:-8.93054,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.22904 -0.14213 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:70.07447,7,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:68.06832,6,1.00000,true,0
+end distances
+start particles
+-46.0 -42.8 1.0
+-46.0 -42.8 1000.0
+-46.0 -42.8 3000.0
+-46.0 -42.7 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4948
+things done:1,0,0,500
+prediction:-46.013252,-42.692211,72.904068
+vel:-9.01744,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.24449 -0.14135 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:70.07447,7,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.04807,8,1.00000,true,0
+end distances
+start particles
+-46.1 -42.9 1.0
+-46.1 -42.9 1000.0
+-46.1 -42.9 3000.0
+-46.0 -42.8 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 4958
+things done:1,0,0,500
+prediction:-46.041199,-42.781231,72.236038
+vel:-9.62556,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.24824 -0.12316 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:70.07447,7,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.04807,8,1.00000,true,0
+end distances
+start particles
+-46.1 -43.0 1.0
+-46.1 -43.0 1000.0
+-46.1 -43.0 3000.0
+-46.1 -42.9 8000.0
+end particles
+total weight: 5517.211914, time taken: 317, timestamp: 4968
+things done:1,0,0,500
+prediction:-46.071983,-42.875542,71.607536
+vel:-9.77325,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.23655 -0.10171 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:70.07447,7,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.04807,8,1.00000,true,0
+end distances
+start particles
+-46.1 -43.1 1.0
+-46.1 -43.1 1000.0
+-46.1 -43.1 3000.0
+-46.1 -43.0 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4978
+things done:1,0,0,500
+prediction:-46.102852,-42.966713,70.987381
+vel:-9.31283,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.23655 -0.07394 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:389.01904,0,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.04807,8,1.00000,true,0
+end distances
+start particles
+-46.2 -43.1 1.0
+-46.2 -43.1 1000.0
+-46.2 -43.1 3000.0
+-46.1 -43.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 314, timestamp: 4988
+things done:1,0,0,500
+prediction:-46.132584,-43.051662,70.432709
+vel:-9.31284,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.21338 -0.01825 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:389.01904,0,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.51116,6,1.00000,true,0
+end distances
+start particles
+-46.2 -43.2 1.0
+-46.2 -43.2 1000.0
+-46.2 -43.2 3000.0
+-46.2 -43.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 4998
+things done:1,0,0,500
+prediction:-46.165184,-43.142227,69.973457
+vel:-8.40067,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.11430 0.03232 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:389.01904,0,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.51116,6,1.00000,true,0
+end distances
+start particles
+-46.2 -43.2 1.0
+-46.2 -43.2 1000.0
+-46.2 -43.2 3000.0
+-46.2 -43.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 5008
+things done:1,0,0,500
+prediction:-46.189957,-43.209572,69.632431
+vel:-4.50006,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.02714 0.06023 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:389.01904,0,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.51116,6,1.00000,true,0
+end distances
+start particles
+-46.2 -43.2 1.0
+-46.2 -43.2 1000.0
+-46.2 -43.2 3000.0
+-46.2 -43.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 5018
+things done:1,0,0,500
+prediction:-46.196327,-43.226669,69.494225
+vel:-1.06855,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: -0.00971 0.06989 -1.00000 1.00000 
+start generation
+start distances
+front:383.63336,0,1.00000,true,0
+left:389.01904,0,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.08666,8,1.00000,true,0
+end distances
+start particles
+-46.2 -43.2 1.0
+-46.2 -43.2 1000.0
+-46.2 -43.2 3000.0
+-46.2 -43.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 5028
+things done:1,0,0,500
+prediction:-46.197422,-43.229599,69.586060
+vel:-0.38224,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: -0.00199 0.09752 -1.00000 1.00000 
+start generation
+start distances
+front:54.40668,6,1.00000,true,0
+left:389.01904,0,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.08666,8,1.00000,true,0
+end distances
+start particles
+-46.2 -43.2 1.0
+-46.2 -43.2 1000.0
+-46.2 -43.2 3000.0
+-46.2 -43.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 316, timestamp: 5038
+things done:1,0,0,500
+prediction:-46.198990,-43.233837,69.822411
+vel:-0.07819,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.07745 0.11592 -1.00000 1.00000 
+start generation
+start distances
+front:54.40668,6,1.00000,true,0
+left:389.01904,0,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.08666,8,1.00000,true,0
+end distances
+start particles
+-46.2 -43.2 1.0
+-46.2 -43.2 1000.0
+-46.2 -43.2 3000.0
+-46.2 -43.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 313, timestamp: 5048
+things done:1,0,0,500
+prediction:-46.197975,-43.231060,70.097557
+vel:3.04926,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: 0.12622 0.11698 -1.00000 1.00000 
+start generation
+start distances
+front:54.40668,6,1.00000,true,0
+left:71.12426,6,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:39.08666,8,1.00000,true,0
+end distances
+start particles
+-46.2 -43.1 1.0
+-46.2 -43.1 1000.0
+-46.2 -43.1 3000.0
+-46.2 -43.2 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 5058
+things done:1,0,0,500
+prediction:-46.178402,-43.176426,70.486588
+vel:4.96917,0.00000
+alphas:0.16000,0.16000
+end generation
+fb: 0.13968 0.12501 -1.00000 1.00000 
+start generation
+start distances
+front:53.90867,6,1.00000,true,0
+left:71.12426,6,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:38.97089,7,1.00000,true,0
+end distances
+start particles
+-46.1 -43.1 1.0
+-46.1 -43.1 1000.0
+-46.1 -43.1 3000.0
+-46.2 -43.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 312, timestamp: 5068
+things done:1,0,0,500
+prediction:-46.164757,-43.137394,70.970642
+vel:5.49909,0.00000
+alphas:0.16000,0.16000
+end generation
+target: 0.00000 1.93040 
+fb: 0.15887 0.14398 -1.00000 1.00000 
+start generation
+start distances
+front:53.90867,6,1.00000,true,0
+left:71.12426,6,1.00000,true,0
+back:386.82157,0,1.00000,true,0
+right:38.97089,7,1.00000,true,0
+end distances
+start particles
+-46.1 -43.0 1.0
+-46.1 -43.0 1000.0
+-46.1 -43.0 3000.0
+-46.1 -43.1 8000.0
+end particles
+total weight: 5517.211914, time taken: 315, timestamp: 5078
+things done:1,0,0,500
+prediction:-46.142670,-43.072414,71.480133
+vel:6.25489,0.00000
+alphas:0.16000,0.16000
+end generation
+WARNING - pros.serial.terminal.terminal:stop - Stopping terminal - pros-cli version:3.5.6

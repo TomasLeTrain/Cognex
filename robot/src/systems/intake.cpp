@@ -423,7 +423,7 @@ void continuous_lever_down() {
 // and stays there
 void continuous_lever_up(Voltage actionVoltage) {
     // go max voltage down
-    lever::setActionVoltage(1.0_volt);
+    lever::setActionVoltage(actionVoltage);
 
     auto current_lever_target = lever::getTarget();
     if (std::holds_alternative<lever::DiscreteLeverState>(
@@ -520,7 +520,7 @@ void update() {
     }
 
     else if (score_middle_height) {
-        score_middle();
+        score_middle(0.4_volt);
     }
 
     else if (score_bottom_height) {
@@ -528,7 +528,7 @@ void update() {
     }
 
     else if (scoreLong) {
-        score_long();
+        score_long(0.8_volt);
     } else {
         motors_disabled();
         // alignment is not set when disabled
