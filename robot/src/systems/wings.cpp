@@ -43,7 +43,7 @@ void autoUpdate() {}
 // runs regardless of driver mode
 void hardwareUpdate() {
     // intake update
-    wings_piston.set_value(wings_state != active);
+    wings_piston.set_value(wings_state == active);
 }
 
 // updates the state of the subsystem

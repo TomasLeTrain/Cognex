@@ -23,16 +23,16 @@ bool is_driver = false;
 bool tasks_active = false;
 
 // colorsort sort variables
-bool color_sort_driver = false;
-bool color_sort_auton = false;
+// bool color_sort_driver = false;
+// bool color_sort_auton = false;
 
-void setAutonColorSort(bool enabled) {
-    color_sort_auton = enabled;
-}
-
-void setDriverColorSort(bool enabled) {
-    color_sort_driver = enabled;
-}
+// void setAutonColorSort(bool enabled) {
+//     color_sort_auton = enabled;
+// }
+//
+// void setDriverColorSort(bool enabled) {
+//     color_sort_driver = enabled;
+// }
 
 bool motorJammed(pros::Motor& motor) {
     float thresh_vel = 1;
@@ -113,6 +113,7 @@ void update() {
     std::lock_guard lock(mutex);
     gate_intake_piston.set_value(top == passthrough);
     middle_intake_piston.set_value(middle == aligned_middle);
+    middle_intake_piston_2.set_value(middle == aligned_top);
     bottom_intake_piston.set_value(bottom == up);
 }
 
@@ -149,15 +150,11 @@ pros::Mutex mutex;
 
 Voltage target;
 
-bool outtake_antijam = false;
-
-bool m_outtaking = false;
-Voltage m_outtaking_voltage = -1_volt;
+Voltage m_voltage = -1_volt;
 
 // outtaking voltage should be negative!!!
-void setOuttaking(bool outtaking, Voltage outtaking_voltage = -1_volt) {
-    m_outtaking = outtaking;
-    m_outtaking_voltage = -units::abs(outtaking_voltage);
+void setTarget(Voltage voltage) {
+    m_voltage = voltage;
 }
 
 // void set_pct(Voltage new_pct) {
@@ -196,10 +193,6 @@ void hardware_move_pct(Voltage pct) {
     bottom_motor.move_voltage(12 * to_mvolt(pct));
 }
 
-void hardware_update(Voltage voltage) {
-    hardware_move_pct(voltage);
-}
-
 // update can be blocking if antijam or color sort are active
 // while blocking it also locks the mutex
 void update() {
@@ -213,17 +206,9 @@ void update() {
 
     if (lever_position > 0.2) {
         // lever is up, no case in which we want to be intaking
-        hardware_update(-0.5_volt);
+        hardware_move_pct(-0.5_volt);
     } else {
-        // want to be either intaking or outtaking
-        // only case for outtaking is when scoring or taking all the balls out
-        if (m_outtaking) {
-            hardware_update(m_outtaking_voltage);
-        } else {
-            // intake with full speed to keep balls in, even if in a disabled
-            // state
-            hardware_update(1_volt);
-        }
+        hardware_move_pct(m_voltage);
     }
 
     //
@@ -265,23 +250,35 @@ void update() {
 namespace lever {
 pros::Mutex mutex;
 
-LeverVelocityProfile::LeverVelocityProfile(std::function<float(float)> f)
-    : m_f(f) {}
+LeverVelocityProfile::LeverVelocityProfile(AngularVelocity v0,
+                                           AngularVelocity v1)
+    : v0(v0),
+      v1(v1) {}
 
 // returns the desired target velocity at angle theta in range [0,1]
-float LeverVelocityProfile::velocity(float theta) {
-    return m_f(theta);
+AngularVelocity LeverVelocityProfile::velocity(float theta) {
+    return v0 + (v1 - v0) * theta;
 }
 
 // determines when the profile is finished with a motion
 // if finished, returns a discrete lever state to go back to
 // TODO: or maybe a target theta?
-std::optional<DiscreteLeverState> LeverVelocityProfile::finished(float theta) {}
+std::optional<DiscreteLeverState> LeverVelocityProfile::finished(float theta) {
+    if (theta >= 0.95) {
+        return going_up;
+    }else{
+		return std::nullopt;
+	}
+}
 
 std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile> m_target;
 
 // lever_position = motor_position * position_to_theta_mult
-float position_to_theta_mult = 1 / 0.842;
+
+bool has_red_cart = false;
+float red_card_mult = has_red_cart ? (1 / 2.f) : 1;
+
+float position_to_theta_mult = (1 / 0.842) * red_card_mult;
 float zero_motor_position;
 float lever_position;
 
@@ -440,12 +437,12 @@ void continuous_lever_up(Voltage actionVoltage) {
 // only pauses motors, does not change piston states
 void motors_disabled() {
     continuous_lever_down();
-    bottom::setOuttaking(true, 0_volt);
+    bottom::setTarget(0_volt);
 }
 
 void in() {
     continuous_lever_down();
-    bottom::setOuttaking(false);
+    bottom::setTarget(1_volt);
 
     // does not set alignment
     pistons::align_top();
@@ -455,7 +452,7 @@ void in() {
 
 void out() {
     continuous_lever_down();
-    bottom::setOuttaking(true, -1_volt);
+    bottom::setTarget(-1_volt);
 
     // align top so all blocks come out
     pistons::align_top();
@@ -465,7 +462,7 @@ void out() {
 
 void score_long(Voltage actionVoltage) {
     continuous_lever_up(actionVoltage);
-    bottom::setOuttaking(false);
+    bottom::setTarget(1_volt);
 
     pistons::align_top();
     pistons::gate_scoring();
@@ -475,7 +472,7 @@ void score_long(Voltage actionVoltage) {
 // defaults:
 void score_middle(Voltage actionVoltage) {
     continuous_lever_up(actionVoltage);
-    bottom::setOuttaking(false);
+    bottom::setTarget(1_volt);
 
     pistons::align_middle();
     pistons::gate_scoring();
@@ -485,7 +482,7 @@ void score_middle(Voltage actionVoltage) {
 // defaults: bottom_speed = -0.5,  lever_speed = -1.0
 void score_bottom() {
     continuous_lever_down();
-    bottom::setOuttaking(true, -0.5_volt);
+    bottom::setTarget(-0.5_volt);
 
     pistons::align_top();
     pistons::gate_blocked();

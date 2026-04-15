@@ -5,11 +5,12 @@
 
 #include "auton_globals.h"
 #include "pros/motors.hpp"
+#include "units/Angle.hpp"
 #include "units/units.hpp"
 
 namespace intake {
-void setAutonColorSort(bool enabled);
-void setDriverColorSort(bool enabled);
+// void setAutonColorSort(bool enabled);
+// void setDriverColorSort(bool enabled);
 
 bool motorJammed(pros::Motor& motor);
 bool motorSlowed(pros::Motor& motor);
@@ -78,12 +79,13 @@ enum DiscreteLeverState {
 };
 
 struct LeverVelocityProfile {
-    std::function<float(float)> m_f;
+    AngularVelocity v0;
+    AngularVelocity v1;
 
-    LeverVelocityProfile(std::function<float(float)> f);
+    LeverVelocityProfile(AngularVelocity v0, AngularVelocity v1);
 
     // returns the desired target velocity at angle theta in range [0,1]
-    float velocity(float theta);
+    AngularVelocity velocity(float theta);
 
     // determines when the profile is finished with a motion
     // if finished, returns a discrete lever state to go back to

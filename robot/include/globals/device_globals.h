@@ -29,6 +29,7 @@ extern pros::Optical upper_intake_color_sensor;
 // pistons
 extern pros::adi::DigitalOut gate_intake_piston;
 extern pros::adi::DigitalOut middle_intake_piston;
+extern pros::adi::DigitalOut middle_intake_piston_2;
 extern pros::adi::DigitalOut matchloader_piston;
 extern pros::adi::DigitalOut wings_piston;
 extern pros::adi::DigitalOut odom_retract_piston;
