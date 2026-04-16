@@ -98,13 +98,16 @@ constexpr units::Pose distToCor(units::Pose dist_pose) {
 // = 6.3125
 auto offset_c = (12.625_in / 2);
 
+// clang-format off
 units::Pose front_distance_offsets =
-  distToCor({ 6.3_in, -offset_c + 3.0_in, 0_stDeg });
+	distToCor({ 6.3_in, -offset_c + 3.0_in, 0_stDeg });
 units::Pose left_distance_offsets =
-  distToCor({ -0.75_in, +offset_c - 2.25_in, 90_stDeg });
-units::Pose back_distance_offsets = distToCor({ -4.5_in, 1.5_in, 180_stDeg });
+	distToCor({ -0.75_in, +offset_c - 2.25_in, 90_stDeg });
+units::Pose back_distance_offsets =
+	distToCor({ -4.5_in, 1.5_in, 180_stDeg });
 units::Pose right_distance_offsets =
-  distToCor({ -0.75_in, -offset_c + 2.25_in, 270_stDeg });
+    distToCor({ -0.75_in, -offset_c + 2.25_in, 270_stDeg });
+// clang-format on
 
 // sunlight: 0.967078567542
 // no sunlight: 0.973046024541

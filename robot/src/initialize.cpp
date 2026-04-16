@@ -69,8 +69,8 @@ void timeCriticalTask() {
 
                 // TODO: chopped since its not guarnteed to have updated ->
                 // might introduce input delay
-                // LinearVelocity forwards_velocity =
-                //   model_manager.getLocalVelocityVector().x;
+                LinearVelocity forwards_velocity =
+                  model_manager.getLocalVelocityVector().x;
 
                 // not using forwards velocity since its offset is not
                 // guaranteed to be zero
@@ -82,32 +82,32 @@ void timeCriticalTask() {
                 AngularVelocity angular_velocity =
                   from_degps(imu.get_gyro_rate().z);
 
-                auto motor_left_vel =
-                  blazing::getGroupVelocity(&left_motors,
-                                            drivetrain_config.wheel_diameter,
-                                            drivetrain_config.rpm);
-
-                auto motor_right_vel =
-                  blazing::getGroupVelocity(&right_motors,
-                                            drivetrain_config.wheel_diameter,
-                                            drivetrain_config.rpm);
-
-                auto linear_vel = (motor_right_vel + motor_left_vel) / 2.0;
-
+                // auto motor_left_vel =
+                //   blazing::getGroupVelocity(&left_motors,
+                //                             drivetrain_config.wheel_diameter,
+                //                             drivetrain_config.rpm);
+                //
+                // auto motor_right_vel =
+                //   blazing::getGroupVelocity(&right_motors,
+                //                             drivetrain_config.wheel_diameter,
+                //                             drivetrain_config.rpm);
+                //
+                // auto linear_vel = (motor_right_vel + motor_left_vel) / 2.0;
+                //
                 // TODO: temporary
-                LinearVelocity left_vel =
-                  linear_vel -
-                  angular_velocity * drivetrain_config.track_radius / rad;
-                LinearVelocity right_vel =
-                  linear_vel +
-                  angular_velocity * drivetrain_config.track_radius / rad;
-
                 // LinearVelocity left_vel =
-                //   forwards_velocity -
+                //   linear_vel -
                 //   angular_velocity * drivetrain_config.track_radius / rad;
                 // LinearVelocity right_vel =
-                //   forwards_velocity +
+                //   linear_vel +
                 //   angular_velocity * drivetrain_config.track_radius / rad;
+
+                LinearVelocity left_vel =
+                  forwards_velocity -
+                  angular_velocity * drivetrain_config.track_radius / rad;
+                LinearVelocity right_vel =
+                  forwards_velocity +
+                  angular_velocity * drivetrain_config.track_radius / rad;
 
                 LeftRightSpeeds measurement { left_vel, right_vel };
 
