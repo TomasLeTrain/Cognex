@@ -35,7 +35,7 @@ class mpFeedback {
         const Number error_sgn = units::sgn(error);
         const Input abs_error = units::abs(error);
 
-        const Length decel_dist = units::square(m_max_vel) / (2 * m_max_accel);
+        const Input decel_dist = units::square(m_max_vel) / (2 * m_max_accel);
 
         if (abs_error < m_low_threshold_error) {
             // error is already signed
@@ -43,7 +43,7 @@ class mpFeedback {
         } else if (abs_error > decel_dist) {
             return m_max_vel * error_sgn;
         } else {
-            const Length length_left = decel_dist - abs_error;
+            const Input length_left = decel_dist - abs_error;
 
             Exponentiated<VelT, std::ratio<2>> accel_term =
               (2 * m_max_accel * length_left);

@@ -3,12 +3,15 @@
 
 #include "autos.h"
 #include "globals.h"
+#include "globals/blazing_globals.h"
 #include "main.h"
 #include "systems/drivetrain.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
 #include "systems/odom_retract.h"
+#include "systems/sysid.h"
 #include "systems/wings.h"
+#include "tuning.h"
 
 void findImuOrientation() {
     pros::imu_orientation_e_t imu_orientation = imu.get_physical_orientation();
@@ -28,6 +31,54 @@ void findImuOrientation() {
 }
 
 void opcontrol() {
+    // path_follow_tuning();
+    // turn_vel_pid_tuning();
+	// drive_vel_pid_tuning();
+	// drive_vel_pid_tuning();
+
+    // linear_kv_ks_tuner();
+    // angular_kv_ks_tuner();
+
+    // using namespace blazing;
+    // using namespace blazing::lyfast;
+    // using namespace blazing::lyfast::sysid;
+    // drivetrain.setBrakeMode(pros::MotorBrake::hold);
+    //
+    // std::vector<DifferentialVoltageCommand> voltage_commands = {
+    //     // increasing intensity, changing sign
+    //     { 0.1_volt, -0.1_volt, 600_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { -0.2_volt, 0.2_volt, 1000_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { 0.3_volt, -0.3_volt, 1000_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { -0.4_volt, 0.4_volt, 1000_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { 0.5_volt, -0.5_volt, 1000_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { -0.6_volt, 0.6_volt, 1000_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { 0.7_volt, -0.7_volt, 1000_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { -0.8_volt, 0.8_volt, 1300_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    //     { 0.9_volt, -0.9_volt, 1300_msec },
+    //     { 0.0_volt, 0.0_volt, 500_msec, false },
+    // };
+    //
+    // genericTuner(
+    //   "ANGULAR",
+    //   10_msec,
+    //   [&] -> DifferentialData {
+    //       return DifferentialUtils::generateData(voltage_commands,
+    //                                              drivetrain,
+    //                                              10_msec,
+    //                                              true);
+    //   },
+    //   [](const DifferentialData& data) {
+    //       // DifferentialUtils::calculate_kv_ks(data);
+    //   });
+
     // angular_kv_ks_tuner();
     // angular_ka_kp_ki_tuner();
     // return;
@@ -58,26 +109,26 @@ void opcontrol() {
 
     // drive_pid_tuning();
 
-    if (selected_auton == "skills") {
-        // run auto
-        auto prog_task = pros::Task([] {
-            autonomous();
-        });
-
-        while (true) {
-            if (controller.get_digital_new_press(controls::X)) {
-                prog_task.remove();
-
-                pros::delay(20);
-                async.exitAll();
-                pros::delay(20);
-                chain.exitAll();
-                pros::delay(20);
-                break;
-            }
-            pros::delay(10);
-        }
-    }
+    // if (selected_auton == "skills") {
+    //     // run auto
+    //     auto prog_task = pros::Task([] {
+    //         autonomous();
+    //     });
+    //
+    //     while (true) {
+    //         if (controller.get_digital_new_press(controls::X)) {
+    //             prog_task.remove();
+    //
+    //             pros::delay(20);
+    //             async.exitAll();
+    //             pros::delay(20);
+    //             chain.exitAll();
+    //             pros::delay(20);
+    //             break;
+    //         }
+    //         pros::delay(10);
+    //     }
+    // }
 
     // findImuOrientation();
 
@@ -169,7 +220,7 @@ void opcontrol() {
     wings::init(true);
     odom_retract::init(true);
 
-    intake::setDriverColorSort(false);
+    // intake::setDriverColorSort(false);
 
     // no need to initialize in auto
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
@@ -194,9 +245,10 @@ void opcontrol() {
     // runs exclusively inside opcontrol to guarantee it does not interfer with
     // autos (stopped automatically when not in driver mode)
 
-    // RobotSetPose(48, -48, 0);
+    // RobotSetPose(-48, 48, 180);
 
     while (true) {
+        drivetrain.setBrakeMode(pros::MotorBrake::coast);
         base::driveUpdate();
 
         pros::delay(10);

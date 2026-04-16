@@ -1,58 +1,81 @@
 #pragma once
 
 #include "apis.h"
+#include "lyfast/sysid/system_identification.hpp"
 //
-#include "lyfast/system_identification.hpp"
-//
-
-void kv_ks_tuner(std::string type,
-                 std::vector<blazing::lyfast::DifferentialSysIdVoltageCommands>
-                   voltage_commands,
-                 Time delta_time = 10_msec);
 
 // allows running tuning routine multiple times
 // press A to run routine, X to get raw data
-void raw_ka_tuner(std::string type,
-                  std::vector<blazing::lyfast::DifferentialSysIdVoltageCommands>
-                    voltage_commands,
-                  blazing::lyfast::KvUnits left_Kv,
-                  blazing::lyfast::KsUnits left_Ks,
-                  blazing::lyfast::KvUnits right_Kv,
-                  blazing::lyfast::KsUnits right_Ks);
+void genericTuner(
+  const std::string& type,
+  Time delta_time,
+  std::function<blazing::lyfast::sysid::DifferentialData()> gatherData,
+  std::function<void(const blazing::lyfast::sysid::DifferentialData&)>
+    processData);
+
+void kv_ks_tuner(
+  const std::string& type,
+  const std::vector<blazing::lyfast::sysid::DifferentialVoltageCommand>&
+    voltage_commands,
+  bool use_measured_voltage = false,
+  Time steady_state_time = 150_msec,
+  Time delta_time = 10_msec);
+
+// allows running tuning routine multiple times
+// press A to run routine, X to get raw data
+void raw_ka_tuner(
+  const std::string& type,
+  const std::vector<blazing::lyfast::sysid::DifferentialVoltageCommand>&
+    voltage_commands,
+  blazing::lyfast::KvUnits<LinearVelocity> left_Kv,
+  blazing::lyfast::KsUnits left_Ks,
+  blazing::lyfast::KvUnits<LinearVelocity> right_Kv,
+  blazing::lyfast::KsUnits right_Ks,
+  bool use_measured_voltage = true,
+  Time delta_time = 10_msec);
+
 void create_accel_data(
-  blazing::lyfast::DifferentialSysIdVoltageCommands voltage_command,
-  std::string type);
+  const blazing::lyfast::sysid::DifferentialVoltageCommand& voltage_command,
+  const std::string& type,
+  Time delta_time = 10_msec);
 
 void ka_kp_ki_tuner(
-  std::string type,
-  blazing::lyfast::DifferentialSysIdVoltageCommands voltage_command,
+  const std::string& type,
+  const blazing::lyfast::sysid::DifferentialVoltageCommand& voltage_command,
   double lambda_factor,
+  bool use_measured_voltage = false,
   Time delta_time = 10_msec);
 
 void linear_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
                            double lambda_factor = 0.6,
                            Time accel_time = 2_sec,
+                           bool use_measured_voltage = false,
                            Time delta_time = 10_msec);
 
 void angular_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
                             double lambda_factor = 0.6,
                             Time accel_time = 2_sec,
+                            bool use_measured_voltage = false,
                             Time delta_time = 10_msec);
 
-void linear_kv_ks_tuner(Time delta_time = 10_msec);
-void angular_kv_ks_tuner(Time delta_time = 10_msec);
+void linear_kv_ks_tuner(bool use_measured_voltage = false,
+                        Time steady_state_time = 100_msec,
+                        Time delta_time = 10_msec);
 
-void linear_raw_ka_tuner(blazing::lyfast::KvUnits left_Kv,
+void angular_kv_ks_tuner(bool use_measured_voltage = false,
+                         Time steady_state_time = 100_msec,
+                         Time delta_time = 10_msec);
+
+void linear_raw_ka_tuner(blazing::lyfast::KvUnits<LinearVelocity> left_Kv,
                          blazing::lyfast::KsUnits left_Ks,
-                         blazing::lyfast::KvUnits right_Kv,
-                         blazing::lyfast::KsUnits right_Ks);
-void angular_raw_ka_tuner(blazing::lyfast::KvUnits left_Kv,
-                          blazing::lyfast::KsUnits left_Ks,
-                          blazing::lyfast::KvUnits right_Kv,
-                          blazing::lyfast::KsUnits right_Ks);
+                         blazing::lyfast::KvUnits<LinearVelocity> right_Kv,
+                         blazing::lyfast::KsUnits right_Ks,
+                         bool use_measured_voltage = false,
+                         Time delta_time = 10_msec);
 
-std::vector<blazing::lyfast::MotorSysidData> calculate_intake_kv_ks(
-  std::vector<blazing::lyfast::MotorSysidVoltageCommands> voltage_commands,
-  pros::MotorGroup* motors,
-  Time delta_time,
-  Time steady_state_time);
+void angular_raw_ka_tuner(blazing::lyfast::KvUnits<LinearVelocity> left_Kv,
+                          blazing::lyfast::KsUnits left_Ks,
+                          blazing::lyfast::KvUnits<LinearVelocity> right_Kv,
+                          blazing::lyfast::KsUnits right_Ks,
+                          bool use_measured_voltage = false,
+                          Time delta_time = 10_msec);

@@ -101,3 +101,8 @@ std::shared_ptr<lyfast::geometry::CubicBezier> curve(float x0,
                                                      float y2,
                                                      float x3,
                                                      float y3);
+
+std::shared_ptr<lyfast::geometry::Spline>
+spline(const std::vector<std::shared_ptr<lyfast::geometry::Curve>>& curves);
+
+void trajectoryDebugPrint(const lyfast::mp::Trajectory* trajectory);

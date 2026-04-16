@@ -1,6 +1,7 @@
 #include "apis.h"
 //
 
+#include "blazing/utils.hpp"
 #include "controller_ui/controller_auton_selector.h"
 #include "globals.h"
 #include "globals/blazing_globals.h"
@@ -66,8 +67,10 @@ void timeCriticalTask() {
                 uint32_t curr_time = pros::millis();
                 tracker.update();
 
-                LinearVelocity forwards_velocity =
-                  model_manager.getLocalVelocityVector().x;
+                // TODO: chopped since its not guarnteed to have updated ->
+                // might introduce input delay
+                // LinearVelocity forwards_velocity =
+                //   model_manager.getLocalVelocityVector().x;
 
                 // not using forwards velocity since its offset is not
                 // guaranteed to be zero
@@ -75,15 +78,36 @@ void timeCriticalTask() {
                 //   toLinear(from_degps(forwards_odom_rotation.get_velocity()),
                 //            1.991_in);
 
+                // imu up orientation
                 AngularVelocity angular_velocity =
-                  -from_degps(imu.get_gyro_rate().z);
+                  from_degps(imu.get_gyro_rate().z);
 
+                auto motor_left_vel =
+                  blazing::getGroupVelocity(&left_motors,
+                                            drivetrain_config.wheel_diameter,
+                                            drivetrain_config.rpm);
+
+                auto motor_right_vel =
+                  blazing::getGroupVelocity(&right_motors,
+                                            drivetrain_config.wheel_diameter,
+                                            drivetrain_config.rpm);
+
+                auto linear_vel = (motor_right_vel + motor_left_vel) / 2.0;
+
+                // TODO: temporary
                 LinearVelocity left_vel =
-                  forwards_velocity -
+                  linear_vel -
                   angular_velocity * drivetrain_config.track_radius / rad;
                 LinearVelocity right_vel =
-                  forwards_velocity +
+                  linear_vel +
                   angular_velocity * drivetrain_config.track_radius / rad;
+
+                // LinearVelocity left_vel =
+                //   forwards_velocity -
+                //   angular_velocity * drivetrain_config.track_radius / rad;
+                // LinearVelocity right_vel =
+                //   forwards_velocity +
+                //   angular_velocity * drivetrain_config.track_radius / rad;
 
                 LeftRightSpeeds measurement { left_vel, right_vel };
 
@@ -221,7 +245,7 @@ void initialize() {
           turnTo
             ->velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
             .timeout(3_sec);
     });
 
@@ -230,7 +254,7 @@ void initialize() {
           arc
             ->velocity_based(true)
             // speecifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
             .timeout(3_sec);
     });
 

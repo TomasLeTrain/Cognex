@@ -118,8 +118,8 @@ class SimpleOdomTracker {
         const Angle heading = from_cDeg(imu->get_rotation());
         if (!last_heading) last_heading = heading;
 
-        // specific to z down orientation
-        angular_velocity = -imu->get_gyro_rate().z * degps;
+        // specific to z up orientation
+        angular_velocity = imu->get_gyro_rate().z * degps;
         last_heading = heading;
 
         // update pose

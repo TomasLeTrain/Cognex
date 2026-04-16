@@ -105,10 +105,10 @@ void health_task() {
                       "Forwards rotation",
                       screen::health::critical,
                       "VERY BAD!");
-    process_device_dc(sideways_odom_rotation,
-                      "Sideways rotation",
-                      screen::health::critical,
-                      "VERY BAD!");
+    // process_device_dc(sideways_odom_rotation,
+    //                   "Sideways rotation",
+    //                   screen::health::critical,
+    //                   "VERY BAD!");
 
     process_device_dc(front_distance, "Front distance");
     process_device_dc(back_distance, "Back distance");

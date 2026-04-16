@@ -168,3 +168,97 @@ std::shared_ptr<lyfast::geometry::CubicBezier> curve(float x0,
       units::V2FPosition { from_in(x3), from_in(y3) });
 }
 
+
+
+std::shared_ptr<lyfast::geometry::Spline> spline(
+  const std::vector<std::shared_ptr<lyfast::geometry::Curve>>& curves) {
+    return std::shared_ptr<lyfast::geometry::Spline> {
+        new lyfast::geometry::Spline(curves)
+    };
+}
+
+void trajectoryDebugPrint(const lyfast::mp::Trajectory* trajectory) {
+    using namespace blazing::lyfast;
+    using namespace blazing::lyfast::geometry;
+    using namespace blazing::lyfast::mp;
+    auto print =
+      []<typename Unit>(std::string name,
+                        const std::vector<Trajectory::debugInfo>& list,
+                        Unit Trajectory::debugInfo::* member,
+                        Unit target_units) {
+          std::cout << name << "=\\left[";
+          for (size_t i = 0; i < list.size(); i++) {
+              if (i != 0) std::cout << ",";
+              std::cout << (list[i].*member).convert(target_units);
+          }
+          std::cout << "\\right]" << std::endl;
+      };
+
+    if (trajectory->getDebugEnabled()) {
+        std::cout << std::fixed << std::setprecision(4);
+        print("a_{kin}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::max_kin_decel,
+              Finps2);
+        print("a_{turn}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::max_turn_accel,
+              Finps2);
+        //
+        print("d_{kin}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::max_kin_decel,
+              Finps2);
+        print("d_{turn}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::max_turn_decel,
+              Finps2);
+        //
+        print("v_{kin}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::max_kin_vel,
+              Finps);
+        print("v_{turn}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::max_turn_vel,
+              Finps);
+        //
+        print("v_{friction}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::max_friction_vel,
+              Finps);
+
+        print("v_{forward}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::forwards_pass,
+              Finps);
+        print("v_{backward}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::backwards_pass,
+              Finps);
+
+        print("v_{final}",
+              trajectory->getDebugInfo(),
+              &Trajectory::debugInfo::final_vels,
+              Finps);
+
+        std::cout << "l_{times}=\\left[";
+        for (auto& point : trajectory->getPoints()) {
+            std::cout << point.travel_time.convert(sec) << ",";
+        }
+        std::cout << "\\right]" << std::endl;
+
+        std::cout << "l_{points}=\\left[";
+        for (auto& point : trajectory->getPoints()) {
+            std::cout << "\\left(" << point.point.x.convert(in) << ","
+                      << point.point.y.convert(in) << "\\right),";
+        }
+        std::cout << "\\right]" << std::endl;
+
+        std::cout << "l_{headings}=\\left[";
+        for (auto& point : trajectory->getPoints()) {
+            std::cout << point.heading.internal() << ",";
+        }
+        std::cout << "\\right]" << std::endl;
+    }
+}

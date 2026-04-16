@@ -4,6 +4,7 @@
 #include "globals/blazing_globals.h"
 #include "globals/device_globals.h"
 #include "lyfast/sysid/system_identification.hpp"
+#include "systems/sysid.h"
 
 using namespace blazing;
 using namespace blazing::lyfast;
@@ -41,12 +42,13 @@ void genericTuner(
 void kv_ks_tuner(const std::string& type,
                  const std::vector<lyfast::sysid::DifferentialVoltageCommand>&
                    voltage_commands,
-                 bool use_measured_voltage = false,
-                 Time steady_state_time = 150_msec,
-                 Time delta_time = 10_msec) {
+                 bool use_measured_voltage,
+                 Time steady_state_time,
+                 Time delta_time) {
     using namespace lyfast::sysid;
     // function params outlive the genericTuner function, so capturing
     // them by reference should fine
+
     genericTuner(
       type,
       delta_time,
@@ -71,8 +73,8 @@ void raw_ka_tuner(const std::string& type,
                   lyfast::KsUnits left_Ks,
                   lyfast::KvUnits<LinearVelocity> right_Kv,
                   lyfast::KsUnits right_Ks,
-                  bool use_measured_voltage = true,
-                  Time delta_time = 10_msec) {
+                  bool use_measured_voltage,
+                  Time delta_time) {
     using namespace lyfast::sysid;
     // function params outlive the genericTuner function, so capturing
     // them by reference should fine
@@ -98,7 +100,7 @@ void raw_ka_tuner(const std::string& type,
 void create_accel_data(
   const lyfast::sysid::DifferentialVoltageCommand& voltage_command,
   const std::string& type,
-  Time delta_time = 10_msec) {
+  Time delta_time) {
     using namespace lyfast::sysid;
     // function params outlive the genericTuner function, so capturing
     // them by reference should fine
@@ -117,8 +119,8 @@ void ka_kp_ki_tuner(
   const std::string& type,
   const lyfast::sysid::DifferentialVoltageCommand& voltage_command,
   double lambda_factor,
-  bool use_measured_voltage = false,
-  Time delta_time = 10_msec) {
+  bool use_measured_voltage,
+  Time delta_time) {
     using namespace lyfast::sysid;
     // function params outlive the genericTuner function, so capturing
     // them by reference should fine
@@ -138,11 +140,11 @@ void ka_kp_ki_tuner(
       });
 }
 
-void linear_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
-                           double lambda_factor = 0.6,
-                           Time accel_time = 2_sec,
-                           bool use_measured_voltage = false,
-                           Time delta_time = 10_msec) {
+void linear_ka_kp_ki_tuner(Voltage u_step,
+                           double lambda_factor,
+                           Time accel_time,
+                           bool use_measured_voltage,
+                           Time delta_time) {
     ka_kp_ki_tuner("LINEAR",
                    { u_step, u_step, accel_time },
                    lambda_factor,
@@ -150,11 +152,11 @@ void linear_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
                    delta_time);
 }
 
-void angular_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
-                            double lambda_factor = 0.6,
-                            Time accel_time = 2_sec,
-                            bool use_measured_voltage = false,
-                            Time delta_time = 10_msec) {
+void angular_ka_kp_ki_tuner(Voltage u_step,
+                            double lambda_factor,
+                            Time accel_time,
+                            bool use_measured_voltage,
+                            Time delta_time) {
     ka_kp_ki_tuner("ANGULAR",
                    { u_step, -u_step, accel_time },
                    lambda_factor,
@@ -162,38 +164,36 @@ void angular_ka_kp_ki_tuner(Voltage u_step = 0.5_volt,
                    delta_time);
 }
 
-void linear_kv_ks_tuner(bool use_measured_voltage = false,
-                        Time steady_state_time = 100_msec,
-                        Time delta_time = 10_msec) {
+void linear_kv_ks_tuner(bool use_measured_voltage,
+                        Time steady_state_time,
+                        Time delta_time) {
+
+    std::vector<lyfast::sysid::DifferentialVoltageCommand> commands = {
+        { -0.1_volt, -0.1_volt, 600_msec },
+        { 0.0_volt, 0.0_volt, 500_msec, false },
+    };
+
+    // from 0.2 to 0.9, alternating sign
+    for (int i = 2; i < 10; i++) {
+        Voltage curr = Voltage(i / 10.0) * (i % 2 == 0 ? 1 : -1);
+        commands.push_back({ curr, curr, 1000_msec });
+        commands.push_back({ 0.0_volt, 0.0_volt, 500_msec, false });
+    }
+
     kv_ks_tuner("LINEAR",
-                std::vector<lyfast::sysid::DifferentialVoltageCommand> {
-                  // linear movements
-                  { -0.1_volt, -0.1_volt, 600_msec },
-                  { 0.0_volt, 0.0_volt, 500_msec, false },
-                  { 0.2_volt, 0.2_volt, 1300_msec },
-                  { 0.0_volt, 0.0_volt, 500_msec, false },
-                  { -0.3_volt, -0.3_volt, 1300_msec },
-                  { 0.0_volt, 0.0_volt, 500_msec, false },
-                  { 0.4_volt, 0.4_volt, 1300_msec },
-                  { 0.0_volt, 0.0_volt, 500_msec, false },
-                  { -0.5_volt, -0.5_volt, 1300_msec },
-                  { 0.0_volt, 0.0_volt, 500_msec, false },
-                  { 0.6_volt, 0.6_volt, 1300_msec },
-                  { 0.0_volt, 0.0_volt, 500_msec, false },
-                  { -0.7_volt, -0.7_volt, 1300_msec },
-                  { 0.0_volt, 0.0_volt, 500_msec, false },
-    },
+                // linear movements
+                commands,
                 use_measured_voltage,
                 steady_state_time,
                 delta_time);
 }
 
-void angular_kv_ks_tuner(bool use_measured_voltage = false,
-                         Time steady_state_time = 100_msec,
-                         Time delta_time = 10_msec) {
+void angular_kv_ks_tuner(bool use_measured_voltage,
+                         Time steady_state_time,
+                         Time delta_time) {
     kv_ks_tuner("ANGULAR",
                 std::vector<lyfast::sysid::DifferentialVoltageCommand> {
-                  // linear movements
+                  // increasing intensity, changing sign
                   { 0.1_volt,  -0.1_volt, 600_msec  },
                   { -0.2_volt, 0.2_volt,  1000_msec },
                   { 0.3_volt,  -0.3_volt, 1000_msec },
@@ -201,6 +201,8 @@ void angular_kv_ks_tuner(bool use_measured_voltage = false,
                   { 0.5_volt,  -0.5_volt, 1000_msec },
                   { -0.6_volt, 0.6_volt,  1000_msec },
                   { 0.7_volt,  -0.7_volt, 1000_msec },
+                  { -0.8_volt, 0.8_volt,  1300_msec },
+                  { 0.9_volt, -0.9_volt,  1300_msec },
     },
                 use_measured_voltage,
                 steady_state_time,
@@ -211,8 +213,8 @@ void linear_raw_ka_tuner(lyfast::KvUnits<LinearVelocity> left_Kv,
                          lyfast::KsUnits left_Ks,
                          lyfast::KvUnits<LinearVelocity> right_Kv,
                          lyfast::KsUnits right_Ks,
-                         bool use_measured_voltage = false,
-                         Time delta_time = 10_msec) {
+                         bool use_measured_voltage,
+                         Time delta_time) {
     std::vector<lyfast::sysid::DifferentialVoltageCommand>
       mixed_voltage_commands = {
           // linear movements
@@ -246,8 +248,8 @@ void angular_raw_ka_tuner(lyfast::KvUnits<LinearVelocity> left_Kv,
                           lyfast::KsUnits left_Ks,
                           lyfast::KvUnits<LinearVelocity> right_Kv,
                           lyfast::KsUnits right_Ks,
-                          bool use_measured_voltage = false,
-                          Time delta_time = 10_msec) {
+                          bool use_measured_voltage,
+                          Time delta_time) {
     std::vector<lyfast::sysid::DifferentialVoltageCommand>
       mixed_voltage_commands = {
           { 0.5_volt,  -0.5_volt, 500_msec },

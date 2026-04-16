@@ -32,7 +32,7 @@ void pre_auton() {
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
 
-    intake::setAutonColorSort(false);
+    // intake::setAutonColorSort(false);
 }
 
 void matchload(double sign_x, double sign_y, Time matchload_time) {

@@ -31,7 +31,7 @@ int8_t right_front = 17;
 int8_t right_middle = 18;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
 // bool custom_particling = false;
 
@@ -42,7 +42,7 @@ pros::MotorGroup right_motors({ right_front, right_middle, right_back }, pros::M
 // inertial sensor
 // vexmaps::ScaledIMU imu(17, (360.0 + 3.57) / 360.0);
 // vexmaps::ScaledIMU imu(11, 361.568120941 / 360.0);
-vexmaps::ScaledIMU imu(20, (360.0 + 1.5) / 360.0);
+vexmaps::ScaledIMU imu(16, 360.0 / (359.5));
 // vexmaps::ScaledIMU imu(15, (360.0 + 1.0) / 360.0);
 // vexmaps::ScaledIMU imu(11, 360.0 / 359.0);
 
@@ -56,7 +56,7 @@ pros::Motor
 pros::Motor
   lever_motor(-2, pros::MotorGears::green, pros::MotorEncoderUnits::rotations);
 
-pros::Optical lower_intake_color_sensor(6);
+pros::Optical lower_intake_color_sensor(9);
 pros::Optical upper_intake_color_sensor(21);
 
 // pistons
@@ -74,37 +74,37 @@ pros::adi::DigitalOut bottom_intake_piston('A', false);
 
 // odom rotation sensors
 // pros::Rotation forwards_odom_rotation(-20);
-pros::Rotation forwards_odom_rotation(-13);
-pros::Rotation sideways_odom_rotation(18);
+pros::Rotation forwards_odom_rotation(15);
+pros::Rotation sideways_odom_rotation(21);
 
 // particle filter distance sensors
-pros::Distance front_distance(4);
-pros::Distance back_distance(8);
+pros::Distance front_distance(6);
+pros::Distance back_distance(5);
 pros::Distance left_distance(3);
-pros::Distance right_distance(10);
+pros::Distance right_distance(7);
 
 // cor + cor_offsets = geometric
 units::V2Position odom_cor_offsets = { 0.0_in, 0_in };
 
 // geometric -> cor
-units::V2Position dist_cor_offsets = { 0.5_in, 0_in };
+units::V2Position dist_cor_offsets = { 0.0_in, 0_in };
 
 constexpr units::Pose distToCor(units::Pose dist_pose) {
     return { dist_pose - dist_cor_offsets, dist_pose.orientation };
 }
 
 // distance sensor offsets
+
+// = 6.3125
+auto offset_c = (12.625_in / 2);
+
 units::Pose front_distance_offsets =
-  distToCor({ 4_in, +(12.5_in / 2) - 2.25_in, 0_stDeg });
-
+  distToCor({ 6.3_in, -offset_c + 3.0_in, 0_stDeg });
 units::Pose left_distance_offsets =
-  distToCor({ 1.0_in, +(12.5_in / 2) - 2.25_in, 90_stDeg });
-
-units::Pose back_distance_offsets =
-  distToCor({ -1.75_in, -(12.5_in / 2) + 2.9_in, 180_stDeg });
-
+  distToCor({ -0.75_in, +offset_c - 2.25_in, 90_stDeg });
+units::Pose back_distance_offsets = distToCor({ -4.5_in, 1.5_in, 180_stDeg });
 units::Pose right_distance_offsets =
-  distToCor({ 1.0_in, -(12.5_in / 2) + 2.25_in, 270_stDeg });
+  distToCor({ -0.75_in, -offset_c + 2.25_in, 270_stDeg });
 
 // sunlight: 0.967078567542
 // no sunlight: 0.973046024541
@@ -145,8 +145,8 @@ tracker_config_t sideways_tracker_config = {
 /* drivetrain / pid configuration */
 
 // NOTE: remember to update every time the drivetrain changes!
-drivetrain_config_t drivetrain_config { .track_width = 10.5_in,
-                                        .track_radius = 10.5_in * 0.5,
+drivetrain_config_t drivetrain_config { .track_width = 10.3_in,
+                                        .track_radius = 10.3_in * 0.5,
                                         .wheel_diameter = 3.25_in,
                                         .rpm = 450_rpm,
                                         .max_velocity = 76_inps,
@@ -349,8 +349,8 @@ ArcOdomTracker tracker(
   // forward trackers
   { &forwards_tracker, &left_motor_tracker, &right_motor_tracker },
   // sideways trackers
-  { &sideways_tracker },
-  // {},
+  // { &sideways_tracker },
+  {},
   // imus
   { &imu_tracker },
   odom_cor_offsets);
@@ -389,43 +389,70 @@ PIDAngularController angular_pid_controller(turn_drive_pid);
 
 lyfast::DifferentialVelocityControllerParams vel_controller_params {
 	.linear = {
-		// TODO: recalc angular?
 		// .left_Kv = 0.46 * volt / mps,
-		.left_Kv = 0.46 * volt / mps,
+		.left_Kv = 0.410935 * volt / mps,
 		.left_Ka = 0.09 * volt / mps2,
-		.left_low_target_Kv = 0.4 * volt / mps,
+		.left_Ks = 0.059023 * volt, // subtract to allow settling?
+		.left_low_target_Kv = 0.37 * volt / mps,
 		.left_low_target_Ka = 0.04 * volt / mps2,
-		// .left_Ks = 0.08 * volt,
-		.left_Ks = 0.04 * volt,
-
-		// .right_Kv = 0.49 * volt / mps,
-		.right_Kv = 0.47 * volt / mps,
+		.left_low_target_Ks = (0.059023 - 0.02) * volt, // subtract to allow settling
+		//
+		.right_Kv = 0.411732 * volt / mps,
 		.right_Ka = 0.09 * volt / mps2,
-		.right_low_target_Kv = 0.4 * volt / mps,
+		.right_Ks = 0.0639167 * volt,
+		.right_low_target_Kv = 0.37 * volt / mps,
 		.right_low_target_Ka = 0.04 * volt / mps2,
-		// .right_Ks = 0.08 * volt,
-		.right_Ks = 0.04 * volt,
-
+		.right_low_target_Ks = (0.0639167 - 0.02) * volt, // subtract to allow settling
 		.Ka_delta_time = 20_msec,
-		.low_target_threshold = 20_inps
+		.low_target_vel_threshold = 20_inps,
+		// TODO: tune
+		.low_target_accel_threshold = 2000_inps2
 	},
 	.angular = {
-		.left_Kv = 0.90 * volt / mps,
+		// closer to 0.49 if using linear ks
+		// .left_Kv = 0.50 * volt / mps,
+		.left_Kv = 0.67 * volt / mps,
 		// .left_Ka = 0.11 * volt / mps2,
-		.left_Ka = 0.07 * volt / mps2,
-		.left_low_target_Kv = 0.5 * volt / mps,
-		.left_low_target_Ka = 0.0 * volt / mps2,
+		.left_Ka = 0.09 * volt / mps2,
 		.left_Ks = 0.08 * volt,
 
-		.right_Kv = 0.90 * volt / mps,
+		.left_low_target_Kv = 0.5 * volt / mps,
+		.left_low_target_Ka = 0.03 * volt / mps2,
+		.left_low_target_Ks = (0.08 - 0.02) * volt,
+
+		// closer to 0.495 if using linear ks
+		// .right_Kv = 0.50 * volt / mps,
+		.right_Kv = 0.67 * volt / mps,
 		// .right_Ka = 0.11 * volt / mps2,
-		.right_Ka = 0.07 * volt / mps2,
+		.right_Ka = 0.09 * volt / mps2,
+		.right_Ks = 0.0984043 * volt,
+
 		.right_low_target_Kv = 0.5 * volt / mps,
-		.right_low_target_Ka = 0.0 * volt / mps2,
-		.right_Ks = 0.08 * volt,
+		.right_low_target_Ka = 0.03 * volt / mps2,
+		.right_low_target_Ks = (0.08 - 0.02) * volt,
+
+		// .left_Kv = 0.855 * volt / mps,
+		// // .left_Ka = 0.11 * volt / mps2,
+		// .left_Ka = 0.07 * volt / mps2,
+		// .left_Ks = 0.08 * volt,
+		// .left_low_target_Kv = 0.5 * volt / mps,
+		// .left_low_target_Ka = 0.0 * volt / mps2,
+		// .left_low_target_Ks = 0.08 * volt,
+		//
+		// .right_Kv = 0.90 * volt / mps,
+		// // .right_Ka = 0.11 * volt / mps2,
+		// .right_Ka = 0.07 * volt / mps2,
+		// .right_Ks = 0.08 * volt,
+		// .right_low_target_Kv = 0.5 * volt / mps,
+		// .right_low_target_Ka = 0.0 * volt / mps2,
+		// .right_low_target_Ks = 0.08 * volt,
 
 		.Ka_delta_time = 20_msec,
-		.low_target_threshold = 2_inps
+		// TODO: tune
+		.low_target_vel_threshold = 2_inps,
+		// TODO: tune
+		// .low_target_accel_threshold = 80_inps2
+		.low_target_accel_threshold = 0_inps2,
 	},
 	.linear_pid = {
 		.left_Kp = 0.5 * volt / mps,
@@ -478,29 +505,29 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		// .right_tbh_factor =  1.0,
 	},
 	.angular_pid = {
-		// .left_Kp = 1.5 * volt / mps,
-		// .left_Kp_close = 0.0 * volt / mps,
-		// .left_Kp_low = 0.0 * volt / mps,
-		// .left_low_threshold = 10_inps,
-		// .left_close_threshold = 0_inps,
-		// // .left_Ki = 1.5 * volt / m,
-		// .left_Ki = 0.0 * volt / m,
-		// .left_Ki_windup = 12_inps,
-		// //
-		// .left_max_output =  1_volt,
-		// .left_tbh_factor =  1.0,
+		.left_Kp = 0.5 * volt / mps,
+		.left_Kp_close = 0.0 * volt / mps,
+		.left_Kp_low = 0.0 * volt / mps,
+		.left_low_threshold = 10_inps,
+		.left_close_threshold = 0_inps,
+		// .left_Ki = 1.5 * volt / m,
+		.left_Ki = 0.0 * volt / m,
+		.left_Ki_windup = 12_inps,
 		//
-		// .right_Kp = 1.5 * volt / mps,
-		// .right_Kp_close = 0.0 * volt / mps,
-		// .right_Kp_low = 0.0 * volt / mps,
-		// .right_low_threshold = 10_inps,
-		// .right_close_threshold = 0_inps,
-		// // .right_Ki = 1.5 * volt / m,
-		// .right_Ki = 0.0 * volt / m,
-		// .right_Ki_windup = 12_inps,
-		//
-		// .right_max_output =  1_volt,
-		// .right_tbh_factor =  1.0,
+		.left_max_output =  1_volt,
+		.left_tbh_factor =  1.0,
+
+		.right_Kp = 0.5 * volt / mps,
+		.right_Kp_close = 0.0 * volt / mps,
+		.right_Kp_low = 0.0 * volt / mps,
+		.right_low_threshold = 10_inps,
+		.right_close_threshold = 0_inps,
+		// .right_Ki = 1.5 * volt / m,
+		.right_Ki = 0.0 * volt / m,
+		.right_Ki_windup = 12_inps,
+
+		.right_max_output =  1_volt,
+		.right_tbh_factor =  1.0,
 	}
 };
 lyfast::DifferentialVelocityController vel_controller {
@@ -512,7 +539,7 @@ lyfast::DifferentialVelocityController vel_controller {
 
 // mp feedback
 lyfast::mpFeedback<Length>
-  linear_mp_feedback(70_inps, 110_inps2, 0.3_in, 0.05_inps / 0.20_in);
+  linear_mp_feedback(70_inps, 150_inps2, 0.3_in, 0.05_inps / 0.20_in);
 
 LinearVelocityFeedbackController<decltype(linear_mp_feedback)>
   linear_mp_feedback_controller(linear_mp_feedback);
@@ -535,9 +562,9 @@ PID<Angle, AngularVelocity> linear_angular_vel_pid(
   1_radps);
 
 PID<Angle, AngularVelocity>
-  turn_heading_vel_pid(10.100,
+  turn_heading_vel_pid(11.200,
                        0.0,
-                       0.600,
+                       4.900,
                        to_stRad(10_stDeg),
                        to_radps(drivetrain_config.max_angular_velocity),
                        std::nullopt, // derivative alpha
@@ -557,7 +584,7 @@ AngularVelocityClampController angular_vel_clamp_controller {};
 
 // path following stuff //
 
-std::array<float, 3> Q { (40_in).internal(),
+std::array<float, 3> Q { (30_in).internal(),
                          // (6_in).internal(),
                          // (5_in).internal(),
                          (8_in).internal(),
@@ -753,7 +780,7 @@ vexmaps::VerticalOdometryTracker
 
 // if the tracker is not installed the list can be left empty -> tracker = {};
 std::initializer_list<HorizontalOdometryTracker*> horizontal_trackers = {
-    &horizontal_tracker
+    // &horizontal_tracker
 };
 std::initializer_list<VerticalOdometryTracker*> vertical_trackers = {
     &vertical_tracker

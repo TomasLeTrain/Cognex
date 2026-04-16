@@ -59,11 +59,15 @@ struct FeedforwardVelocityControllerParams {
     KvUnits<VelUnit> Kv;
     KaUnits<VelUnit> Ka;
     Voltage Ks;
-    Time Ka_delta_time;
 
     KvUnits<VelUnit> low_target_Kv { 0 };
     KaUnits<VelUnit> low_target_Ka { 0 };
-    VelUnit low_target_threshold { 0 };
+    Voltage low_target_Ks { 0 };
+
+    VelUnit low_target_vel_threshold { 0 };
+    Divided<VelUnit, Time> low_target_accel_threshold { 0 };
+
+    Time Ka_delta_time;
 };
 
 template<typename VelUnit>
@@ -89,6 +93,8 @@ class FeedforwardVelocityController {
     VelUnit m_target_velocity { 0 };
     AccelT m_target_acceleration { 0 };
 
+    Voltage current_Ks { 0 };
+
   public:
     void setTarget(VelUnit target_velocity, AccelT target_acceleration) {
         m_target_velocity = target_velocity;
@@ -104,10 +110,14 @@ class FeedforwardVelocityController {
     Voltage updateKvKa() {
         KvUnits<VelUnit> kv = m_params.Kv;
         KaUnits<VelUnit> ka = m_params.Ka;
+        current_Ks = m_params.Ks;
 
-        if (units::abs(m_target_velocity) < m_params.low_target_threshold) {
+        if (units::abs(m_target_velocity) < m_params.low_target_vel_threshold &&
+            units::abs(m_target_acceleration) <
+              m_params.low_target_accel_threshold) {
             kv = m_params.low_target_Kv;
             ka = m_params.low_target_Ka;
+            current_Ks = m_params.low_target_Ks;
         }
 
         Voltage result { // kv
@@ -123,7 +133,7 @@ class FeedforwardVelocityController {
     // between
     Voltage applyKs(Voltage output) {
         // apply ks at the end
-        return output + units::sgn(output) * m_params.Ks;
+        return output + units::sgn(output) * current_Ks;
     }
 
     Voltage update() {
@@ -354,6 +364,11 @@ class DrivetrainSideVelocityController {
     Voltage update(TargetT measurement, Time duration) {
         Voltage u_linear = m_linear.updateKvKa();
         Voltage u_angular = m_angular.updateKvKa();
+
+		// apply ks for both?
+        // u_linear = m_linear.applyKs(u_linear);
+        // u_angular = m_linear.applyKs(u_angular);
+
         Voltage u_linear_feedback =
           m_linear_pid.unclampedUpdate(measurement.linear, duration);
         Voltage u_angular_feedback =
@@ -401,19 +416,22 @@ class DrivetrainSideVelocityController {
 struct FFLeftRightVelocityControllerParams {
     KvUnits<LinearVelocity> left_Kv;
     KaUnits<LinearVelocity> left_Ka;
+    KsUnits left_Ks;
     KvUnits<LinearVelocity> left_low_target_Kv { 0 };
     KaUnits<LinearVelocity> left_low_target_Ka { 0 };
-    KsUnits left_Ks;
+    Voltage left_low_target_Ks { 0 };
 
     KvUnits<LinearVelocity> right_Kv;
     KaUnits<LinearVelocity> right_Ka;
+    KsUnits right_Ks;
     KvUnits<LinearVelocity> right_low_target_Kv { 0 };
     KaUnits<LinearVelocity> right_low_target_Ka { 0 };
-    KsUnits right_Ks;
+    Voltage right_low_target_Ks { 0 };
 
     Time Ka_delta_time;
 
-    LinearVelocity low_target_threshold { 0 };
+    LinearVelocity low_target_vel_threshold { 0 };
+    LinearAcceleration low_target_accel_threshold { 0 };
 };
 
 struct PIDLeftRightVelocityControllerParams {
@@ -454,19 +472,23 @@ struct DifferentialVelocityControllerParams {
               .Kv = linear.left_Kv,
               .Ka = linear.left_Ka,
               .Ks = linear.left_Ks,
-              .Ka_delta_time = linear.Ka_delta_time,
               .low_target_Kv = linear.left_low_target_Kv,
               .low_target_Ka = linear.left_low_target_Ka,
-              .low_target_threshold = linear.low_target_threshold,
+              .low_target_Ks = linear.left_low_target_Ks,
+              .low_target_vel_threshold = linear.low_target_vel_threshold,
+              .low_target_accel_threshold = linear.low_target_accel_threshold,
+              .Ka_delta_time = linear.Ka_delta_time,
             }),
             FeedforwardVelocityController<LinearVelocity>({
               .Kv = angular.left_Kv,
               .Ka = angular.left_Ka,
               .Ks = angular.left_Ks,
-              .Ka_delta_time = angular.Ka_delta_time,
               .low_target_Kv = angular.left_low_target_Kv,
               .low_target_Ka = angular.left_low_target_Ka,
-              .low_target_threshold = angular.low_target_threshold,
+              .low_target_Ks = angular.left_low_target_Ks,
+              .low_target_vel_threshold = angular.low_target_vel_threshold,
+              .low_target_accel_threshold = angular.low_target_accel_threshold,
+              .Ka_delta_time = angular.Ka_delta_time,
             }),
             PIDVelocityController<LinearVelocity>({
               .Kp = linear_pid.left_Kp,
@@ -494,46 +516,52 @@ struct DifferentialVelocityControllerParams {
     }
 
     DrivetrainSideVelocityController constructRightController() {
-        return { FeedforwardVelocityController<LinearVelocity>({
-                   .Kv = linear.right_Kv,
-                   .Ka = linear.right_Ka,
-                   .Ks = linear.right_Ks,
-                   .Ka_delta_time = linear.Ka_delta_time,
-                   .low_target_Kv = linear.right_low_target_Kv,
-                   .low_target_Ka = linear.right_low_target_Ka,
-                   .low_target_threshold = linear.low_target_threshold,
-                 }),
-                 FeedforwardVelocityController<LinearVelocity>({
-                   .Kv = angular.right_Kv,
-                   .Ka = angular.right_Ka,
-                   .Ks = angular.right_Ks,
-                   .Ka_delta_time = angular.Ka_delta_time,
-                   .low_target_Kv = angular.right_low_target_Kv,
-                   .low_target_Ka = angular.right_low_target_Ka,
-                   .low_target_threshold = angular.low_target_threshold,
-                 }),
-                 PIDVelocityController<LinearVelocity>({
-                   .Kp = linear_pid.right_Kp,
-                   .Kp_close = linear_pid.right_Kp_close,
-                   .Kp_low = linear_pid.right_Kp_low,
-                   .low_threshold = linear_pid.right_low_threshold,
-                   .close_threshold = linear_pid.right_close_threshold,
-                   .Ki = linear_pid.right_Ki,
-                   .Ki_windup = linear_pid.right_Ki_windup,
-                   .max_output = linear_pid.right_max_output,
-                   .tbh_factor = linear_pid.right_tbh_factor,
-                 }),
-                 PIDVelocityController<LinearVelocity>({
-                   .Kp = angular_pid.right_Kp,
-                   .Kp_close = angular_pid.right_Kp_close,
-                   .Kp_low = angular_pid.right_Kp_low,
-                   .low_threshold = angular_pid.right_low_threshold,
-                   .close_threshold = angular_pid.right_close_threshold,
-                   .Ki = angular_pid.right_Ki,
-                   .Ki_windup = angular_pid.right_Ki_windup,
-                   .max_output = angular_pid.right_max_output,
-                   .tbh_factor = angular_pid.right_tbh_factor,
-                 }) };
+        return {
+            FeedforwardVelocityController<LinearVelocity>({
+              .Kv = linear.right_Kv,
+              .Ka = linear.right_Ka,
+              .Ks = linear.right_Ks,
+              .low_target_Kv = linear.right_low_target_Kv,
+              .low_target_Ka = linear.right_low_target_Ka,
+              .low_target_Ks = linear.right_low_target_Ks,
+              .low_target_vel_threshold = linear.low_target_vel_threshold,
+              .low_target_accel_threshold = linear.low_target_accel_threshold,
+              .Ka_delta_time = linear.Ka_delta_time,
+            }),
+            FeedforwardVelocityController<LinearVelocity>({
+              .Kv = angular.right_Kv,
+              .Ka = angular.right_Ka,
+              .Ks = angular.right_Ks,
+              .low_target_Kv = angular.right_low_target_Kv,
+              .low_target_Ka = angular.right_low_target_Ka,
+              .low_target_Ks = angular.right_low_target_Ks,
+              .low_target_vel_threshold = angular.low_target_vel_threshold,
+              .low_target_accel_threshold = angular.low_target_accel_threshold,
+              .Ka_delta_time = angular.Ka_delta_time,
+            }),
+            PIDVelocityController<LinearVelocity>({
+              .Kp = linear_pid.right_Kp,
+              .Kp_close = linear_pid.right_Kp_close,
+              .Kp_low = linear_pid.right_Kp_low,
+              .low_threshold = linear_pid.right_low_threshold,
+              .close_threshold = linear_pid.right_close_threshold,
+              .Ki = linear_pid.right_Ki,
+              .Ki_windup = linear_pid.right_Ki_windup,
+              .max_output = linear_pid.right_max_output,
+              .tbh_factor = linear_pid.right_tbh_factor,
+            }),
+            PIDVelocityController<LinearVelocity>({
+              .Kp = angular_pid.right_Kp,
+              .Kp_close = angular_pid.right_Kp_close,
+              .Kp_low = angular_pid.right_Kp_low,
+              .low_threshold = angular_pid.right_low_threshold,
+              .close_threshold = angular_pid.right_close_threshold,
+              .Ki = angular_pid.right_Ki,
+              .Ki_windup = angular_pid.right_Ki_windup,
+              .max_output = angular_pid.right_max_output,
+              .tbh_factor = angular_pid.right_tbh_factor,
+            })
+        };
     }
 };
 

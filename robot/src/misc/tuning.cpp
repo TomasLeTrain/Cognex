@@ -472,7 +472,7 @@ void drive_vel_pid_tuning() {
     Length target_distance_delta = 8_in;
 
     // Length target_lateral_distance = 2_in;
-    Length target_lateral_distance = 24_in;
+    Length target_lateral_distance = 0_in;
 
     double curr_kp =
       linear_angular_vel_pid.get_kp() / linear_angular_vel_pid.UKP;
@@ -483,6 +483,7 @@ void drive_vel_pid_tuning() {
 
     LinearAcceleration curr_accel_slew = 170_inps2;
     LinearAcceleration curr_max_accel = linear_mp_feedback.getMaxAccel();
+    // LinearAcceleration curr_max_accel = 3.81_mps	;
 
     // Number curr_k_lat = 0.0;
 
@@ -740,6 +741,7 @@ void turn_vel_pid_tuning() {
             .turn_vel_kp(curr_kp)
             .turn_vel_ki(curr_ki)
             .turn_vel_kd(curr_kd)
+            // .turn_vel_accelSlew(60_radps2)
             .timeout(3.0_sec) |
           run;
 
@@ -997,4 +999,124 @@ void long_goal_tuning() {
 
         pros::delay(10);
     }
+}
+
+namespace skills_paths {
+auto start_TO_in_red_park = line(-44.125, 0.039, -61.257, 0.363);
+auto in_red_park_TO_out_of_red = line(-61.257, 0.363, -44.365, 0);
+auto out_of_red_TO_get_blue_middle = line(-44.365, 0, -14.475, 8.582);
+auto get_blue_middle_TO_End_Control = line(-14.475, 8.582, -15.992, 15.457);
+auto End_Control_TO_score_middle = line(-15.992, 15.457, -13.179, 12.513);
+auto score_middle_TO_ull = line(-13.179, 12.513, -41.032, 46.515);
+auto ull_TO_uls = line(-41.032, 46.515, -30.06, 46.931);
+auto uls_TO_ulm = line(-30.06, 46.931, -57.173, 46.6);
+auto ulm_TO_url1 =
+  curve(-57.173, 46.6, -37.078, 46.6, -49.519, 65.882, 22.979, 59.5);
+auto url1_TO_urls = line(22.979, 59.5, 38.085, 46.543);
+auto urls_TO_urm = line(38.085, 46.543, 56.959, 46.195);
+auto urm_TO_urls2 = line(56.959, 46.195, 30.3, 46.442);
+auto urls2_TO_End_Control = line(30.3, 46.442, 36.735, 45.597);
+auto End_Control_TO_ur_cluster =
+  curve(36.735, 45.597, 38.483, 43.58, 35.403, 36.383, 30.449, 30.352);
+auto ur_cluster_TO_End_Control = line(30.449, 30.352, 34.897, 33.991);
+auto End_Control_TO_blue_park = line(34.897, 33.991, 44.859, -0.234);
+auto blue_park_TO_in_blue_park = line(44.859, -0.234, 61.945, -0.234);
+auto in_blue_park_TO_blue_park2 = line(61.945, -0.234, 45.304, 0);
+auto blue_park2_TO_go_bottom = line(45.304, 0, 22.754, 22.033);
+auto go_bottom_TO_bottom_score = line(22.754, 22.033, 11.967, 12.295);
+auto bottom_score_TO_back_bottom = line(11.967, 12.295, 16.594, 16.389);
+auto back_bottom_TO_dr_cluster = line(16.594, 16.389, 23.741, -23.427);
+auto dr_cluster_TO_drl = line(23.741, -23.427, 39.523, -46.844);
+auto drl_TO_drls = line(39.523, -46.844, 29.949, -47.059);
+auto drls_TO_drm = line(29.949, -47.059, 57.173, -46.6);
+auto drm_TO_dll =
+  curve(57.173, -46.6, 37.078, -46.6, 49.519, -65.882, -22.979, -59.5);
+auto dll_TO_dls = line(-22.979, -59.5, -35.563, -47.505);
+auto dls_TO_dlm = line(-35.563, -47.505, -56.502, -47.295);
+auto dlm_TO_dls2 = line(-56.502, -47.295, -30.812, -46.393);
+auto dls2_TO_ending =
+  curve(-30.812, -46.393, -56.961, -45.178, -62.556, -25.552, -62.556, -18.105);
+} // namespace skills_paths
+
+auto long_match_curve_top = skills_paths::ulm_TO_url1;
+auto long_match_curve_bottom = skills_paths::drm_TO_dll;
+auto park_curve = skills_paths::dls2_TO_ending;
+
+lyfast::mp::RobotConstraints robot_constraints(
+  drivetrain_config.track_width, // track with
+                                 // 0.05, // friction coeff - should tune?
+  1.00, // friction coeff - should tune?
+  3.25_in, // wheel diameter
+  389_rpm, // max ang vel - determined somewhat from data
+  6.7_kg, // about 14.8 lbs
+  // 1.36f); // motor count - determined somewhat from data
+  // 2.5f); // motor count - determined somewhat from data
+  3.0f); // motor count - determined somewhat from data
+
+lyfast::mp::LinearConstraints
+  linear_constraints(76_inps, // max vel - for testing
+                              // 20.0_inps2, // max accel - for testing
+                     10000.0_inps2, // max accel - for testing
+                     // 150_inps2 // max decel - for testing also
+                     200_inps2 // max decel - for testing also
+  );
+//
+// // TODO: what is the difference between angular accel/decel?
+// AngularConstraints
+// angular_constraints(2.0_radps, 1.3_radps2, 1.3_radps2);
+lyfast::mp::AngularConstraints angular_constraints(2.0_radps,
+                                                   // 1.3_radps2,
+                                                   // 1.3_radps2
+
+                                                   1.5_radps2,
+                                                   1.5_radps2);
+//
+lyfast::mp::Constraints
+  constraints(robot_constraints, linear_constraints, angular_constraints);
+
+std::shared_ptr<lyfast::mp::Trajectory>
+makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve,
+               LinearVelocity start_speed = 0_inps,
+               LinearVelocity end_speed = 0_inps) {
+    using namespace blazing::lyfast;
+    using namespace blazing::lyfast::geometry;
+    using namespace blazing::lyfast::mp;
+    //
+    // bool debug = true;
+    bool debug = true;
+
+    std::shared_ptr<Trajectory> trajectory(
+      new Trajectory(curve,
+                     constraints,
+                     {},
+                     {},
+                     // some initial velocity for it to move?
+                     // TODO: could there be a place on the curve that also has
+                     // a velof zero? if so this would also have the same issue?
+                     start_speed,
+                     end_speed,
+                     0.1_in,
+                     debug));
+    trajectoryDebugPrint(trajectory.get());
+
+    return trajectory;
+}
+
+auto pathFollow(std::shared_ptr<lyfast::mp::Trajectory> trajectory) {
+    auto motion = lyfast::PathFollow(controllers, vexmaps_chassis, trajectory);
+    std::ignore =
+      motion.lookahead(20_msec + drivetrain_config.input_delay).timeout(5_sec);
+    return motion;
+}
+
+auto pathFollow(std::shared_ptr<lyfast::geometry::Curve> curve) {
+    return pathFollow(makeTrajectory(curve));
+}
+
+void path_follow_tuning() {
+    // pf_model.setDisabled(true);
+    RobotSetPose({ long_match_curve_top->f(0),
+                   180_stDeg + long_match_curve_top->df(0).getAngle() });
+    pathFollow(makeTrajectory(long_match_curve_top, 2_inps, 0_inps)).reverse() |
+      run;
 }
