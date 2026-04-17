@@ -88,7 +88,17 @@ class turnToBase : public Motion<ControllersType,
         Time delta_time = deltaTime(state.last_time);
 
         const Angle heading = [&] -> Angle {
-            const Angle heading = this->tracker->getAngle();
+            Angle heading = this->tracker->getAngle();
+
+            auto [left_vel, right_vel] =
+              this->drivetrain->getDrivetrainVelocities();
+            // AngularVelocity derived_angular_vel =
+            //   toAngular((right_vel - left_vel), 10.4_in);
+            // Angle heading_delta = derived_angular_vel * 20_msec;
+            //
+            // // project heading 60 msec into future
+            // heading += heading_delta;
+
             return reversed ? reverseAngle(heading) : heading;
         }();
 
@@ -253,6 +263,7 @@ class turnToBase : public Motion<ControllersType,
 
                 auto [left_vel, right_vel] =
                   this->drivetrain->getDrivetrainVelocities();
+
                 auto [actual_volt_left, actual_volt_right] =
                   this->drivetrain->getDrivetrainVoltages();
 

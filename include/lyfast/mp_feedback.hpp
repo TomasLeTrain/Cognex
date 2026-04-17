@@ -15,25 +15,17 @@ class mpFeedback {
     VelT m_max_vel;
     AccelT m_max_accel;
 
-    Length decel_dist;
-
-    void compute() {
-        decel_dist = units::square(m_max_vel) / (2 * m_max_accel);
-    }
-
   public:
     mpFeedback(VelT max_vel, AccelT max_accel)
         : m_max_vel(max_vel),
-          m_max_accel(max_accel) {
-        compute();
-    }
+          m_max_accel(max_accel) {}
 
     VelT update(Input measurement, Input target, Time dt) {
-        Input error = target - measurement;
+        const Input error = target - measurement;
 
-        Length decel_dist = units::square(m_max_vel) / (2 * m_max_accel);
+        const Input decel_dist = units::square(m_max_vel) / (2 * m_max_accel);
 
-        if (error > decel_dist) {
+        if (units::abs(error) > decel_dist) {
             return m_max_vel;
         } else {
             Exponentiated<VelT, std::ratio<2>> vi2 = units::square(m_max_vel);
@@ -47,14 +39,10 @@ class mpFeedback {
 
     void setMaxVel(VelT max_vel) {
         m_max_vel = max_vel;
-        // recompute after changing property
-        compute();
     }
 
     void setMaxAccel(AccelT max_accel) {
         m_max_accel = max_accel;
-        // recompute after changing property
-        compute();
     }
 
     VelT getMaxVel() {

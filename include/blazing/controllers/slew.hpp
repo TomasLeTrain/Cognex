@@ -70,6 +70,22 @@ class SlewController {
           process_parameter(backwards_decel_slew, targeted_delta_time);
     }
 
+	std::optional<slew_t> get_accel() {
+        return this->accel_slew;
+    }
+
+    std::optional<slew_t> get_backwards_accel() {
+        return this->backwards_accel_slew;
+    }
+
+    std::optional<slew_t> get_decel() {
+        return this->decel_slew;
+    }
+
+    std::optional<slew_t> get_backwards_decel() {
+        return this->backwards_decel_slew;
+    }
+
     // output should be signed, indicating its direction of travel
     T apply(T output, Time delta_time) {
         if (!last_output) {

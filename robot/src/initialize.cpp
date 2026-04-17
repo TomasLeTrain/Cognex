@@ -70,7 +70,8 @@ void timeCriticalTask() {
                 // TODO: chopped since its not guarnteed to have updated ->
                 // might introduce input delay
                 LinearVelocity forwards_velocity =
-                  model_manager.getLocalVelocityVector().x;
+                  // model_manager.getLocalVelocityVector().x;
+                  tracker.getLocalVelocityVector().x;
 
                 // not using forwards velocity since its offset is not
                 // guaranteed to be zero
@@ -244,8 +245,8 @@ void initialize() {
         std::ignore =
           turnTo
             ->velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // specifically uses turn heading pid instead of drive pid
+            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
             .timeout(3_sec);
     });
 
@@ -253,8 +254,8 @@ void initialize() {
         std::ignore =
           arc
             ->velocity_based(true)
-            // speecifically uses turn heading pid instead of drive pid
-            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // specifically uses turn heading pid instead of drive pid
+            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
             .timeout(3_sec);
     });
 

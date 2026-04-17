@@ -266,12 +266,14 @@ AngularVelocity LeverVelocityProfile::velocity(float theta) {
 std::optional<DiscreteLeverState> LeverVelocityProfile::finished(float theta) {
     if (theta >= 0.95) {
         return going_up;
-    }else{
-		return std::nullopt;
-	}
+    } else {
+        return std::nullopt;
+    }
 }
 
-std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile> m_target;
+// make sure lever resets at the beginning of program
+std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile>
+  m_target = DiscreteLeverState::going_down;
 
 // lever_position = motor_position * position_to_theta_mult
 

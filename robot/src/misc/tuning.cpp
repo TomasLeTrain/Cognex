@@ -472,7 +472,7 @@ void drive_vel_pid_tuning() {
     Length target_distance_delta = 8_in;
 
     // Length target_lateral_distance = 2_in;
-    Length target_lateral_distance = 0_in;
+    Length target_lateral_distance = 24_in;
 
     double curr_kp =
       linear_angular_vel_pid.get_kp() / linear_angular_vel_pid.UKP;
@@ -481,7 +481,10 @@ void drive_vel_pid_tuning() {
     double curr_kd =
       linear_angular_vel_pid.get_kd() / linear_angular_vel_pid.UKD;
 
-    LinearAcceleration curr_accel_slew = 170_inps2;
+    // LinearAcceleration curr_accel_slew = 170_inps2;
+    LinearAcceleration curr_accel_slew =
+      linear_vel_slew_controller.linear_velocity_slew.get_accel().value_or(
+        1000_inps2);
     LinearAcceleration curr_max_accel = linear_mp_feedback.getMaxAccel();
     // LinearAcceleration curr_max_accel = 3.81_mps	;
 
@@ -741,7 +744,12 @@ void turn_vel_pid_tuning() {
             .turn_vel_kp(curr_kp)
             .turn_vel_ki(curr_ki)
             .turn_vel_kd(curr_kd)
+
+            // increased kp to 8.60000
+            // increased kd to 3.70000
+            // .turn_vel_maxVel(6_radps)
             // .turn_vel_accelSlew(60_radps2)
+
             .timeout(3.0_sec) |
           run;
 
