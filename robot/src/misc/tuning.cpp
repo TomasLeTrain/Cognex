@@ -535,9 +535,9 @@ void drive_vel_pid_tuning() {
                 // .lateral_vel_ki(curr_ki)
                 // .lateral_vel_kd(curr_kd)
 
-                .turn_vel_kp(curr_kp)
-                .turn_vel_ki(curr_ki)
-                .turn_vel_kd(curr_kd)
+                // .turn_vel_kp(curr_kp)
+                // .turn_vel_ki(curr_ki)
+                // .turn_vel_kd(curr_kd)
                 .timeout(3.3_sec)
 
                 //
@@ -558,9 +558,9 @@ void drive_vel_pid_tuning() {
                 // .turn_vel_ki(0)
                 // .turn_vel_kd(0)
 
-                .turn_vel_kp(curr_kp)
-                .turn_vel_ki(curr_ki)
-                .turn_vel_kd(curr_kd)
+                // .turn_vel_kp(curr_kp)
+                // .turn_vel_ki(curr_ki)
+                // .turn_vel_kd(curr_kd)
 
                 // .lateral_vel_kp(curr_kp)
                 // .lateral_vel_ki(curr_ki)
@@ -741,9 +741,9 @@ void turn_vel_pid_tuning() {
             // .turn_vel_maxVel(200_degps)
             // .direction(AngularDirection::RIGHT)
             // .radius(-10.5_in)
-            .turn_vel_kp(curr_kp)
-            .turn_vel_ki(curr_ki)
-            .turn_vel_kd(curr_kd)
+            // .turn_vel_kp(curr_kp)
+            // .turn_vel_ki(curr_ki)
+            // .turn_vel_kd(curr_kd)
 
             // increased kp to 8.60000
             // increased kd to 3.70000

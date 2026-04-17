@@ -246,7 +246,7 @@ void initialize() {
           turnTo
             ->velocity_based(true)
             // specifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
             .timeout(3_sec);
     });
 
@@ -255,7 +255,7 @@ void initialize() {
           arc
             ->velocity_based(true)
             // specifically uses turn heading pid instead of drive pid
-            .withAngularVelocityFeedbackController(turn_heading_vel_pid)
+            // .withAngularVelocityFeedbackController(turn_heading_vel_pid)
             .timeout(3_sec);
     });
 

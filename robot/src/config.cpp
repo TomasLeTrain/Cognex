@@ -547,7 +547,7 @@ lyfast::DifferentialVelocityController vel_controller {
 
 // mp feedback
 lyfast::mpFeedback<Length>
-  linear_mp_feedback(70_inps, 140_inps2, 0.3_in, 0.05_inps / 0.20_in);
+  linear_mp_feedback(70_inps, 140_inps2, 0.3_in, 0.05_inps / 0.20_in, 0_msec);
 
 LinearVelocityFeedbackController<decltype(linear_mp_feedback)>
   linear_mp_feedback_controller(linear_mp_feedback);
@@ -585,10 +585,18 @@ PID<Angle, AngularVelocity>
                        1_stRad,
                        1_radps);
 
+lyfast::mpFeedback<Angle> angular_mp_feedback(6_radps,
+                                              50_radps2,
+                                              0.0_stRad,
+                                              0.00_radps / 0.20_stRad,
+                                              60_msec);
+
 // start angular velocity stuff
 // PIDAngularVelocityController
 // angular_vel_pid_controller(linear_angular_vel_pid);
 PIDAngularVelocityController angular_vel_pid_controller(linear_angular_vel_pid);
+AngularVelocityFeedbackController<decltype(angular_mp_feedback)>
+  angular_vel_mp_controller(angular_mp_feedback);
 
 AngularVelocitySlewController angular_vel_slew_controller { 60_radps2 };
 AngularVelocityClampController angular_vel_clamp_controller {};
@@ -645,7 +653,8 @@ GlobalControllersT controllers(
   linear_vel_clamp_controller,
 
   // angular velocity controllers
-  angular_vel_pid_controller,
+  // angular_vel_pid_controller,
+  angular_vel_mp_controller,
   angular_vel_slew_controller,
   angular_vel_clamp_controller,
 

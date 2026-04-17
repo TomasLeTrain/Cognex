@@ -71,8 +71,12 @@ extern LinearVelocityClampController linear_vel_clamp_controller;
 // start angular velocity stuff //
 extern PID<Angle, AngularVelocity> linear_angular_vel_pid;
 extern PID<Angle, AngularVelocity> turn_heading_vel_pid;
+extern lyfast::mpFeedback<Angle> angular_mp_feedback;
 
 extern PIDAngularVelocityController angular_vel_pid_controller;
+
+extern AngularVelocityFeedbackController<decltype(angular_mp_feedback)>
+  angular_vel_mp_controller;
 
 extern AngularVelocitySlewController angular_vel_slew_controller;
 extern AngularVelocityClampController angular_vel_clamp_controller;
@@ -97,7 +101,8 @@ using GlobalControllersT = Controllers<decltype(linear_pid_controller),
                                        decltype(linear_vel_slew_controller),
                                        decltype(linear_vel_clamp_controller),
 
-                                       decltype(angular_vel_pid_controller),
+                                       // decltype(angular_vel_pid_controller),
+                                       decltype(angular_vel_mp_controller),
                                        decltype(angular_vel_slew_controller),
                                        decltype(angular_vel_clamp_controller),
 
