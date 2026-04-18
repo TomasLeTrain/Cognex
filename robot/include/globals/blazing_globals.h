@@ -101,8 +101,8 @@ using GlobalControllersT = Controllers<decltype(linear_pid_controller),
                                        decltype(linear_vel_slew_controller),
                                        decltype(linear_vel_clamp_controller),
 
-                                       // decltype(angular_vel_pid_controller),
-                                       decltype(angular_vel_mp_controller),
+                                       decltype(angular_vel_pid_controller),
+                                       // decltype(angular_vel_mp_controller),
                                        decltype(angular_vel_slew_controller),
                                        decltype(angular_vel_clamp_controller),
 

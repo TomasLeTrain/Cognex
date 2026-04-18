@@ -417,7 +417,8 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		// .left_Kv = 0.50 * volt / mps,
 		.left_Kv = 0.67 * volt / mps,
 		// .left_Ka = 0.11 * volt / mps2,
-		.left_Ka = 0.09 * volt / mps2,
+		// .left_Ka = 0.09 * volt / mps2,
+		.left_Ka = 0.03 * volt / mps2,
 		.left_Ks = 0.08 * volt,
 
 		.left_low_target_Kv = 0.5 * volt / mps,
@@ -428,7 +429,8 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		// .right_Kv = 0.50 * volt / mps,
 		.right_Kv = 0.69 * volt / mps,
 		// .right_Ka = 0.11 * volt / mps2,
-		.right_Ka = 0.09 * volt / mps2,
+		// .right_Ka = 0.09 * volt / mps2,
+		.right_Ka = 0.03 * volt / mps2,
 		.right_Ks = 0.0984043 * volt,
 
 		.right_low_target_Kv = 0.5 * volt / mps,
@@ -459,7 +461,7 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		.low_target_accel_threshold = 0_inps2,
 	},
 	.linear_pid = {
-		.left_Kp = 0.5 * volt / mps,
+		.left_Kp = 0.55 * volt / mps,
 		.left_Kp_close = 0.0 * volt / mps,
 		.left_Kp_low = 0.0 * volt / mps,
 		.left_low_threshold = 7_inps,
@@ -471,7 +473,7 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		.left_max_output =  1_volt,
 		.left_tbh_factor =  1.0,
 
-		.right_Kp = 0.5 * volt / mps,
+		.right_Kp = 0.55 * volt / mps,
 		.right_Kp_close = 0.0 * volt / mps,
 		.right_Kp_low = 0.0 * volt / mps,
 		.right_low_threshold = 7_inps,
@@ -573,10 +575,11 @@ PID<Angle, AngularVelocity> linear_angular_vel_pid(
 // increased kp to 8.60000
 // increased kd to 3.70000
 PID<Angle, AngularVelocity>
-  turn_heading_vel_pid(8.600,
+  turn_heading_vel_pid(8.100,
                        0.0,
                        // 3.700,
-                       0.000,
+                       7.200,
+					   // closer to 9.3 for optimal 180
                        to_stRad(10_stDeg),
                        // to_radps(drivetrain_config.max_angular_velocity),
                        to_radps(6_radps), // max vel
@@ -585,11 +588,11 @@ PID<Angle, AngularVelocity>
                        1_stRad,
                        1_radps);
 
-lyfast::mpFeedback<Angle> angular_mp_feedback(6_radps,
-                                              50_radps2,
-                                              0.0_stRad,
-                                              0.00_radps / 0.20_stRad,
-                                              60_msec);
+// lyfast::mpFeedback<Angle> angular_mp_feedback(7.5_radps,
+//                                               40_radps2,
+//                                               3.0_stDeg,
+//                                               0.300_radps / 3.00_stRad,
+//                                               20_msec);
 
 // start angular velocity stuff
 // PIDAngularVelocityController
@@ -598,7 +601,8 @@ PIDAngularVelocityController angular_vel_pid_controller(linear_angular_vel_pid);
 AngularVelocityFeedbackController<decltype(angular_mp_feedback)>
   angular_vel_mp_controller(angular_mp_feedback);
 
-AngularVelocitySlewController angular_vel_slew_controller { 60_radps2 };
+// AngularVelocitySlewController angular_vel_slew_controller { 30_radps2 };
+AngularVelocitySlewController angular_vel_slew_controller { };
 AngularVelocityClampController angular_vel_clamp_controller {};
 
 // end angular velocity stuff //
@@ -653,8 +657,8 @@ GlobalControllersT controllers(
   linear_vel_clamp_controller,
 
   // angular velocity controllers
-  // angular_vel_pid_controller,
-  angular_vel_mp_controller,
+  angular_vel_pid_controller,
+  // angular_vel_mp_controller,
   angular_vel_slew_controller,
   angular_vel_clamp_controller,
 
