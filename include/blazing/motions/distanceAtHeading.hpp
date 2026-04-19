@@ -250,8 +250,13 @@ class distanceAtHeading
 
                 DifferentialSpeeds target { linear_vel, angular_vel };
 
-                this->drivetrain->moveArcade(target.linear_velocity,
-                                             target.angular_velocity);
+                this->drivetrain->moveArcade(
+                  target.linear_velocity,
+                  target.angular_velocity,
+                  TargetFeedType { .feedforward = true,
+                                   .feedback = true,
+                                   .ff_zero_angular_accel = true });
+
                 return result;
 
                 // pass velocities into feedforward

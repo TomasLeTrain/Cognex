@@ -351,7 +351,12 @@ class DrivetrainSideVelocityController {
         // LinearVelocity v_target = target.linear + target.angular;
         if (feed_type.feedforward) {
             m_linear.setTarget(target.linear);
-            m_angular.setTarget(target.angular);
+            if (feed_type.ff_zero_angular_accel) {
+                // zero acceleration component for angular the angular
+                m_angular.setTarget(target.angular, 0_mps2);
+            } else {
+                m_angular.setTarget(target.angular);
+            }
         }
         if (feed_type.feedback) {
             m_linear_pid.setTarget(target.linear);
@@ -365,7 +370,7 @@ class DrivetrainSideVelocityController {
         Voltage u_linear = m_linear.updateKvKa();
         Voltage u_angular = m_angular.updateKvKa();
 
-		// apply ks for both?
+        // apply ks for both?
         // u_linear = m_linear.applyKs(u_linear);
         // u_angular = m_linear.applyKs(u_angular);
 

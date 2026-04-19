@@ -7,6 +7,8 @@
 #include "units/Vector2D.hpp"
 #include "vexmaps/mcl/distance_model.hpp"
 #include <cmath>
+#include <functional>
+#include <optional>
 
 // defaults
 alliance_t auto_alliance = alliance_t::unset;
@@ -146,6 +148,22 @@ closeEnough(double target_x, double target_y, double threshold) {
     return closeEnough({ target_x * in, target_y * in }, threshold * in);
 }
 
+// returns true of exit triggered, false if timeout triggered
+bool exitOrTimeout(std::function<bool()> exit_condition,
+                   std::optional<Time> timeout) {
+    bool exit_done, timeout_done;
+
+    auto start_time = now();
+
+    while (true) {
+        exit_done = exit_condition();
+        timeout_done = timeoutDone(timeout, start_time);
+        if (exit_done || timeout_done) break;
+        pros::delay(10);
+    }
+    return exit_done;
+}
+
 std::shared_ptr<lyfast::geometry::Line>
 line(float x0, float y0, float x1, float y1) {
     return std::make_shared<lyfast::geometry::Line>(
@@ -168,10 +186,8 @@ std::shared_ptr<lyfast::geometry::CubicBezier> curve(float x0,
       units::V2FPosition { from_in(x3), from_in(y3) });
 }
 
-
-
-std::shared_ptr<lyfast::geometry::Spline> spline(
-  const std::vector<std::shared_ptr<lyfast::geometry::Curve>>& curves) {
+std::shared_ptr<lyfast::geometry::Spline>
+spline(const std::vector<std::shared_ptr<lyfast::geometry::Curve>>& curves) {
     return std::shared_ptr<lyfast::geometry::Spline> {
         new lyfast::geometry::Spline(curves)
     };

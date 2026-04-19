@@ -40,17 +40,16 @@ class mpFeedback {
 
         const Exponentiated<VelT, std::ratio<2>> vi2 = units::square(m_max_vel);
         const AccelT a2 = 2 * m_max_accel;
-
         const Input decel_dist = vi2 / a2;
 
         const Input dx = decel_dist - error;
         const Exponentiated<VelT, std::ratio<2>> diff = vi2 - a2 * dx;
         const VelT abs_target_vel = units::sqrt(units::abs(diff));
 
-        const Time t = (m_max_vel - abs_target_vel) / m_max_accel;
+        // const Time t = (m_max_vel - abs_target_vel) / m_max_accel;
 
         // time at which error = 0
-        const Time max_t = m_max_vel / m_max_accel;
+        // const Time max_t = m_max_vel / m_max_accel;
 
         if (abs_error < m_low_threshold_error) {
             // error is already signed
@@ -58,9 +57,12 @@ class mpFeedback {
         } else if (abs_error >= decel_dist) {
             return m_max_vel * error_sgn;
         } else {
-            const Time projected_t = units::min(t + m_input_delay, max_t);
+            // const Time projected_t = units::min(t + m_input_delay, max_t);
             // guaranteed to be positive since projected_t is capped
-            const VelT projected_vel = m_max_vel - m_max_accel * projected_t;
+            // const VelT projected_vel = m_max_vel - m_max_accel * projected_t;
+            const VelT projected_vel =
+              units::max(abs_target_vel - m_max_accel * m_input_delay,
+                         VelT { 0 });
 
             return projected_vel * error_sgn;
         }

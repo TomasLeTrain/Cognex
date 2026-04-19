@@ -100,6 +100,7 @@ void setTarget(
     target);
 std::variant<Voltage, DiscreteLeverState, float, LeverVelocityProfile>
 getTarget();
+std::optional<lever::DiscreteLeverState> getDiscreteLeverState();
 float getLeverPosition();
 
 void hardware_update(Voltage voltage);
@@ -137,5 +138,16 @@ namespace driver {
 
 // initializes pistons, lever, and bottom systems
 void init(bool driver);
+
+// other helper functions for auto
+//
+// returns up when lever position is above threshold. defaults to 0.9
+bool leverPositionUp(float threshold_position = 0.9);
+
+// returns true when lever state is discrete and equal to up
+bool leverStateUp();
+
+// returns true if the target color is being detected
+bool detectingLowerColor(alliance_t color);
 
 } // namespace intake

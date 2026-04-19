@@ -19,6 +19,7 @@ enum class AngularDirection {
 struct TargetFeedType {
     bool feedforward = true;
     bool feedback = true;
+    bool ff_zero_angular_accel = false;
 };
 
 template<typename floatType>

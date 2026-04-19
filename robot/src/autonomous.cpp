@@ -9,7 +9,6 @@
 #include "systems/drivetrain.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
-#include "systems/odom_retract.h"
 #include "systems/wings.h"
 
 // run if no auton is selected - useful for testing
@@ -31,7 +30,6 @@ void autonomous() {
     intake::init(false);
     matchloader::init(false);
     wings::init(false);
-    odom_retract::init(false);
 
     std::cout << "init everything" << std::endl;
 

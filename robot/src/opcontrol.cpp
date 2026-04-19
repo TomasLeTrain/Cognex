@@ -8,7 +8,6 @@
 #include "systems/drivetrain.h"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
-#include "systems/odom_retract.h"
 #include "systems/sysid.h"
 #include "systems/wings.h"
 #include "tuning.h"
@@ -33,7 +32,7 @@ void findImuOrientation() {
 void opcontrol() {
     // path_follow_tuning();
 	//
-    turn_vel_pid_tuning();
+    // turn_vel_pid_tuning();
 	// drive_vel_pid_tuning();
 
     // linear_kv_ks_tuner();
@@ -218,7 +217,6 @@ void opcontrol() {
     intake::init(true);
     matchloader::init(true);
     wings::init(true);
-    odom_retract::init(true);
 
     // intake::setDriverColorSort(false);
 
@@ -226,7 +224,6 @@ void opcontrol() {
     drivetrain.setBrakeMode(pros::MotorBrake::coast);
 
     // RobotSetPose(48, 48, 0);
-    odom_retract::retractOdom();
 
     // RobotSetPose(-48, 48, 0);
     //

@@ -417,8 +417,8 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		// .left_Kv = 0.50 * volt / mps,
 		.left_Kv = 0.67 * volt / mps,
 		// .left_Ka = 0.11 * volt / mps2,
-		// .left_Ka = 0.09 * volt / mps2,
-		.left_Ka = 0.03 * volt / mps2,
+		.left_Ka = 0.09 * volt / mps2,
+		// .left_Ka = 0.03 * volt / mps2,
 		.left_Ks = 0.08 * volt,
 
 		.left_low_target_Kv = 0.5 * volt / mps,
@@ -429,8 +429,8 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		// .right_Kv = 0.50 * volt / mps,
 		.right_Kv = 0.69 * volt / mps,
 		// .right_Ka = 0.11 * volt / mps2,
-		// .right_Ka = 0.09 * volt / mps2,
-		.right_Ka = 0.03 * volt / mps2,
+		.right_Ka = 0.09 * volt / mps2,
+		// .right_Ka = 0.03 * volt / mps2,
 		.right_Ks = 0.0984043 * volt,
 
 		.right_low_target_Kv = 0.5 * volt / mps,
@@ -458,7 +458,7 @@ lyfast::DifferentialVelocityControllerParams vel_controller_params {
 		.low_target_vel_threshold = 2_inps,
 		// TODO: tune
 		// .low_target_accel_threshold = 80_inps2
-		.low_target_accel_threshold = 0_inps2,
+		.low_target_accel_threshold = 10000_inps2,
 	},
 	.linear_pid = {
 		.left_Kp = 0.55 * volt / mps,
@@ -561,9 +561,9 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 //
 // used for seeking motions
 PID<Angle, AngularVelocity> linear_angular_vel_pid(
-  8.600,
+  8.100,
   0.0,
-  4.000,
+  7.200,
   to_stRad(10_stDeg), // windup range
   // to_radps(drivetrain_config.max_angular_velocity), // restrict max vel
   to_radps(6_radps), // restrict max vel
@@ -577,9 +577,9 @@ PID<Angle, AngularVelocity> linear_angular_vel_pid(
 PID<Angle, AngularVelocity>
   turn_heading_vel_pid(8.100,
                        0.0,
-                       // 3.700,
+                       // closer to 9.3 for optimal 180
+					   // likely way smaller for <= 45
                        7.200,
-					   // closer to 9.3 for optimal 180
                        to_stRad(10_stDeg),
                        // to_radps(drivetrain_config.max_angular_velocity),
                        to_radps(6_radps), // max vel
@@ -602,7 +602,7 @@ AngularVelocityFeedbackController<decltype(angular_mp_feedback)>
   angular_vel_mp_controller(angular_mp_feedback);
 
 // AngularVelocitySlewController angular_vel_slew_controller { 30_radps2 };
-AngularVelocitySlewController angular_vel_slew_controller { };
+AngularVelocitySlewController angular_vel_slew_controller {};
 AngularVelocityClampController angular_vel_clamp_controller {};
 
 // end angular velocity stuff //

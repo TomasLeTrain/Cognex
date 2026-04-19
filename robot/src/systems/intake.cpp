@@ -302,6 +302,15 @@ getTarget() {
     return m_target;
 }
 
+// get discrete lever state, or nullopt if target is not discrete
+std::optional<lever::DiscreteLeverState> getDiscreteLeverState() {
+    if (std::holds_alternative<lever::DiscreteLeverState>(lever::getTarget())) {
+        return std::get<lever::DiscreteLeverState>(lever::getTarget());
+    } else {
+        return std::nullopt;
+    }
+}
+
 float getLeverPosition() {
     return lever_position;
 }
@@ -596,6 +605,28 @@ void init(bool driver) {
       "simple intake tasks");
 
     tasks_active = true;
+}
+
+// other helper functions for auto
+//
+// returns up when lever position is above threshold. defaults to 0.9
+bool leverPositionUp(float threshold_position) {
+    return lever::getLeverPosition() > threshold_position;
+}
+
+// returns true when lever state is discrete and equal to up
+bool leverStateUp() {
+    auto lever_state = lever::getDiscreteLeverState();
+    if (lever_state.has_value()) {
+        return lever_state == lever::DiscreteLeverState::up;
+    } else {
+        return false;
+    }
+}
+
+// returns true if the target color is being detected
+bool detectingLowerColor(alliance_t color) {
+    return colors::getLowerColor() == color;
 }
 
 } // namespace intake

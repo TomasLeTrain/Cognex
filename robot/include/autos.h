@@ -90,6 +90,10 @@ std::function<bool()> closeEnough(units::V2Position target, Length threshold);
 std::function<bool()>
 closeEnough(double target_x, double target_y, double threshold);
 
+// returns true of exit triggered, false if timeout triggered
+bool exitOrTimeout(std::function<bool()> exit_condition,
+                   std::optional<Time> timeout = std::nullopt);
+
 std::shared_ptr<lyfast::geometry::Line>
 line(float x0, float y0, float x1, float y1);
 

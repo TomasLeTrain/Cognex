@@ -13,7 +13,6 @@
 #include "lyfast/motion_profiling/mp.hpp"
 #include "systems/intake.h"
 #include "systems/matchloader.h"
-#include "systems/odom_retract.h"
 #include "systems/wings.h"
 #include "units/Angle.hpp"
 #include "units/Vector2D.hpp"
@@ -27,7 +26,6 @@ void pre_auton() {
     // set the robot state to match expectations
     // done in case driver or such is run before auto
     wings::up();
-    odom_retract::lowerOdom();
     matchloader::up();
 
     drivetrain.setBrakeMode(pros::MotorBrake::hold);
@@ -115,81 +113,92 @@ void matchload(double sign_x, double sign_y, Time matchload_time) {
     }
 }
 
-void score_long_goal(double sign_x, double sign_y, Time score_time) {
+void score_long_goal(double sign_x, double sign_y, Time max_scoring_time) {
     // turn to goal, reversed
     Length long_goal = 47.0_in;
 
-    mb.moveTo(35_in * sign_x, long_goal * sign_y).reverse() | run;
-    pros::delay(to_msec(score_time));
+    // mb.moveTo(35_in * sign_x, long_goal * sign_y).reverse() | run;
+    // pros::delay(to_msec(score_time));
 
-    // auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
-    // auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
+    auto target_backwards_heading = sign_x == -1 ? 0_stDeg : 180_stDeg;
+    auto target_forwards_heading = sign_x == -1 ? 180_stDeg : 0_stDeg;
     // auto boomerang_heading = sign_x == -1 ? 170_stDeg : 350_stDeg;
 
-    // units::Pose target_pose = { 24_in * sign_x,
-    //                             long_goal * sign_y,
-    //                             target_backwards_heading };
-    //
-    // auto exit_condition = [&] -> bool {
-    //     auto curr_pose = RobotGetPose();
-    //     bool x_close =
-    //       units::abs(curr_pose.x) >= 27_in && units::abs(curr_pose.x) <=
-    //       40_in;
-    //     // bool y_close =
-    //     //   units::abs(curr_pose.y) >= 43_in && units::abs(curr_pose.y) <=
-    //     //   51_in;
-    //     // //
-    //     // bool theta_close =
-    //     //   units::abs(angleError(target_forwards_heading,
-    //     //                         curr_pose.orientation)) <= 25_stDeg;
-    //
-    //     // return x_close && y_close && theta_close;
-    //     return x_close;
-    // };
-    //
+    units::Pose target_pose = { 24_in * sign_x,
+                                long_goal * sign_y,
+                                target_backwards_heading };
+
+    units::Pose boomerang_target_pose = { 30_in * sign_x,
+                                          long_goal * sign_y,
+                                          target_backwards_heading };
+
+    auto exit_condition = [&] -> bool {
+        auto curr_pose = RobotGetPose();
+        bool x_close =
+          units::abs(curr_pose.x) >= 27_in && units::abs(curr_pose.x) <= 40_in;
+        bool y_close =
+          units::abs(curr_pose.y) >= 43_in && units::abs(curr_pose.y) <= 51_in;
+        // //
+        bool theta_close =
+          units::abs(angleError(target_forwards_heading,
+                                curr_pose.orientation)) <= 25_stDeg;
+
+        return x_close && y_close && theta_close;
+        // return x_close;
+    };
+
+    mb.boomerang(boomerang_target_pose)
+        .lead(0.5)
+        // .drive_vel_mp_setMaxAccel(110_inps2)
+        // .only_x(true, 31_in * sign_x)
+        // .closeThreshold(7_in)
+        // .turn_kp(13.9)
+        .timeout(2_sec)
+        .reverse() |
+      chain;
     // mb.moveTo(target_pose)
     //     // .drive_vel_mp_setMaxAccel(110_inps2)
-    //     .only_x(true, 28_in * sign_x)
+    //     .only_x(true, 31_in * sign_x)
     //     .closeThreshold(7_in)
     //     // .turn_kp(13.9)
     //     .timeout(2_sec)
     //     .reverse() |
     //   chain;
-    //
-    // chain.waitUntil(exit_condition);
-    //
-    // // regardless of getting stuck or not we perform the same action
-    // intake::score_long();
-    //
-    // pros::delay(200);
-    //
-    // // exit regardless to have better aligner
-    // chain.exitAll();
-    //
-    // pros::delay(10);
-    //
-    // // queue aligning motion
-    // mb.turnTo(target_forwards_heading)
-    //     .turn_toleranceDuration(100_sec)
-    //     .turn_largeToleranceDuration(100_sec)
-    //     .timeout(0.3_sec)
-    //     .radius(-10.5_in / 2) |
-    //   async;
-    // mb.turnTo(target_forwards_heading)
-    //     .turn_toleranceDuration(100_sec)
-    //     .turn_largeToleranceDuration(100_sec)
-    //     .constantVelocity(-15_inps) |
-    //   async;
-    // pros::delay(to_msec(score_time));
-    //
-    // async.exitAll();
-}
 
-std::shared_ptr<lyfast::geometry::Spline> makeSpline(
-  const std::vector<std::shared_ptr<lyfast::geometry::Curve>>& curves) {
-    return std::shared_ptr<lyfast::geometry::Spline> {
-        new lyfast::geometry::Spline(curves)
+    chain.waitOr(exit_condition, 2_sec);
+
+    // regardless of getting stuck or not we perform the same action
+    intake::score_long();
+
+    // wait a bit for the motion to get closer
+    pros::delay(200);
+
+    // exit regardless to have better aligner
+    chain.exitAll();
+
+    pros::delay(10);
+
+    // queue aligning motion
+    mb.turnTo(target_forwards_heading)
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .timeout(0.3_sec)
+        .radius(-10.5_in / 2) |
+      async;
+    mb.turnTo(target_forwards_heading)
+        .turn_toleranceDuration(100_sec)
+        .turn_largeToleranceDuration(100_sec)
+        .constantVelocity(-15_inps) |
+      async;
+
+    auto exit_scoring_condition = []() -> bool {
+        // exit when lever is almost fully up
+        return intake::leverPositionUp(0.9);
     };
+
+    exitOrTimeout(exit_scoring_condition, max_scoring_time);
+
+    async.exitAll();
 }
 
 namespace skills_paths {
@@ -267,27 +276,31 @@ lyfast::mp::Constraints
 
 std::shared_ptr<lyfast::mp::Trajectory>
 makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve,
+               const lyfast::mp::Constraints& custom_constraints,
+               LinearVelocity start_speed = 5_inps,
                LinearVelocity end_speed = 0_inps) {
-    using namespace blazing::lyfast;
-    using namespace blazing::lyfast::geometry;
-    using namespace blazing::lyfast::mp;
-    //
-    // bool debug = true;
     bool debug = false;
 
-    std::shared_ptr<Trajectory> trajectory(
-      new Trajectory(curve,
-                     constraints,
-                     {},
-                     {},
-                     // some initial velocity for it to move?
-                     // TODO: could there be a place on the curve that also has
-                     // a velof zero? if so this would also have the same issue?
-                     0_inps,
-                     end_speed,
-                     0.1_in,
-                     debug));
+    std::shared_ptr<blazing::lyfast::mp::Trajectory> trajectory(
+      new blazing::lyfast::mp::Trajectory(curve,
+                                          custom_constraints,
+                                          {},
+                                          {},
+                                          start_speed,
+                                          end_speed,
+                                          0.1_in,
+                                          debug));
+
+    if (debug) trajectoryDebugPrint(trajectory.get());
+
     return trajectory;
+}
+
+std::shared_ptr<lyfast::mp::Trajectory>
+makeTrajectory(std::shared_ptr<lyfast::geometry::Curve> curve,
+               LinearVelocity end_speed = 0_inps,
+               LinearVelocity start_speed = 5_inps) {
+    return makeTrajectory(curve, constraints, start_speed, end_speed);
 }
 
 auto pathFollow(std::shared_ptr<lyfast::mp::Trajectory> trajectory) {
@@ -342,7 +355,9 @@ void run_auton() {
     matchload(-1, 1, 2.0_sec);
 
     // follow path to go to other side
-    pathFollow(makeTrajectory(long_match_curve_top, 40_inps)).reverse() | chain;
+    pathFollow(makeTrajectory(long_match_curve_top, 0_inps, 40_inps))
+        .reverse() |
+      chain;
 
     // move towards long goal
     // coming from fast moving, slew shouldn't apply
@@ -405,6 +420,8 @@ void run_auton() {
     // move towards long goal, forwards
     mb.moveTo(41.032, -long_goal).drive_chainErrorTolerance(1_in) | chain;
 
+    mb.moveTo(23.741, -23.427).drive_chainErrorTolerance(4_in) | chain;
+
     // turn to and move there
     mb.turnTo(32.032, -long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
       chain;
@@ -417,7 +434,8 @@ void run_auton() {
     matchload(1, -1, 1.6_sec);
 
     // follow path to go to other side
-    pathFollow(makeTrajectory(long_match_curve_bottom, 40_inps)).reverse() |
+    pathFollow(makeTrajectory(long_match_curve_bottom, 0_inps, 40_inps))
+        .reverse() |
       chain;
 
     // move towards long goal

@@ -300,17 +300,15 @@ class moveTo
 
                 // this->drivetrain->moveArcade(target.linear_velocity,
                 //                              target.angular_velocity);
-                // update feedforward vel
+                //
+                // update ff/fb vels, using special zero accel angular for
+                // angular pid to work well
                 this->drivetrain->moveArcade(
                   target.linear_velocity,
                   target.angular_velocity,
-                  TargetFeedType { .feedforward = true, .feedback = false });
-
-                // update feedback vel
-                this->drivetrain->moveArcade(
-                  target.linear_velocity,
-                  target.angular_velocity,
-                  TargetFeedType { .feedforward = false, .feedback = true });
+                  TargetFeedType { .feedforward = true,
+                                   .feedback = true,
+                                   .ff_zero_angular_accel = true });
 
                 return result;
                 //
