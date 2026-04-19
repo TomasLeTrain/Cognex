@@ -31,7 +31,7 @@ int8_t right_front = 17;
 int8_t right_middle = 18;
 int8_t right_back = 19;
 
-bool vexmaps_logging_enabled = false;
+bool vexmaps_logging_enabled = true;
 bool custom_particling = true;
 // bool custom_particling = false;
 
@@ -561,9 +561,11 @@ LinearVelocityClampController linear_vel_clamp_controller {};
 //
 // used for seeking motions
 PID<Angle, AngularVelocity> linear_angular_vel_pid(
-  8.100,
+  // 15.9
+  // 7
+  13.60,
   0.0,
-  7.200,
+  8.900,
   to_stRad(10_stDeg), // windup range
   // to_radps(drivetrain_config.max_angular_velocity), // restrict max vel
   to_radps(6_radps), // restrict max vel
@@ -572,17 +574,32 @@ PID<Angle, AngularVelocity> linear_angular_vel_pid(
   1_stRad,
   1_radps);
 
+// good for no accel version
+// PID<Angle, AngularVelocity> linear_angular_vel_pid(
+// 	// 15.9
+// 	// 7
+//   15.600,
+//   0.0,
+//   23.200,
+//   to_stRad(10_stDeg), // windup range
+//   to_radps(drivetrain_config.max_angular_velocity), // restrict max vel
+//   // to_radps(6_radps), // restrict max vel
+//   std::nullopt, // derivative alpha
+//   50_msec,
+//   1_stRad,
+//   1_radps);
+
 // increased kp to 8.60000
 // increased kd to 3.70000
 PID<Angle, AngularVelocity>
-  turn_heading_vel_pid(8.100,
+  turn_heading_vel_pid(11.200,
                        0.0,
                        // closer to 9.3 for optimal 180
-					   // likely way smaller for <= 45
-                       7.200,
+                       // likely way smaller for <= 45
+                       26.000,
                        to_stRad(10_stDeg),
-                       // to_radps(drivetrain_config.max_angular_velocity),
-                       to_radps(6_radps), // max vel
+                       to_radps(drivetrain_config.max_angular_velocity),
+                       // to_radps(6_radps), // max vel
                        std::nullopt, // derivative alpha
                        50_msec,
                        1_stRad,

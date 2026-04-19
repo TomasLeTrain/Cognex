@@ -148,6 +148,11 @@ closeEnough(double target_x, double target_y, double threshold) {
     return closeEnough({ target_x * in, target_y * in }, threshold * in);
 }
 
+std::function<bool()>
+closeEnough(Length target_x, Length target_y, Length threshold) {
+    return closeEnough({ target_x, target_y }, threshold);
+}
+
 // returns true of exit triggered, false if timeout triggered
 bool exitOrTimeout(std::function<bool()> exit_condition,
                    std::optional<Time> timeout) {

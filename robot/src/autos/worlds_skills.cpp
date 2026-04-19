@@ -113,7 +113,10 @@ void matchload(double sign_x, double sign_y, Time matchload_time) {
     }
 }
 
-void score_long_goal(double sign_x, double sign_y, Time max_scoring_time) {
+void score_long_goal(double sign_x,
+                     double sign_y,
+                     Time max_scoring_time,
+                     bool last_scoring = false) {
     // turn to goal, reversed
     Length long_goal = 47.0_in;
 
@@ -168,7 +171,13 @@ void score_long_goal(double sign_x, double sign_y, Time max_scoring_time) {
     chain.waitOr(exit_condition, 2_sec);
 
     // regardless of getting stuck or not we perform the same action
-    intake::score_long();
+    if (last_scoring) {
+        // do special scoring
+        // needs to be async
+        intake::score_long();
+    } else {
+        intake::score_long();
+    }
 
     // wait a bit for the motion to get closer
     pros::delay(200);
@@ -328,17 +337,32 @@ void run_auton() {
     RobotSetPose(-44.365, 0, 180);
 
     intake::in();
+    // make sure its aligned top so that it can fit above goal
+    intake::pistons::align_top();
 
-    mb.moveTo(-15.992, 15.0).reverse().drive_chainErrorTolerance(1_in) | chain;
+    mb.moveTo(-11.992, 12.0).reverse().drive_chainErrorTolerance(1_in) | chain;
     // turn to and move to middle goal
-    mb.turnTo(-12.179, 11.513).reverse().turn_chainErrorTolerance(5_stDeg) |
+    mb.turnTo(-16.792, 17.196).reverse().turn_chainErrorTolerance(5_stDeg) |
       chain;
-    mb.moveTo(-12.179, 11.513).reverse() | chain;
+    mb.moveTo(-16.792, 17.196).reverse().drive_chainErrorTolerance(1_in) |
+      chain;
 
+    // mb.moveTo(-12.179, 11.513).reverse() | chain;
+    mb.boomerang(-12, 11.5, 135 * deg).reverse().lead(0.5) | chain;
     chain.wait();
 
-    // score
-    pros::delay(3000);
+    // TODO: custom start for scoring
+    chain.waitOr(closeEnough({ -12_in, 11.5_in }, 2_in));
+
+    // start soring
+    intake::score_middle();
+
+    // wait up to 3 seconds
+    exitOrTimeout(
+      []() -> bool {
+          return intake::leverPositionUp();
+      },
+      3_sec);
 
     // move towards long goal, forwards
     mb.moveTo(-41.032, long_goal).drive_chainErrorTolerance(1_in) | chain;
@@ -346,10 +370,10 @@ void run_auton() {
     // turn to and move there
     mb.turnTo(-32.032, long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
       chain;
-    mb.moveTo(-32.032, long_goal).reverse() | chain;
-    chain.wait();
-
-    pros::delay(1000);
+    // mb.moveTo(-32.032, long_goal).reverse() | chain;
+    // chain.wait();
+    // pros::delay(1000);
+    score_long_goal(-1, 1, 1_sec);
 
     // go to matchload
     matchload(-1, 1, 2.0_sec);
@@ -371,10 +395,11 @@ void run_auton() {
     // turn to and move there
     mb.turnTo(32.032, long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
       chain;
-    mb.moveTo(32.032, long_goal).reverse() | chain;
-    chain.wait();
-
-    pros::delay(1000);
+    // mb.moveTo(32.032, long_goal).reverse() | chain;
+    // chain.wait();
+    //
+    // pros::delay(1000);
+    score_long_goal(1, 1, 1_sec);
 
     matchload(1, 1, 1.6_sec);
     score_long_goal(1, 1, 2_sec);
@@ -386,6 +411,7 @@ void run_auton() {
     // get one red ball from cluster
     mb.turnTo(30.449, 30.352).turn_chainErrorTolerance(5_stDeg) | chain;
     mb.moveTo(30.449, 30.352) | chain;
+    // mb.boomerangTo(30.449, 30.352) | chain;
     chain.wait();
 
     // go back tiny amount
@@ -418,17 +444,19 @@ void run_auton() {
     pros::delay(130);
 
     // move towards long goal, forwards
-    mb.moveTo(41.032, -long_goal).drive_chainErrorTolerance(1_in) | chain;
-
     mb.moveTo(23.741, -23.427).drive_chainErrorTolerance(4_in) | chain;
+
+    mb.moveTo(41.032, -long_goal).drive_chainErrorTolerance(1_in) | chain;
 
     // turn to and move there
     mb.turnTo(32.032, -long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
       chain;
-    mb.moveTo(32.032, -long_goal).reverse() | chain;
-    chain.wait();
+    // mb.moveTo(32.032, -long_goal).reverse() | chain;
+    // chain.wait();
 
-    pros::delay(1000);
+    score_long_goal(1, -1, 1_sec);
+
+    // pros::delay(1000);
 
     // go to matchload
     matchload(1, -1, 1.6_sec);
@@ -450,10 +478,12 @@ void run_auton() {
     // turn to and move there
     mb.turnTo(-32.032, -long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
       chain;
-    mb.moveTo(-32.032, -long_goal).reverse() | chain;
-    chain.wait();
-
-    pros::delay(1000);
+    // mb.moveTo(-32.032, -long_goal).reverse() | chain;
+    // chain.wait();
+    //
+    score_long_goal(-1, -1, 1_sec);
+    //
+    // pros::delay(1000);
 
     matchload(-1, -1, 1.6_sec);
     score_long_goal(-1, -1, 2_sec);

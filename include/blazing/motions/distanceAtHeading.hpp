@@ -255,7 +255,8 @@ class distanceAtHeading
                   target.angular_velocity,
                   TargetFeedType { .feedforward = true,
                                    .feedback = true,
-                                   .ff_zero_angular_accel = true });
+                                   // .ff_zero_angular_accel = true });
+                                   .ff_zero_angular_accel = false });
 
                 return result;
 
