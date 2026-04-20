@@ -211,44 +211,52 @@ void score_long_goal(double sign_x,
 }
 
 namespace skills_paths {
-auto start_TO_in_red_park = line(-44.125, 0.039, -61.257, 0.363);
-auto in_red_park_TO_out_of_red = line(-61.257, 0.363, -44.365, 0);
-auto out_of_red_TO_get_blue_middle = line(-44.365, 0, -14.475, 8.582);
-auto get_blue_middle_TO_End_Control = line(-14.475, 8.582, -15.992, 15.457);
-auto End_Control_TO_score_middle = line(-15.992, 15.457, -13.179, 12.513);
-auto score_middle_TO_ull = line(-13.179, 12.513, -41.032, 46.515);
-auto ull_TO_uls = line(-41.032, 46.515, -30.06, 46.931);
-auto uls_TO_ulm = line(-30.06, 46.931, -57.173, 46.6);
+auto start_TO_in_red_park = line(-45.524, 0, -62.43, 0.157);
+auto in_red_park_TO_out_of_red = line(-62.43, 0.157, -39.4, -0.247);
+auto out_of_red_TO_End_Control =
+  curve(-39.4, -0.247, -10.745, 2.986, -11.547, 11.524, -16.792, 17.196);
+auto End_Control_TO_score_middle = line(-16.792, 17.196, -11.172, 11.518);
+auto score_middle_TO_ull =
+  curve(-11.172, 11.518, -17.396, 18.658, -35.285, 46.847, -41.032, 46.515);
+auto ull_TO_uls = line(-41.032, 46.515, -30.6, 46.975);
+auto uls_TO_ulm = line(-30.6, 46.975, -58, 46.6);
 auto ulm_TO_url1 =
-  curve(-57.173, 46.6, -37.078, 46.6, -49.519, 65.882, 22.979, 59.5);
-auto url1_TO_urls = line(22.979, 59.5, 38.085, 46.543);
-auto urls_TO_urm = line(38.085, 46.543, 56.959, 46.195);
-auto urm_TO_urls2 = line(56.959, 46.195, 30.3, 46.442);
-auto urls2_TO_End_Control = line(30.3, 46.442, 36.735, 45.597);
+  curve(-58, 46.6, -37.078, 46.6, -49.519, 65.882, 22.979, 59.5);
+auto url1_TO_urls =
+  curve(22.979, 59.5, 49.48, 56.805, 42.802, 47.723, 30.3, 47.2);
+auto urls_TO_urm = line(30.3, 47.2, 58, 46.7);
+auto urm_TO_urls2 = line(58, 46.7, 30.6, 47.2);
+auto urls2_TO_End_Control = line(30.6, 47.2, 37.286, 46.949);
 auto End_Control_TO_ur_cluster =
-  curve(36.735, 45.597, 38.483, 43.58, 35.403, 36.383, 30.449, 30.352);
+  curve(37.286, 46.949, 41.483, 43.251, 35.403, 36.383, 30.449, 30.352);
 auto ur_cluster_TO_End_Control = line(30.449, 30.352, 34.897, 33.991);
-auto End_Control_TO_blue_park = line(34.897, 33.991, 44.859, -0.234);
-auto blue_park_TO_in_blue_park = line(44.859, -0.234, 61.945, -0.234);
-auto in_blue_park_TO_blue_park2 = line(61.945, -0.234, 45.304, 0);
-auto blue_park2_TO_go_bottom = line(45.304, 0, 22.754, 22.033);
-auto go_bottom_TO_bottom_score = line(22.754, 22.033, 11.967, 12.295);
+auto End_Control_TO_blue_park = line(34.897, 33.991, 41.989, -0.338);
+auto blue_park_TO_in_blue_park = line(41.989, -0.338, 61.945, -0.234);
+auto in_blue_park_TO_blue_park2 = line(61.945, -0.234, 42.433, -0.338);
+auto blue_park2_TO_go_bottom =
+  curve(42.433, -0.338, 22.921, -0.442, 14.834, 15.323, 19.857, 19.905);
+auto go_bottom_TO_bottom_score = line(19.857, 19.905, 11.967, 12.295);
 auto bottom_score_TO_back_bottom = line(11.967, 12.295, 16.594, 16.389);
 auto back_bottom_TO_dr_cluster = line(16.594, 16.389, 23.741, -23.427);
-auto dr_cluster_TO_drl = line(23.741, -23.427, 39.523, -46.844);
-auto drl_TO_drls = line(39.523, -46.844, 29.949, -47.059);
-auto drls_TO_drm = line(29.949, -47.059, 57.173, -46.6);
+auto dr_cluster_TO_drl =
+  curve(23.741, -23.427, 32.493, -39.845, 37.84, -47.2, 42.598, -47.2);
+auto drl_TO_drls = line(42.598, -47.2, 30.6, -47.2);
+auto drls_TO_drm = line(30.6, -47.2, 58, -46.6);
 auto drm_TO_dll =
-  curve(57.173, -46.6, 37.078, -46.6, 49.519, -65.882, -22.979, -59.5);
+  curve(58, -46.6, 37.078, -46.6, 49.519, -65.882, -22.979, -59.5);
 auto dll_TO_dls = line(-22.979, -59.5, -35.563, -47.505);
-auto dls_TO_dlm = line(-35.563, -47.505, -56.502, -47.295);
-auto dlm_TO_dls2 = line(-56.502, -47.295, -30.812, -46.393);
+auto dls_TO_dlm = line(-35.563, -47.505, -58, -47.295);
+auto dlm_TO_dls2 = line(-58, -47.295, -30.6, -47.2);
 auto dls2_TO_ending =
-  curve(-30.812, -46.393, -56.961, -45.178, -62.556, -25.552, -62.556, -18.105);
+  curve(-30.6, -47.2, -56.961, -45.178, -62.556, -25.552, -62.556, -18.105);
+auto ending_TO_End_Control = line(-62.556, -18.105, -63.093, -6.171);
 } // namespace skills_paths
 
-auto long_match_curve_top = skills_paths::ulm_TO_url1;
+auto long_match_curve_top =
+  spline({ skills_paths::ulm_TO_url1, skills_paths::url1_TO_urls });
 auto long_match_curve_bottom = skills_paths::drm_TO_dll;
+auto blue_park_to_bottom = skills_paths::blue_park2_TO_go_bottom;
+auto get_red_cluster = skills_paths::End_Control_TO_ur_cluster;
 auto park_curve = skills_paths::dls2_TO_ending;
 
 lyfast::mp::RobotConstraints
@@ -340,32 +348,48 @@ void run_auton() {
     // make sure its aligned top so that it can fit above goal
     intake::pistons::align_top();
 
-    mb.moveTo(-11.992, 12.0).reverse().drive_chainErrorTolerance(1_in) | chain;
+    mb.moveTo(-12.0, 12.0).reverse().drive_chainErrorTolerance(1_in) | chain;
     // turn to and move to middle goal
-    mb.turnTo(-16.792, 17.196).reverse().turn_chainErrorTolerance(5_stDeg) |
-      chain;
-    mb.moveTo(-16.792, 17.196).reverse().drive_chainErrorTolerance(1_in) |
-      chain;
+    mb.turnTo(-16.792, 17.196).turn_chainErrorTolerance(5_stDeg) | chain;
+    mb.moveTo(-16.792, 17.196).drive_chainErrorTolerance(1_in) | chain;
 
     // mb.moveTo(-12.179, 11.513).reverse() | chain;
-    mb.boomerang(-12, 11.5, 135 * deg).reverse().lead(0.5) | chain;
-    chain.wait();
+    mb.boomerang(-12, 11.5, 135 * deg)
+        .reverse()
+        .lead(0.5)
+        .executeBeforeMotion(
+          [] {
+              intake::pistons::align_middle();
+          },
+          // can make blocking since its only align middle
+          true) |
+      chain;
+    // chain.wait();
 
     // TODO: custom start for scoring
     chain.waitOr(closeEnough({ -12_in, 11.5_in }, 2_in));
 
     // start soring
-    intake::score_middle();
+    intake::score_middle(0.5_volt);
 
     // wait up to 3 seconds
     exitOrTimeout(
       []() -> bool {
+          // reuse exit function here to change scoring as well
+          if (intake::lever::getLeverPosition() >= 0.7) {
+              // change to scoring really slowly near the end
+              intake::score_middle(0.2_volt);
+          }
           return intake::leverPositionUp();
       },
       3_sec);
 
+    // if somehow there is still a movement stop it
+    chain.exitAll();
+
     // move towards long goal, forwards
-    mb.moveTo(-41.032, long_goal).drive_chainErrorTolerance(1_in) | chain;
+    mb.moveTo(-41.032, long_goal - 1.0_in).drive_chainErrorTolerance(1_in) |
+      chain;
 
     // turn to and move there
     mb.turnTo(-32.032, long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
@@ -385,16 +409,17 @@ void run_auton() {
 
     // move towards long goal
     // coming from fast moving, slew shouldn't apply
-    mb.moveTo(41.032, long_goal)
-        .drive_vel_accelSlew(300_inps)
-        .drive_chainErrorTolerance(1_in)
-        .reverse() |
-      chain;
-    chain.wait();
+    // mb.moveTo(41.032, long_goal)
+    //     .drive_vel_accelSlew(300_inps)
+    //     .drive_chainErrorTolerance(1_in)
+    //     .reverse() |
+    //   chain;
+    // chain.wait();
 
     // turn to and move there
-    mb.turnTo(32.032, long_goal).reverse().turn_chainErrorTolerance(5_stDeg) |
-      chain;
+    // mb.turnTo(32.032, long_goal).reverse().turn_chainErrorTolerance(5_stDeg)
+    // |
+    //   chain;
     // mb.moveTo(32.032, long_goal).reverse() | chain;
     // chain.wait();
     //
@@ -409,8 +434,13 @@ void run_auton() {
     pros::delay(120);
 
     // get one red ball from cluster
-    mb.turnTo(30.449, 30.352).turn_chainErrorTolerance(5_stDeg) | chain;
-    mb.moveTo(30.449, 30.352) | chain;
+    // mb.turnTo(30.449, 30.352).turn_chainErrorTolerance(5_stDeg) | chain;
+    // // mb.moveTo(30.449, 30.352) | chain;
+    // mb.boomerang(30.449, 30.352, 225).lead(0.5) | chain;
+    mb.turnTo(get_red_cluster->df(0).getAngle()) | chain;
+    pathFollow(get_red_cluster) | chain;
+
+    // mb.moveTo(30.449, 30.352) | chain;
     // mb.boomerangTo(30.449, 30.352) | chain;
     chain.wait();
 
@@ -419,8 +449,8 @@ void run_auton() {
     pros::delay(100);
 
     // move towards park
-    mb.turnTo(41, 0).turn_chainErrorTolerance(5_stDeg) | chain;
-    mb.moveTo(41, 0) | chain;
+    // mb.turnTo(41, 1).turn_chainErrorTolerance(13_stDeg) | chain;
+    mb.moveTo(41, 1) | chain;
     mb.turnTo(0) | chain;
     chain.wait();
 
@@ -428,11 +458,15 @@ void run_auton() {
 
     // move from park to score on bottom goal
     // blows up cluster
+
+    pathFollow(blue_park_to_bottom).reverse().drive_chainErrorTolerance(1_in) |
+      chain;
+
     mb.moveTo(22.754, 22.033).reverse().drive_chainErrorTolerance(1.5_in) |
       chain;
 
     // turn to and score
-    mb.turnTo(11.967, 12.295).turn_chainErrorTolerance(5_stDeg) | chain;
+    mb.turnTo(11.967, 12.295).turn_chainErrorTolerance(8_stDeg) | chain;
     mb.moveTo(11.967, 12.295) | chain;
     chain.wait();
 
